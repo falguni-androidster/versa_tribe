@@ -95,10 +95,10 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                     ApiConfig.getManageOrgData(context: context, tabIndex: 3);
                   }
                 },
+                isScrollable:true,
                 labelPadding: const EdgeInsets.symmetric(horizontal: 5),
                 controller: _tabController,
                 labelColor: CustomColors.kBlueColor,
-                isScrollable: true,
                 indicatorColor: Colors.transparent,
                 unselectedLabelColor: CustomColors.kBlackColor,
                 unselectedLabelStyle: const TextStyle(
@@ -150,7 +150,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                 ///Requested
                 Consumer<DisplayManageOrgProvider>(
                     builder: (context, val, child) {
-                      return val.manageOrgDataList.length != null ? ListView
+                      return val.manageOrgDataList.isNotEmpty ? ListView
                           .builder(
                           shrinkWrap: true,
                           itemCount: val.manageOrgDataList.length,
@@ -212,7 +212,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                 ///Approved
                 Consumer<DisplayManageOrgProvider>(
                     builder: (context, val, child) {
-                      return val.manageOrgDataList.length != null ? ListView
+                      return val.manageOrgDataList.isNotEmpty? ListView
                           .builder(
                           shrinkWrap: true,
                           itemCount: val.manageOrgDataList.length,
@@ -257,7 +257,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                 ///Rejected
                 Consumer<DisplayManageOrgProvider>(
                     builder: (context, val, child) {
-                      return val.manageOrgDataList.length == null ? ListView
+                      return val.manageOrgDataList.isNotEmpty ? ListView
                           .builder(
                           shrinkWrap: true,
                           itemCount: val.manageOrgDataList.length,
