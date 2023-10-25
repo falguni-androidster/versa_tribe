@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
 import 'package:versa_tribe/Providers/confirm_password_provider.dart';
+import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Providers/profile_provider.dart';
 
 import 'Providers/call_switch_provider.dart';
 import 'Providers/date_provider.dart';
+import 'Providers/manage_org_index_provider.dart';
 import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
 import 'Providers/person_details_provider.dart';
@@ -33,7 +35,13 @@ void main() {
       ChangeNotifierProvider<PersonHobbyProvider>(create: (_) => PersonHobbyProvider()),
       ChangeNotifierProvider<SearchCourseProvider>(create: (_) => SearchCourseProvider()),
       ChangeNotifierProvider<SearchInstituteProvider>(create: (_) => SearchInstituteProvider()),
-      ChangeNotifierProvider<SearchSkillProvider>(create: (_) => SearchSkillProvider())
+      ChangeNotifierProvider<SearchSkillProvider>(create: (_) => SearchSkillProvider()),
+      ChangeNotifierProvider<SearchHobbyProvider>(create: (_) => SearchHobbyProvider()),
+      ChangeNotifierProvider<SearchExCompanyProvider>(create: (_) => SearchExCompanyProvider()),
+      ChangeNotifierProvider<SearchExIndustryProvider>(create: (_) => SearchExIndustryProvider()),
+      ChangeNotifierProvider<IndexProvider>(create: (_) => IndexProvider()),
+      ChangeNotifierProvider<DisplayManageOrgProvider>(create: (_) => DisplayManageOrgProvider()),
+      ChangeNotifierProvider<OrganizationProvider>(create: (_) => OrganizationProvider())
     ],
     child: const MyApp()
   ));

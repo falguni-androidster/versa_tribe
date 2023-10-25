@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
+
+import '../../Providers/person_details_provider.dart';
 
 class EditSkillScreen extends StatefulWidget {
   final String skillName;
@@ -23,6 +26,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
   TextEditingController skillController = TextEditingController();
   TextEditingController monthController = TextEditingController();
 
+  dynamic providerSkill;
   @override
   void initState() {
     // TODO: implement initState
@@ -30,11 +34,15 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
     if (skillController.text == "" && monthController.text == "") {
       skillController.text = widget.skillName;
       monthController.text = widget.months.toString();
+      providerSkill = Provider.of<SearchSkillProvider>(context,listen: false);
+      providerSkill.skillList.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final providerSkill =
+    Provider.of<SearchSkillProvider>(context, listen: false);
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -62,6 +70,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
               children: [
                 /// Skill name
                 TextFormField(
+                  readOnly: true,
                     controller: skillController,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -70,12 +79,55 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                         return null;
                       }
                     },
+                    onChanged: (value) {
+                      if (value != "") {
+                        ApiConfig.searchSkill(
+                            context: context, skillString: value);
+                        providerSkill.skillList.clear();
+                      }
+                      providerSkill.skillList.clear();
+                      providerSkill.setVisible(true);
+                    },
                     cursorColor: CustomColors.kBlueColor,
                     decoration: const InputDecoration(
                         labelText: CustomString.skillName,
                         labelStyle: TextStyle(
                             color: CustomColors.kLightGrayColor, fontSize: 14)),
                     style: const TextStyle(color: CustomColors.kBlackColor)),
+                Consumer<SearchSkillProvider>(builder: (context, val, child) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: val.skillList.length,
+                      itemBuilder: (context, index) {
+                        debugPrint(
+                            "INSTITUTE--------->${val.skillList[index].skillName}");
+                        return val.visible == true
+                            ? InkWell(
+                          child: Card(
+                            shadowColor: CustomColors.kBlueColor,
+                            elevation: 3,
+                            color: CustomColors.kGrayColor,
+                            child: Container(
+                                padding:
+                                EdgeInsets.only(left: mWidth * 0.02),
+                                height: mHeight * 0.05,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    '${val.skillList[index].skillName}',
+                                    style: const TextStyle(
+                                        color: CustomColors
+                                            .kLightGrayColor))),
+                          ),
+                          onTap: () async {
+                            skillController.text =
+                                val.skillList[index].skillName ??
+                                    skillController.text;
+                            val.setVisible(false);
+                          },
+                        )
+                            : Container();
+                      });
+                }),
 
                 SizedBox(height: mWidth * 0.03),
 

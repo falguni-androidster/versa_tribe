@@ -196,4 +196,17 @@ class CustomString {
   static const String deleteContent = 'Are you sure you want to delete this item?';
 
 
+/*--------------------------  Manage Organization -----------------------*/
+  static const String requestedToJoin = "You Requested To Join ";
+  static const String requestedDepartment = "Req. Department: ";
+  static const String requestApproved1 = "Your Request To Join ";
+  static const String requestApproved2 = " Is Approved";
+  static const String department = "Department: ";
+
+  static const String requested = 'Requested';
+  static const String approved = 'Approved';
+  static const String rejected = 'Rejected';
+  static const String removed = 'Removed';
+
+
 }

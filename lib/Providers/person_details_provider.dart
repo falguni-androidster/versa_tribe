@@ -4,7 +4,10 @@ import '../Model/person_experience.dart';
 import '../Model/person_hobby.dart';
 import '../Model/person_qualification.dart';
 import '../Model/person_skill.dart';
+import '../Model/search_company.dart';
 import '../Model/search_course.dart';
+import '../Model/search_hobby.dart';
+import '../Model/search_industry.dart';
 import '../Model/search_institute.dart';
 import '../Model/search_skill.dart';
 
@@ -130,3 +133,61 @@ class SearchSkillProvider with ChangeNotifier{
     notifyListeners();
   }
 }
+
+class SearchHobbyProvider with ChangeNotifier{
+  final List<SearchHobbyModel> _hobbyList =[];
+  List<SearchHobbyModel> get hobbyList => _hobbyList;
+  bool _visible = false;
+  bool get visible => _visible;
+
+  setSearchedHobby(hobbyName){
+    hobbyName.forEach((ob){
+      _hobbyList.add(SearchHobbyModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+}
+
+class SearchExCompanyProvider with ChangeNotifier{
+  final List<SearchCompanyModel> _cmpList =[];
+  List<SearchCompanyModel> get cmpList => _cmpList;
+  bool _visible = false;
+  bool get visible => _visible;
+
+  setSearchedCompany(cmpName){
+    cmpName.forEach((ob){
+      _cmpList.add(SearchCompanyModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+}
+
+class SearchExIndustryProvider with ChangeNotifier{
+  final List<SearchIndustryModel> _indList =[];
+  List<SearchIndustryModel> get indList => _indList;
+  bool _visible = false;
+  bool get visible => _visible;
+
+  setSearchedIndustry(indName){
+    indName.forEach((ob){
+      _indList.add(SearchIndustryModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+}
+

@@ -135,7 +135,6 @@ class _AccountScreenState extends State<AccountScreen> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
     }
-
   }
 
   // Only Clear LoggedIn SharedPreference
@@ -165,7 +164,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 children: [
                   Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
                   const SizedBox(height: 2),
-                  Text(snapshot.data?.tOwner ?? '',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 12)),
+                  Text(snapshot.data?.tOwner ?? '',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 12))
                 ],
               ),
             )

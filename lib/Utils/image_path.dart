@@ -7,5 +7,7 @@ class ImagePath {
 
   static const String androidPath = 'assets/icons/ic_android.JPG';
   static const String profilePath = 'assets/icons/profile.png';
+  static const String search = 'assets/gif/search.gif';
+  static const String noData = 'assets/gif/noData.gif';
 
 }

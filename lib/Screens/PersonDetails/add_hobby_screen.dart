@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
+
+import '../../Providers/person_details_provider.dart';
 
 class AddHobbyScreen extends StatefulWidget {
   const AddHobbyScreen({super.key});
@@ -13,9 +16,17 @@ class AddHobbyScreen extends StatefulWidget {
 class _AddHobbyScreenState extends State<AddHobbyScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController hobbyController = TextEditingController();
-
+  dynamic providerHobby;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    providerHobby = Provider.of<SearchHobbyProvider>(context,listen: false);
+    providerHobby.hobbyList.clear();
+  }
   @override
   Widget build(BuildContext context) {
+    final providerHobby = Provider.of<SearchHobbyProvider>(context, listen: false);
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -52,12 +63,53 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                         return null;
                       }
                     },
+                    onChanged: (value) {
+                      if (value != "") {
+                        ApiConfig.searchHobby(context: context, hobbyString: value);
+                        providerHobby.hobbyList.clear();
+                      }
+                      providerHobby.hobbyList.clear();
+                      providerHobby.setVisible(true);
+                    },
                     cursorColor: CustomColors.kBlueColor,
                     decoration: const InputDecoration(
                         labelText: CustomString.searchHobby,
                         labelStyle: TextStyle(
                             color: CustomColors.kLightGrayColor, fontSize: 14)),
                     style: const TextStyle(color: CustomColors.kBlackColor)),
+                Consumer<SearchHobbyProvider>(builder: (context, val, child) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: val.hobbyList.length,
+                      itemBuilder: (context, index) {
+                        debugPrint("INSTITUTE--------->${val.hobbyList[index].name}");
+                        return val.visible == true
+                            ? InkWell(
+                          child: Card(
+                            shadowColor: CustomColors.kBlueColor,
+                            elevation: 3,
+                            color: CustomColors.kGrayColor,
+                            child: Container(
+                                padding:
+                                EdgeInsets.only(left: mWidth * 0.02),
+                                height: mHeight * 0.05,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    '${val.hobbyList[index].name}',
+                                    style: const TextStyle(
+                                        color: CustomColors
+                                            .kLightGrayColor))),
+                          ),
+                          onTap: () async {
+                            hobbyController.text =
+                                val.hobbyList[index].name ??
+                                    hobbyController.text;
+                            val.setVisible(false);
+                          },
+                        )
+                            : Container();
+                      });
+                }),
 
                 SizedBox(height: mHeight * 0.03),
 

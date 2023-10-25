@@ -6,20 +6,19 @@ import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
 import '../Providers/person_details_provider.dart';
+import 'PersonDetails/add_experience_screen.dart';
 import 'PersonDetails/add_hobby_screen.dart';
 import 'PersonDetails/add_qualification_screen.dart';
-import 'PersonDetails/add_edit_experience_screen.dart';
 import 'PersonDetails/add_skill_screen.dart';
+import 'PersonDetails/edit_experience_screen.dart';
 import 'PersonDetails/edit_qualification_screen.dart';
 import 'PersonDetails/edit_skill_screen.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
   const PersonDetailsScreen({super.key});
-
   @override
   State<PersonDetailsScreen> createState() => _PersonDetailsScreenState();
 }
-
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   @override
   void initState() {
@@ -82,12 +81,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       icon:
                           const Icon(Icons.add, color: CustomColors.kBlueColor),
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const AddNEditExScreen(
-                                    title: CustomString.createExperience,
-                                    pExJobTitle: "")));
+                                builder: (context) => const AddExperienceScreen()));
                       },
                     ),
                   ]),
@@ -103,14 +100,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
                         String? eDate = val.personEx[index].endDate;
                         String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
-                        return _buildTimelineTile(
-                            comN: comN,
-                            indN: indN,
-                            ed: ed,
-                            sd: sd,
-                            vaL: val,
-                            index: index,
-                            widgetKey: "personExperience");
+                        return _buildTimelineTile(comN: comN, indN: indN, ed: ed, sd: sd, vaL: val, index: index, widgetKey: "personExperience");
                       },
                     );
                   }),
@@ -146,7 +136,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         icon: const Icon(Icons.add,
                             color: CustomColors.kBlueColor),
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
@@ -205,7 +195,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         color: CustomColors.kBlueColor,
                       ),
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const AddSkillScreen()));
@@ -256,7 +246,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                     val.personSkill[index].experience!;
                                     switch (item) {
                                       case 0:
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -315,7 +305,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     IconButton(
                       icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const AddHobbyScreen()));
@@ -374,8 +364,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  void _showDeleteConfirmation(
-      BuildContext context, identityKey, int? iD, personId) {
+  void _showDeleteConfirmation(BuildContext context, identityKey, int? iD, personId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -411,8 +400,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  Widget _buildTimelineTile(
-      {index, vaL, comN, indN, sd, ed, widgetKey, passingYear}) {
+  Widget _buildTimelineTile({index, vaL, comN, indN, sd, ed, widgetKey, passingYear}) {
     var mHeight = MediaQuery.of(context).size.height;
     return TimelineTile(
         alignment: TimelineAlign.manual,
@@ -451,24 +439,18 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     onSelected: (item) {
                       switch (item) {
                         case 0:
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      AddNEditExScreen(
+                                      EditExperienceScreen(
                                           title: CustomString.editExperience,
-                                          pExJobTitle: vaL
-                                              .personEx[index]
-                                              .jobTitle!,
+                                          pExJobTitle: vaL.personEx[index].jobTitle!,
                                           company: comN,
-                                          industry: vaL.personEx[index]
-                                              .industryFieldName,
-                                          pExId: vaL
-                                              .personEx[index].perExpId,
-                                          sDate: vaL.personEx[index]
-                                              .startDate!,
-                                          eDate: vaL.personEx[index]
-                                              .endDate!)));
+                                          industry: vaL.personEx[index].industryFieldName,
+                                          pExId: vaL.personEx[index].perExpId,
+                                          sDate: vaL.personEx[index].startDate!,
+                                          eDate: vaL.personEx[index].endDate!)));
                         case 1:
                           _showDeleteConfirmation(
                               context,
@@ -516,7 +498,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           .format(vaL.personQl[index].yop);
                       switch (item) {
                         case 0:
-                          Navigator.push(
+                          Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>

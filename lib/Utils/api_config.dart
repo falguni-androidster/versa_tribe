@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../Model/profile_response.dart';
+import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
 import '../Screens/person_details_screen.dart';
 import 'custom_string.dart';
@@ -66,7 +67,7 @@ class ApiConfig {
         provider.setPersonEx(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Data not found..."),
+          content: Text("Data not found...")
         ));
       }
     }catch(e){
@@ -316,7 +317,7 @@ class ApiConfig {
   static addHobbyData({context, hobbyName}) async {
     String hobby = hobbyName;
     Map<String, dynamic> requestData = {
-      "Hobby":{"name": hobby},
+      "Hobby":{"name": hobby}
     };
     String url = "$baseUrl/api/PersonHobbies/PerHobCreate";
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -523,4 +524,97 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
+
+  static searchHobby({context, hobbyString}) async {
+    final provider = Provider.of<SearchHobbyProvider>(context,listen: false);
+    const String apiUrl = "$baseUrl/api/Hobbies/AutoCompleteHobbies";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.get(Uri.parse('$apiUrl?search_str=$hobbyString'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+
+    if (response.statusCode == 200) {
+      provider.hobbyList.clear();
+      debugPrint("hobby---------------yes-->${response.body}");
+      // Data found in the API, update the display controller
+      List<dynamic> data = jsonDecode(response.body);
+      provider.setSearchedHobby(data);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+    }
+  }
+
+  static searchExCompany({context, companyString}) async {
+    final provider = Provider.of<SearchExCompanyProvider>(context,listen: false);
+    const String apiUrl = "$baseUrl/api/Experience/AutoCompleteCompanyNames";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.get(Uri.parse('$apiUrl?search_str=$companyString'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+
+    if (response.statusCode == 200) {
+      provider.cmpList.clear();
+      debugPrint("ExCompany---------------yes-->${response.body}");
+      // Data found in the API, update the display controller
+      List<dynamic> data = jsonDecode(response.body);
+      provider.setSearchedCompany(data);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+    }
+  }
+
+  static searchExIndustry({context, industryString}) async {
+    final provider = Provider.of<SearchExIndustryProvider>(context,listen: false);
+    const String apiUrl = "$baseUrl/api/Experience/AutoCompleteIndustryNames";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.get(Uri.parse('$apiUrl?search_str=$industryString'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+
+    if (response.statusCode == 200) {
+      provider.indList.clear();
+      debugPrint("ExIndustry---------------yes-->${response.body}");
+      // Data found in the API, update the display controller
+      List<dynamic> data = jsonDecode(response.body);
+      provider.setSearchedIndustry(data);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+    }
+  }
+
+  static getManageOrgData({context, tabIndex}) async {
+    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
+    provider.manageOrgDataList.clear();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    // String? personId = pref.getString('PersonId');
+    try{
+      String url = "$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("check Data------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setManageOrgData(data);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
+
 }
