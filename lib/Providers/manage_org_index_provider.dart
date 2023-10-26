@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import '../Model/manage_organization.dart';
+import '../Model/search_department.dart';
+import '../Model/search_organigation.dart';
 
 ///tab bar index provider
 class IndexProvider with ChangeNotifier{
@@ -21,5 +23,43 @@ class DisplayManageOrgProvider with ChangeNotifier{
       _manageOrgDataList.add(ManageOrgModel.fromJson(ob));
       notifyListeners();
     });
+  }
+}
+
+class SearchOrgProvider with ChangeNotifier{
+   final List<SearchOrgModel> _orgList =[];
+   List<SearchOrgModel> get orgList => _orgList;
+   bool _visible = false;
+   bool get visible => _visible;
+
+  setSearchedOrg(orgName){
+    orgName.forEach((ob){
+      _orgList.add(SearchOrgModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+}
+
+class SearchDepartmentProvider with ChangeNotifier{
+   final List<SearchDepartmentModel> _departmentList =[];
+   List<SearchDepartmentModel> get departmentList => _departmentList;
+   bool _visible = false;
+   bool get visible => _visible;
+
+  setSearchedDepartment(dpName){
+    dpName.forEach((ob){
+      _departmentList.add(SearchDepartmentModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
   }
 }

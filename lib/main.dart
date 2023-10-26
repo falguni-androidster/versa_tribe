@@ -6,6 +6,7 @@ import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
 import 'package:versa_tribe/Providers/confirm_password_provider.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Providers/profile_provider.dart';
+import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 
 import 'Providers/call_switch_provider.dart';
 import 'Providers/date_provider.dart';
@@ -41,7 +42,9 @@ void main() {
       ChangeNotifierProvider<SearchExIndustryProvider>(create: (_) => SearchExIndustryProvider()),
       ChangeNotifierProvider<IndexProvider>(create: (_) => IndexProvider()),
       ChangeNotifierProvider<DisplayManageOrgProvider>(create: (_) => DisplayManageOrgProvider()),
-      ChangeNotifierProvider<OrganizationProvider>(create: (_) => OrganizationProvider())
+      ChangeNotifierProvider<OrganizationProvider>(create: (_) => OrganizationProvider()),
+      ChangeNotifierProvider<SearchOrgProvider>(create: (_) => SearchOrgProvider()),
+      ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider())
     ],
     child: const MyApp()
   ));
@@ -64,6 +67,9 @@ class MyApp extends StatelessWidget {
         )
       ),
       home: const SplashScreen(),
+      routes: {
+        '/addExScreen': (context) => const AddExperienceScreen(),
+      },
     );
   }
 }
