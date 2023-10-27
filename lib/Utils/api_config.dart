@@ -252,7 +252,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserExperience(context);
+      Navigator.pop(context);
     } else {
       debugPrint("--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -295,7 +297,9 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         // debugPrint("if--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        ApiConfig.getUserExperience(context);
+        Navigator.pop(context);
       } else {
         debugPrint("else--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -330,7 +334,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add hobby success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserHobby(context);
+      Navigator.pop(context);
     } else {
       debugPrint("hobby adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -361,7 +367,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification added--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserQualification(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Qualification added failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -387,7 +395,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add Skills Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserSkills(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Skill adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -423,7 +433,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification edit success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserQualification(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Qualification edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -451,7 +463,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("edit Skills Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserSkills(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Skill edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -676,10 +690,12 @@ class ApiConfig {
         });
     if (response.statusCode == 200) {
       debugPrint("CreateORG---------------yes-->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+      Navigator.pop(context);
     } else {
       debugPrint("---------------No-->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data will not added..")));
     }
   }
