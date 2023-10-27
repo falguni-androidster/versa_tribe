@@ -294,7 +294,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (passwordController.text.toString() != confirmPasswordController.text.toString()) {
           showToast(context, CustomString.passwordAndConfirmPasswordNotMatch);
         }
-        // Put Loading
         Map data = {
           'Email': emailController.text.toString(),
           'Password': passwordController.text.toString(),
@@ -303,6 +302,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         const String signupUrl = '${ApiConfig.baseUrl}/api/Account/Register';
         final response = await http.post(Uri.parse(signupUrl), body: data);
+        const CircularProgressIndicator();
         if (response.statusCode == 200) {
           showToast(context, CustomString.accountSuccessCreated);
           if (!mounted) return;

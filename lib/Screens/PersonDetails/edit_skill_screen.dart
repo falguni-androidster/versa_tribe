@@ -101,8 +101,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                       itemBuilder: (context, index) {
                         debugPrint(
                             "INSTITUTE--------->${val.skillList[index].skillName}");
-                        return val.visible == true
-                            ? InkWell(
+                        return val.visible == true ? InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,

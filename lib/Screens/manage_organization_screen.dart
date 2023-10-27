@@ -170,16 +170,13 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                 children: [
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           const Text(CustomString.requestedToJoin),
-                                          Text(val.manageOrgDataList[index]
-                                              .orgName ?? "",
+                                          Text(val.manageOrgDataList[index].orgName ?? "",
                                               style: const TextStyle(
                                                   color: CustomColors
                                                       .kBlueColor)),
@@ -188,8 +185,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                       SizedBox(height: mHeight * 0.01,),
                                       Text("${CustomString
                                           .requestedDepartment} ${val
-                                          .manageOrgDataList[index].deptReq ??
-                                          ""}", style: const TextStyle(
+                                          .manageOrgDataList[index].deptReq ?? ""}", style: const TextStyle(
                                           fontSize: 10,
                                           color: CustomColors.kLightGrayColor)),
                                     ],
@@ -200,8 +196,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                   ),
                                       onPressed: () {},
                                       child: const Text(CustomString.cancel,
-                                          style: TextStyle(color: CustomColors
-                                              .kBlackColor))),
+                                          style: TextStyle(color: CustomColors.kBlackColor))),
                                 ],
                               ),
                             );
@@ -395,8 +390,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                       fillColor: CustomColors.kWhiteColor,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                          const BorderSide(color: CustomColors.kBlueColor)),
+                          borderSide: const BorderSide(color: CustomColors.kBlueColor)),
                       labelText: CustomString.departmentName,
                       labelStyle: const TextStyle(fontSize: 14),
                     ),

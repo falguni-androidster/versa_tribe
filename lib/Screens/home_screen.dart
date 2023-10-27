@@ -7,6 +7,7 @@ import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
 
 import '../Providers/bottom_tab_provider.dart';
+import '../Providers/call_switch_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import 'Home/account_screen.dart';
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final PageStorageBucket bucket = PageStorageBucket();
 
-  final List<String> _organizationList = ['ParaFox', 'Ksquarez']; // Option 2
+  final List<String> _organizationList = ['ParaFox','CRM-IT','ABIDE']; // Option 2
 
   @override
   Widget build(BuildContext context) {
@@ -64,31 +65,31 @@ class _HomeScreenState extends State<HomeScreen> {
           leadingWidth: 0,
           automaticallyImplyLeading: false,
           backgroundColor: CustomColors.kWhiteColor,
-          title: Consumer<OrganizationProvider>(builder: (context, val, child) {
-            return DropdownButtonHideUnderline(
-              child : ButtonTheme(
-                alignedDropdown: true,
-                child: DropdownButton(
-                  iconEnabledColor: CustomColors.kBlueColor,
-                  iconDisabledColor: CustomColors.kBlueColor,
-                  value: val.switchOrganization,
-                  items: _organizationList.map((organization) {
-                    return DropdownMenuItem(
-                      value: organization,
-                      child: Text(organization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20)),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    val.setSwitchOrganization(newValue);
-                  },
-                  hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20)),
-                ),
-              ),
-            );
-          }),
-          /*Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Consumer<OrganizationProvider>(builder: (context, val, child) {
+                return DropdownButtonHideUnderline(
+                  child : ButtonTheme(
+                    alignedDropdown: true,
+                    child: DropdownButton(
+                      iconEnabledColor: CustomColors.kBlueColor,
+                      iconDisabledColor: CustomColors.kBlueColor,
+                      value: val.switchOrganization,
+                      items: _organizationList.map((organization) {
+                        return DropdownMenuItem(
+                          value: organization,
+                          child: Text(organization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        val.setSwitchOrganization(newValue);
+                      },
+                      hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                );
+              }),
               const Spacer(),
               Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,
@@ -104,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: (){},
               )
             ],
-          ),*/
+          ),
         ),
         body: Consumer<ManageBottomTabProvider>(builder: (context, val, child) {
           return PageStorage(

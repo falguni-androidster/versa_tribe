@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
+import 'package:versa_tribe/Screens/Profile/update_profile_screen.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 
@@ -10,6 +11,7 @@ import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 import '../../Utils/custom_toast.dart';
 import '../manage_organization_screen.dart';
+import '../Profile/create_profile_screen.dart';
 import '../sign_in_screen.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -154,12 +156,12 @@ class _AccountScreenState extends State<AccountScreen> {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(backgroundColor: CustomColors.kWhiteColor,radius: 40, child: Image.asset(ImagePath.profilePath)),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(25.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
@@ -167,6 +169,13 @@ class _AccountScreenState extends State<AccountScreen> {
                   Text(snapshot.data?.tOwner ?? '',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 12))
                 ],
               ),
+            ),
+            const Spacer(),
+            InkWell(
+              child: const Icon(Icons.edit,color: CustomColors.kWhiteColor),
+              onTap: () {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+              },
             )
           ],
         ),

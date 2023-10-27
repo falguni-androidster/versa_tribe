@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/profile_provider.dart';
+import 'package:versa_tribe/Providers/profile_gender_provider.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
@@ -125,7 +125,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 ),
 
                 ///Company & Industry Name
-                Selector<ProfileProvider, String>(
+                Selector<ProfileGenderProvider, String>(
                     selector: (_, val) => val.selectedValue,
                     builder: (context, selectedValue, child) {
                       return TextFormField(
@@ -373,7 +373,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
   }
 
   Widget radioBTN(String comInd) {
-    return Consumer<ProfileProvider>(builder: (context, val, child) {
+    return Consumer<ProfileGenderProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
 import 'package:versa_tribe/Providers/confirm_password_provider.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
-import 'package:versa_tribe/Providers/profile_provider.dart';
+import 'package:versa_tribe/Providers/profile_gender_provider.dart';
 
 import 'Providers/call_switch_provider.dart';
 import 'Providers/date_provider.dart';
@@ -24,7 +24,8 @@ void main() {
           create: (_) => OnBoardingProvider()),
       ChangeNotifierProvider<PwdProvider>(create: (_) => PwdProvider()),
       ChangeNotifierProvider<ConfirmPwdProvider>(create: (_) => ConfirmPwdProvider()),
-      ChangeNotifierProvider<ProfileProvider>(create: (_) => ProfileProvider()),
+      ChangeNotifierProvider<ProfileGenderProvider>(create: (_) => ProfileGenderProvider()),
+      ChangeNotifierProvider<DobProvider>(create: (_) => DobProvider()),
       ChangeNotifierProvider<ManageBottomTabProvider>(create: (_) => ManageBottomTabProvider()),
       ChangeNotifierProvider<CallSwitchProvider>(create: (_) => CallSwitchProvider()),
       ChangeNotifierProvider<DateProvider>(create: (_) => DateProvider()),

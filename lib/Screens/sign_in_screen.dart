@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
-import 'package:versa_tribe/Screens/profile_screen.dart';
+import 'package:versa_tribe/Screens/Profile/create_profile_screen.dart';
 import 'package:versa_tribe/Screens/sign_up_screen.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:http/http.dart' as http;
@@ -297,7 +297,7 @@ class _SignInScreenState extends State<SignInScreen> {
           builder: (context) => const ForgotPasswordScreen()));
     } else if (screenName == 'profileScreen') {
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => const ProfileScreen()));
+          .pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
@@ -312,7 +312,6 @@ class _SignInScreenState extends State<SignInScreen> {
       } else if(connectivityResult == ConnectivityResult.mobile){
         showToast(context, CustomString.notConnectServer);
       } else {
-        // Put Loading
         Map signInData = {
           "username": emailController.text.toString(),
           "password": passwordController.text.toString(),
@@ -323,6 +322,7 @@ class _SignInScreenState extends State<SignInScreen> {
         var response = await http.post(Uri.parse(loginUrl), body: signInData);
         var jsonData = json.decode(response.body);
         loginResponseModelData = LoginResponse.fromJson(jsonData);
+        const CircularProgressIndicator();
         if (jsonData != null) {
           if (loginResponseModelData.accessToken != null) {
             final SharedPreferences pref = await SharedPreferences.getInstance();

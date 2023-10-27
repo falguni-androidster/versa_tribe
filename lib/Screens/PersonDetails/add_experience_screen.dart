@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/profile_provider.dart';
+import 'package:versa_tribe/Providers/profile_gender_provider.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
@@ -93,7 +93,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 Row(
                   children: [
                     radioBTN(CustomString.company),
-                    Selector<ProfileProvider, dynamic>(
+                    Selector<ProfileGenderProvider, dynamic>(
                         selector: (_, val) => val.selectedValue,
                         builder: (context, selectedValue, child) {
                           print("che_co--->$selectedValue");
@@ -104,7 +104,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                       : CustomColors.kLightGrayColor));
                         }),
                     radioBTN(CustomString.industry),
-                    Selector<ProfileProvider, dynamic>(
+                    Selector<ProfileGenderProvider, dynamic>(
                         selector: (_, val) => val.selectedValue,
                         builder: (context, selectedValue, child) {
                           print("che_in--->$selectedValue");
@@ -118,7 +118,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 ),
 
                 ///Company & Industry Name
-                Selector<ProfileProvider, String>(
+                Selector<ProfileGenderProvider, String>(
                     selector: (_, val) => val.selectedValue,
                     builder: (context, selectedValue, child) {
                       return TextFormField(
@@ -356,7 +356,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   }
 
   Widget radioBTN(String comInd) {
-    return Consumer<ProfileProvider>(builder: (context, val, child) {
+    return Consumer<ProfileGenderProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {

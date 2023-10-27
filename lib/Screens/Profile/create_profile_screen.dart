@@ -9,27 +9,28 @@ import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:http/http.dart' as http;
 
-import '../Providers/profile_provider.dart';
-import '../Utils/api_config.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/custom_toast.dart';
-import 'home_screen.dart';
+import '../../Providers/date_provider.dart';
+import '../../Providers/profile_gender_provider.dart';
+import '../../Utils/api_config.dart';
+import '../../Utils/custom_string.dart';
+import '../../Utils/custom_toast.dart';
+import '../home_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class CreateProfileScreen extends StatefulWidget {
+
+  const CreateProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<CreateProfileScreen> createState() => _CreateProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController fNameController = TextEditingController();
+  TextEditingController fNameController = TextEditingController();
   final TextEditingController lNameController = TextEditingController();
-  DateTime date = DateTime.now(); // Initialize with current date
-  String? selectDate;
-  String? selectGender;
+  TextEditingController genderController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
 
@@ -75,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: CustomColors.kLightColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Column(
+                child : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     const Center(
@@ -150,27 +151,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     /// Date of Birth Field
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0,right: 8.0),
-                      child: Text(
-                        CustomString.dateOfBirth,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: OutlinedButton.icon(
-                        onPressed: () => _selectDate(context),
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return CustomString.dateOfBirthRequired;
+                          } else {
+                            return null;
+                          }
+                        },
+                        controller: dobController,
+                        textAlign: TextAlign.center,
+                        //editing controller of this TextField
+                        decoration: const InputDecoration(
+                          labelText: CustomString.dateOfBirth,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14),
+                          suffixIcon: Icon(Icons.calendar_month,
+                              color: CustomColors.kBlueColor),
                         ),
-                        icon: const Icon(Icons.date_range),
-                        label: Text(
-                          selectDate =  DateFormat('yyyy-MM-dd').format(date),
-                          style: const TextStyle(
-                              fontSize: 16,color: CustomColors.kBlackColor),
-                        ),
+                        style: const TextStyle(color: CustomColors.kBlackColor),
+                        onTap: () async {
+                          _showDatePicker(context: context);
+                        },
                       ),
                     ),
 
@@ -215,12 +219,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: const TextStyle(color: CustomColors.kBlackColor),
                       ),
                     ),
+
+                    /// Submit Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
                           onPressed: () {
-                            profileClick(context);
+                            createProfileClick(context);
                           },
                           child: const Text(
                             CustomString.submit,
@@ -246,23 +252,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  _showDatePicker({context}) async {
+    final provider = Provider.of<DobProvider>(context, listen: false);
+    DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: date,
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1970),
+      //DateTime.now() - not to allow to choose before today.
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: CustomColors.kBlueColor, // <-- SEE HERE
+              onPrimary: Colors.white, // <-- SEE HERE
+              onSurface: Colors.black, // <-- SEE HERE
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                  foregroundColor: CustomColors.kBlueColor // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
-    if (picked != null && picked != date) {
-      setState(() {
-        date = picked;
-      });
-    }
+    if (pickedDate != null) {
+      debugPrint(
+          "PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
+      String formatYopDate = DateFormat('yyyy-MM-dd')
+          .format(pickedDate); // we also use "dd-MM-yyyy" format or may more..
+      debugPrint(
+          "FormattedData----->$formatYopDate"); //formatted date output using intl package =>  2021-03-16
+      provider.setDobDate(formatYopDate); //set output date to TextField value.
+      dobController.text = provider.dobInput;
+    } else {}
   }
 
   Widget radioButton(String gender) {
-    return Consumer<ProfileProvider>(builder: (context, val, child) {
+    return Consumer<ProfileGenderProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {
@@ -271,7 +301,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return CustomColors.kLightGrayColor;
         }),
         value: gender,
-        groupValue: selectGender = val.selectedValue,
+        groupValue: val.selectedValue,
         onChanged: (value) {
           val.setGenderValue(value);
         },
@@ -280,29 +310,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const HomeScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
-  Future<void> profileClick(context) async {
+  Future<void> createProfileClick(context) async {
     if (_formKey.currentState!.validate()) {
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
       } else if(connectivityResult == ConnectivityResult.mobile){
         showToast(context, CustomString.notConnectServer);
       } else {
-
         // Put Loading
+        const CircularProgressIndicator();
         SharedPreferences pref = await SharedPreferences.getInstance();
         String? token = pref.getString(CustomString.accessToken);
 
         Map data = {
           'FirstName': fNameController.text.toString(),
           'LastName': lNameController.text.toString(),
-          'Gender': selectGender,
+          'Gender': genderController.text.toString(),
           'City': cityController.text.toString(),
           'Country': countryController.text.toString(),
-          'DOB': selectDate
+          'DOB': dobController.text.toString()
         };
 
         const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Create';

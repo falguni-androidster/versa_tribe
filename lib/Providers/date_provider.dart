@@ -29,3 +29,14 @@ class YOPDateProvider with ChangeNotifier{
     notifyListeners();
   }
 }
+
+class DobProvider with ChangeNotifier{
+  String _dobInput = '';
+  String get dobInput => _dobInput;
+
+  setDobDate(date){
+    _dobInput = date;
+    notifyListeners();
+  }
+
+}

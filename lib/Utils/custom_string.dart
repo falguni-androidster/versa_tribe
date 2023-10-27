@@ -86,11 +86,13 @@ class CustomString {
   static const String female = 'Female';
   static const String other = 'other';
   static const String dateOfBirth  = 'Date Of Birth';
+  static const String dateOfBirthRequired = '* Date of Birth is required...';
   static const String cityRequired = '* City is required...';
   static const String city = 'City';
   static const String countryRequired = '* Country is required...';
   static const String country = 'Country';
   static const String profileSuccessCreated = ' Profile Created Successfully!! ';
+  static const String profileSuccessUpdated = ' Profile Updated Successfully!! ';
 
 
 /*-------------------- Alert Dialog for Application Close ------------------------*/

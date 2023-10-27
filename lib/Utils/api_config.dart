@@ -28,7 +28,6 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-
     final response = await http.get(Uri.parse(profileUrl), headers: {
       'Authorization': 'Bearer $token',
     });
