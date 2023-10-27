@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Utils/custom_toast.dart';
 
 import '../Model/login_response.dart';
+import '../Providers/login_data_provider.dart';
 import '../Providers/password_provider.dart';
 import '../Utils/api_config.dart';
 import '../Utils/custom_string.dart';
@@ -32,7 +33,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  late LoginResponse loginResponseModelData;
+  late LoginResponseModel loginResponseModelData;
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
@@ -320,10 +321,15 @@ class _SignInScreenState extends State<SignInScreen> {
 
         const String loginUrl = '${ApiConfig.baseUrl}/token';
         var response = await http.post(Uri.parse(loginUrl), body: signInData);
-        var jsonData = json.decode(response.body);
-        loginResponseModelData = LoginResponse.fromJson(jsonData);
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        loginResponseModelData = LoginResponseModel.fromJson(jsonData);
+        debugPrint("Login---Data--------------->${jsonData.runtimeType}");
         const CircularProgressIndicator();
         if (jsonData != null) {
+          final provider =Provider.of<LoginDataProvider>(context,listen: false);
+          provider.setUserLoginData(jsonData);
+          /*print("------->${provider.loginData[0].orgAdmin}");
+          print("------->${provider.loginData[0].orgPerson}");*/
           if (loginResponseModelData.accessToken != null) {
             final SharedPreferences pref = await SharedPreferences.getInstance();
             pref.setString(CustomString.accessToken, loginResponseModelData.accessToken.toString());

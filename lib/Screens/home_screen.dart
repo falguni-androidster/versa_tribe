@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageStorageBucket bucket = PageStorageBucket();
 
   final List<String> _organizationList = ['ParaFox','CRM-IT','ABIDE']; // Option 2
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -83,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       }).toList(),
                       onChanged: (newValue) {
+                        print("-------)> $newValue");
                         val.setSwitchOrganization(newValue);
                       },
                       hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
@@ -91,14 +91,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }),
               const Spacer(),
-              Consumer<CallSwitchProvider>(builder: (context, val, child) {
+             /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,
                   onChanged: (value) {
                     value = val.setVisible();
                   },
                 );
               }),
-              const SizedBox(width: 10),
+              const SizedBox(width: 10),*/
               InkWell(
                 child: const Icon(Icons.account_balance,
                     color: CustomColors.kBlueColor),
