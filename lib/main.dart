@@ -6,7 +6,6 @@ import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
 import 'package:versa_tribe/Providers/confirm_password_provider.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Providers/profile_gender_provider.dart';
-import 'package:versa_tribe/Providers/profile_provider.dart';
 import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 
 import 'Providers/call_switch_provider.dart';

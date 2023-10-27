@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
