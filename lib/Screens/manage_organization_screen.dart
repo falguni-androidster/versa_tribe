@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Utils/custom_colors.dart';
@@ -459,7 +458,9 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                           return CustomString.departmentNameRequired;
                         } else {
                           return null;
-                        }}else{}
+                        }}else{
+                          return null;
+                        }
                       },
                       decoration: InputDecoration(
                         fillColor: CustomColors.kWhiteColor,

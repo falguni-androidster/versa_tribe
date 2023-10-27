@@ -300,6 +300,4 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
       yopController.text = provider.yopDateInput;
     } else {}
   }
-  
-
 }

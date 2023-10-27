@@ -10,9 +10,9 @@ class SearchIndustryModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Exp_Id'] = this.expId;
-    data['Industry_Field_Name'] = this.industryFieldName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Exp_Id'] = expId;
+    data['Industry_Field_Name'] = industryFieldName;
     return data;
   }
 }

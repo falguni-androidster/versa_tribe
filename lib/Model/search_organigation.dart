@@ -10,9 +10,9 @@ class SearchOrgModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Org_Name'] = this.orgName;
-    data['Org_Id'] = this.orgId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Org_Name'] = orgName;
+    data['Org_Id'] = orgId;
     return data;
   }
 }

@@ -21,8 +21,7 @@ void main() {
   HttpOverrides.global = MyHttpOverrides();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<OnBoardingProvider>(
-          create: (_) => OnBoardingProvider()),
+      ChangeNotifierProvider<OnBoardingProvider>(create: (_) => OnBoardingProvider()),
       ChangeNotifierProvider<PwdProvider>(create: (_) => PwdProvider()),
       ChangeNotifierProvider<ConfirmPwdProvider>(create: (_) => ConfirmPwdProvider()),
       ChangeNotifierProvider<ProfileGenderProvider>(create: (_) => ProfileGenderProvider()),

@@ -15,11 +15,11 @@ class SearchDepartmentModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Dept_Id'] = this.deptId;
-    data['Dept_Name'] = this.deptName;
-    data['Parent_dept_Id'] = this.parentDeptId;
-    data['Parent_dept_Name'] = this.parentDeptName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Dept_Id'] = deptId;
+    data['Dept_Name'] = deptName;
+    data['Parent_dept_Id'] = parentDeptId;
+    data['Parent_dept_Name'] = parentDeptName;
     return data;
   }
 }

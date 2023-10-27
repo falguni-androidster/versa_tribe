@@ -10,9 +10,9 @@ class SearchHobbyModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Hobby_Id'] = this.hobbyId;
-    data['Name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Hobby_Id'] = hobbyId;
+    data['Name'] = name;
     return data;
   }
 }
