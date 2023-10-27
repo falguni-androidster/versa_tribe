@@ -81,10 +81,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       icon:
                           const Icon(Icons.add, color: CustomColors.kBlueColor),
                       onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AddExperienceScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const AddExperienceScreen()));
                       },
                     ),
                   ]),
@@ -136,7 +133,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         icon: const Icon(Icons.add,
                             color: CustomColors.kBlueColor),
                         onPressed: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
@@ -195,7 +192,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         color: CustomColors.kBlueColor,
                       ),
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const AddSkillScreen()));
@@ -246,7 +243,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                     val.personSkill[index].experience!;
                                     switch (item) {
                                       case 0:
-                                        Navigator.pushReplacement(
+                                        Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -305,7 +302,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     IconButton(
                       icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const AddHobbyScreen()));
@@ -439,7 +436,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     onSelected: (item) {
                       switch (item) {
                         case 0:
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
@@ -498,7 +495,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           .format(vaL.personQl[index].yop);
                       switch (item) {
                         case 0:
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>

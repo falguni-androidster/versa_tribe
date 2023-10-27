@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
+import '../Screens/manage_organization_screen.dart';
 import '../Screens/person_details_screen.dart';
 import 'custom_string.dart';
 
@@ -249,7 +251,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserExperience(context);
+      Navigator.pop(context);
     } else {
       debugPrint("--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -292,7 +296,9 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         // debugPrint("if--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        ApiConfig.getUserExperience(context);
+        Navigator.pop(context);
       } else {
         debugPrint("else--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -327,7 +333,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add hobby success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserHobby(context);
+      Navigator.pop(context);
     } else {
       debugPrint("hobby adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -358,7 +366,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification added--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserQualification(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Qualification added failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -384,7 +394,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add Skills Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserSkills(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Skill adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -420,7 +432,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification edit success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserQualification(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Qualification edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -448,7 +462,9 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("edit Skills Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserSkills(context);
+      Navigator.pop(context);
     } else {
       debugPrint("Skill edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -567,7 +583,6 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
-
   static searchExIndustry({context, industryString}) async {
     final provider = Provider.of<SearchExIndustryProvider>(context,listen: false);
     const String apiUrl = "$baseUrl/api/Experience/AutoCompleteIndustryNames";
@@ -590,6 +605,7 @@ class ApiConfig {
     }
   }
 
+  /*-----------  Manage ORG Screen  ----------------*/
   static getManageOrgData({context, tabIndex}) async {
     final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
     provider.manageOrgDataList.clear();
@@ -615,5 +631,88 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
+  static searchOrg({context, orgString}) async {
+    final provider = Provider.of<SearchOrgProvider>(context,listen: false);
+    String apiUrl = "$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.get(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
 
+    if (response.statusCode == 200) {
+      provider.orgList.clear();
+      debugPrint("ORG---------------yes-->${response.body}");
+      List<dynamic> data = jsonDecode(response.body);
+      provider.setSearchedOrg(data);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+    }
+  }
+  static searchDepartment({context, orgId}) async {
+    final provider = Provider.of<SearchDepartmentProvider>(context,listen: false);
+    String apiUrl = "$baseUrl/api/Departments/ByOrgId?org_Id=$orgId";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.get(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+
+    if (response.statusCode == 200) {
+      provider.departmentList.clear();
+      debugPrint("Department---------------yes-->${response.body}");
+      List<dynamic> data = jsonDecode(response.body);
+      provider.setSearchedDepartment(data);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+    }
+  }
+  static joinOrgRequest({context,orgID, dpID, dpName}) async {
+    debugPrint("organizationId---->$orgID");
+    debugPrint("departmentId---->$dpID");
+    debugPrint("departmentName---->$dpName");
+    Map<String, dynamic> parameter = {
+      "Org_Id":orgID,
+      "Dept_Id":dpID,
+      "Dept_Req":dpName
+    };
+    const String apiUrl = "$baseUrl/api/OrgPersons/Create";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.post(Uri.parse(apiUrl),body: jsonEncode(parameter),headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      debugPrint("CreateORG---------------yes-->${response.body}");
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+      Navigator.pop(context);
+    } else {
+      debugPrint("---------------No-->${response.body}");
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data will not added..")));
+    }
+  }
+  static deleteOrgRequest({context, orgID, personID}) async {
+    String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      debugPrint("Delete ORG Request Success-------------yes-->${response.body}");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
+      debugPrint("Data not Delete Try again----------No-->${response.body}");
+    }
+  }
 }
