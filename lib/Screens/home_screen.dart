@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
 
 import '../Providers/bottom_tab_provider.dart';
-import '../Providers/call_switch_provider.dart';
+import '../Providers/login_data_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import 'Home/account_screen.dart';
+import 'OrgAdmin/admin_manage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,12 +22,45 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final PageStorageBucket bucket = PageStorageBucket();
 
+  Map<String, dynamic> admin= {"OrgAdmin": [{"Org_Name":"PARAFOX","Org_Id":16}]};
+  Map<String, dynamic> person= {"OrgPerson": [{"Org_Name":"ABCDE","Org_Id":9},
+    {"Org_Name":"CRM-IT","Org_Id":13},
+  {"Org_Name":"PARAFOX","Org_Id":16},
+  {"Org_Name":"IBM","Org_Id":1019}]};
+
+  List<String> listAdmin = [];
+  List<String> listPerson = [];
   final List<String> _organizationList = ['ParaFox','CRM-IT','ABIDE']; // Option 2
+  late List<String> newList =[];
+  @override
+  void initState() {
+    person["OrgPerson"].forEach((e){
+      //print("-=-=-=-->>>>${e["Org_Name"]}");
+      listPerson.add(e["Org_Name"]);
+    });
+    admin["OrgAdmin"].forEach((e){
+      listAdmin.add(e["Org_Name"]);
+    });
+    newList = [...listAdmin, ...listPerson].toSet().toList();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final p = Provider.of<LoginDataProvider>(context,listen: false);
+    //  print("-=-=-=-->>>>${person["OrgPerson"].length}");
+    //  print("-=-=-=-->>>>${person["OrgPerson"][0]["Org_Name"]}");
+    //  for(int i=0; i>=person["OrgPerson"].length; i++){
+    //   print("-=-=-=-->>>>${person["OrgPerson"][i]["Org_Name"]}");
+    // }
+
+     newList.forEach((element) async {
+       print("---->${element}");
+       p.setdata(element);
+     });
+
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -71,21 +106,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 return DropdownButtonHideUnderline(
                   child : ButtonTheme(
                     alignedDropdown: true,
-                    child: DropdownButton(
-                      iconEnabledColor: CustomColors.kBlueColor,
-                      iconDisabledColor: CustomColors.kBlueColor,
-                      value: val.switchOrganization,
-                      items: _organizationList.map((organization) {
-                        return DropdownMenuItem(
-                          value: organization,
-                          child: Text(organization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
+                    child: Consumer<LoginDataProvider>(
+                      builder: (context,v,chi) {
+                        return DropdownButton(
+                          iconEnabledColor: CustomColors.kBlueColor,
+                          iconDisabledColor: CustomColors.kBlueColor,
+                          value: val.switchOrganization,
+                          items: _organizationList.map((organization) {
+                          //items: v.data.map((organization) {
+                            return DropdownMenuItem(
+                              value: organization,
+                              child: Text(organization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            debugPrint("-------)> $newValue");
+                            val.setSwitchOrganization(newValue);
+                          },
+                          hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
                         );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        print("-------)> $newValue");
-                        val.setSwitchOrganization(newValue);
-                      },
-                      hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
+                      }
                     ),
                   ),
                 );
@@ -99,10 +139,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }),
               const SizedBox(width: 10),*/
-              InkWell(
-                child: const Icon(Icons.account_balance,
-                    color: CustomColors.kBlueColor),
-                onTap: (){},
+              Consumer<OrganizationProvider>(
+                builder: (context,val,child) {
+                  return InkWell(
+                    child: const Icon(Icons.account_balance,
+                        color: CustomColors.kBlueColor),
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ManageAdminScreen(title: val.switchOrganization)));
+                    },
+                  );
+                }
               )
             ],
           ),

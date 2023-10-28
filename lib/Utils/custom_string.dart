@@ -210,5 +210,11 @@ class CustomString {
   static const String rejected = 'Rejected';
   static const String removed = 'Removed';
 
+/*--------------------------  Manage Organization -----------------------*/
+  static const String manageDepartment = "Manage Department";
+  static const String manageRoles = "Manage Roles";
+  static const String manageOrgMembers = "Manage Org.Members";
+  static const String contactSuperAdmin = "Contact Super Admin";
+
 
 }

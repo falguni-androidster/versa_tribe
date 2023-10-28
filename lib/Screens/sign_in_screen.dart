@@ -306,7 +306,6 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signInClick(context) async {
-
     if (_formKey.currentState!.validate()) {
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
@@ -323,13 +322,11 @@ class _SignInScreenState extends State<SignInScreen> {
         var response = await http.post(Uri.parse(loginUrl), body: signInData);
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-        debugPrint("Login---Data--------------->${jsonData.runtimeType}");
+        //debugPrint("Login---Data--------------->${jsonData}");
         const CircularProgressIndicator();
         if (jsonData != null) {
           final provider =Provider.of<LoginDataProvider>(context,listen: false);
           provider.setUserLoginData(jsonData);
-          /*print("------->${provider.loginData[0].orgAdmin}");
-          print("------->${provider.loginData[0].orgPerson}");*/
           if (loginResponseModelData.accessToken != null) {
             final SharedPreferences pref = await SharedPreferences.getInstance();
             pref.setString(CustomString.accessToken, loginResponseModelData.accessToken.toString());
