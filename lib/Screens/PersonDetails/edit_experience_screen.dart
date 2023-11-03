@@ -386,7 +386,8 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
   }
 
   Widget radioBTN(String comInd) {
-    return Consumer<ProfileGenderProvider>(builder: (context, val, child) {
+    print("Check radioBtn----$comInd");
+    return Consumer<CompnayIndustryProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {

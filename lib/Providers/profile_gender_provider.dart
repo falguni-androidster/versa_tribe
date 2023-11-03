@@ -9,3 +9,15 @@ class ProfileGenderProvider with ChangeNotifier{
     notifyListeners();
   }
 }
+
+
+
+class CompnayIndustryProvider with ChangeNotifier{
+  String _selectedValue = 'Company';
+  String get selectedValue => _selectedValue;
+
+  setGenderValue(gender){
+    _selectedValue = gender;
+    notifyListeners();
+  }
+}

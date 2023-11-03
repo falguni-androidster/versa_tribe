@@ -47,7 +47,8 @@ void main() {
       ChangeNotifierProvider<OrganizationProvider>(create: (_) => OrganizationProvider()),
       ChangeNotifierProvider<SearchOrgProvider>(create: (_) => SearchOrgProvider()),
       ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider()),
-      ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider())
+      ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
+      ChangeNotifierProvider<CompnayIndustryProvider>(create: (_) => CompnayIndustryProvider())
     ],
     child: const MyApp()
   ));
