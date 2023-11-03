@@ -1,9 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/Model/department.dart';
+import 'package:versa_tribe/Utils/image_path.dart';
 
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
@@ -231,11 +232,19 @@ class ApiConfig {
     int result = monthsBetweenDates(startDate, endDate);
     debugPrint('Number of months between the two dates:--->> $result');
 
+    // Map<String, dynamic> requestData = {
+    //   "Experience": {
+    //     "Company_Name": comName,
+    //     "Industry_Field_Name": indName
+    //   },
+    //   "Exp_months": result,
+    //   "Job_Title": jobTitle,
+    //   "Start_date": sDate,
+    //   "End_Date": eDate
+    // };
     Map<String, dynamic> requestData = {
-      "Experience": {
-        "Company_Name": comName,
-        "Industry_Field_Name": indName
-      },
+      "Company_Name": comName,
+      "Industry_Field_Name": indName,
       "Exp_months": result,
       "Job_Title": jobTitle,
       "Start_date": sDate,
@@ -274,11 +283,9 @@ class ApiConfig {
     debugPrint('end date-----> $eDate');
 
     Map<String, dynamic> requestData = {
-      "Experience": {
-        "Company_Name": comName,
-        "Industry_Field_Name": indName
-      },
       "PerExp_Id": peronExperienceId,
+      "Company_Name": comName,
+      "Industry_Field_Name": indName,
       "Exp_months": result,
       "Job_Title": jobTitle,
       "Start_date": sDate,
@@ -346,17 +353,11 @@ class ApiConfig {
     Map<String, dynamic> requestData = {
       "YOP": yop,
       "Grade": grade,
-      "Qualification": {
-        "Course": {
-          "Cou_Name": courseName
-        },
-        "Institute": {
-          "Inst_Name": instituteName,
-        },
-      }
+      "Cou_Name": courseName,
+      "Inst_Name": instituteName,
     };
 
-    String url = "$baseUrl/api/PersonQualifications";
+    String url = "$baseUrl/api/PersonQualifications/Create";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
@@ -379,9 +380,7 @@ class ApiConfig {
     Map<String, dynamic> requestData =
     {
       "Experience": month,
-      "Skill": {
-        "Skill_Name":skill,
-      }
+      "Skill_Name":skill
     };
 
     String url = "$baseUrl/api/PersonSkills/Create";
@@ -413,14 +412,8 @@ class ApiConfig {
       "PQ_Id":personQualificationID,
       "YOP": yop,
       "Grade": grade,
-      "Qualification": {
-        "Course": {
-          "Cou_Name": courseName
-        },
-        "Institute": {
-          "Inst_Name": instituteName,
-        },
-      }
+      "Cou_Name": courseName,
+      "Inst_Name": instituteName,
     };
     String url = "$baseUrl/api/PersonQualifications";
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -447,9 +440,7 @@ class ApiConfig {
     {
       "PerSk_Id": personSkillId,
       "Experience": months,
-      "Skill": {
         "Skill_Name":skill,
-      }
     };
 
     String url = "$baseUrl/api/PersonSkills/Update";
@@ -712,6 +703,85 @@ class ApiConfig {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
       debugPrint("Data not Delete Try again----------No-->${response.body}");
+    }
+  }
+
+
+  static Future<List<DepartmentModel>> getDepartment({context, orgId}) async {
+    List<DepartmentModel>dpM =[];
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Department***------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        data.forEach((singleObject){
+           dpM.add(DepartmentModel.fromJson(singleObject));
+          print("dp name---->${dpM[0].parentDeptName}--->dpId-->${dpM[0].parentDeptId}");
+        });
+        print("--length--->${dpM.length}");
+        //return dpM;
+      } else {
+        Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+      Image.asset(ImagePath.splashPath,fit: BoxFit.cover,);
+    }
+    return dpM;
+  }
+  static searchPDepartment({context, oderId}) async {
+    final provider = Provider.of<SearchParentDPProvider>(context,listen: false);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/OrgDepts/GetDeptsByOrg?Org_Id=$oderId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        provider.dpList.clear();
+        debugPrint("Department search ++++++++++->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setSearchedDP(data);
+        return data;
+      } else {
+        Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
+  static addNewDepartment({context, departmentName}) async {
+    Map<String, dynamic> requestData = {
+      "Org_Id": 16,
+      "Dept_Name": departmentName,
+      "Parent_dept_Id": 1089
+    };
+    String url = "$baseUrl/api/Departments/Create";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Add department success--------->${response.body}");
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //ApiConfig.getUserHobby(context);
+      Navigator.pop(context);
+    } else {
+      debugPrint("department adding failed--------->${response.body}");
+      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("department not add try again..."),
+      ));
     }
   }
 }

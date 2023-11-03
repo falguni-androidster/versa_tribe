@@ -1,12 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Model/OrgNaneId.dart';
+import 'package:versa_tribe/Model/login_response.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
-
 import '../Providers/bottom_tab_provider.dart';
 import '../Providers/login_data_provider.dart';
 import '../Utils/custom_colors.dart';
@@ -24,43 +25,52 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageStorageBucket bucket = PageStorageBucket();
 
-  Map<String, dynamic> admin= {"OrgAdmin": [{"Org_Name":"PARAFOX","Org_Id":16}]};
-  Map<String, dynamic> person= {"OrgPerson": [{"Org_Name":"ABCDE","Org_Id":9},
-    {"Org_Name":"CRM-IT","Org_Id":13},
-  {"Org_Name":"PARAFOX","Org_Id":16},
-  {"Org_Name":"IBM","Org_Id":1019}]};
+  final List<String> orgAd = [];
+  final List<String> margList = [];
+  List<String> finalList = [];
+  dynamic pro;
+  late LoginResponseModel loginData;
+  late OrgNameId oPData;
+  late OrgNameId oAData;
+  late String selectedOrg;
 
-  List<String> listAdmin = [];
-  List<String> listPerson = [];
-  final List<String> _organizationList = ['ParaFox','CRM-IT','ABIDE']; // Option 2
-  late List<String> newList =[];
   @override
   void initState() {
-    person["OrgPerson"].forEach((e){
-      //print("-=-=-=-->>>>${e["Org_Name"]}");
-      listPerson.add(e["Org_Name"]);
-    });
-    admin["OrgAdmin"].forEach((e){
-      listAdmin.add(e["Org_Name"]);
-    });
-    newList = [...listAdmin, ...listPerson].toSet().toList();
     // TODO: implement initState
+    pro = Provider.of<LoginDataProvider>(context, listen: false);
+    loginData = pro.loginData;
+    List<dynamic> oP = jsonDecode(loginData.orgPerson.toString());
+    List<dynamic> oA = jsonDecode(loginData.orgAdmin.toString());
+    oP.forEach((element) {
+      oPData = OrgNameId.fromJson(element);
+      print("orgPerson name---)>${oPData.orgName}");
+      margList.add(oPData.orgName.toString());///Add orgPersonName List in margList
+    });
+    oA.forEach((element) {
+      oAData = OrgNameId.fromJson(element);
+      print("\norgAdmin name---)>${oAData.orgName}");
+      margList.add(oAData.orgName.toString());
+      orgAd.add(oAData.orgName.toString());///Add orgAdminName List in margList
+
+      var seen = Set<String>();
+      finalList = margList.where((name) => seen.add(name)).toList();
+
+      ///Remove duplicate data and store in final list
+    });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    final p = Provider.of<LoginDataProvider>(context,listen: false);
-    //  print("-=-=-=-->>>>${person["OrgPerson"].length}");
-    //  print("-=-=-=-->>>>${person["OrgPerson"][0]["Org_Name"]}");
-    //  for(int i=0; i>=person["OrgPerson"].length; i++){
-    //   print("-=-=-=-->>>>${person["OrgPerson"][i]["Org_Name"]}");
-    // }
-
-     newList.forEach((element) async {
-       print("---->${element}");
-       p.setdata(element);
-     });
-
+    /*   print("CHECK------->${loginData.orgPerson.runtimeType}");
+    List<dynamic> oP=jsonDecode(loginData.orgPerson.toString());
+    oP.forEach((element) {
+      data = OrgNameId.fromJson(element);
+      print("single name---)>${data.orgName}");
+    });
+    print("type---)>${oP[1].runtimeType}");
+    print("org person list---)>$oP");
+    print("single name---)>${oP[1]["Org_Name"]}");*/
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -74,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   /// and turns the action's text to bold text.
                   isDefaultAction: true,
                   onPressed: () {
-                    Navigator.pop(context,false);
+                    Navigator.pop(context, false);
                   },
                   child: const Text(CustomString.dialogNo),
                 ),
@@ -84,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   /// the action's text color to red.
                   isDestructiveAction: true,
                   onPressed: () {
-                    Navigator.pop(context,true);
+                    Navigator.pop(context, true);
                   },
                   child: const Text(CustomString.dialogYes),
                 ),
@@ -96,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          leadingWidth: 0,
           automaticallyImplyLeading: false,
           backgroundColor: CustomColors.kWhiteColor,
           title: Row(
@@ -104,34 +113,42 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return DropdownButtonHideUnderline(
-                  child : ButtonTheme(
-                    alignedDropdown: true,
-                    child: Consumer<LoginDataProvider>(
-                      builder: (context,v,chi) {
-                        return DropdownButton(
-                          iconEnabledColor: CustomColors.kBlueColor,
-                          iconDisabledColor: CustomColors.kBlueColor,
-                          value: val.switchOrganization,
-                          items: _organizationList.map((organization) {
-                          //items: v.data.map((organization) {
-                            return DropdownMenuItem(
-                              value: organization,
-                              child: Text(organization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            debugPrint("-------)> $newValue");
-                            val.setSwitchOrganization(newValue);
-                          },
-                          hint: Text(val.switchOrganization,style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 20,fontWeight: FontWeight.bold)),
-                        );
+                  child: DropdownButton(
+                    alignment: Alignment.centerLeft,
+                    iconEnabledColor: CustomColors.kBlueColor,
+                    iconDisabledColor: CustomColors.kBlackColor,
+                    value: val.switchOrganization ?? finalList[0],
+                    items: finalList.map((organization) {
+                      selectedOrg = finalList[0];
+                      return DropdownMenuItem(
+                        value: organization,
+                        child: Text(organization,
+                            style: const TextStyle(
+                                color: CustomColors.kBlueColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      selectedOrg = newValue!;
+                      debugPrint("selected-------)> $newValue");
+                      val.setSwitchOrganization(newValue);
+                      if (orgAd.contains(newValue)) {
+                        val.setVisible(true);
+                      } else {
+                        val.setVisible(false);
                       }
-                    ),
+                    },
+                    hint: Text(val.switchOrganization ?? finalList[0],
+                        style: const TextStyle(
+                            color: CustomColors.kBlueColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
                   ),
                 );
               }),
               const Spacer(),
-             /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
+              /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,
                   onChanged: (value) {
                     value = val.setVisible();
@@ -139,17 +156,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }),
               const SizedBox(width: 10),*/
-              Consumer<OrganizationProvider>(
-                builder: (context,val,child) {
-                  return InkWell(
-                    child: const Icon(Icons.account_balance,
-                        color: CustomColors.kBlueColor),
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ManageAdminScreen(title: val.switchOrganization)));
+              Consumer<OrganizationProvider>(builder: (context, val, child) {
+                return val.visible==true?IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ManageAdminScreen(
+                                  title:
+                                      val.switchOrganization ?? finalList[0])));
                     },
-                  );
-                }
-              )
+                    icon: const Icon(Icons.account_balance),
+                    color: CustomColors.kBlueColor):Container();
+              })
             ],
           ),
         ),
@@ -160,48 +179,48 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }),
         bottomNavigationBar: Container(
-          height: 60,
+          height: MediaQuery.of(context).size.height * 0.08,
           decoration: const BoxDecoration(
             color: CustomColors.kLightColor,
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          margin: const EdgeInsets.all(20),
+          // margin: const EdgeInsets.all(20),
           child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                //Tab bar icons
-                materialButton(
-                    screen: const DashboardScreen(),
-                    context: context,
-                    tab: 0,
-                    tabTitle: CustomString.dashboard,
-                    icon: Icons.dashboard),
-                materialButton(
-                    screen: const ProjectScreen(),
-                    context: context,
-                    tab: 1,
-                    tabTitle: CustomString.project,
-                    icon: Icons.text_snippet_sharp),
-                materialButton(
-                    screen: const TrainingScreen(),
-                    context: context,
-                    tab: 2,
-                    tabTitle: CustomString.training,
-                    icon: Icons.notes_sharp),
-                materialButton(
-                    screen: const ProjectScreen(),
-                    context: context,
-                    tab: 3,
-                    tabTitle: CustomString.message,
-                    icon: Icons.message_outlined),
-                materialButton(
-                    screen: const AccountScreen(),
-                    context: context,
-                    tab: 4,
-                    tabTitle: CustomString.account,
-                    icon: Icons.person),
-              ],
-            ),
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              //Tab bar icons
+              materialButton(
+                  screen: const DashboardScreen(),
+                  context: context,
+                  tab: 0,
+                  tabTitle: CustomString.dashboard,
+                  icon: Icons.dashboard),
+              materialButton(
+                  screen: const ProjectScreen(),
+                  context: context,
+                  tab: 1,
+                  tabTitle: CustomString.project,
+                  icon: Icons.text_snippet_sharp),
+              materialButton(
+                  screen: const TrainingScreen(),
+                  context: context,
+                  tab: 2,
+                  tabTitle: CustomString.training,
+                  icon: Icons.notes_sharp),
+              materialButton(
+                  screen: const ProjectScreen(),
+                  context: context,
+                  tab: 3,
+                  tabTitle: CustomString.message,
+                  icon: Icons.message_outlined),
+              materialButton(
+                  screen: const AccountScreen(),
+                  context: context,
+                  tab: 4,
+                  tabTitle: CustomString.account,
+                  icon: Icons.person),
+            ],
+          ),
         ),
       ),
     );
@@ -222,14 +241,18 @@ Widget materialButton({screen, tab, tabTitle, icon, context}) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(icon,
+              Icon(
+                icon,
                 color: val.currentTab == tab
                     ? CustomColors.kBlueColor
                     : CustomColors.kLightGrayColor,
               ),
-              Text(tabTitle,style: TextStyle(color: val.currentTab == tab
-              ? CustomColors.kBlueColor
-                  : CustomColors.kLightGrayColor,fontSize: 10))
+              Text(tabTitle,
+                  style: TextStyle(
+                      color: val.currentTab == tab
+                          ? CustomColors.kBlueColor
+                          : CustomColors.kLightGrayColor,
+                      fontSize: 10))
             ],
           );
         }),

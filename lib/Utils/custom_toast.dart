@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
-
 import 'image_path.dart';
 
 void showToast(BuildContext context,String message) {

@@ -6,6 +6,7 @@ import '../Model/person_qualification.dart';
 import '../Model/person_skill.dart';
 import '../Model/search_company.dart';
 import '../Model/search_course.dart';
+import '../Model/search_dp.dart';
 import '../Model/search_hobby.dart';
 import '../Model/search_industry.dart';
 import '../Model/search_institute.dart';
@@ -191,3 +192,23 @@ class SearchExIndustryProvider with ChangeNotifier{
   }
 }
 
+
+///Search department data
+class SearchParentDPProvider with ChangeNotifier{
+  final List<SearchDpModel> _dpList =[];
+  List<SearchDpModel> get dpList => _dpList;
+  bool _visible = false;
+  bool get visible => _visible;
+
+  setSearchedDP(dpName){
+    dpName.forEach((ob){
+      _dpList.add(SearchDpModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+}

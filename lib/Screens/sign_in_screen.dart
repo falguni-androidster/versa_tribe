@@ -29,12 +29,8 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  late LoginResponseModel loginResponseModelData;
-
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
   @override
@@ -49,7 +45,6 @@ class _SignInScreenState extends State<SignInScreen> {
       });
     });
   }
-
   Future<void> _checkConnectivity() async {
     var connectResult = await Connectivity().checkConnectivity();
     setState(() {
@@ -168,7 +163,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       alignment: Alignment.centerRight,
                       child: InkWell(
                         onTap: () {
-                          _navigateToNextScreen(context, 'forgotScreen');
+                          _navigateToNextScreen(context: context, screenName: 'forgotScreen');
                           },
                         child: const Text(
                           CustomString.forgotPassword,
@@ -188,7 +183,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          signInClick(context);
+                          if (_formKey.currentState!.validate()) {
+                                signInClick(context);
+                                }else
+                                {return;}
                           },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: CustomColors.kBlackColor,
@@ -260,7 +258,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   /// SignIn Text
                   InkWell(
                     onTap: () {
-                      _navigateToNextScreen(context, 'signupScreen');
+                      _navigateToNextScreen(context: context, screenName: 'signupScreen');
                       },
                     highlightColor: CustomColors.kWhiteColor,
                     child: const Row(
@@ -289,7 +287,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // Navigate to Next Screen
-  void _navigateToNextScreen(BuildContext context, String screenName) {
+  void _navigateToNextScreen({context, screenName, loginData}) {
     if (screenName == 'signupScreen') {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => const SignUpScreen()));
@@ -300,34 +298,42 @@ class _SignInScreenState extends State<SignInScreen> {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
     }
   }
 
   Future<void> signInClick(context) async {
-    if (_formKey.currentState!.validate()) {
+    final provider = Provider.of<LoginDataProvider>(context,listen: false);
+    LoginResponseModel loginResponseModelData;
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
-      } else if(connectivityResult == ConnectivityResult.mobile){
+      }
+      else if(connectivityResult == ConnectivityResult.mobile){
         showToast(context, CustomString.notConnectServer);
-      } else {
-        Map signInData = {
-          "username": emailController.text.toString(),
-          "password": passwordController.text.toString(),
-          "grant_type": "password"
-        };
-
-        const String loginUrl = '${ApiConfig.baseUrl}/token';
-        var response = await http.post(Uri.parse(loginUrl), body: signInData);
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
-        loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-        //debugPrint("Login---Data--------------->${jsonData}");
-        const CircularProgressIndicator();
-        if (jsonData != null) {
-          final provider =Provider.of<LoginDataProvider>(context,listen: false);
-          provider.setUserLoginData(jsonData);
+      }
+      else {
+          Map signInParameter = {
+            "username": emailController.text.toString(),
+            "password": passwordController.text.toString(),
+            "grant_type": "password"
+          };
+          const String loginUrl = '${ApiConfig.baseUrl}/token';
+          var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
+          Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
+          loginResponseModelData = LoginResponseModel.fromJson(jsonData);
+          provider.setUserLoginData(loginResponseModelData);
+         if(jsonData!=null){
           if (loginResponseModelData.accessToken != null) {
+            // print("CHECK------->${loginResponseModelData.roles.runtimeType}");
+            // List<dynamic> rols=jsonDecode(loginResponseModelData.roles.toString());
+            // print("---)>${rols[1]}");
+
+         /*   print("CHECK------->${loginResponseModelData.orgPerson.runtimeType}");
+            List<dynamic> oP=jsonDecode(loginResponseModelData.orgPerson.toString());
+            //var oP=loginResponseModelData.orgPerson.toString();
+            print("type---)>${oP[1].runtimeType}");
+            print("org person list---)>$oP");
+            print("single name---)>${oP[1]["Org_Name"]}");*/
             final SharedPreferences pref = await SharedPreferences.getInstance();
             pref.setString(CustomString.accessToken, loginResponseModelData.accessToken.toString());
             showToast(context, CustomString.accountLoginSuccess);
@@ -335,10 +341,10 @@ class _SignInScreenState extends State<SignInScreen> {
             pref.setBool(CustomString.isLoggedIn, true);
             if (loginResponseModelData.profileExist != "True") {
               if (!mounted) return;
-              _navigateToNextScreen(context, 'profileScreen');
+              _navigateToNextScreen(context: context, screenName: 'profileScreen');
             } else {
-              if (!mounted) return;
-              _navigateToNextScreen(context, "mainScreen");
+              if(!mounted) return;
+              _navigateToNextScreen(context: context, screenName: "mainScreen", loginData: loginResponseModelData);
             }
           } else {
             showToast(context, CustomString.checkYourEmail);
@@ -347,6 +353,5 @@ class _SignInScreenState extends State<SignInScreen> {
           showToast(context, CustomString.loginFailed);
         }
       }
-    }
   }
 }

@@ -443,8 +443,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                       EditExperienceScreen(
                                           title: CustomString.editExperience,
                                           pExJobTitle: vaL.personEx[index].jobTitle!,
-                                          company: comN,
-                                          industry: vaL.personEx[index].industryFieldName,
+                                          company: comN??"",
+                                          industry: vaL.personEx[index].industryFieldName??"",
                                           pExId: vaL.personEx[index].perExpId,
                                           sDate: vaL.personEx[index].startDate!,
                                           eDate: vaL.personEx[index].endDate!)));

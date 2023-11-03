@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
 import 'package:versa_tribe/Screens/Profile/update_profile_screen.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
@@ -9,7 +7,6 @@ import 'package:versa_tribe/Utils/image_path.dart';
 import '../../Utils/api_config.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
 import '../manage_organization_screen.dart';
 import '../sign_in_screen.dart';
 import 'manage_department.dart';

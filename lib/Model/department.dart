@@ -1,13 +1,13 @@
-class SearchDepartmentModel {
+class DepartmentModel {
   int? deptId;
   String? deptName;
   int? parentDeptId;
   String? parentDeptName;
 
-  SearchDepartmentModel(
+  DepartmentModel(
       {this.deptId, this.deptName, this.parentDeptId, this.parentDeptName});
 
-  SearchDepartmentModel.fromJson(Map<String, dynamic> json) {
+  DepartmentModel.fromJson(Map<String, dynamic> json) {
     deptId = json['Dept_Id'];
     deptName = json['Dept_Name'];
     parentDeptId = json['Parent_dept_Id'];

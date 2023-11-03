@@ -163,7 +163,7 @@ class LoginResponseModel {
   LoginResponseModel({
     String? accessToken,
     String? tokenType,
-    num? expiresIn,
+    int? expiresIn,
     String? refreshToken,
     String? userName,
     String? roles,
@@ -200,7 +200,7 @@ class LoginResponseModel {
   }
   String? _accessToken;
   String? _tokenType;
-  num? _expiresIn;
+  int? _expiresIn;
   String? _refreshToken;
   String? _userName;
   String? _roles;
@@ -211,7 +211,7 @@ class LoginResponseModel {
   String? _expires;
   LoginResponseModel copyWith({  String? accessToken,
     String? tokenType,
-    num? expiresIn,
+    int? expiresIn,
     String? refreshToken,
     String? userName,
     String? roles,
@@ -234,7 +234,7 @@ class LoginResponseModel {
   );
   String? get accessToken => _accessToken;
   String? get tokenType => _tokenType;
-  num? get expiresIn => _expiresIn;
+  int? get expiresIn => _expiresIn;
   String? get refreshToken => _refreshToken;
   String? get userName => _userName;
   String? get roles => _roles;

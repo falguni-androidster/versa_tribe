@@ -215,6 +215,9 @@ class CustomString {
   static const String manageRoles = "Manage Roles";
   static const String manageOrgMembers = "Manage Org.Members";
   static const String contactSuperAdmin = "Contact Super Admin";
-
-
+  static const String addNewDP = "Create New Department";
+  static const String parentDP = '* Select parent department is required....';
+  static const String newDP = '* Enter new department....';
+  static const String newDpLabel= "New department";
+  static const String parentDpLabel= "Parent department";
 }

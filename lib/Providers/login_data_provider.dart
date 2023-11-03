@@ -3,18 +3,15 @@ import 'package:versa_tribe/Model/login_response.dart';
 
 ///LoginDataProvider class
 class LoginDataProvider with ChangeNotifier{
-  final List<LoginResponseModel> _loginData =[];
-  List<LoginResponseModel> get loginData => _loginData;
+  LoginResponseModel? _loginData;
+  LoginResponseModel? get loginData => _loginData;
 
   setUserLoginData(data){
-    //print("--->$pEx");
-    _loginData.add(LoginResponseModel.fromJson(data));
+    _loginData = data;
     /*   data.forEach((ob) async {
       _loginData.add(LoginResponseModel.fromJson(ob));
       notifyListeners();
     });*/
-  }
-  notifyListen(){
     notifyListeners();
   }
 
@@ -24,9 +21,5 @@ class LoginDataProvider with ChangeNotifier{
 
   setdata(data){
     _data.add(data);
-  }
-
-  notify(){
-    notifyListen();
   }
 }

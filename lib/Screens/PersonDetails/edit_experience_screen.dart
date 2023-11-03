@@ -16,11 +16,21 @@ class EditExperienceScreen extends StatefulWidget {
   final int? pExId;
   final String? sDate;
   final String? eDate;
-  const EditExperienceScreen({this.title, this.pExJobTitle, this.company, this.industry, this.pExId, this.sDate, this.eDate, super.key});
+
+  const EditExperienceScreen(
+      {this.title,
+      this.pExJobTitle,
+      this.company,
+      this.industry,
+      this.pExId,
+      this.sDate,
+      this.eDate,
+      super.key});
 
   @override
   State<EditExperienceScreen> createState() => _EditExperienceScreenState();
 }
+
 class _EditExperienceScreenState extends State<EditExperienceScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController jobTitleController = TextEditingController();
@@ -30,6 +40,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
   TextEditingController endDateController = TextEditingController();
   dynamic cmpProvider;
   dynamic indProvider;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -39,24 +50,21 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
     cmpProvider.cmpList.clear();
     indProvider.indList.clear();
 
-      String sDATE =
-      DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.sDate}"));
-      String eDATE =
-      DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.eDate}"));
-      startDateController.text = sDATE;
-      endDateController.text = eDATE;
-      jobTitleController.text = "${widget.pExJobTitle}";
-      companyNController.text = "${widget.company}";
-      industryNController.text = "${widget.industry}";
+    String sDATE = DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.sDate}"));
+    String eDATE = DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.eDate}"));
+    startDateController.text = sDATE;
+    endDateController.text = eDATE;
+    jobTitleController.text = "${widget.pExJobTitle}";
+    companyNController.text = "${widget.company}";
+    industryNController.text = "${widget.industry}";
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("sDate----->${widget.sDate}");
-    debugPrint("COME THROUGH----->${widget.company}");
-    debugPrint("COME THROUGH----->${widget.industry}");
-    final providerCompany = Provider.of<SearchExCompanyProvider>(context,listen: false);
-    final providerIndustry = Provider.of<SearchExIndustryProvider>(context,listen: false);
+    debugPrint("Company----->${widget.company}");
+    debugPrint("Industry----->${widget.industry}");
+    final providerCompany = Provider.of<SearchExCompanyProvider>(context, listen: false);
+    final providerIndustry = Provider.of<SearchExIndustryProvider>(context, listen: false);
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -71,7 +79,8 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
             //replace with our own icon data.
           ),
           centerTitle: true,
-          title: const Text(CustomString.editExperience, style: TextStyle(color: CustomColors.kBlueColor))),
+          title: const Text(CustomString.editExperience,
+              style: TextStyle(color: CustomColors.kBlueColor))),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -86,22 +95,22 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 ),
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
-                      return TextFormField(
-                          controller: jobTitleController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return CustomString.jobTitleRequired;
-                            } else {
-                              return null;
-                            }
-                          },
-                          decoration: const InputDecoration(
-                              labelText: CustomString.jobTitle,
-                              labelStyle: TextStyle(
-                                  color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
-                          style: const TextStyle(color: CustomColors.kBlackColor));
-                    }),
+                  return TextFormField(
+                      controller: jobTitleController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.jobTitleRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.jobTitle,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor,
+                              fontSize: 14)),
+                      style: const TextStyle(color: CustomColors.kBlackColor));
+                }),
                 SizedBox(height: mHeight * 0.02),
 
                 ///RadioButton
@@ -110,17 +119,17 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 Row(
                   children: [
                     radioBTN(CustomString.company),
-                  Text(CustomString.company,
-                              style: TextStyle(
-                                  color: widget.company != null
-                                      ? CustomColors.kBlueColor
-                                      : CustomColors.kLightGrayColor)),
+                    Text(CustomString.company,
+                        style: TextStyle(
+                            color: widget.company != null
+                                ? CustomColors.kBlueColor
+                                : CustomColors.kLightGrayColor)),
                     radioBTN(CustomString.industry),
-                 Text(CustomString.industry,
-                              style: TextStyle(
-                                  color: widget.industry != null
-                                      ? CustomColors.kBlueColor
-                                      : CustomColors.kLightGrayColor))
+                    Text(CustomString.industry,
+                        style: TextStyle(
+                            color: widget.industry != null
+                                ? CustomColors.kBlueColor
+                                : CustomColors.kLightGrayColor))
                   ],
                 ),
 
@@ -129,14 +138,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     selector: (_, val) => val.selectedValue,
                     builder: (context, selectedValue, child) {
                       return TextFormField(
-                          readOnly: true,
-                          controller: widget.industry != null
+                          controller: widget.industry != null && widget.industry!=""
                               ? industryNController
-                              : widget.company != null
-                              ? companyNController
-                              : selectedValue == "Company"
-                              ? companyNController
-                              : industryNController,
+                              : widget.company != null && widget.company!=""
+                                  ? companyNController
+                                  : selectedValue == "Company"
+                                      ? companyNController
+                                      : industryNController,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return selectedValue == "Company"
@@ -147,11 +155,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             }
                           },
                           onChanged: (value) {
-                            if(value != "") {
+                            if (value != "") {
                               print("Selected--======---=-=-->$selectedValue");
-                              selectedValue == "Company"?
-                              ApiConfig.searchExCompany(context: context, companyString: value):
-                              ApiConfig.searchExIndustry(context: context, industryString: value);
+                              selectedValue == "Company"
+                                  ? ApiConfig.searchExCompany(
+                                      context: context, companyString: value)
+                                  : ApiConfig.searchExIndustry(
+                                      context: context, industryString: value);
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
                             }
@@ -168,11 +178,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                   color: CustomColors.kLightGrayColor,
                                   fontSize: 14)),
                           style:
-                          const TextStyle(color: CustomColors.kBlackColor));
-                    }),
+                              const TextStyle(color: CustomColors.kBlackColor));
+                    }
+                    ),
 
                 ///for display search values
-                Consumer<SearchExCompanyProvider>(builder: (context, val, child) {
+                Consumer<SearchExCompanyProvider>(
+                    builder: (context, val, child) {
                   return ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.cmpList.length,
@@ -181,32 +193,33 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             "INSTITUTE--------->${val.cmpList[index].companyName}");
                         return val.visible == true
                             ? InkWell(
-                          child: Card(
-                            shadowColor: CustomColors.kBlueColor,
-                            elevation: 3,
-                            color: CustomColors.kGrayColor,
-                            child: Container(
-                                padding:
-                                EdgeInsets.only(left: mWidth * 0.02),
-                                height: mHeight * 0.05,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    '${val.cmpList[index].companyName}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor))),
-                          ),
-                          onTap: () async {
-                            companyNController.text =
-                                val.cmpList[index].companyName ??
-                                    companyNController.text;
-                            val.setVisible(false);
-                          },
-                        )
+                                child: Card(
+                                  shadowColor: CustomColors.kBlueColor,
+                                  elevation: 3,
+                                  color: CustomColors.kGrayColor,
+                                  child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: mWidth * 0.02),
+                                      height: mHeight * 0.05,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          '${val.cmpList[index].companyName}',
+                                          style: const TextStyle(
+                                              color: CustomColors
+                                                  .kLightGrayColor))),
+                                ),
+                                onTap: () async {
+                                  companyNController.text =
+                                      val.cmpList[index].companyName ??
+                                          companyNController.text;
+                                  val.setVisible(false);
+                                },
+                              )
                             : Container();
                       });
                 }),
-                Consumer<SearchExIndustryProvider>(builder: (context, val, child) {
+                Consumer<SearchExIndustryProvider>(
+                    builder: (context, val, child) {
                   return ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.indList.length,
@@ -215,28 +228,28 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             "INSTITUTE--------->${val.indList[index].industryFieldName}");
                         return val.visible == true
                             ? InkWell(
-                          child: Card(
-                            shadowColor: CustomColors.kBlueColor,
-                            elevation: 3,
-                            color: CustomColors.kGrayColor,
-                            child: Container(
-                                padding:
-                                EdgeInsets.only(left: mWidth * 0.02),
-                                height: mHeight * 0.05,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    '${val.indList[index].industryFieldName}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor))),
-                          ),
-                          onTap: () async {
-                            industryNController.text =
-                                val.indList[index].industryFieldName ??
-                                    industryNController.text;
-                            val.setVisible(false);
-                          },
-                        )
+                                child: Card(
+                                  shadowColor: CustomColors.kBlueColor,
+                                  elevation: 3,
+                                  color: CustomColors.kGrayColor,
+                                  child: Container(
+                                      padding:
+                                          EdgeInsets.only(left: mWidth * 0.02),
+                                      height: mHeight * 0.05,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                          '${val.indList[index].industryFieldName}',
+                                          style: const TextStyle(
+                                              color: CustomColors
+                                                  .kLightGrayColor))),
+                                ),
+                                onTap: () async {
+                                  industryNController.text =
+                                      val.indList[index].industryFieldName ??
+                                          industryNController.text;
+                                  val.setVisible(false);
+                                },
+                              )
                             : Container();
                       });
                 }),
@@ -253,36 +266,36 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                         width: 150,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
-                              return TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return CustomString.selectStartDate;
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                controller: startDateController,
-                                textAlign: TextAlign.center,
+                          return TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.selectStartDate;
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: startDateController,
+                            textAlign: TextAlign.center,
 
-                                //editing controller of this TextField
-                                decoration: const InputDecoration(
-                                  labelText: CustomString.startDate,
-                                  labelStyle: TextStyle(
-                                      color: CustomColors.kLightGrayColor,
-                                      fontSize: 14),
-                                  suffixIcon: Icon(Icons.calendar_month,
-                                      color: CustomColors.kBlueColor),
-                                ),
-                                style: const TextStyle(
-                                    color: CustomColors.kBlackColor),
-                                readOnly: true,
-                                //set it true, so that user will not able to edit text
-                                onTap: () async {
-                                  _showDatePicker(
-                                      context: context, key: "startDate");
-                                },
-                              );
-                            }),
+                            //editing controller of this TextField
+                            decoration: const InputDecoration(
+                              labelText: CustomString.startDate,
+                              labelStyle: TextStyle(
+                                  color: CustomColors.kLightGrayColor,
+                                  fontSize: 14),
+                              suffixIcon: Icon(Icons.calendar_month,
+                                  color: CustomColors.kBlueColor),
+                            ),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor),
+                            readOnly: true,
+                            //set it true, so that user will not able to edit text
+                            onTap: () async {
+                              _showDatePicker(
+                                  context: context, key: "startDate");
+                            },
+                          );
+                        }),
                       ),
 
                       ///End dateTime
@@ -290,39 +303,39 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                         width: 150,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
-                              return TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return CustomString.selectEndDate;
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                controller: endDateController,
-                                textAlign: TextAlign.center,
-                                //editing controller of this TextField
-                                decoration: const InputDecoration(
-                                  labelText: CustomString.endDate,
-                                  labelStyle: TextStyle(
-                                      color: CustomColors.kLightGrayColor,
-                                      fontSize: 14),
-                                  suffixIcon: Icon(Icons.calendar_month,
-                                      color: CustomColors.kBlueColor),
-                                ),
-                                style: const TextStyle(
-                                    color: CustomColors.kBlackColor),
-                                readOnly: true,
-                                //set it true, so that user will not able to edit text
-                                onTap: startDateController.text == ""
-                                    ? () {}
-                                    : () async {
-                                  _showDatePicker(
-                                      context: context,
-                                      key: "endDate",
-                                      startDate: val.pickedDate);
-                                },
-                              );
-                            }),
+                          return TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.selectEndDate;
+                              } else {
+                                return null;
+                              }
+                            },
+                            controller: endDateController,
+                            textAlign: TextAlign.center,
+                            //editing controller of this TextField
+                            decoration: const InputDecoration(
+                              labelText: CustomString.endDate,
+                              labelStyle: TextStyle(
+                                  color: CustomColors.kLightGrayColor,
+                                  fontSize: 14),
+                              suffixIcon: Icon(Icons.calendar_month,
+                                  color: CustomColors.kBlueColor),
+                            ),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor),
+                            readOnly: true,
+                            //set it true, so that user will not able to edit text
+                            onTap: startDateController.text == ""
+                                ? () {}
+                                : () async {
+                                    _showDatePicker(
+                                        context: context,
+                                        key: "endDate",
+                                        startDate: val.pickedDate);
+                                  },
+                          );
+                        }),
                       ),
                     ],
                   ),
@@ -336,7 +349,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                            ApiConfig.updateExData(
+                          ApiConfig.updateExData(
                               context: context,
                               peronExperienceId: widget.pExId,
                               jobTitle: jobTitleController.text,
@@ -352,11 +365,11 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                           backgroundColor: MaterialStateProperty.all(
                               CustomColors.kBlueColor),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  side: const BorderSide(
-                                      color: Colors.transparent)))),
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                      side: const BorderSide(
+                                          color: Colors.transparent)))),
                       child: const Text(CustomString.editExperience,
                           style: TextStyle(
                               fontSize: 16,
@@ -385,8 +398,8 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
         groupValue: widget.company != null
             ? "Company"
             : widget.industry != null
-            ? "Industry"
-            : val.selectedValue,
+                ? "Industry"
+                : val.selectedValue,
         onChanged: (value) {
           print("====+_>$value");
           val.setGenderValue(value);
@@ -394,6 +407,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
       );
     });
   }
+
   Future<DateTime?> _showDatePicker({context, required key, startDate}) async {
     final provider = Provider.of<DateProvider>(context, listen: false);
     DateTime? pickedDate = await showDatePicker(
@@ -413,7 +427,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                   foregroundColor: CustomColors.kBlueColor // button text color
-              ),
+                  ),
             ),
           ),
           child: child!,
@@ -431,7 +445,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
         provider.setStartDate(
             formattedDate, pickedDate); //set output date to TextField value.
         endDateController.text =
-        ""; // set empty end date TextField when start date select.
+            ""; // set empty end date TextField when start date select.
         startDateController.text = provider.startDateInput;
       } else {}
     } else {
