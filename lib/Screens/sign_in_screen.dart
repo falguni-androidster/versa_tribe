@@ -13,7 +13,6 @@ import 'package:versa_tribe/Utils/custom_toast.dart';
 import 'package:versa_tribe/Utils/shared_preference.dart';
 
 import '../Model/login_response.dart';
-import '../Providers/login_data_provider.dart';
 import '../Providers/password_provider.dart';
 import '../Utils/api_config.dart';
 import '../Utils/custom_string.dart';
