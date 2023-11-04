@@ -12,12 +12,14 @@ class ProfileGenderProvider with ChangeNotifier{
 
 
 
-class CompnayIndustryProvider with ChangeNotifier{
-  String _selectedValue = 'Company';
+class RadioComIndProvider with ChangeNotifier{
+  String _selectedValue = "";
   String get selectedValue => _selectedValue;
 
-  setGenderValue(gender){
-    _selectedValue = gender;
+  setRadioValue(radioVal){
+    _selectedValue = radioVal;
+  }
+  callNotify(){
     notifyListeners();
   }
 }

@@ -10,7 +10,6 @@ import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 
 import 'Providers/call_switch_provider.dart';
 import 'Providers/date_provider.dart';
-import 'Providers/login_data_provider.dart';
 import 'Providers/manage_org_index_provider.dart';
 import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
@@ -22,7 +21,6 @@ void main() {
   HttpOverrides.global = MyHttpOverrides();
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<LoginDataProvider>(create: (_) => LoginDataProvider()),
       ChangeNotifierProvider<OnBoardingProvider>(create: (_) => OnBoardingProvider()),
       ChangeNotifierProvider<PwdProvider>(create: (_) => PwdProvider()),
       ChangeNotifierProvider<ConfirmPwdProvider>(create: (_) => ConfirmPwdProvider()),
@@ -48,7 +46,7 @@ void main() {
       ChangeNotifierProvider<SearchOrgProvider>(create: (_) => SearchOrgProvider()),
       ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider()),
       ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
-      ChangeNotifierProvider<CompnayIndustryProvider>(create: (_) => CompnayIndustryProvider())
+      ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider())
     ],
     child: const MyApp()
   ));

@@ -2,14 +2,15 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/OrgNaneId.dart';
 import 'package:versa_tribe/Model/login_response.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
+import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../Providers/bottom_tab_provider.dart';
-import '../Providers/login_data_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import 'Home/account_screen.dart';
@@ -17,7 +18,6 @@ import 'OrgAdmin/admin_manage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -25,22 +25,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageStorageBucket bucket = PageStorageBucket();
 
-  final List<String> orgAd = [];
   final List<String> margList = [];
   List<String> finalList = [];
-  dynamic pro;
   late LoginResponseModel loginData;
   late OrgNameId oPData;
   late OrgNameId oAData;
   late String selectedOrg;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    pro = Provider.of<LoginDataProvider>(context, listen: false);
-    loginData = pro.loginData;
-    List<dynamic> oP = jsonDecode(loginData.orgPerson.toString());
-    List<dynamic> oA = jsonDecode(loginData.orgAdmin.toString());
+  initState() {
+   checkUser();
+    super.initState();
+  }
+ Future<LoginResponseModel> checkUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic>? responseList = prefs.getJson('responseModel');
+    LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
+    print("org person =====>${loginResponseModel.orgPerson}");
+    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
+    List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
     oP.forEach((element) {
       oPData = OrgNameId.fromJson(element);
       print("orgPerson name---)>${oPData.orgName}");
@@ -50,27 +53,15 @@ class _HomeScreenState extends State<HomeScreen> {
       oAData = OrgNameId.fromJson(element);
       print("\norgAdmin name---)>${oAData.orgName}");
       margList.add(oAData.orgName.toString());
-      orgAd.add(oAData.orgName.toString());///Add orgAdminName List in margList
 
       var seen = Set<String>();
-      finalList = margList.where((name) => seen.add(name)).toList();
-
-      ///Remove duplicate data and store in final list
+      finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
     });
-    super.initState();
+    return loginResponseModel;
   }
 
   @override
   Widget build(BuildContext context) {
-    /*   print("CHECK------->${loginData.orgPerson.runtimeType}");
-    List<dynamic> oP=jsonDecode(loginData.orgPerson.toString());
-    oP.forEach((element) {
-      data = OrgNameId.fromJson(element);
-      print("single name---)>${data.orgName}");
-    });
-    print("type---)>${oP[1].runtimeType}");
-    print("org person list---)>$oP");
-    print("single name---)>${oP[1]["Org_Name"]}");*/
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -111,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+/*
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return DropdownButtonHideUnderline(
                   child: DropdownButton(
@@ -139,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         val.setVisible(false);
                       }
                     },
-                    hint: Text(val.switchOrganization ?? finalList[0],
+                    hint: Text(val.switchOrganization ??"PARAFOX", //finalList[0],
                         style: const TextStyle(
                             color: CustomColors.kBlueColor,
                             fontSize: 20,
@@ -147,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               }),
+*/
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,

@@ -10,6 +10,7 @@ import 'package:versa_tribe/Screens/sign_up_screen.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Utils/custom_toast.dart';
+import 'package:versa_tribe/Utils/shared_preference.dart';
 
 import '../Model/login_response.dart';
 import '../Providers/login_data_provider.dart';
@@ -303,7 +304,6 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signInClick(context) async {
-    final provider = Provider.of<LoginDataProvider>(context,listen: false);
     LoginResponseModel loginResponseModelData;
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
@@ -321,20 +321,10 @@ class _SignInScreenState extends State<SignInScreen> {
           var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
           Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
           loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-          provider.setUserLoginData(loginResponseModelData);
          if(jsonData!=null){
           if (loginResponseModelData.accessToken != null) {
-            // print("CHECK------->${loginResponseModelData.roles.runtimeType}");
-            // List<dynamic> rols=jsonDecode(loginResponseModelData.roles.toString());
-            // print("---)>${rols[1]}");
-
-         /*   print("CHECK------->${loginResponseModelData.orgPerson.runtimeType}");
-            List<dynamic> oP=jsonDecode(loginResponseModelData.orgPerson.toString());
-            //var oP=loginResponseModelData.orgPerson.toString();
-            print("type---)>${oP[1].runtimeType}");
-            print("org person list---)>$oP");
-            print("single name---)>${oP[1]["Org_Name"]}");*/
             final SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.setJson("responseModel",jsonData);
             pref.setString(CustomString.accessToken, loginResponseModelData.accessToken.toString());
             showToast(context, CustomString.accountLoginSuccess);
             // For example, if login is successful

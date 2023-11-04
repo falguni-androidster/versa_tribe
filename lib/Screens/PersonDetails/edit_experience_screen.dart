@@ -47,6 +47,11 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
     super.initState();
     cmpProvider = Provider.of<SearchExCompanyProvider>(context, listen: false);
     indProvider = Provider.of<SearchExIndustryProvider>(context, listen: false);
+    final oldRadioProvider = Provider.of<RadioComIndProvider>(context, listen: false);
+
+    widget.company!=""?oldRadioProvider.setRadioValue("Company"):oldRadioProvider.setRadioValue("Industry");
+
+
     cmpProvider.cmpList.clear();
     indProvider.indList.clear();
 
@@ -61,6 +66,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     debugPrint("Company----->${widget.company}");
     debugPrint("Industry----->${widget.industry}");
     final providerCompany = Provider.of<SearchExCompanyProvider>(context, listen: false);
@@ -119,35 +125,41 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 Row(
                   children: [
                     radioBTN(CustomString.company),
-                    Text(CustomString.company,
-                        style: TextStyle(
-                            color: widget.company != null
-                                ? CustomColors.kBlueColor
-                                : CustomColors.kLightGrayColor)),
+                    Consumer<RadioComIndProvider>(builder: (context, val, child) {
+                        return Text(CustomString.company,
+                            style: TextStyle(
+                                color: val.selectedValue=="Company"
+                                    ? CustomColors.kBlueColor
+                                    : CustomColors.kLightGrayColor));
+                      }
+                    ),
                     radioBTN(CustomString.industry),
-                    Text(CustomString.industry,
-                        style: TextStyle(
-                            color: widget.industry != null
-                                ? CustomColors.kBlueColor
-                                : CustomColors.kLightGrayColor))
+                    Consumer<RadioComIndProvider>(builder: (context, val, child) {
+                        return Text(CustomString.industry,
+                            style: TextStyle(
+                                color: val.selectedValue=="Industry"
+                                    ? CustomColors.kBlueColor
+                                    : CustomColors.kLightGrayColor));
+                      }
+                    )
                   ],
                 ),
 
                 ///Company & Industry Name
-                Selector<ProfileGenderProvider, String>(
-                    selector: (_, val) => val.selectedValue,
-                    builder: (context, selectedValue, child) {
+                Consumer<RadioComIndProvider>(
+                    builder: (context, val, child) {
+                      print("oooooooo-->${val.selectedValue}");
                       return TextFormField(
-                          controller: widget.industry != null && widget.industry!=""
+                          controller: val.selectedValue!=""?val.selectedValue=="Company"?companyNController:industryNController:widget.industry!=""
                               ? industryNController
-                              : widget.company != null && widget.company!=""
+                              : widget.company!=""
                                   ? companyNController
-                                  : selectedValue == "Company"
+                                  : val.selectedValue == "Company"
                                       ? companyNController
                                       : industryNController,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return selectedValue == "Company"
+                              return val.selectedValue == "Company"
                                   ? CustomString.companyNameRequired
                                   : CustomString.enterIndustryName;
                             } else {
@@ -156,14 +168,15 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                           },
                           onChanged: (value) {
                             if (value != "") {
-                              print("Selected--======---=-=-->$selectedValue");
-                              selectedValue == "Company"
+                              print("Selected--======---=-=-->${val.selectedValue}");
+                              val.selectedValue == "Company"
                                   ? ApiConfig.searchExCompany(
                                       context: context, companyString: value)
                                   : ApiConfig.searchExIndustry(
                                       context: context, industryString: value);
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
+                              val.selectedValue=="Company"?industryNController.clear():companyNController.clear();
                             }
                             providerCompany.cmpList.clear();
                             providerCompany.setVisible(true);
@@ -171,7 +184,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             providerIndustry.setVisible(true);
                           },
                           decoration: InputDecoration(
-                              labelText: selectedValue == "Company"
+                              labelText: val.selectedValue == "Company"
                                   ? CustomString.companyName
                                   : CustomString.industryName,
                               labelStyle: const TextStyle(
@@ -386,8 +399,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
   }
 
   Widget radioBTN(String comInd) {
-    print("Check radioBtn----$comInd");
-    return Consumer<CompnayIndustryProvider>(builder: (context, val, child) {
+    return Consumer<RadioComIndProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {
@@ -396,14 +408,20 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
           return CustomColors.kLightGrayColor;
         }),
         value: comInd,
-        groupValue: widget.company != null
+        groupValue: val.selectedValue ==""? widget.company != ""
             ? "Company"
-            : widget.industry != null
+            :  widget.company != ""
                 ? "Industry"
-                : val.selectedValue,
+                : val.selectedValue:val.selectedValue,
+        // groupValue: widget.company != null && widget.company != ""
+        //     ? "Company"
+        //     : widget.industry != null && widget.company != ""
+        //         ? "Industry"
+        //         : val.selectedValue,
         onChanged: (value) {
-          print("====+_>$value");
-          val.setGenderValue(value);
+          print("Updated Radio value--->>$value");
+          val.setRadioValue(value);
+          val.callNotify();
         },
       );
     });

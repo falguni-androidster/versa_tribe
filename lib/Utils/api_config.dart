@@ -349,10 +349,11 @@ class ApiConfig {
       ));
     }
   }
-  static addQualificationData({context, courseName, instituteName, grade, yop}) async {
+  static addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
     Map<String, dynamic> requestData = {
       "YOP": yop,
       "Grade": grade,
+      "City": city,
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
     };

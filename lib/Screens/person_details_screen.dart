@@ -523,6 +523,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
             SizedBox(height: mHeight * 0.005),
             Text("Grade : ${vaL.personQl[index].grade}", style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12)),
             SizedBox(height: mHeight * 0.005),
+            Text("City : ${vaL.personQl[index].ctypName}", style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12)),
+            SizedBox(height: mHeight * 0.005),
             Text("Year Of Passing : $passingYear", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12)),
           ],
         ));

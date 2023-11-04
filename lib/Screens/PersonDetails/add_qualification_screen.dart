@@ -19,6 +19,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController courseController = TextEditingController();
   TextEditingController instituteController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
   TextEditingController gradeController = TextEditingController();
   TextEditingController yopController = TextEditingController();
   TextEditingController searchController = TextEditingController();
@@ -173,6 +174,32 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                       });
                 }),
                 SizedBox(height: mWidth * 0.03),
+                /// City name
+                TextFormField(
+                    controller: cityController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.cityRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+              /*      onChanged: (value) {
+                      if (value != "") {
+                        ApiConfig.searchInstitute(
+                            context: context, instituteString: value);
+                        providerInstitute.instituteList.clear();
+                      }
+                      providerInstitute.instituteList.clear();
+                      providerInstitute.setVisible(true);
+                    },*/
+                    decoration: const InputDecoration(
+                        labelText: CustomString.city,
+                        labelStyle: TextStyle(
+                            color: CustomColors.kLightGrayColor, fontSize: 14)),
+                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                SizedBox(height: mWidth * 0.03),
+
 
                 /// Grade
                 TextFormField(
@@ -232,6 +259,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                               context: context,
                               courseName: courseController.text,
                               instituteName: instituteController.text,
+                              city: cityController.text,
                               grade: gradeController.text,
                               yop: yopController.text);
                         } else {
