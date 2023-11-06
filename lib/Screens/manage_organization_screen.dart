@@ -234,38 +234,48 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                   horizontal: mWidth * 0.03,
                                   vertical: mHeight * 0.005),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          const Text(CustomString.requestApproved1),
-                                          Text(
-                                            val.manageOrgDataList[index].orgName ??
-                                                "", style: const TextStyle(
-                                              color: CustomColors.kBlueColor),),
-                                          const Text(CustomString.requestApproved2),
-                                        ],
-                                      ),
-                                      SizedBox(height: mHeight * 0.01,),
-                                      Text("${CustomString.department} ${val
-                                          .manageOrgDataList[index].deptName ??
-                                          ""}", style: const TextStyle(fontSize: 10,
-                                          color: CustomColors.kLightGrayColor)),
-                                    ],
+                                  SizedBox(
+                                    width: mWidth*0.7,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          // child: Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.start,
+                                          //   children: [
+                                          //     const Text(CustomString.requestApproved1),
+                                          //     Text(
+                                          //       val.manageOrgDataList[index].orgName ??
+                                          //           "", style: const TextStyle(
+                                          //         color: CustomColors.kBlueColor),),
+                                          //     const Text(CustomString.requestApproved2),
+                                          //
+                                          //   ],
+                                          // ),
+                                         child: Text("${CustomString.requestApproved1} ${val.manageOrgDataList[index].orgName??""} ${CustomString.requestApproved2}"),
+                                        ),
+                                        SizedBox(height: mHeight * 0.01,),
+                                        Text("${CustomString.department} ${val
+                                            .manageOrgDataList[index].deptName ??
+                                            ""}", style: const TextStyle(fontSize: 10,
+                                            color: CustomColors.kLightGrayColor)),
+                                      ],
+                                    ),
                                   ),
-                                  ElevatedButton(style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        CustomColors.kGrayColor),
+                                  Expanded(
+                                    child: ElevatedButton(style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                          CustomColors.kGrayColor),
+                                    ),
+                                        onPressed: () {},
+                                        child: const Text(CustomString.cancel,
+                                            style: TextStyle(color: CustomColors
+                                                .kBlackColor))),
                                   ),
-                                      onPressed: () {},
-                                      child: const Text(CustomString.cancel,
-                                          style: TextStyle(color: CustomColors
-                                              .kBlackColor))),
                                 ],
                               ),
                             );

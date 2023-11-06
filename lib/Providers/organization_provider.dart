@@ -17,4 +17,8 @@ class OrganizationProvider with ChangeNotifier{
     _visible=value;
     notifyListeners();
   }
+
+  notify(){
+    notifyListeners();
+  }
 }

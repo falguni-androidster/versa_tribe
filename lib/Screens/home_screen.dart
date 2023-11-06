@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/OrgNaneId.dart';
 import 'package:versa_tribe/Model/login_response.dart';
+import 'package:versa_tribe/Providers/manage_visibility_btn.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
@@ -13,8 +14,11 @@ import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../Providers/bottom_tab_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
+import '../Utils/image_path.dart';
+import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
 import 'OrgAdmin/admin_manage.dart';
+import 'manage_organization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,41 +31,110 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<String> margList = [];
   List<String> finalList = [];
-  late LoginResponseModel loginData;
+  List<String> orgAdminList = [];
   late OrgNameId oPData;
   late OrgNameId oAData;
-  late String selectedOrg;
+  late String selectedValue;
 
   @override
   initState() {
    checkUser();
     super.initState();
   }
- Future<LoginResponseModel> checkUser() async {
+   checkUser() async {
+    print("TTEST------------------------------------");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic>? responseList = prefs.getJson('responseModel');
     LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
     print("org person =====>${loginResponseModel.orgPerson}");
+    print("org admin =====>${loginResponseModel.orgAdmin}");
     List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
     List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
+
+    final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context,listen: false);
+    final setPtovider = Provider.of<OrganizationProvider>(context,listen: false);
+    if(loginResponseModel.orgPerson!="[]"){
     oP.forEach((element) {
       oPData = OrgNameId.fromJson(element);
       print("orgPerson name---)>${oPData.orgName}");
       margList.add(oPData.orgName.toString());///Add orgPersonName List in margList
-    });
+       selectedValue = margList[0];//Initial val for dropdown
+      finalList = margList;
+      proManageVisibility.setString(finalList);
+      print("F1---------------->${finalList.length}");
+    });}else{}
+
+    if(loginResponseModel.orgAdmin!="[]"){
     oA.forEach((element) {
       oAData = OrgNameId.fromJson(element);
       print("\norgAdmin name---)>${oAData.orgName}");
       margList.add(oAData.orgName.toString());
+      orgAdminList.add(oAData.orgName.toString());
 
       var seen = Set<String>();
       finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
-    });
+      selectedValue = orgAdminList[0];
+      if (selectedValue==orgAdminList[0]) {
+        setPtovider.setVisible(true);
+      } else {
+        setPtovider.setVisible(false);
+      }
+
+      //Initial val for dropdown
+      proManageVisibility.setString(finalList);
+      print("F2---------------->${finalList.length}");
+    });}else{}
+
     return loginResponseModel;
   }
+  // Function to show the dialog
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        print("KL===>${selectedValue}");
+        return AlertDialog(
+          title: const Text("Select an Option"),
+          content: Consumer<OrganizationProvider>(
+            builder: (context, val, child) {
+              return DropdownButton<String>(
+                alignment: AlignmentDirectional.bottomEnd,
+                value: selectedValue,
+                items: finalList.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                    selectedValue = newValue!;
+                    val.notify();
 
+                    val.setSwitchOrganization(newValue);
+                    if (orgAdminList.contains(newValue)) {
+                      val.setVisible(true);
+                    } else {
+                      val.setVisible(false);
+                    }
+                },
+              );
+            }
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
+    print("--------------------Widget------------${finalList.length}");
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -102,44 +175,33 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-/*
-              Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                    alignment: Alignment.centerLeft,
-                    iconEnabledColor: CustomColors.kBlueColor,
-                    iconDisabledColor: CustomColors.kBlackColor,
-                    value: val.switchOrganization ?? finalList[0],
-                    items: finalList.map((organization) {
-                      selectedOrg = finalList[0];
-                      return DropdownMenuItem(
-                        value: organization,
-                        child: Text(organization,
-                            style: const TextStyle(
-                                color: CustomColors.kBlueColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      selectedOrg = newValue!;
-                      debugPrint("selected-------)> $newValue");
-                      val.setSwitchOrganization(newValue);
-                      if (orgAd.contains(newValue)) {
-                        val.setVisible(true);
-                      } else {
-                        val.setVisible(false);
-                      }
-                    },
-                    hint: Text(val.switchOrganization ??"PARAFOX", //finalList[0],
-                        style: const TextStyle(
-                            color: CustomColors.kBlueColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
+              Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
+                return val.string.isNotEmpty ? InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                  splashColor: CustomColors.kWhiteColor,
+                  child: Row(
+                    children: [
+                      Consumer<OrganizationProvider>(
+                        builder: (context,val,child) {
+                          return Text("$selectedValue  ",style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16),);
+                        }
+                      ),
+                      SVGIconButton(
+                          svgPath: ImagePath.dropdownIcon,
+                          size: 6.0,
+                          color: CustomColors.kLightGrayColor,
+                          // Replace with the path to your SVG asset
+                          onPressed: () {_showDialog();}),
+                    ],
                   ),
-                );
+                  onTap: (){_showDialog();},
+                ) : TextButton(onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (
+                      context) => const ManageOrganization()));
+                },
+                    child: const Text("join Org",
+                      style: TextStyle(color: CustomColors.kBlueColor),));
               }),
-*/
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,
@@ -150,17 +212,18 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
               const SizedBox(width: 10),*/
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return val.visible==true?IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ManageAdminScreen(
-                                  title:
-                                      val.switchOrganization ?? finalList[0])));
-                    },
-                    icon: const Icon(Icons.account_balance),
-                    color: CustomColors.kBlueColor):Container();
+                return val.visible==true?
+                SVGIconButton(
+                    svgPath: ImagePath.switchIcon,
+                    size: 24.0,
+                    color: CustomColors.kBlueColor,
+                    // Replace with the path to your SVG asset
+                    onPressed: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ManageAdminScreen(
+                                title:
+                                val.switchOrganization ?? finalList[0])));}):Container();
               })
             ],
           ),

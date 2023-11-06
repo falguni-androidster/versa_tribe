@@ -11,6 +11,7 @@ import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 import 'Providers/call_switch_provider.dart';
 import 'Providers/date_provider.dart';
 import 'Providers/manage_org_index_provider.dart';
+import 'Providers/manage_visibility_btn.dart';
 import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
 import 'Providers/person_details_provider.dart';
@@ -46,7 +47,8 @@ void main() {
       ChangeNotifierProvider<SearchOrgProvider>(create: (_) => SearchOrgProvider()),
       ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider()),
       ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
-      ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider())
+      ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider()),
+      ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider())
     ],
     child: const MyApp()
   ));
