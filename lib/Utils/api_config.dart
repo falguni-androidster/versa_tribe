@@ -17,7 +17,6 @@ class ApiConfig {
 
   static const String baseUrl = 'https://192.168.2.111:9443';
 
-
 // Usage example
 // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
 // For instance, when using the http package for making network requests:
@@ -46,8 +45,6 @@ class ApiConfig {
       throw Exception('Failed to load data');
     }
   }
-
-
 
   /*-----------  Profile Details Screen  ----------------*/
   static getUserExperience(context) async {

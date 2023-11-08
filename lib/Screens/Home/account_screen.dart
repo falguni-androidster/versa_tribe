@@ -21,98 +21,127 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-
   @override
   Widget build(BuildContext context) {
-    final mHeight = MediaQuery.of(context).size.height;
-    final mWidth = MediaQuery.of(context).size.width;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+
+            SizedBox(height: size.height * 0.01),
+
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
                 return containerProfile(snapshot);
               },
             ),
+
+            SizedBox(height: size.height * 0.01),
+
             InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.personDetails),
-              onTap: (){
-                _navigateToNextScreen(context,'PersonDetails');
+              child: containerButton(
+                  height: size.height * 0.06, text: CustomString.personDetails),
+              onTap: () {
+                _navigateToNextScreen(context, 'PersonDetails');
               },
             ),
+
             InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageOrganization),
-              onTap: (){
-                _navigateToNextScreen(context,'ManageOrganization');
+              child: containerButton(
+                  height: size.height * 0.06,
+                  text: CustomString.manageOrganization),
+              onTap: () {
+                _navigateToNextScreen(context, 'ManageOrganization');
               },
             ),
+
             InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.settings),
-              onTap: (){
-                // logoutClick(context);
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.help),
-              onTap: (){
-                // logoutClick(context);
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.about),
-              onTap: (){
+              child: containerButton(
+                  height: size.height * 0.06, text: CustomString.settings),
+              onTap: () {
                 // logoutClick(context);
               },
             ),
 
-               Container(
-                 height: mHeight*0.07,
-                 margin: EdgeInsets.symmetric(horizontal: mWidth*0.25,vertical: mHeight*0.02),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: CustomColors.kGrayColor),
-                    onPressed: (){logoutClick(context);},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(),
-                      const Text(CustomString.logout,style: TextStyle(color: CustomColors.kLightGrayColor,fontSize: 16,fontWeight: FontWeight.bold)),
-                        SVGIconButton(svgPath: ImagePath.logoutIcon, onPressed: (){}, size: 15, color: CustomColors.kLightGrayColor)
-                      ],)
-                ),
-              ),
-            const Text(CustomString.version,style: TextStyle(fontSize: 16,color: CustomColors.kBlueColor)),
-            SizedBox(height: mHeight*0.02,)
+            InkWell(
+              child: containerButton(
+                  height: size.height * 0.06, text: CustomString.help),
+              onTap: () {
+                // logoutClick(context);
+              },
+            ),
+
+            InkWell(
+              child: containerButton(
+                  height: size.height * 0.06, text: CustomString.about),
+              onTap: () {
+                // logoutClick(context);
+              },
+            ),
+
+            Container(
+              height: size.height * 0.06,
+              margin: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.25, vertical: size.height * 0.02),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: CustomColors.kGrayColor),
+                  onPressed: () {
+                    logoutClick(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(),
+                      const Text(CustomString.logout,
+                          style: TextStyle(
+                              color: CustomColors.kLightGrayColor,
+                              fontSize: 16,
+                              fontFamily: 'Poppins')),
+                      SVGIconButton(
+                          svgPath: ImagePath.logoutIcon,
+                          onPressed: () {},
+                          size: 18,
+                          color: CustomColors.kLightGrayColor)
+                    ],
+                  )),
+            ),
+            const Text(CustomString.version,
+                style: TextStyle(fontSize: 16, color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
           ],
         ),
       ),
     );
   }
 
-  Widget containerButton({required height,required text}){
+  Widget containerButton({required height, required text}) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03,vertical: MediaQuery.of(context).size.height*0.01,),
+      margin: const EdgeInsets.all(10),
       alignment: Alignment.center,
-      //height: height,
-      height: MediaQuery.of(context).size.height*0.07,
+      height: MediaQuery.of(context).size.height * 0.06,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: CustomColors.kBlueColor
-      ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text(text,style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
-              const Spacer(),
-             // const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
-              SVGIconButton(svgPath: ImagePath.rightShiftIcon, onPressed: (){}, size: 14, color: CustomColors.kWhiteColor)
-            ],
-      ),
+          color: CustomColors.kBlueColor),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          children: [
+            Text(text,
+                style: const TextStyle(
+                    color: CustomColors.kWhiteColor, fontSize: 16,fontFamily: 'Poppins')),
+            const Spacer(),
+            // const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
+            SVGIconButton(
+                svgPath: ImagePath.rightShiftIcon,
+                onPressed: () {},
+                size: 14,
+                color: CustomColors.kWhiteColor)
+          ],
         ),
+      ),
     );
   }
 
@@ -123,23 +152,23 @@ class _AccountScreenState extends State<AccountScreen> {
       clearSharedPreferences(CustomString.isLoggedIn);
       showToast(context, CustomString.logOutSuccess);
       if (!mounted) return;
-      _navigateToNextScreen(context,'signInScreen');
+      _navigateToNextScreen(context, 'signInScreen');
     } else {
       showToast(context, CustomString.somethingWrongMessage);
     }
   }
 
   // Navigate to next Screen
-  void _navigateToNextScreen(BuildContext context,String screen) {
-    if(screen == 'signInScreen'){
+  void _navigateToNextScreen(BuildContext context, String screen) {
+    if (screen == 'signInScreen') {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => const SignInScreen()));
-    }else if(screen == 'ManageOrganization'){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ManageOrganization()));
-    }else if(screen == 'PersonDetails'){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
+    } else if (screen == 'ManageOrganization') {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ManageOrganization()));
+    } else if (screen == 'PersonDetails') {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
     }
   }
 
@@ -149,38 +178,38 @@ class _AccountScreenState extends State<AccountScreen> {
     prefs.remove(key);
   }
 
-  Widget containerProfile(snapshot){
+  Widget containerProfile(snapshot) {
     return Container(
-      margin: const EdgeInsets.only(top: 30,left: 10,right: 10,bottom: 20),
+      margin: const EdgeInsets.all(10),
       alignment: Alignment.center,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: CustomColors.kBlueColor
-      ),
+          color: CustomColors.kBlueColor),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(20.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(backgroundColor: CustomColors.kWhiteColor,radius: 40, child: Image.asset(ImagePath.profilePath)),
+            CircleAvatar(
+                backgroundColor: CustomColors.kWhiteColor,
+                radius: 40,
+                child: Image.asset(ImagePath.profilePath)),
             Padding(
-              padding: const EdgeInsets.all(25.0),
+              padding: const EdgeInsets.only(left: 20.0,top: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
+                  Text(
+                      '${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',
+                      style: const TextStyle(
+                          color: CustomColors.kWhiteColor, fontSize: 16,fontFamily: 'Poppins')),
                   const SizedBox(height: 2),
-                  Text(snapshot.data?.tOwner ?? '',style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 12))
+                  Text(snapshot.data?.tOwner ?? '',
+                      style: const TextStyle(
+                          color: CustomColors.kWhiteColor, fontSize: 14,fontFamily: 'Poppins')),
                 ],
               ),
             ),
-      /*      const Spacer(),
-            InkWell(
-              child: const Icon(Icons.edit,color: CustomColors.kWhiteColor),
-              onTap: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
-              },
-            )*/
           ],
         ),
       ),

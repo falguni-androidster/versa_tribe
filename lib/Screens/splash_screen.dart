@@ -60,13 +60,11 @@ class _SplashScreenState extends State<SplashScreen> {
   // Navigate to Next Screen
   Future<void> _navigateToNextScreen({context, screenName}) async {
     if (screenName == 'signInScreen') {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else if (screenName == 'homeScreen') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
     } else if (screenName == 'onBoardingScreen') {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
     }
   }
 

@@ -17,7 +17,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
 
@@ -45,11 +44,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
         leading: InkWell(
-          child: const Icon(Icons.arrow_back, color: CustomColors.kBlackColor),
+          child:
+              const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
           onTap: () {
             Navigator.pop(context);
           },
@@ -58,78 +59,83 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text(
-                    CustomString.forgotPassword,
-                    style: TextStyle(
-                        fontSize: 50,
-                        color: CustomColors.kBlackColor,
-                        fontWeight: FontWeight.bold),
-                  ),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text(
+                CustomString.forgotPassword,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
+                  color: CustomColors.kLightGrayColor,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10.0,top: 10.0),
-                  child: Text(
-                    CustomString.forgotMessage,
-                    style: TextStyle(
-                        fontSize: 16, color: CustomColors.kLightGrayColor),
-                  ),
-                ),
-                const SizedBox(height: 20),
+              ),
+              SizedBox(height: size.height * 0.03),
+              const Text(
+                CustomString.forgotMessage,
+                style: TextStyle(
+                    fontSize: 16,
+                    color: CustomColors.kLightGrayColor,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400),
+              ),
 
-                /// Email Address Field
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: TextFormField(
-                    controller: emailController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.emailRequired;
-                      } // using regular expression
-                      else if (!Validator().regEmail.hasMatch(value)) {
-                        return CustomString.validEmailAddress;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.emailAddress,
-                        labelStyle: TextStyle(color: CustomColors.kLightGrayColor,fontSize: 14)
-                    ),
-                    style: const TextStyle(color: CustomColors.kBlackColor),
-                  ),
-                ),
+              SizedBox(height: size.height * 0.02),
 
-                /// SignUp Button
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        forgotClick(context);
-                        },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColors.kBlackColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          padding: const EdgeInsets.all(16)
+              /// Email Address Field
+              TextFormField(
+                controller: emailController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return CustomString.emailRequired;
+                  } // using regular expression
+                  else if (!Validator().regEmail.hasMatch(value)) {
+                    return CustomString.validEmailAddress;
+                  } else {
+                    return null;
+                  }
+                },
+                decoration: const InputDecoration(
+                    labelText: CustomString.emailAddress,
+                    labelStyle: TextStyle(
+                        color: CustomColors.kLightGrayColor,
+                        fontSize: 14,
+                        fontFamily: 'Poppins')),
+                style: const TextStyle(
+                  color: CustomColors.kBlackColor,
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+
+              SizedBox(height: size.height * 0.02),
+
+              /// SignUp Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    forgotClick(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: CustomColors.kBlueColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Text(
-                        CustomString.submit,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white),
-                      ),
-                    ),
+                      padding: const EdgeInsets.all(14)),
+                  child: const Text(
+                    CustomString.submit,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
-              ]
+              ),
+            ]),
           ),
         ),
       ),
@@ -138,15 +144,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   // Navigate to next Screen
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const SignInScreen()));
   }
 
   Future<void> forgotClick(context) async {
     if (_formKey.currentState!.validate()) {
-      if(connectivityResult == ConnectivityResult.none){
+      if (connectivityResult == ConnectivityResult.none) {
         showToast(context, CustomString.checkNetworkConnection);
-      } else if(connectivityResult == ConnectivityResult.mobile){
+      } else if (connectivityResult == ConnectivityResult.mobile) {
         showToast(context, CustomString.notConnectServer);
       } else {
         // put Loading
@@ -154,13 +160,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           'Email': emailController.text.toString(),
         };
 
-        const String forgotUrl = '${ApiConfig.baseUrl}/api/Account/ForgotPassword';
+        const String forgotUrl =
+            '${ApiConfig.baseUrl}/api/Account/ForgotPassword';
         final response = await http.post(Uri.parse(forgotUrl), body: data);
         if (response.statusCode == 200) {
           showToast(context, CustomString.forgotPwdMessage);
           if (!mounted) return;
           _navigateToNextScreen(context);
-        } else if (response.statusCode == 400){
+        } else if (response.statusCode == 400) {
           showToast(context, response.body);
         } else {
           showToast(context, CustomString.wrongEmail);

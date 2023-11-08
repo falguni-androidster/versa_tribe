@@ -47,23 +47,18 @@ class CustomString {
   static const String validConfirmPassword = "* Please enter a valid password...";
   static const String passwordAndConfirmPasswordNotMatch = 'Password and ConfirmPassword does not match';
 
-  static const String enterEmailAddress = 'Enter Email Address';
-  static const String enterPassword = 'Enter Password';
-
   static const String emailAddress = 'Email Address';
   static const String password = "Password";
   static const String confirmPassword = "Confirm Password";
 
-  static const String forgotPassword = "Forget Password?";
-  static const String donTHaveAccount = "Don’t have an account?";
-  static const String continueWith = 'Or continue with';
+  static const String forgotPassword = "Forget Password ?";
+  static const String donTHaveAccount = "don’t have an account ?  ";
+  static const String continueWith = 'or continue with';
 
   static const String signUp = 'SignUp';
-  static const String signIn = "SignIn";
-  static const String signInNow = ' SignIn Now';
-  static const String createNow = ' Create Now';
+  static const String signIn = "LogIn";
 
-  static const String alreadyHaveAccount = 'Already Have Account?';
+  static const String alreadyHaveAccount = 'Already Have Account?  ';
   static const String accountSuccessCreated = ' Account Created Successfully!! ';
   static const String accountLoginSuccess = ' Login Successfully!! ';
   static const String loginFailed = 'Login Failed!!';
@@ -78,6 +73,8 @@ class CustomString {
 
 /*------------------------  Profile Screen --------------------------*/
 
+  static const String createProfile = 'createProfile';
+  static const String updateProfile = 'Update Profile';
   static const String fNameRequired = '* FirstName is required...';
   static const String firstName = 'First Name';
   static const String lNameRequired = '* LastName is required...';
@@ -110,6 +107,8 @@ class CustomString {
   static const String training = 'Training';
   static const String message = 'Message';
   static const String account = 'Account';
+
+  static const String joinOrg = 'Join Org';
 
 
 /*------------------------  Account Screen --------------------------*/

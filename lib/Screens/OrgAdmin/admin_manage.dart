@@ -12,8 +12,10 @@ import '../sign_in_screen.dart';
 import 'manage_department.dart';
 
 class ManageAdminScreen extends StatefulWidget {
-  String title;
-  ManageAdminScreen({required this.title, super.key});
+
+  final String title;
+  const ManageAdminScreen({required this.title, super.key});
+
   @override
   State<ManageAdminScreen> createState() => _ManageAdminScreenState();
 }
@@ -142,7 +144,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               InkWell(
                 child: const Icon(Icons.edit,color: CustomColors.kBlackColor),
                 onTap: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
                 },
               )
             ],

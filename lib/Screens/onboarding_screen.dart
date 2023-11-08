@@ -50,12 +50,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           height: 300,
         ),
         const Spacer(),
-        Text(onBoardingTitle, style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 30)),
+        Text(onBoardingTitle, style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins', fontSize: 30)),
         const SizedBox(height: 20),
         SizedBox(
           width: 300,
           child: Text(onBoardingDis,
-              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 20), textAlign: TextAlign.center),
+              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 20,
+                fontFamily: 'Poppins'), textAlign: TextAlign.center),
         ),
         const Spacer(),
       ],
@@ -174,6 +175,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       style: TextStyle(
                         color: CustomColors.kWhiteColor,
                         fontSize: 16,
+                        fontFamily: 'Poppins',
                         fontWeight: FontWeight.bold,
                       ),
                     ),

@@ -64,9 +64,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kBlackColor,
         inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder (
-              borderSide: BorderSide (color: CustomColors.kBlackColor),
+              borderSide: BorderSide (color: CustomColors.kBlackColor,width: 1),
           ),
         )
       ),
