@@ -20,6 +20,7 @@ class CustomString {
 
   static const String submit = 'Submit';
   static const String cancel = 'Cancel';
+  static const String leave = 'Leave';
 
 
 /*------------------- API Calling Messages  ------------------*/

@@ -55,8 +55,12 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
         title: const Text(CustomString.manageOrganization,
             style: TextStyle(color: CustomColors.kBlueColor)),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: (){joinOrganizationDialog(context: context, mHeight: mHeight, mWidth: mWidth);}, icon: const Icon(Icons.add,color: CustomColors.kBlackColor,))
+        ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      /// x-request Button for join org
+      /*floatingActionButton: FloatingActionButton.extended(
         label: const Row(
           children: [
             Padding(
@@ -74,8 +78,9 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
         onPressed: () {
           joinOrganizationDialog(context: context, mHeight: mHeight, mWidth: mWidth);
         },
-      ),
+      ),*/
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
             //padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
@@ -177,8 +182,7 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                 children: [
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment
@@ -234,31 +238,26 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                   horizontal: mWidth * 0.03,
                                   vertical: mHeight * 0.005),
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     width: mWidth*0.7,
                                     child: Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                          // child: Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   children: [
-                                          //     const Text(CustomString.requestApproved1),
-                                          //     Text(
-                                          //       val.manageOrgDataList[index].orgName ??
-                                          //           "", style: const TextStyle(
-                                          //         color: CustomColors.kBlueColor),),
-                                          //     const Text(CustomString.requestApproved2),
-                                          //
-                                          //   ],
-                                          // ),
-                                         child: Text("${CustomString.requestApproved1} ${val.manageOrgDataList[index].orgName??""} ${CustomString.requestApproved2}"),
+                                        Flexible(
+                                          child: RichText(
+                                            text: TextSpan(
+                                            text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
+                                              children: [
+                                                TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor)),
+                                                const TextSpan(text: CustomString.requestApproved2)
+                                              ]
+                                          ),)
                                         ),
-                                        SizedBox(height: mHeight * 0.01,),
+                                        SizedBox(height: mHeight * 0.005,),
                                         Text("${CustomString.department} ${val
                                             .manageOrgDataList[index].deptName ??
                                             ""}", style: const TextStyle(fontSize: 10,
@@ -266,16 +265,17 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                       ],
                                     ),
                                   ),
-                                  Expanded(
-                                    child: ElevatedButton(style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(
-                                          CustomColors.kGrayColor),
-                                    ),
-                                        onPressed: () {},
-                                        child: const Text(CustomString.cancel,
-                                            style: TextStyle(color: CustomColors
-                                                .kBlackColor))),
+                                  ElevatedButton(style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        CustomColors.kGrayColor),
                                   ),
+                                      onPressed: () {
+                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.manageOrgDataList[index].orgId,personID:val.manageOrgDataList[index].personId);
+
+                                      },
+                                      child: const Text(CustomString.leave,
+                                          style: TextStyle(color: CustomColors
+                                              .kBlackColor))),
                                 ],
                               ),
                             );

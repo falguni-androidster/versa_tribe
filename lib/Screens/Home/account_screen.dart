@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
-import 'package:versa_tribe/Screens/Profile/update_profile_screen.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
+import 'package:versa_tribe/Utils/svg_btn.dart';
 
 import '../../Utils/api_config.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 import '../../Utils/custom_toast.dart';
 import '../manage_organization_screen.dart';
-import '../Profile/create_profile_screen.dart';
 import '../sign_in_screen.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -25,6 +24,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mHeight = MediaQuery.of(context).size.height;
+    final mWidth = MediaQuery.of(context).size.width;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
@@ -67,23 +68,24 @@ class _AccountScreenState extends State<AccountScreen> {
                 // logoutClick(context);
               },
             ),
-            InkWell(
-              child: Container(
-                margin: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                width: size.width * 0.4,
-                height: size.height * 0.06,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: CustomColors.kBlueColor
+
+               Container(
+                 height: mHeight*0.07,
+                 margin: EdgeInsets.symmetric(horizontal: mWidth*0.25,vertical: mHeight*0.02),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: CustomColors.kGrayColor),
+                    onPressed: (){logoutClick(context);},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(),
+                      const Text(CustomString.logout,style: TextStyle(color: CustomColors.kLightGrayColor,fontSize: 16,fontWeight: FontWeight.bold)),
+                        SVGIconButton(svgPath: ImagePath.logoutIcon, onPressed: (){}, size: 15, color: CustomColors.kLightGrayColor)
+                      ],)
                 ),
-                child: const Text(CustomString.logout,style: TextStyle(color: CustomColors.kWhiteColor,fontSize: 16,fontWeight: FontWeight.bold)),
               ),
-              onTap: (){
-                logoutClick(context);
-              },
-            ),
-            const Text(CustomString.version,style: TextStyle(fontSize: 10,color: CustomColors.kLightGrayColor)),
+            const Text(CustomString.version,style: TextStyle(fontSize: 16,color: CustomColors.kBlueColor)),
+            SizedBox(height: mHeight*0.02,)
           ],
         ),
       ),
@@ -92,23 +94,25 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget containerButton({required height,required text}){
     return Container(
-      margin: const EdgeInsets.all(8.0),
+      margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03,vertical: MediaQuery.of(context).size.height*0.01,),
       alignment: Alignment.center,
-      height: height,
+      //height: height,
+      height: MediaQuery.of(context).size.height*0.07,
       decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
           color: CustomColors.kBlueColor
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          children: [
-            Text(text,style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
-            const Spacer(),
-            const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
-          ],
-        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text(text,style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
+              const Spacer(),
+             // const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
+              SVGIconButton(svgPath: ImagePath.rightShiftIcon, onPressed: (){}, size: 14, color: CustomColors.kWhiteColor)
+            ],
       ),
+        ),
     );
   }
 
@@ -170,13 +174,13 @@ class _AccountScreenState extends State<AccountScreen> {
                 ],
               ),
             ),
-            const Spacer(),
+      /*      const Spacer(),
             InkWell(
               child: const Icon(Icons.edit,color: CustomColors.kWhiteColor),
               onTap: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
               },
-            )
+            )*/
           ],
         ),
       ),

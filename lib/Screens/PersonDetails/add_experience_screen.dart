@@ -239,7 +239,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                     children: [
                       ///Start dateTime
                       SizedBox(
-                        width: 150,
+                        width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
                               return TextFormField(
@@ -276,7 +276,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
-                        width: 150,
+                        width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
                               return TextFormField(

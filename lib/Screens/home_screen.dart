@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> orgAdminList = [];
   late OrgNameId oPData;
   late OrgNameId oAData;
-  late String selectedValue;
+  String? selectedValue;
 
   @override
   initState() {
@@ -176,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
-                return val.string.isNotEmpty ? InkWell(
+                return val.string.isNotEmpty && val.string.length.isNaN? InkWell(
                     splashFactory: NoSplash.splashFactory,
                   splashColor: CustomColors.kWhiteColor,
                   child: Row(
