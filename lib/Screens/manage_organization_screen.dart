@@ -1,7 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
+import 'package:versa_tribe/Utils/shared_preference.dart';
+import '../Model/OrgNaneId.dart';
+import '../Model/login_response.dart';
 import '../Providers/manage_org_index_provider.dart';
+import '../Providers/manage_visibility_btn.dart';
+import '../Providers/organization_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import '../Utils/image_path.dart';
@@ -13,6 +21,13 @@ class ManageOrganization extends StatefulWidget {
 }
 
 class _ManageOrganizationState extends State<ManageOrganization>with SingleTickerProviderStateMixin {
+
+  final List<String> margList = [];
+  List<String> finalList = [];
+  List<String> orgAdminList = [];
+  late OrgNameId oPData;
+  late OrgNameId oAData;
+  String? selectedValue;
 
   TextEditingController organizationNameController = TextEditingController();
   TextEditingController departmentNameController = TextEditingController();
@@ -31,7 +46,51 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
     ApiConfig.getManageOrgData(context: context, tabIndex: 0);
     super.initState();
   }
+  checkUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic>? responseList = prefs.getJson('responseModel');
+    LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
+    print("org person =====>${loginResponseModel.orgPerson}");
+    print("org admin =====>${loginResponseModel.orgAdmin}");
+    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
+    List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
 
+    final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context,listen: false);
+    final setPtovider = Provider.of<OrganizationProvider>(context,listen: false);
+    if(loginResponseModel.orgPerson!="[]"){
+      oP.forEach((element) {
+        oPData = OrgNameId.fromJson(element);
+        print("orgPerson name---)>${oPData.orgName}");
+        margList.add(oPData.orgName.toString());///Add orgPersonName List in margList
+        selectedValue = margList[0];//Initial val for dropdown
+        finalList = margList;
+        proManageVisibility.setString(finalList);
+        print("F1---------------->${finalList.length}");
+      });}else{}
+
+    if(loginResponseModel.orgAdmin!="[]"){
+      oA.forEach((element) {
+        oAData = OrgNameId.fromJson(element);
+        print("\norgAdmin name---)>${oAData.orgName}");
+        margList.add(oAData.orgName.toString());
+        orgAdminList.add(oAData.orgName.toString());
+
+        var seen = Set<String>();
+        finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
+        selectedValue = orgAdminList[0];
+        if (selectedValue==orgAdminList[0]) {
+          setPtovider.setVisible(true);
+        } else {
+          setPtovider.setVisible(false);
+        }
+
+        //Initial val for dropdown
+        proManageVisibility.setString(finalList);
+        print("F2---------------->${finalList.length}");
+      });}else{}
+
+    return loginResponseModel;
+  }
   @override
   Widget build(BuildContext context) {
     final mHeight = MediaQuery
@@ -226,7 +285,14 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                           .builder(
                           shrinkWrap: true,
                           itemCount: val.manageOrgDataList.length,
-                          itemBuilder: (context, index) {
+                          itemBuilder: (context, index) {    // child: RichText(
+                                        //   text: TextSpan(
+                                        //   text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
+                                        //     children: [
+                                        //       TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor)),
+                                        //       const TextSpan(text: CustomString.requestApproved2)
+                                        //     ]
+                                        // ),),
                             return Container(
                               height: mHeight * 0.08,
                               decoration: const BoxDecoration(
@@ -271,7 +337,6 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
                                   ),
                                       onPressed: () {
                                         ApiConfig.deleteOrgRequest(context: context,orgID: val.manageOrgDataList[index].orgId,personID:val.manageOrgDataList[index].personId);
-
                                       },
                                       child: const Text(CustomString.leave,
                                           style: TextStyle(color: CustomColors

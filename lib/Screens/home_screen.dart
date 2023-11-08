@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
    checkUser() async {
-    print("TTEST------------------------------------");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic>? responseList = prefs.getJson('responseModel');
     LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
@@ -134,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    print("--------------------Widget------------${finalList.length}");
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -176,30 +174,32 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
-                return val.string.isNotEmpty && val.string.length.isNaN? InkWell(
-                    splashFactory: NoSplash.splashFactory,
-                  splashColor: CustomColors.kWhiteColor,
-                  child: Row(
+                print("Test String join org----->${val.string}");
+                return val.string.isNotEmpty && selectedValue != null?
+                Row(
                     children: [
                       Consumer<OrganizationProvider>(
                         builder: (context,val,child) {
                           return Text("$selectedValue  ",style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16),);
                         }
                       ),
-                      SVGIconButton(
-                          svgPath: ImagePath.dropdownIcon,
-                          size: 6.0,
-                          color: CustomColors.kLightGrayColor,
-                          // Replace with the path to your SVG asset
-                          onPressed: () {_showDialog();}),
+                      CircleAvatar(
+                        radius: 10,backgroundColor: Colors.transparent,
+                        child: SVGIconButton(
+                            svgPath: ImagePath.dropdownIcon,
+                            size: 6.0,
+                            color: CustomColors.kLightGrayColor,
+                            // Replace with the path to your SVG asset
+                            onPressed: () {
+                              _showDialog();
+                            }),
+                      ),
                     ],
-                  ),
-                  onTap: (){_showDialog();},
-                ) : TextButton(onPressed: () {
+                  )
+                 : TextButton(onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (
                       context) => const ManageOrganization()));
-                },
-                    child: const Text("join Org",
+                }, child: const Text("join Org",
                       style: TextStyle(color: CustomColors.kBlueColor),));
               }),
               const Spacer(),
