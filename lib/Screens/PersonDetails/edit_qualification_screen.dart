@@ -13,6 +13,7 @@ class EditQualificationScreen extends StatefulWidget {
   final String? courseName;
   final String? institute;
   final String? grade;
+  final String? city;
   final String? yop;
   final int? pqID;
 
@@ -21,6 +22,7 @@ class EditQualificationScreen extends StatefulWidget {
       required this.courseName,
       required this.institute,
       required this.grade,
+      required this.city,
       required this.yop,
       required this.pqID});
 
@@ -34,6 +36,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
   TextEditingController courseController = TextEditingController();
   TextEditingController instituteController = TextEditingController();
   TextEditingController gradeController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
   TextEditingController yopController = TextEditingController();
   dynamic provider;
   dynamic providerInstitute;
@@ -51,10 +54,12 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
     if (courseController.text == "" &&
         instituteController.text == "" &&
         gradeController.text == "" &&
+        cityController.text == "" &&
         yopController.text == "") {
       courseController.text = widget.courseName.toString();
       instituteController.text = widget.institute.toString();
       gradeController.text = widget.grade.toString();
+      cityController.text = widget.city.toString();
       yopController.text = widget.yop.toString();
     }
   }
@@ -62,8 +67,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
-    final providerInstitute =
-        Provider.of<SearchInstituteProvider>(context, listen: false);
+    final providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -91,8 +95,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Course name
-                Selector<PersonQualificationProvider,
-                        List<PersonQualificationModel>>(
+                Selector<PersonQualificationProvider,List<PersonQualificationModel>>(
                     selector: (_, val) => val.personQl,
                     builder: (context, personQl, child) {
                       return TextFormField(
@@ -109,9 +112,11 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                               ApiConfig.searchCourse(
                                   context: context, courseString: value);
                               provider.courseList.clear();
+                              provider.setVisible(true);
+                            }else{
+                              provider.setVisible(false);
                             }
                             provider.courseList.clear();
-                            provider.setVisible(true);
                           },
                           decoration: const InputDecoration(
                               labelText: CustomString.courseName,
@@ -122,14 +127,13 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                               const TextStyle(color: CustomColors.kBlackColor));
                     }),
                 Consumer<SearchCourseProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.courseList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "--------->${val.courseList[index].couName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("Course name search--------->${val.courseList[index].couName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -151,9 +155,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                                           courseController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }):Container();
                 }),
                 SizedBox(height: mWidth * 0.03),
 
@@ -172,9 +175,11 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                         ApiConfig.searchInstitute(
                             context: context, instituteString: value);
                         providerInstitute.instituteList.clear();
+                        providerInstitute.setVisible(true);
+                      }else{
+                        providerInstitute.setVisible(false);
                       }
                       providerInstitute.instituteList.clear();
-                      providerInstitute.setVisible(true);
                     },
                     decoration: const InputDecoration(
                         labelText: CustomString.instituteName,
@@ -183,14 +188,13 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     style: const TextStyle(color: CustomColors.kBlackColor)),
                 Consumer<SearchInstituteProvider>(
                     builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.instituteList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "INSTITUTE--------->${val.instituteList[index].instName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("institute name search--------->${val.instituteList[index].instName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -212,9 +216,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                                           instituteController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }): Container();
                 }),
                 SizedBox(height: mWidth * 0.03),
 
@@ -233,38 +236,55 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                         labelStyle: TextStyle(
                             color: CustomColors.kLightGrayColor, fontSize: 14)),
                     style: const TextStyle(color: CustomColors.kBlackColor)),
-
+                SizedBox(height: mWidth * 0.03),
+                /// City
+                TextFormField(
+                    controller: cityController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.cityRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        labelText: CustomString.city,
+                        labelStyle: TextStyle(
+                            color: CustomColors.kLightGrayColor, fontSize: 14)),
+                    style: const TextStyle(color: CustomColors.kBlackColor)),
                 SizedBox(height: mWidth * 0.03),
 
                 /// Year Of Passing
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return CustomString.passingDateRequired;
-                    } else {
-                      return null;
-                    }
-                  },
-                  controller: yopController,
-                  textAlign: TextAlign.center,
-                  //editing controller of this TextField
-                  decoration: const InputDecoration(
-                    labelText: CustomString.startDate,
-                    labelStyle: TextStyle(
-                        color: CustomColors.kLightGrayColor, fontSize: 14),
-                    suffixIcon: Icon(
-                      Icons.calendar_month,
-                      color: CustomColors.kBlueColor,
+                SizedBox(
+                  width: mWidth/2.1,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.passingDateRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    controller: yopController,
+                    textAlign: TextAlign.center,
+                    //editing controller of this TextField
+                    decoration: const InputDecoration(
+                      labelText: CustomString.startDate,
+                      labelStyle: TextStyle(
+                          color: CustomColors.kLightGrayColor, fontSize: 14),
+                      suffixIcon: Icon(
+                        Icons.calendar_month,
+                        color: CustomColors.kBlueColor,
+                      ),
                     ),
+                    style: const TextStyle(color: CustomColors.kBlackColor),
+                    readOnly: true,
+                    //set it true, so that user will not able to edit text
+                    onTap: () async {
+                      _showDatePicker(context: context);
+                    },
                   ),
-                  style: const TextStyle(color: CustomColors.kBlackColor),
-                  readOnly: true,
-                  //set it true, so that user will not able to edit text
-                  onTap: () async {
-                    _showDatePicker(context: context);
-                  },
                 ),
-
                 SizedBox(height: mWidth * 0.03),
 
                 /// Submit Button
@@ -280,6 +300,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                               courseName: courseController.text,
                               instituteName: instituteController.text,
                               grade: gradeController.text,
+                              city: cityController.text,
                               yop: yopController.text);
                         } else {
                           return;

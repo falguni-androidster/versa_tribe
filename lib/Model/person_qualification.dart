@@ -8,7 +8,7 @@ class PersonQualificationModel {
     PersonQualificationModel({
         required this.status,
         required this.tStamp,
-        required this.ctypName,
+        required this.ctyName,
         required this.pqId,
         required this.firstName,
         required this.instName,
@@ -21,7 +21,7 @@ class PersonQualificationModel {
 
     int status;
     DateTime tStamp;
-    String ctypName;
+    String ctyName;
     int pqId;
     String firstName;
     String instName;
@@ -34,7 +34,7 @@ class PersonQualificationModel {
     factory PersonQualificationModel.fromJson(Map<dynamic, dynamic> json) => PersonQualificationModel(
         status: json["Status"],
         tStamp: DateTime.parse(json["TStamp"]),
-        ctypName: json["Ctyp_Name"],
+        ctyName: json["Ctyp_Name"],
         pqId: json["PQ_Id"],
         firstName: json["FirstName"],
         instName: json["Inst_Name"],
@@ -48,7 +48,7 @@ class PersonQualificationModel {
     Map<dynamic, dynamic> toJson() => {
         "Status": status,
         "TStamp": tStamp.toIso8601String(),
-        "Ctyp_Name": ctypName,
+        "Ctyp_Name": ctyName,
         "PQ_Id": pqId,
         "FirstName": firstName,
         "Inst_Name": instName,

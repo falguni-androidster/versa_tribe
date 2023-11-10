@@ -51,7 +51,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
     widget.company!=""?oldRadioProvider.setRadioValue("Company"):oldRadioProvider.setRadioValue("Industry");
 
-
     cmpProvider.cmpList.clear();
     indProvider.indList.clear();
 
@@ -66,7 +65,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     debugPrint("Company----->${widget.company}");
     debugPrint("Industry----->${widget.industry}");
     final providerCompany = Provider.of<SearchExCompanyProvider>(context, listen: false);
@@ -148,7 +146,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 ///Company & Industry Name
                 Consumer<RadioComIndProvider>(
                     builder: (context, val, child) {
-                      print("oooooooo-->${val.selectedValue}");
+                      print("radio btn value--------->${val.selectedValue}");
                       return TextFormField(
                           controller: val.selectedValue!=""?val.selectedValue=="Company"?companyNController:industryNController:widget.industry!=""
                               ? industryNController
@@ -167,21 +165,18 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             }
                           },
                           onChanged: (value) {
-                            if (value != "") {
+                            if (value != "" && value.isNotEmpty) {
                               print("Selected--======---=-=-->${val.selectedValue}");
-                              val.selectedValue == "Company"
-                                  ? ApiConfig.searchExCompany(
-                                      context: context, companyString: value)
-                                  : ApiConfig.searchExIndustry(
-                                      context: context, industryString: value);
+                              val.selectedValue == "Company" ? ApiConfig.searchExCompany(context: context, companyString: value) : ApiConfig.searchExIndustry(context: context, industryString: value);
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
                               val.selectedValue=="Company"?industryNController.clear():companyNController.clear();
+                              val.selectedValue=="Company"?providerCompany.setVisible(true):providerIndustry.setVisible(true);
+                            }else{
+                              val.selectedValue=="Company"?providerCompany.setVisible(false):providerIndustry.setVisible(false);
                             }
                             providerCompany.cmpList.clear();
-                            providerCompany.setVisible(true);
                             providerIndustry.indList.clear();
-                            providerIndustry.setVisible(true);
                           },
                           decoration: InputDecoration(
                               labelText: val.selectedValue == "Company"
@@ -198,14 +193,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 ///for display search values
                 Consumer<SearchExCompanyProvider>(
                     builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ?ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.cmpList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "INSTITUTE--------->${val.cmpList[index].companyName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("Company--------->${val.cmpList[index].companyName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -227,20 +221,19 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                           companyNController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }): Container();
                 }),
                 Consumer<SearchExIndustryProvider>(
                     builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ?ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.indList.length,
                       itemBuilder: (context, index) {
                         debugPrint(
                             "INSTITUTE--------->${val.indList[index].industryFieldName}");
-                        return val.visible == true
-                            ? InkWell(
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -262,14 +255,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                           industryNController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }): Container();
                 }),
 
                 /// Start DateTime & End DateTime
                 Container(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: mHeight*0.02),
                   margin: EdgeInsets.symmetric(horizontal: mWidth * 0.01 / 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

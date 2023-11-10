@@ -219,15 +219,10 @@ class ApiConfig {
     }
   }
   static addExData({context, jobTitle, comName, indName, sDate, eDate}) async {
-    /* String jobTitle = jobTitleController.text;
-    String? companyN = companyNController.text;
-    String? industryN = industryNController.text;*/
-
     DateTime startDate = DateTime.parse(sDate);
     DateTime endDate = DateTime.parse(eDate);
-
     int result = monthsBetweenDates(startDate, endDate);
-    debugPrint('Number of months between the two dates:--->> $result');
+    debugPrint('Number of months----------->> $result');
 
     // Map<String, dynamic> requestData = {
     //   "Experience": {
@@ -255,12 +250,9 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
       ApiConfig.getUserExperience(context);
       Navigator.pop(context);
     } else {
-      debugPrint("--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Try again..."),
       ));
@@ -299,11 +291,11 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         // debugPrint("if--------->${response.body}");
-       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
         ApiConfig.getUserExperience(context);
         Navigator.pop(context);
       } else {
-        debugPrint("else--------->${response.body}");
+        //debugPrint("else--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Try again details not update..."),
         ));
@@ -400,20 +392,25 @@ class ApiConfig {
       ));
     }
   }
-  static editQualificationData({context, courseName, instituteName, grade, yop, personQualificationID}) async {
+  static editQualificationData({context, courseName, instituteName, grade,city, yop, personQualificationID}) async {
     debugPrint("course--->$courseName");
     debugPrint("instituteName--->$instituteName");
     debugPrint("grade--->$grade");
+    debugPrint("city--->$city");
     debugPrint("yop--->$yop");
 
     Map<String, dynamic> requestData = {
       "PQ_Id":personQualificationID,
+      //"Person_Id":personQualificationID,
       "YOP": yop,
       "Grade": grade,
+      "City": city,
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
     };
-    String url = "$baseUrl/api/PersonQualifications";
+
+
+    String url = "$baseUrl/api/PersonQualifications/Update";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
@@ -422,7 +419,6 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification edit success--------->${response.body}");
-     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
       ApiConfig.getUserQualification(context);
       Navigator.pop(context);
     } else {
@@ -483,7 +479,6 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
-
   static searchInstitute({context, instituteString}) async {
     final provider = Provider.of<SearchInstituteProvider>(context,listen: false);
     const String apiUrl = "$baseUrl/api/Institutes/AutoCompleteInstitute";
@@ -505,7 +500,6 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
-
   static searchSkill({context, skillString}) async {
     final provider = Provider.of<SearchSkillProvider>(context,listen: false);
     const String apiUrl = "$baseUrl/api/Skills/AutoCompleteSkills";
@@ -527,7 +521,6 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
-
   static searchHobby({context, hobbyString}) async {
     final provider = Provider.of<SearchHobbyProvider>(context,listen: false);
     const String apiUrl = "$baseUrl/api/Hobbies/AutoCompleteHobbies";
@@ -549,7 +542,6 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
-
   static searchExCompany({context, companyString}) async {
     final provider = Provider.of<SearchExCompanyProvider>(context,listen: false);
     const String apiUrl = "$baseUrl/api/Experience/AutoCompleteCompanyNames";
@@ -703,7 +695,6 @@ class ApiConfig {
       debugPrint("Data not Delete Try again----------No-->${response.body}");
     }
   }
-
 
   static Future<List<DepartmentModel>> getDepartment({context, orgId}) async {
     List<DepartmentModel>dpM =[];

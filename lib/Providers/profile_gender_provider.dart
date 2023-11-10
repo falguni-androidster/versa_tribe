@@ -11,7 +11,6 @@ class ProfileGenderProvider with ChangeNotifier{
 }
 
 
-
 class RadioComIndProvider with ChangeNotifier{
   String _selectedValue = "";
   String get selectedValue => _selectedValue;
@@ -20,6 +19,18 @@ class RadioComIndProvider with ChangeNotifier{
     _selectedValue = radioVal;
   }
   callNotify(){
+    notifyListeners();
+  }
+}
+
+class AddRadioComIndProvider with ChangeNotifier{
+  String _selectedValue = "Company";
+  String get selectedValue => _selectedValue;
+
+  setRadioValue(radioVal){
+    _selectedValue = radioVal;
+  }
+  callRadioNotify(){
     notifyListeners();
   }
 }

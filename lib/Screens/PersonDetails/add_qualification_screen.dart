@@ -5,12 +5,10 @@ import 'package:versa_tribe/Providers/date_provider.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
-
 import '../../Providers/person_details_provider.dart';
 
 class AddQualificationScreen extends StatefulWidget {
   const AddQualificationScreen({super.key});
-
   @override
   State<AddQualificationScreen> createState() => _AddQualificationScreenState();
 }
@@ -27,8 +25,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
-    final providerInstitute =
-        Provider.of<SearchInstituteProvider>(context, listen: false);
+    final providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -66,13 +63,14 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                       }
                     },
                     onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchCourse(
-                            context: context, courseString: value);
+                      if (value != "" && value.isNotEmpty) {
+                        ApiConfig.searchCourse(context: context, courseString: value);
                         provider.courseList.clear();
+                        provider.setVisible(true);
+                      }else{
+                        provider.setVisible(false);
                       }
                       provider.courseList.clear();
-                      provider.setVisible(true);
                     },
                     decoration: const InputDecoration(
                         labelText: CustomString.courseName,
@@ -80,14 +78,13 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                             color: CustomColors.kLightGrayColor, fontSize: 14)),
                     style: const TextStyle(color: CustomColors.kBlackColor)),
                 Consumer<SearchCourseProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.courseList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "--------->${val.courseList[index].couName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("company name--------->${val.courseList[index].couName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -108,9 +105,8 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                                       val.courseList[index].couName ??
                                           courseController.text;
                                   val.setVisible(false);
-                                })
-                            : Container();
-                      });
+                                });
+                      }): Container();
                 }),
                 SizedBox(height: mWidth * 0.03),
 
@@ -129,6 +125,8 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                         ApiConfig.searchInstitute(
                             context: context, instituteString: value);
                         providerInstitute.instituteList.clear();
+                      }else{
+                        providerInstitute.setVisible(false);
                       }
                       providerInstitute.instituteList.clear();
                       providerInstitute.setVisible(true);
@@ -140,14 +138,13 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                     style: const TextStyle(color: CustomColors.kBlackColor)),
                 Consumer<SearchInstituteProvider>(
                     builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ?ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.instituteList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "INSTITUTE--------->${val.instituteList[index].instName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("institute name--------->${val.instituteList[index].instName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -169,37 +166,10 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                                           instituteController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }): Container();
                 }),
                 SizedBox(height: mWidth * 0.03),
-                /// City name
-                TextFormField(
-                    controller: cityController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.cityRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-              /*      onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchInstitute(
-                            context: context, instituteString: value);
-                        providerInstitute.instituteList.clear();
-                      }
-                      providerInstitute.instituteList.clear();
-                      providerInstitute.setVisible(true);
-                    },*/
-                    decoration: const InputDecoration(
-                        labelText: CustomString.city,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
-                SizedBox(height: mWidth * 0.03),
-
 
                 /// Grade
                 TextFormField(
@@ -216,34 +186,62 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                         labelStyle: TextStyle(
                             color: CustomColors.kLightGrayColor, fontSize: 14)),
                     style: const TextStyle(color: CustomColors.kBlackColor)),
+                SizedBox(height: mWidth * 0.03),
 
+                /// City name
+                TextFormField(
+                    controller: cityController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.cityRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    /*      onChanged: (value) {
+                      if (value != "") {
+                        ApiConfig.searchInstitute(
+                            context: context, instituteString: value);
+                        providerInstitute.instituteList.clear();
+                      }
+                      providerInstitute.instituteList.clear();
+                      providerInstitute.setVisible(true);
+                    },*/
+                    decoration: const InputDecoration(
+                        labelText: CustomString.city,
+                        labelStyle: TextStyle(
+                            color: CustomColors.kLightGrayColor, fontSize: 14)),
+                    style: const TextStyle(color: CustomColors.kBlackColor)),
                 SizedBox(height: mWidth * 0.03),
 
                 /// Year Of Passing
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return CustomString.passingDateRequired;
-                    } else {
-                      return null;
-                    }
-                  },
-                  controller: yopController,
-                  textAlign: TextAlign.center,
-                  //editing controller of this TextField
-                  decoration: const InputDecoration(
-                    labelText: CustomString.passingDate,
-                    labelStyle: TextStyle(
-                        color: CustomColors.kLightGrayColor, fontSize: 14),
-                    suffixIcon: Icon(Icons.calendar_month,
-                        color: CustomColors.kBlueColor),
+                SizedBox(
+                  width: mWidth/2.1,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.passingDateRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    controller: yopController,
+                    textAlign: TextAlign.center,
+                    //editing controller of this TextField
+                    decoration: const InputDecoration(
+                      labelText: CustomString.passingDate,
+                      labelStyle: TextStyle(
+                          color: CustomColors.kLightGrayColor, fontSize: 14),
+                      suffixIcon: Icon(Icons.calendar_month,
+                          color: CustomColors.kBlueColor),
+                    ),
+                    style: const TextStyle(color: CustomColors.kBlackColor),
+                    readOnly: true,
+                    //set it true, so that user will not able to edit text
+                    onTap: () async {
+                      _showDatePicker(context: context);
+                    },
                   ),
-                  style: const TextStyle(color: CustomColors.kBlackColor),
-                  readOnly: true,
-                  //set it true, so that user will not able to edit text
-                  onTap: () async {
-                    _showDatePicker(context: context);
-                  },
                 ),
 
                 SizedBox(height: mWidth * 0.03),

@@ -24,12 +24,15 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
   dynamic cmpProvider;
   dynamic indProvider;
+  dynamic defaultValRadio;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     cmpProvider = Provider.of<SearchExCompanyProvider>(context, listen: false);
     indProvider = Provider.of<SearchExIndustryProvider>(context, listen: false);
+    defaultValRadio = Provider.of<AddRadioComIndProvider>(context, listen: false);
+    defaultValRadio.setRadioValue("Company");
     cmpProvider.cmpList.clear();
     indProvider.indList.clear();
   }
@@ -93,7 +96,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 Row(
                   children: [
                     radioBTN(CustomString.company),
-                    Selector<ProfileGenderProvider, dynamic>(
+                    Selector<AddRadioComIndProvider, dynamic>(
                         selector: (_, val) => val.selectedValue,
                         builder: (context, selectedValue, child) {
                           print("che_co--->$selectedValue");
@@ -104,7 +107,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                       : CustomColors.kLightGrayColor));
                         }),
                     radioBTN(CustomString.industry),
-                    Selector<ProfileGenderProvider, dynamic>(
+                    Selector<AddRadioComIndProvider, dynamic>(
                         selector: (_, val) => val.selectedValue,
                         builder: (context, selectedValue, child) {
                           print("che_in--->$selectedValue");
@@ -118,16 +121,15 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 ),
 
                 ///Company & Industry Name
-                Selector<ProfileGenderProvider, String>(
-                    selector: (_, val) => val.selectedValue,
-                    builder: (context, selectedValue, child) {
+                Consumer<AddRadioComIndProvider>(
+                    builder: (context, val, child) {
                       return TextFormField(
-                          controller: selectedValue == "Company"
+                          controller: val.selectedValue == "Company"
                               ? companyNController
                               : industryNController,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return selectedValue == "Company"
+                              return val.selectedValue == "Company"
                                   ? CustomString.companyNameRequired
                                   : CustomString.enterIndustryName;
                             } else {
@@ -135,21 +137,22 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                             }
                           },
                           onChanged: (value) {
-                            if(value != "") {
-                              print("Selected--======---=-=-->$selectedValue");
-                              selectedValue == "Company"?
-                              ApiConfig.searchExCompany(context: context, companyString: value):
-                              ApiConfig.searchExIndustry(context: context, industryString: value);
+                            if(value != "" && value.isNotEmpty) {
+                              print("selected radio val------>${val.selectedValue}");
+                              val.selectedValue == "Company" ? ApiConfig.searchExCompany(
+                                  context: context, companyString: value) : ApiConfig.searchExIndustry(context: context, industryString: value);
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
+                              val.selectedValue == "Company" ?providerCompany.setVisible(true): providerIndustry.setVisible(true);
+                            }else{
+                              print("else------>${val.selectedValue}");
+                              val.selectedValue == "Company"? providerCompany.setVisible(false):providerIndustry.setVisible(false);
                             }
                             providerCompany.cmpList.clear();
-                            providerCompany.setVisible(true);
                             providerIndustry.indList.clear();
-                            providerIndustry.setVisible(true);
                           },
                           decoration: InputDecoration(
-                              labelText: selectedValue == "Company"
+                              labelText: val.selectedValue == "Company"
                                   ? CustomString.companyName
                                   : CustomString.industryName,
                               labelStyle: const TextStyle(
@@ -159,15 +162,16 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                           const TextStyle(color: CustomColors.kBlackColor));
                     }),
 
+                ///This is for search company and industry
                 Consumer<SearchExCompanyProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  print("----InCompany---->${val.visible}");
+                  return val.visible == true ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.cmpList.length,
                       itemBuilder: (context, index) {
                         debugPrint(
-                            "INSTITUTE--------->${val.cmpList[index].companyName}");
-                        return val.visible == true
-                            ? InkWell(
+                            "Company--------->${val.cmpList[index].companyName}");
+                        return InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
@@ -189,19 +193,17 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                     companyNController.text;
                             val.setVisible(false);
                           },
-                        )
-                            : Container();
-                      });
+                        );
+                      }):SizedBox.shrink();
                 }),
                 Consumer<SearchExIndustryProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  print("----InIndustry---->${val.visible}");
+                  return val.visible == true? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.indList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "INSTITUTE--------->${val.indList[index].industryFieldName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("INSTITUTE--------->${val.indList[index].industryFieldName}");
+                        return InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
@@ -223,16 +225,13 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                     industryNController.text;
                             val.setVisible(false);
                           },
-                        )
-                            : Container();
-                      });
+                        );
+                      }):SizedBox.shrink();
                 }),
-
-
 
                 /// Start DateTime & End DateTime
                 Container(
-                  padding: const EdgeInsets.only(top: 20),
+                 padding: EdgeInsets.only(top: mHeight*0.02),
                   margin: EdgeInsets.symmetric(horizontal: mWidth * 0.01 / 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -356,7 +355,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   }
 
   Widget radioBTN(String comInd) {
-    return Consumer<ProfileGenderProvider>(builder: (context, val, child) {
+    print("--------->Radio-value------->$comInd");
+    return Consumer<AddRadioComIndProvider>(builder: (context, val, child) {
       return Radio<String>(
         fillColor: MaterialStateColor.resolveWith((Set<MaterialState> states) {
           if (states.contains(MaterialState.selected)) {
@@ -367,7 +367,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
         value: comInd,
         groupValue: val.selectedValue,
         onChanged: (value) {
-          val.setGenderValue(value);
+          val.setRadioValue(value);
+          val.callRadioNotify();
         },
       );
     });
