@@ -20,6 +20,7 @@ class ManageAdminScreen extends StatefulWidget {
   State<ManageAdminScreen> createState() => _ManageAdminScreenState();
 }
 class _ManageAdminScreenState extends State<ManageAdminScreen> {
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -35,7 +36,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         ),
         centerTitle: true,
         title: Text(widget.title,
-            style: const TextStyle(color: CustomColors.kBlueColor)),
+            style: const TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -90,9 +91,9 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            Text(text,style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 14)),
+            Text(text,style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 14, fontFamily: 'Poppins')),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
+            const Icon(Icons.arrow_forward_ios_sharp, color: CustomColors.kWhiteColor, size: 20)
           ],
         ),
       ),
@@ -134,9 +135,9 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14)),
+                    Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     const SizedBox(height: 2),
-                    Text(snapshot.data?.tOwner ?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 12))
+                    Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
                   ],
                 ),
               ),

@@ -58,7 +58,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       body: Form(

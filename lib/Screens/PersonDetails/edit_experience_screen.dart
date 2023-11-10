@@ -9,6 +9,7 @@ import '../../Providers/date_provider.dart';
 import '../../Providers/person_details_provider.dart';
 
 class EditExperienceScreen extends StatefulWidget {
+
   final String? title;
   final String? pExJobTitle;
   final String? industry;
@@ -32,12 +33,15 @@ class EditExperienceScreen extends StatefulWidget {
 }
 
 class _EditExperienceScreenState extends State<EditExperienceScreen> {
+
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController companyNController = TextEditingController();
   TextEditingController industryNController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
+
   dynamic cmpProvider;
   dynamic indProvider;
 
@@ -51,12 +55,12 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
     widget.company!=""?oldRadioProvider.setRadioValue("Company"):oldRadioProvider.setRadioValue("Industry");
 
-
     cmpProvider.cmpList.clear();
     indProvider.indList.clear();
 
     String sDATE = DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.sDate}"));
     String eDATE = DateFormat('yyyy-MM-dd').format(DateTime.parse("${widget.eDate}"));
+
     startDateController.text = sDATE;
     endDateController.text = eDATE;
     jobTitleController.text = "${widget.pExJobTitle}";
@@ -71,8 +75,8 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
     debugPrint("Industry----->${widget.industry}");
     final providerCompany = Provider.of<SearchExCompanyProvider>(context, listen: false);
     final providerIndustry = Provider.of<SearchExIndustryProvider>(context, listen: false);
-    var mHeight = MediaQuery.of(context).size.height;
-    var mWidth = MediaQuery.of(context).size.width;
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: CustomColors.kWhiteColor,
@@ -86,18 +90,18 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.editExperience,
-              style: TextStyle(color: CustomColors.kBlueColor))),
+              style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins'))),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: mWidth * 0.04, vertical: mHeight * 0.02),
+                horizontal: size.width * 0.04, vertical: size.height * 0.02),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: mHeight * 0.01,
+                  height: size.height * 0.01,
                 ),
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
@@ -114,20 +118,22 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                           labelText: CustomString.jobTitle,
                           labelStyle: TextStyle(
                               color: CustomColors.kLightGrayColor,
-                              fontSize: 14)),
-                      style: const TextStyle(color: CustomColors.kBlackColor));
+                              fontSize: 14,fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'));
                 }),
-                SizedBox(height: mHeight * 0.02),
+
+                SizedBox(height: size.height * 0.02),
 
                 ///RadioButton
                 const Text(CustomString.selectYourCompanyAndIndustry,
-                    style: TextStyle(color: CustomColors.kLightGrayColor)),
+                    style: TextStyle(color: CustomColors.kLightGrayColor,fontFamily: 'Poppins')),
                 Row(
                   children: [
                     radioBTN(CustomString.company),
                     Consumer<RadioComIndProvider>(builder: (context, val, child) {
                         return Text(CustomString.company,
                             style: TextStyle(
+                                fontFamily: 'Poppins',
                                 color: val.selectedValue=="Company"
                                     ? CustomColors.kBlueColor
                                     : CustomColors.kLightGrayColor));
@@ -137,6 +143,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     Consumer<RadioComIndProvider>(builder: (context, val, child) {
                         return Text(CustomString.industry,
                             style: TextStyle(
+                                fontFamily: 'Poppins',
                                 color: val.selectedValue=="Industry"
                                     ? CustomColors.kBlueColor
                                     : CustomColors.kLightGrayColor));
@@ -189,9 +196,10 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                   : CustomString.industryName,
                               labelStyle: const TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins')),
                           style:
-                              const TextStyle(color: CustomColors.kBlackColor));
+                              const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'));
                     }
                     ),
 
@@ -212,14 +220,14 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                   color: CustomColors.kGrayColor,
                                   child: Container(
                                       padding:
-                                          EdgeInsets.only(left: mWidth * 0.02),
-                                      height: mHeight * 0.05,
+                                          EdgeInsets.only(left: size.width * 0.02),
+                                      height: size.height * 0.05,
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                           '${val.cmpList[index].companyName}',
                                           style: const TextStyle(
                                               color: CustomColors
-                                                  .kLightGrayColor))),
+                                                  .kLightGrayColor,fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   companyNController.text =
@@ -231,6 +239,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             : Container();
                       });
                 }),
+
                 Consumer<SearchExIndustryProvider>(
                     builder: (context, val, child) {
                   return ListView.builder(
@@ -247,14 +256,14 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                                   color: CustomColors.kGrayColor,
                                   child: Container(
                                       padding:
-                                          EdgeInsets.only(left: mWidth * 0.02),
-                                      height: mHeight * 0.05,
+                                          EdgeInsets.only(left: size.width * 0.02),
+                                      height: size.height * 0.05,
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                           '${val.indList[index].industryFieldName}',
                                           style: const TextStyle(
                                               color: CustomColors
-                                                  .kLightGrayColor))),
+                                                  .kLightGrayColor, fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   industryNController.text =
@@ -270,7 +279,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 /// Start DateTime & End DateTime
                 Container(
                   padding: const EdgeInsets.only(top: 20),
-                  margin: EdgeInsets.symmetric(horizontal: mWidth * 0.01 / 4),
+                  margin: EdgeInsets.symmetric(horizontal: size.width * 0.01 / 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -295,12 +304,12 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                               labelText: CustomString.startDate,
                               labelStyle: TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14),
+                                  fontSize: 14,fontFamily: 'Poppins'),
                               suffixIcon: Icon(Icons.calendar_month,
                                   color: CustomColors.kBlueColor),
                             ),
                             style: const TextStyle(
-                                color: CustomColors.kBlackColor),
+                                color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                             readOnly: true,
                             //set it true, so that user will not able to edit text
                             onTap: () async {
@@ -331,12 +340,12 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                               labelText: CustomString.endDate,
                               labelStyle: TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14),
+                                  fontSize: 14, fontFamily: 'Poppins'),
                               suffixIcon: Icon(Icons.calendar_month,
                                   color: CustomColors.kBlueColor),
                             ),
                             style: const TextStyle(
-                                color: CustomColors.kBlackColor),
+                                color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                             readOnly: true,
                             //set it true, so that user will not able to edit text
                             onTap: startDateController.text == ""
@@ -353,12 +362,13 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: mHeight * 0.03),
+
+                SizedBox(height: size.height * 0.03),
 
                 /// Submit Button
                 SizedBox(
                     width: double.infinity,
-                    height: mHeight * 0.06,
+                    height: size.height * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -386,6 +396,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                       child: const Text(CustomString.editExperience,
                           style: TextStyle(
                               fontSize: 16,
+                              fontFamily: 'Poppins',
                               color: CustomColors.kWhiteColor,
                               backgroundColor: CustomColors.kBlueColor,
                               fontWeight: FontWeight.w600)),
@@ -446,7 +457,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                   foregroundColor: CustomColors.kBlueColor // button text color
-                  ),
+              ),
             ),
           ),
           child: child!,

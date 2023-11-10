@@ -183,6 +183,8 @@ class CustomString {
   static const String skillName = 'Skill Name';
   static const String experienceMonthRequired = '* Experience month is required....';
   static const String experienceMonth = 'Experience Month';
+  static const String parentDepartment = 'Parent department';
+  static const String chooseParentDepartment = 'Choose parent department';
 
   static const String edit = 'Edit';
   static const String delete = 'Delete';

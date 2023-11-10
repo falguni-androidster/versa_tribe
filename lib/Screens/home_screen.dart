@@ -22,11 +22,13 @@ import 'manage_organization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final PageStorageBucket bucket = PageStorageBucket();
 
   final List<String> margList = [];
@@ -36,101 +38,101 @@ class _HomeScreenState extends State<HomeScreen> {
   late OrgNameId oAData;
   String? selectedValue;
 
+  int currentPageIndex = 0;
+
   @override
   initState() {
-   checkUser();
+    checkUser(context);
     super.initState();
   }
-   checkUser() async {
+
+  checkUser(context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic>? responseList = prefs.getJson('responseModel');
     LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
     print("org person =====>${loginResponseModel.orgPerson}");
     print("org admin =====>${loginResponseModel.orgAdmin}");
-    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
-    List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
 
-    final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context,listen: false);
-    final setPtovider = Provider.of<OrganizationProvider>(context,listen: false);
-    if(loginResponseModel.orgPerson!="[]"){
-    oP.forEach((element) {
-      oPData = OrgNameId.fromJson(element);
-      print("orgPerson name---)>${oPData.orgName}");
-      margList.add(oPData.orgName.toString());///Add orgPersonName List in margList
-       selectedValue = margList[0];//Initial val for dropdown
-      finalList = margList;
-      proManageVisibility.setString(finalList);
-      print("F1---------------->${finalList.length}");
-    });}else{}
+    List<dynamic> orgPerson = jsonDecode(loginResponseModel.orgPerson.toString()); //jsonDecode for remove string
+    List<dynamic> orgAdmin = jsonDecode(loginResponseModel.orgAdmin.toString());
 
-    if(loginResponseModel.orgAdmin!="[]"){
-    oA.forEach((element) {
-      oAData = OrgNameId.fromJson(element);
-      print("\norgAdmin name---)>${oAData.orgName}");
-      margList.add(oAData.orgName.toString());
-      orgAdminList.add(oAData.orgName.toString());
-
-      var seen = Set<String>();
-      finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
-      selectedValue = orgAdminList[0];
-      if (selectedValue==orgAdminList[0]) {
-        setPtovider.setVisible(true);
-      } else {
-        setPtovider.setVisible(false);
+    final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context, listen: false);
+    final setProvider = Provider.of<OrganizationProvider>(context, listen: false);
+    if (loginResponseModel.orgPerson != "[]") {
+      for (var element in orgPerson) {
+        oPData = OrgNameId.fromJson(element);
+        print("orgPerson name---)>${oPData.orgName}");
+        margList.add(
+            oPData.orgName.toString()); //Add orgPersonName List in margList
+        selectedValue = margList[0]; //Initial val for dropdown
+        finalList = margList;
+        proManageVisibility.setString(finalList);
+        print("F1---------------->${finalList.length}");
       }
+    }
 
-      //Initial val for dropdown
-      proManageVisibility.setString(finalList);
-      print("F2---------------->${finalList.length}");
-    });}else{}
+    if (loginResponseModel.orgAdmin != "[]") {
+      for (var element in orgAdmin) {
+        oAData = OrgNameId.fromJson(element);
+        print("\n orgAdmin name---)>${oAData.orgName}");
+        margList.add(oAData.orgName.toString());
+        orgAdminList.add(oAData.orgName.toString());
+
+        var seen = <String>{};
+        finalList = margList.where((name) => seen.add(name)).toList(); //Remove duplicate data and store in final list
+        selectedValue = orgAdminList[0];
+        if (selectedValue == orgAdminList[0]) {
+          setProvider.setVisible(true);
+        } else {
+          setProvider.setVisible(false);
+        }
+
+        //Initial val for dropdown
+        proManageVisibility.setString(finalList);
+        print("F2---------------->${finalList.length}");
+      }
+    }
 
     return loginResponseModel;
   }
+
   // Function to show the dialog
   void _showDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        print("KL===>${selectedValue}");
+        print("KL===>$selectedValue");
         return AlertDialog(
-          title: const Text("Select an Option"),
-          content: Consumer<OrganizationProvider>(
-            builder: (context, val, child) {
-              return DropdownButton<String>(
-                alignment: AlignmentDirectional.bottomEnd,
-                value: selectedValue,
-                items: finalList.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                    selectedValue = newValue!;
-                    val.notify();
-
-                    val.setSwitchOrganization(newValue);
-                    if (orgAdminList.contains(newValue)) {
-                      val.setVisible(true);
-                    } else {
-                      val.setVisible(false);
-                    }
-                },
-              );
-            }
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
+          content:
+              Consumer<OrganizationProvider>(builder: (context, val, child) {
+            return DropdownButton<String>(
+              alignment: AlignmentDirectional.bottomEnd,
+              value: selectedValue,
+              items: finalList.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                selectedValue = newValue!;
+                val.notify();
+                val.setSwitchOrganization(newValue);
+                if (orgAdminList.contains(newValue)) {
+                  val.setVisible(true);
+                  Navigator.of(context).pop();
+                } else {
+                  val.setVisible(false);
+                  Navigator.of(context).pop();
+                }
               },
-            ),
-          ],
+            );
+          }),
         );
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -173,34 +175,46 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
+              Consumer<JoinBtnDropdownBtnProvider>(
+                  builder: (context, val, child) {
                 print("Test String join org----->${val.string}");
-                return val.string.isNotEmpty && selectedValue != null?
-                Row(
-                    children: [
-                      Consumer<OrganizationProvider>(
-                        builder: (context,val,child) {
-                          return Text("$selectedValue  ",style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16),);
-                        }
-                      ),
-                      CircleAvatar(
-                        radius: 10,backgroundColor: Colors.transparent,
-                        child: SVGIconButton(
-                            svgPath: ImagePath.dropdownIcon,
-                            size: 6.0,
-                            color: CustomColors.kLightGrayColor,
-                            // Replace with the path to your SVG asset
-                            onPressed: () {
-                              _showDialog();
-                            }),
-                      ),
-                    ],
-                  )
-                 : TextButton(onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (
-                      context) => const ManageOrganization()));
-                }, child: const Text("join Org",
-                      style: TextStyle(color: CustomColors.kBlueColor),));
+                return val.string.isNotEmpty && selectedValue != null
+                    ? Row(
+                        children: [
+                          Consumer<OrganizationProvider>(
+                              builder: (context, val, child) {
+                            return Text(
+                              "$selectedValue  ",
+                              style: const TextStyle(
+                                  color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'),
+                            );
+                          }),
+                          CircleAvatar(
+                            radius: 10,
+                            backgroundColor: Colors.transparent,
+                            child: SVGIconButton(
+                                svgPath: ImagePath.dropdownIcon,
+                                size: 6.0,
+                                color: CustomColors.kLightGrayColor,
+                                // Replace with the path to your SVG asset
+                                onPressed: () {
+                                  _showDialog();
+                                }),
+                          ),
+                        ],
+                      )
+                    : TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ManageOrganization()));
+                        },
+                        child: const Text(
+                          CustomString.joinOrg,
+                          style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'),
+                        ));
               }),
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
@@ -212,23 +226,26 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
               const SizedBox(width: 10),*/
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return val.visible==true?
-                SVGIconButton(
-                    svgPath: ImagePath.switchIcon,
-                    size: 24.0,
-                    color: CustomColors.kBlueColor,
-                    // Replace with the path to your SVG asset
-                    onPressed: () {Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ManageAdminScreen(
-                                title:
-                                val.switchOrganization ?? finalList[0])));}):Container();
+                return val.visible == true
+                    ? SVGIconButton(
+                        svgPath: ImagePath.switchIcon,
+                        size: 24.0,
+                        color: CustomColors.kBlueColor,
+                        // Replace with the path to your SVG asset
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ManageAdminScreen(
+                                      title: val.switchOrganization ??
+                                          finalList[0])));
+                        })
+                    : Container();
               })
             ],
           ),
         ),
-        body: Consumer<ManageBottomTabProvider>(builder: (context, val, child) {
+        /*body: Consumer<ManageBottomTabProvider>(builder: (context, val, child) {
           return PageStorage(
             bucket: bucket,
             child: val.currentScreen,
@@ -277,7 +294,50 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icons.person),
             ],
           ),
+        ),*/
+        bottomNavigationBar: Card(
+          margin: const EdgeInsets.all(10.0),
+          elevation: 5,
+          child: NavigationBar(
+            onDestinationSelected: (int index) {
+              setState(() {
+                currentPageIndex = index;
+              });
+            },
+            height: 70,
+            backgroundColor: CustomColors.kWhiteColor,
+            indicatorColor: CustomColors.kGrayColor,
+            selectedIndex: currentPageIndex,
+            destinations: const <Widget>[
+              NavigationDestination(
+                selectedIcon: Icon(Icons.dashboard_customize,color: CustomColors.kBlueColor),
+                icon: Icon(Icons.dashboard_customize_outlined,color: CustomColors.kLightGrayColor),
+                label: CustomString.dashboard,
+              ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.text_snippet_sharp,color: CustomColors.kBlueColor),
+                icon: Icon(Icons.text_snippet_outlined,color: CustomColors.kLightGrayColor),
+                label: CustomString.project,
+              ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.notes_sharp,color: CustomColors.kBlueColor),
+                icon: Icon(Icons.notes_outlined,color: CustomColors.kLightGrayColor),
+                label: CustomString.training,
+              ),
+              NavigationDestination(
+                selectedIcon: Icon(Icons.person,color: CustomColors.kBlueColor),
+                icon: Icon(Icons.person_outline,color: CustomColors.kLightGrayColor),
+                label: CustomString.training,
+              ),
+            ],
+          ),
         ),
+        body: <Widget>[
+          const DashboardScreen(),
+          const ProjectScreen(),
+          const TrainingScreen(),
+          const AccountScreen()
+        ][currentPageIndex],
       ),
     );
   }
@@ -297,18 +357,8 @@ Widget materialButton({screen, tab, tabTitle, icon, context}) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: val.currentTab == tab
-                    ? CustomColors.kBlueColor
-                    : CustomColors.kLightGrayColor,
-              ),
-              Text(tabTitle,
-                  style: TextStyle(
-                      color: val.currentTab == tab
-                          ? CustomColors.kBlueColor
-                          : CustomColors.kLightGrayColor,
-                      fontSize: 10))
+              Icon(icon, color: val.currentTab == tab ? CustomColors.kBlueColor : CustomColors.kLightGrayColor),
+              Text(tabTitle, style: TextStyle(color: val.currentTab == tab ? CustomColors.kBlueColor : CustomColors.kLightGrayColor, fontSize: 10, fontFamily: 'Poppins'))
             ],
           );
         }),

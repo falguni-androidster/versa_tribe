@@ -8,7 +8,7 @@ import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/custom_string.dart';
 import '../Model/profile_response.dart';
 import '../Providers/person_details_provider.dart';
-import '../Utils/contaier_list.dart';
+import '../Utils/container_list.dart';
 import '../Utils/image_path.dart';
 import 'PersonDetails/add_experience_screen.dart';
 import 'PersonDetails/add_hobby_screen.dart';
@@ -39,8 +39,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var mHeight = MediaQuery.of(context).size.height;
-    var mWidget = MediaQuery.of(context).size.width;
+
+    var size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,20 +55,22 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               ),
           centerTitle: true,
           title: const Text(CustomString.profileDSHeaderText,
-              style: TextStyle(color: CustomColors.kBlueColor))),
+              style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: mHeight * 0.01),
+
+            SizedBox(height: size.height * 0.01),
 
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
-                return containerProfile(snapshot, mWidget);
+                return containerProfile(snapshot, size.width);
               },
             ),
 
-            SizedBox(height: mHeight * 0.02),
+            SizedBox(height: size.height * 0.02),
 
             /// Experience
             Container(
@@ -76,26 +78,25 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   border: Border.all(color: CustomColors.kBlueColor, width: 2),
                   borderRadius: BorderRadius.circular(10)),
               margin: EdgeInsets.only(
-                left: mWidget * 0.03,
-                right: mWidget * 0.03,
+                left: size.width * 0.03,
+                right: size.width * 0.03,
               ),
-              padding: EdgeInsets.only(bottom: mHeight * 0.01),
+              padding: EdgeInsets.only(bottom: size.height * 0.01),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    SizedBox(
-                      width: mWidget * 0.03,
-                    ),
+
+                    SizedBox(width: size.width * 0.03,),
+
                     const Text(CustomString.experience,
                         style: TextStyle(
                             color: CustomColors.kBlueColor,
                             fontWeight: FontWeight.normal,
-                            fontSize: 16)),
+                            fontSize: 16, fontFamily: 'Poppins')),
                     const Spacer(),
                     IconButton(
-                      icon:
-                          const Icon(Icons.add, color: CustomColors.kBlueColor),
+                      icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -132,7 +133,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               ),
             ),
 
-            SizedBox(height: mHeight * 0.02),
+            SizedBox(height: size.height * 0.02),
 
             /// Qualifications
             Container(
@@ -140,20 +141,20 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   border: Border.all(color: CustomColors.kBlueColor, width: 2),
                   borderRadius: BorderRadius.circular(10)),
               margin: EdgeInsets.only(
-                left: mWidget * 0.03,
-                right: mWidget * 0.03,
+                left: size.width * 0.03,
+                right: size.width * 0.03,
               ),
-              padding: EdgeInsets.only(bottom: mHeight * 0.01),
+              padding: EdgeInsets.only(bottom: size.height * 0.01),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: mWidget * 0.03),
+                      SizedBox(width: size.width * 0.03),
                       const Text(CustomString.qualification,
                           style: TextStyle(
                               color: CustomColors.kBlueColor,
-                              fontSize: 16)),
+                              fontSize: 16, fontFamily: 'Poppins')),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.add,
@@ -190,7 +191,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               ),
             ),
 
-            SizedBox(height: mHeight * 0.02),
+            SizedBox(height: size.height * 0.02),
 
             /// Skill
             Container(
@@ -198,17 +199,15 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   border: Border.all(color: CustomColors.kBlueColor, width: 2),
                   borderRadius: BorderRadius.circular(10)),
               margin: EdgeInsets.only(
-                left: mWidget * 0.03,
-                right: mWidget * 0.03,
+                left: size.width * 0.03,
+                right: size.width * 0.03,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    SizedBox(
-                      width: mWidget * 0.03,
-                    ),
-                    const Text(CustomString.skill,style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16)),
+                    SizedBox(width: size.width * 0.03,),
+                    const Text(CustomString.skill,style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(
@@ -231,7 +230,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       itemBuilder: (context, index) {
                         return Container(
                           margin: EdgeInsets.only(
-                              left: mWidget * 0.03, bottom: mHeight * 0.01,),
+                              left: size.width * 0.03, bottom: size.height * 0.01),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -240,16 +239,12 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 children: [
                                   Text(
                                     "${val.personSkill[index].skillName}",
-                                    style: const TextStyle(
-                                        color: CustomColors.kBlueColor,
-                                        fontSize: 14),
+                                    style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
                                   ),
-                                  SizedBox(height: mHeight * 0.005),
+                                  SizedBox(height: size.height * 0.005),
                                   Text(
                                       "Experience: ${val.personSkill[index].experience ?? ""} months",
-                                      style: const TextStyle(
-                                          color: CustomColors.kLightGrayColor,
-                                          fontSize: 12)),
+                                      style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                 ],
                               ),
                               const Spacer(),
@@ -287,7 +282,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                             value: 1,
                                             child: Text(CustomString.delete))
                                       ]),
-                              SizedBox(width: mWidget*0.04,)
+                              SizedBox(width: size.width * 0.04)
                             ],
                           ),
                         );
@@ -298,7 +293,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               ),
             ),
 
-            SizedBox(height: mHeight * 0.02),
+            SizedBox(height: size.height * 0.02),
 
             // /// Hobbies
             // Container(
@@ -383,24 +378,20 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               decoration: BoxDecoration(
                   border: Border.all(color: CustomColors.kBlueColor, width: 2),
                   borderRadius: BorderRadius.circular(10)),
-              margin: EdgeInsets.symmetric(horizontal: mWidget * 0.03),
-             // height: mHeight * 0.20,
+              margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
               child: Padding(
-                padding: EdgeInsets.only(left: mWidget * 0.03),
+                padding: EdgeInsets.only(left: size.width * 0.03),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: mHeight * 0.01),
+                    SizedBox(height: size.height * 0.01),
                     Row(children: [
                       const Text(CustomString.hobbies,
-                          style: TextStyle(
-                              color: CustomColors.kBlueColor,
-                              fontSize: 16)),
+                          style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
                       const Spacer(),
                       IconButton(
-                        icon:
-                            const Icon(Icons.add, color: CustomColors.kBlueColor),
+                        icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -427,7 +418,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: mHeight * 0.01),
+            SizedBox(height: size.height * 0.01),
           ],
         ),
       ),
@@ -441,7 +432,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(CustomString.deleteTitle),
+          title: const Text(CustomString.deleteTitle, style: TextStyle(),),
           content: const Text(CustomString.deleteContent),
           actions: <Widget>[
             TextButton(
@@ -464,7 +455,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 }
                 Navigator.of(context).pop(); // Close the confirmation dialog
               },
-              child: const Text(CustomString.delete),
+              child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
             ),
           ],
         );
@@ -503,7 +494,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor),),
+                        Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                         const Spacer(),
                         PopupMenuButton(
                             // icon: const Icon(
@@ -542,9 +533,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                             },
                             itemBuilder: (_) => [
                                   const PopupMenuItem(
-                                      value: 0, child: Text(CustomString.edit)),
+                                      value: 0, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                   const PopupMenuItem(
-                                      value: 1, child: Text(CustomString.delete))
+                                      value: 1, child: Text(CustomString.delete, style:  TextStyle(fontFamily: 'Poppins')))
                                 ]),
                         SizedBox(width: mWidth*0.04,)
                       ],
@@ -553,9 +544,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     comN != "" && comN != null ? Text(
                             "Company : ${vaL.personEx[index].companyName ?? ""}",
                             style: const TextStyle(color: CustomColors.kBlackColor)) : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}", style: const TextStyle(
-                                color: CustomColors.kBlackColor, /*fontSize: 12*/)),
+                                color: CustomColors.kBlackColor, fontFamily: 'Poppins'/*fontSize: 12*/)),
                     SizedBox(height: mHeight * 0.005),
-                    Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12)),
+                    Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                   ],
                 ),
             )
@@ -569,12 +560,12 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(vaL.personQl[index].couName,
-                            style: const TextStyle(color: CustomColors.kBlueColor,)),
+                            style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                         const Spacer(),
                         PopupMenuButton(
                             child: CircleAvatar(
                                 radius:10,backgroundColor: Colors.transparent,
-                                child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                                child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
                             onSelected: (item) {
                               String course = vaL.personQl[index].couName;
                               String institute = vaL.personQl[index].instName;
@@ -601,23 +592,23 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                             },
                             itemBuilder: (_) => [
                                   const PopupMenuItem(
-                                      value: 0, child: Text(CustomString.edit)),
+                                      value: 0, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                   const PopupMenuItem(
-                                      value: 1, child: Text(CustomString.delete))
+                                      value: 1, child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
                                 ]),
-                        SizedBox(width: mWidth*0.04,)
+                        SizedBox(width: mWidth * 0.04)
                       ],
                     ),
                     SizedBox(height: mHeight * 0.006),
                     Text("Institute: ${vaL.personQl[index].instName}",
-                        style: const TextStyle(color: CustomColors.kBlackColor)),
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                     SizedBox(height: mHeight * 0.005),
                     Text("Course Type: ${vaL.personQl[index].couName}",
-                        style: const TextStyle(color: CustomColors.kBlackColor)),
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                     SizedBox(height: mHeight * 0.005),
                     Text("Grade: ${vaL.personQl[index].grade}",
                         style: const TextStyle(
-                            color: CustomColors.kBlackColor,)),
+                            color: CustomColors.kBlackColor,fontFamily: 'Poppins')),
                     SizedBox(height: mHeight * 0.005),
                   /*  Text("City : ${vaL.personQl[index].ctypName}",
                         style: const TextStyle(
@@ -625,7 +616,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     SizedBox(height: mHeight * 0.005),*/
                     Text("Year Of Passing: $passingYear",
                         style: const TextStyle(
-                            color: CustomColors.kLightGrayColor,fontSize: 12)),
+                            color: CustomColors.kLightGrayColor,fontSize: 12, fontFamily: 'Poppins')),
                   ],
                 ),
             ));
@@ -673,11 +664,11 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     Text(
                         '${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',
                         style: const TextStyle(
-                            color: CustomColors.kBlackColor, fontSize: 14)),
+                            color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     const SizedBox(height: 2),
                     Text(snapshot.data?.tOwner ?? '',
                         style: const TextStyle(
-                            color: CustomColors.kBlackColor, fontSize: 12))
+                            color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
                   ],
                 ),
               ),

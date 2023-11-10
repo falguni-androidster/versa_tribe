@@ -7,8 +7,8 @@ void showToast(BuildContext context,String message) {
     builder: (context) =>
         Positioned(
           bottom: 50.0,
-          left: 10.0,
-          right: 10.0,
+          left: 8.0,
+          right: 8.0,
           child: Material(
             color: Colors.transparent,
             child: Container(
@@ -25,7 +25,7 @@ void showToast(BuildContext context,String message) {
                   const SizedBox(width: 10),
                   Text(
                     message,
-                    style: const TextStyle(color: CustomColors.kWhiteColor,fontSize: 12),
+                    style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins'),
                     overflow: TextOverflow.fade,
                   ),
                 ],
@@ -37,7 +37,7 @@ void showToast(BuildContext context,String message) {
 
   Overlay.of(context).insert(overlay);
 
-  // Remove the overlay after 2 seconds
+  // Remove the overlay after 3 seconds
   Future.delayed(const Duration(seconds: 3), () {
     overlay.remove();
   });

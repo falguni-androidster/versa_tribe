@@ -21,6 +21,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -133,12 +134,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 style: const TextStyle(
                     color: CustomColors.kWhiteColor, fontSize: 16,fontFamily: 'Poppins')),
             const Spacer(),
-            // const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
-            SVGIconButton(
+            const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
+            /*SVGIconButton(
                 svgPath: ImagePath.rightShiftIcon,
                 onPressed: () {},
                 size: 14,
-                color: CustomColors.kWhiteColor)
+                color: CustomColors.kWhiteColor)*/
           ],
         ),
       ),

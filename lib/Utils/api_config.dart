@@ -733,12 +733,12 @@ class ApiConfig {
     }
     return dpM;
   }
-  static searchPDepartment({context, oderId}) async {
+  static searchPDepartment({context, orderId}) async {
     final provider = Provider.of<SearchParentDPProvider>(context,listen: false);
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     try{
-      String url = "$baseUrl/api/OrgDepts/GetDeptsByOrg?Org_Id=$oderId";
+      String url = "$baseUrl/api/OrgDepts/GetDeptsByOrg?Org_Id=$orderId";
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

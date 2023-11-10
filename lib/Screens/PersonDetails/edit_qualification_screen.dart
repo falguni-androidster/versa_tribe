@@ -31,10 +31,12 @@ class EditQualificationScreen extends StatefulWidget {
 
 class _EditQualificationScreenState extends State<EditQualificationScreen> {
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController courseController = TextEditingController();
   TextEditingController instituteController = TextEditingController();
   TextEditingController gradeController = TextEditingController();
   TextEditingController yopController = TextEditingController();
+
   dynamic provider;
   dynamic providerInstitute;
 
@@ -64,8 +66,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
     final providerInstitute =
         Provider.of<SearchInstituteProvider>(context, listen: false);
-    var mHeight = MediaQuery.of(context).size.height;
-    var mWidth = MediaQuery.of(context).size.width;
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: CustomColors.kWhiteColor,
@@ -80,13 +82,14 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.editQualification,
-              style: TextStyle(color: CustomColors.kBlueColor))),
+              style: TextStyle(
+                  color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: mWidth * 0.04, vertical: mHeight * 0.02),
+                horizontal: size.width * 0.04, vertical: size.height * 0.02),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -117,10 +120,14 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                               labelText: CustomString.courseName,
                               labelStyle: TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
-                          style:
-                              const TextStyle(color: CustomColors.kBlackColor));
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins')),
+                          style: const TextStyle(
+                              color: CustomColors.kBlackColor,
+                              fontSize: 14,
+                              fontFamily: 'Poppins'));
                     }),
+
                 Consumer<SearchCourseProvider>(builder: (context, val, child) {
                   return ListView.builder(
                       shrinkWrap: true,
@@ -136,14 +143,14 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                                   color: CustomColors.kGrayColor,
                                   child: Container(
                                       padding:
-                                          EdgeInsets.only(left: mWidth * 0.02),
-                                      height: mHeight * 0.05,
+                                          EdgeInsets.only(left: size.width * 0.02),
+                                      height: size.height * 0.05,
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                           '${val.courseList[index].couName}',
                                           style: const TextStyle(
                                               color: CustomColors
-                                                  .kLightGrayColor))),
+                                                  .kLightGrayColor,fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   courseController.text =
@@ -155,7 +162,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                             : Container();
                       });
                 }),
-                SizedBox(height: mWidth * 0.03),
+
+                SizedBox(height: size.height * 0.03),
 
                 /// Institute name
                 TextFormField(
@@ -179,8 +187,9 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     decoration: const InputDecoration(
                         labelText: CustomString.instituteName,
                         labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+
                 Consumer<SearchInstituteProvider>(
                     builder: (context, val, child) {
                   return ListView.builder(
@@ -197,14 +206,13 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                                   color: CustomColors.kGrayColor,
                                   child: Container(
                                       padding:
-                                          EdgeInsets.only(left: mWidth * 0.02),
-                                      height: mHeight * 0.05,
+                                          EdgeInsets.only(left: size.width * 0.02),
+                                      height: size.height * 0.05,
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                           '${val.instituteList[index].instName}',
                                           style: const TextStyle(
-                                              color: CustomColors
-                                                  .kLightGrayColor))),
+                                              color: CustomColors.kLightGrayColor,fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   instituteController.text =
@@ -216,7 +224,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                             : Container();
                       });
                 }),
-                SizedBox(height: mWidth * 0.03),
+
+                SizedBox(height: size.height * 0.03),
 
                 /// Grade
                 TextFormField(
@@ -231,10 +240,10 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     decoration: const InputDecoration(
                         labelText: CustomString.grade,
                         labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
-                SizedBox(height: mWidth * 0.03),
+                SizedBox(height: size.height * 0.03),
 
                 /// Year Of Passing
                 TextFormField(
@@ -251,13 +260,13 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                   decoration: const InputDecoration(
                     labelText: CustomString.startDate,
                     labelStyle: TextStyle(
-                        color: CustomColors.kLightGrayColor, fontSize: 14),
+                        color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins'),
                     suffixIcon: Icon(
                       Icons.calendar_month,
                       color: CustomColors.kBlueColor,
                     ),
                   ),
-                  style: const TextStyle(color: CustomColors.kBlackColor),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                   readOnly: true,
                   //set it true, so that user will not able to edit text
                   onTap: () async {
@@ -265,12 +274,12 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                   },
                 ),
 
-                SizedBox(height: mWidth * 0.03),
+                SizedBox(height: size.height * 0.03),
 
                 /// Submit Button
                 SizedBox(
                     width: double.infinity,
-                    height: mHeight * 0.06,
+                    height: size.height * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -298,6 +307,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                           style: TextStyle(
                               color: CustomColors.kWhiteColor,
                               fontSize: 16,
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600)),
                     )),
               ],

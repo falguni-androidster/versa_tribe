@@ -69,7 +69,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
         backgroundColor: CustomColors.kWhiteColor,
         appBar: AppBar(

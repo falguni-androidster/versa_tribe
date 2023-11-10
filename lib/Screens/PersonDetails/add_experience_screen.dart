@@ -10,12 +10,17 @@ import '../../Providers/date_provider.dart';
 import '../../Providers/person_details_provider.dart';
 
 class AddExperienceScreen extends StatefulWidget {
+
   const AddExperienceScreen({super.key});
   @override
   State<AddExperienceScreen> createState() => _AddExperienceScreenState();
 }
+
+
 class _AddExperienceScreenState extends State<AddExperienceScreen> {
+
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController companyNController = TextEditingController();
   TextEditingController industryNController = TextEditingController();
@@ -24,6 +29,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
   dynamic cmpProvider;
   dynamic indProvider;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -36,10 +42,12 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final providerCompany = Provider.of<SearchExCompanyProvider>(context,listen: false);
     final providerIndustry = Provider.of<SearchExIndustryProvider>(context,listen: false);
-    var mHeight = MediaQuery.of(context).size.height;
-    var mWidth = MediaQuery.of(context).size.width;
+
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
           backgroundColor: CustomColors.kWhiteColor,
@@ -53,20 +61,20 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.createExperience,
-              style: TextStyle(color: CustomColors.kBlueColor))
+              style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))
       ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: mWidth * 0.04, vertical: mHeight * 0.02),
+                horizontal: size.width * 0.04, vertical: size.height * 0.02),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: mHeight * 0.01,
-                ),
+
+                SizedBox(height: size.height * 0.01),
+
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
                       return TextFormField(
@@ -82,10 +90,11 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                               labelText: CustomString.jobTitle,
                               labelStyle: TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
+                                  fontSize: 14, fontFamily: 'Poppins')),
                           style: const TextStyle(color: CustomColors.kBlackColor));
                     }),
-                SizedBox(height: mHeight * 0.02),
+
+                SizedBox(height: size.height * 0.02),
 
                 ///RadioButton
                 const Text(CustomString.selectYourCompanyAndIndustry,
@@ -98,7 +107,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                         builder: (context, selectedValue, child) {
                           print("che_co--->$selectedValue");
                           return Text(CustomString.company,
-                              style: TextStyle(
+                              style: TextStyle(fontFamily: 'Poppins',
                                   color: selectedValue == "Company"
                                       ? CustomColors.kBlueColor
                                       : CustomColors.kLightGrayColor));
@@ -109,7 +118,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                         builder: (context, selectedValue, child) {
                           print("che_in--->$selectedValue");
                           return Text(CustomString.industry,
-                              style: TextStyle(
+                              style: TextStyle(fontFamily: 'Poppins',
                                   color: selectedValue == "Industry"
                                       ? CustomColors.kBlueColor
                                       : CustomColors.kLightGrayColor));
@@ -154,9 +163,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                   : CustomString.industryName,
                               labelStyle: const TextStyle(
                                   color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
-                          style:
-                          const TextStyle(color: CustomColors.kBlackColor));
+                                  fontSize: 14,fontFamily: 'Poppins')),
+                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'));
                     }),
 
                 Consumer<SearchExCompanyProvider>(builder: (context, val, child) {
@@ -166,22 +174,18 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                       itemBuilder: (context, index) {
                         debugPrint(
                             "INSTITUTE--------->${val.cmpList[index].companyName}");
-                        return val.visible == true
-                            ? InkWell(
+                        return val.visible == true ? InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
                             color: CustomColors.kGrayColor,
                             child: Container(
                                 padding:
-                                EdgeInsets.only(left: mWidth * 0.02),
-                                height: mHeight * 0.05,
+                                EdgeInsets.only(left: size.width * 0.02),
+                                height: size.height * 0.05,
                                 alignment: Alignment.centerLeft,
-                                child: Text(
-                                    '${val.cmpList[index].companyName}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor))),
+                                child: Text('${val.cmpList[index].companyName}',
+                                    style: const TextStyle(color: CustomColors.kLightGrayColor,fontFamily: 'Poppins'))),
                           ),
                           onTap: () async {
                             companyNController.text =
@@ -193,6 +197,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                             : Container();
                       });
                 }),
+
                 Consumer<SearchExIndustryProvider>(builder: (context, val, child) {
                   return ListView.builder(
                       shrinkWrap: true,
@@ -200,27 +205,21 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                       itemBuilder: (context, index) {
                         debugPrint(
                             "INSTITUTE--------->${val.indList[index].industryFieldName}");
-                        return val.visible == true
-                            ? InkWell(
+                        return val.visible == true ? InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
                             color: CustomColors.kGrayColor,
                             child: Container(
-                                padding:
-                                EdgeInsets.only(left: mWidth * 0.02),
-                                height: mHeight * 0.05,
+                                padding: EdgeInsets.only(left: size.width * 0.02),
+                                height: size.height * 0.05,
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                     '${val.indList[index].industryFieldName}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor))),
+                                    style: const TextStyle(color: CustomColors.kLightGrayColor,fontFamily: 'Poppins'))),
                           ),
                           onTap: () async {
-                            industryNController.text =
-                                val.indList[index].industryFieldName ??
-                                    industryNController.text;
+                            industryNController.text = val.indList[index].industryFieldName ?? industryNController.text;
                             val.setVisible(false);
                           },
                         )
@@ -233,13 +232,13 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 /// Start DateTime & End DateTime
                 Container(
                   padding: const EdgeInsets.only(top: 20),
-                  margin: EdgeInsets.symmetric(horizontal: mWidth * 0.01 / 4),
+                  margin: EdgeInsets.symmetric(horizontal: size.width * 0.01 / 4),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ///Start dateTime
                       SizedBox(
-                        width: mWidth*0.44,
+                        width: size.width * 0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
                               return TextFormField(
@@ -258,12 +257,14 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                   labelText: CustomString.startDate,
                                   labelStyle: TextStyle(
                                       color: CustomColors.kLightGrayColor,
-                                      fontSize: 14),
+                                      fontSize: 14,
+                                      fontFamily: 'Poppins'
+                                  ),
                                   suffixIcon: Icon(Icons.calendar_month,
                                       color: CustomColors.kBlueColor),
                                 ),
                                 style: const TextStyle(
-                                    color: CustomColors.kBlackColor),
+                                    color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
                                 readOnly: true,
                                 //set it true, so that user will not able to edit text
                                 onTap: () async {
@@ -276,7 +277,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
-                        width: mWidth*0.44,
+                        width: size.width * 0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
                               return TextFormField(
@@ -294,12 +295,12 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                                   labelText: CustomString.endDate,
                                   labelStyle: TextStyle(
                                       color: CustomColors.kLightGrayColor,
-                                      fontSize: 14),
+                                      fontSize: 14,fontFamily: 'Poppins'),
                                   suffixIcon: Icon(Icons.calendar_month,
                                       color: CustomColors.kBlueColor),
                                 ),
                                 style: const TextStyle(
-                                    color: CustomColors.kBlackColor),
+                                    color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
                                 readOnly: true,
                                 //set it true, so that user will not able to edit text
                                 onTap: startDateController.text == ""
@@ -316,12 +317,13 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: mHeight * 0.03),
+
+                SizedBox(height: size.height * 0.03),
 
                 /// Submit Button
                 SizedBox(
                     width: double.infinity,
-                    height: mHeight * 0.06,
+                    height: size.height * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -341,10 +343,12 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(5),
                           side: const BorderSide( color: Colors.transparent)))),
-                      child: const Text( CustomString.createExperience, style: TextStyle(
+                      child: const Text( CustomString.createExperience,
+                          style: TextStyle(
                               fontSize: 16,
                               color: CustomColors.kWhiteColor,
                               backgroundColor: CustomColors.kBlueColor,
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600)),
                     )),
               ],

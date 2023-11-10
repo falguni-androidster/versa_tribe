@@ -14,16 +14,17 @@ class AddSkillScreen extends StatefulWidget {
 }
 
 class _AddSkillScreenState extends State<AddSkillScreen> {
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController skillController = TextEditingController();
   TextEditingController monthController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final providerSkill =
-        Provider.of<SearchSkillProvider>(context, listen: false);
-    var mHeight = MediaQuery.of(context).size.height;
-    var mWidth = MediaQuery.of(context).size.width;
+
+    final providerSkill = Provider.of<SearchSkillProvider>(context, listen: false);
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
@@ -37,17 +38,18 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
         ),
         centerTitle: true,
         title: const Text(CustomString.createSkill,
-            style: TextStyle(color: CustomColors.kBlueColor)),
+            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: mWidth * 0.04, vertical: mHeight * 0.02),
+                horizontal: size.width * 0.04, vertical: size.height * 0.02),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 /// Skill name
                 TextFormField(
                     controller: skillController,
@@ -70,8 +72,9 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                     decoration: const InputDecoration(
                         labelText: CustomString.skillName,
                         labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+
                 Consumer<SearchSkillProvider>(builder: (context, val, child) {
                   return ListView.builder(
                       shrinkWrap: true,
@@ -87,14 +90,14 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                                   color: CustomColors.kGrayColor,
                                   child: Container(
                                       padding:
-                                          EdgeInsets.only(left: mWidth * 0.02),
-                                      height: mHeight * 0.05,
+                                          EdgeInsets.only(left: size.width * 0.02),
+                                      height: size.height * 0.05,
                                       alignment: Alignment.centerLeft,
                                       child: Text(
                                           '${val.skillList[index].skillName}',
                                           style: const TextStyle(
                                               color: CustomColors
-                                                  .kLightGrayColor))),
+                                                  .kLightGrayColor, fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   skillController.text =
@@ -107,7 +110,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                       });
                 }),
 
-                SizedBox(height: mWidth * 0.03),
+                SizedBox(height: size.height * 0.03),
 
                 /// Experience(months)
                 TextFormField(
@@ -123,15 +126,15 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                     decoration: const InputDecoration(
                         labelText: CustomString.experienceMonth,
                         labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
-                SizedBox(height: mWidth * 0.03),
+                SizedBox(height: size.height * 0.03),
 
                 /// Submit Button
                 SizedBox(
                     width: double.infinity,
-                    height: mHeight * 0.06,
+                    height: size.height * 0.06,
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -156,6 +159,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                           style: TextStyle(
                               color: CustomColors.kWhiteColor,
                               fontSize: 16,
+                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w600)),
                     )),
               ],

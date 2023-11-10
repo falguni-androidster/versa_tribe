@@ -34,7 +34,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
             Navigator.pop(context);
           },
         ),
-        title: const Text(CustomString.training, style: TextStyle(color: CustomColors.kBlueColor)),
+        title: const Text(CustomString.training, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       body:SingleChildScrollView(
@@ -61,14 +61,11 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                   },
                   decoration: const InputDecoration(
                       labelText: CustomString.trainingName,
-                      labelStyle: TextStyle(
-                          color: CustomColors.kLightGrayColor,
-                          fontSize: 14)),
-                  style: const TextStyle(color: CustomColors.kBlackColor),
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                 ),
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
+
+                SizedBox(height: size.height * 0.02,),
 
                 /// Training Description Field
                 TextFormField(
@@ -84,15 +81,12 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                   maxLength: 5000,
                   decoration: const InputDecoration(
                       labelText: CustomString.trainingDescription,
-                      labelStyle: TextStyle(
-                          color: CustomColors.kLightGrayColor,
-                          fontSize: 14)
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
                   ),
-                  style: const TextStyle(color: CustomColors.kBlackColor),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                 ),
-                SizedBox(
-                  height: size.height * 0.02,
-                ),
+
+                SizedBox(height: size.height * 0.02,),
 
                 /// Start Date & End Date
                 Row(
@@ -106,13 +100,13 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                             return TextField(
                               controller: startDateController,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(color: CustomColors.kBlackColor),
+                              style: const TextStyle(color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
                               //editing controller of this TextField
                               decoration: const InputDecoration(
                                   labelText: CustomString.startDate,
                                   labelStyle: TextStyle(
                                       color: CustomColors.kLightGrayColor,
-                                      fontSize: 14),
+                                      fontSize: 14, fontFamily: 'Poppins'),
                                 prefixIcon: Icon(Icons.calendar_today, color: CustomColors.kBlueColor),
                               ),
                               readOnly: true,
@@ -157,6 +151,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                           }
                       ),
                     ),
+
                     SizedBox(width: size.width * 0.05),
 
                     ///End date
@@ -171,7 +166,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                                 labelText: CustomString.endDate,
                                 labelStyle: TextStyle(
                                     color: CustomColors.kLightGrayColor,
-                                    fontSize: 14),
+                                    fontSize: 14, fontFamily: 'Poppins'),
                                 prefixIcon: Icon(Icons.calendar_today, color: CustomColors.kBlueColor),
                               ),
                               readOnly: true,
@@ -240,6 +235,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                       child: const Text(CustomString.createTraining,
                           style: TextStyle(
                             fontSize: 16,
+                            fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
                           )),
                     )
