@@ -79,7 +79,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 left: mWidget * 0.03,
                 right: mWidget * 0.03,
               ),
-              padding: EdgeInsets.only(bottom: mHeight * 0.01),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -118,7 +117,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
                         String? eDate = val.personEx[index].endDate;
                         String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
-                        return _buildTimelineTile(
+                        return timelineTile(
                             comN: comN,
                             ed: ed,
                             sd: sd,
@@ -143,7 +142,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 left: mWidget * 0.03,
                 right: mWidget * 0.03,
               ),
-              padding: EdgeInsets.only(bottom: mHeight * 0.01),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -178,7 +176,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         String date = val.personQl[index].yop.toString();
                         String passingY =
                             DateFormat.yMMM().format(DateTime.parse(date));
-                        return _buildTimelineTile(
+                        return timelineTile(
                           index: index,
                           vaL: val,
                           passingYear: passingY,
@@ -189,7 +187,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 ],
               ),
             ),
-
             SizedBox(height: mHeight * 0.02),
 
             /// Skill
@@ -202,7 +199,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 right: mWidget * 0.03,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
                     SizedBox(
@@ -230,8 +226,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       itemCount: val.personSkill.length,
                       itemBuilder: (context, index) {
                         return Container(
-                          margin: EdgeInsets.only(
-                              left: mWidget * 0.03, bottom: mHeight * 0.01,),
+                          margin: EdgeInsets.only(left: mWidget * 0.03, bottom: mHeight * 0.01,),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -427,7 +422,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: mHeight * 0.01),
+            SizedBox(height: mHeight * 0.02),
           ],
         ),
       ),
@@ -435,8 +430,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   }
 
-  void _showDeleteConfirmation(
-      BuildContext context, identityKey, int? iD, personId) {
+  void _showDeleteConfirmation(BuildContext context, identityKey, int? iD, personId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -472,165 +466,169 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  Widget _buildTimelineTile(
-      {index, vaL, comN, sd, ed, widgetKey, passingYear}) {
+  Widget timelineTile({index, vaL, comN, sd, ed, widgetKey, passingYear}) {
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
-    return TimelineTile(
-        alignment: TimelineAlign.manual,
-        lineXY: 0.05,
-        isFirst: index == 0 ? true : false,
-        isLast: index == index - 1 ? true : false,
-        indicatorStyle: IndicatorStyle(
-          indicator: _buildIndicator(),
-          indicatorXY: 0,
-        ),
-        afterLineStyle: const LineStyle(
-          thickness: 2,
-          color: CustomColors.kBlueColor,
-        ),
-        beforeLineStyle: const LineStyle(
-          thickness: 2,
-          color: CustomColors.kBlueColor,
-        ),
-        endChild: widgetKey == "personExperience"
-            ? Padding(
-              padding: EdgeInsets.only(left: mWidth*0.02,),
-              child: Column(
+    return Padding(
+      padding: EdgeInsets.only(left: mWidth*0.02),
+      child: TimelineTile(
+          alignment: TimelineAlign.manual,
+          lineXY: 0.00,
+          isFirst: index == 0 ? true : false,
+          isLast: index == index - 1 ? true : false,
+          indicatorStyle: IndicatorStyle(
+            indicator: _buildIndicator(),
+            indicatorXY: 0,
+          ),
+          afterLineStyle: const LineStyle(
+            thickness: 2,
+            color: CustomColors.kBlueColor,
+          ),
+          beforeLineStyle: const LineStyle(
+            thickness: 2,
+            color: CustomColors.kBlueColor,
+          ),
+          endChild: widgetKey == "personExperience"
+              ? Padding(
+                padding: EdgeInsets.only(left: mWidth*0.02,),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor),),
+                          const Spacer(),
+                          PopupMenuButton(
+                              // icon: const Icon(
+                              //   Icons.more_horiz,
+                              //   color: CustomColors.kBlueColor,
+                              // ),
+                              child: CircleAvatar(
+                                  radius:10,backgroundColor: Colors.transparent,
+                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 15,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                              onSelected: (item) {
+                                switch (item) {
+                                  case 0:
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditExperienceScreen(
+                                                    title:
+                                                        CustomString.editExperience,
+                                                    pExJobTitle: vaL
+                                                        .personEx[index].jobTitle!,
+                                                    company: comN ?? "",
+                                                    industry: vaL.personEx[index]
+                                                            .industryFieldName ??
+                                                        "",
+                                                    pExId: vaL
+                                                        .personEx[index].perExpId,
+                                                    sDate: vaL
+                                                        .personEx[index].startDate!,
+                                                    eDate: vaL.personEx[index]
+                                                        .endDate!)));
+                                  case 1:
+                                    _showDeleteConfirmation(context, "identityPED",
+                                        vaL.personEx[index].perExpId, "");
+                                }
+                              },
+                              itemBuilder: (_) => [
+                                    const PopupMenuItem(
+                                        value: 0, child: Text(CustomString.edit)),
+                                    const PopupMenuItem(
+                                        value: 1, child: Text(CustomString.delete))
+                                  ]),
+                          SizedBox(width: mWidth*0.04,)
+                        ],
+                      ),
+                      SizedBox(height: mHeight * 0.006),
+                      comN != "" && comN != null ? Text(
+                              "Company : ${vaL.personEx[index].companyName ?? ""}",
+                              style: const TextStyle(color: CustomColors.kBlackColor)) : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}", style: const TextStyle(
+                                  color: CustomColors.kBlackColor, /*fontSize: 12*/)),
+                      SizedBox(height: mHeight * 0.005),
+                      Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12)),
+                      SizedBox(height: mHeight * 0.02),
+                    ],
+                  ),
+              )
+              : Padding(
+                padding: EdgeInsets.only(left: mWidth*0.02),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor),),
-                        const Spacer(),
-                        PopupMenuButton(
-                            // icon: const Icon(
-                            //   Icons.more_horiz,
-                            //   color: CustomColors.kBlueColor,
-                            // ),
-                            child: CircleAvatar(
-                                radius:10,backgroundColor: Colors.transparent,
-                                child: SvgPicture.asset(ImagePath.moreIcon,width: 15,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
-                            onSelected: (item) {
-                              switch (item) {
-                                case 0:
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditExperienceScreen(
-                                                  title:
-                                                      CustomString.editExperience,
-                                                  pExJobTitle: vaL
-                                                      .personEx[index].jobTitle!,
-                                                  company: comN ?? "",
-                                                  industry: vaL.personEx[index]
-                                                          .industryFieldName ??
-                                                      "",
-                                                  pExId: vaL
-                                                      .personEx[index].perExpId,
-                                                  sDate: vaL
-                                                      .personEx[index].startDate!,
-                                                  eDate: vaL.personEx[index]
-                                                      .endDate!)));
-                                case 1:
-                                  _showDeleteConfirmation(context, "identityPED",
-                                      vaL.personEx[index].perExpId, "");
-                              }
-                            },
-                            itemBuilder: (_) => [
-                                  const PopupMenuItem(
-                                      value: 0, child: Text(CustomString.edit)),
-                                  const PopupMenuItem(
-                                      value: 1, child: Text(CustomString.delete))
-                                ]),
-                        SizedBox(width: mWidth*0.04,)
-                      ],
-                    ),
-                    SizedBox(height: mHeight * 0.006),
-                    comN != "" && comN != null ? Text(
-                            "Company : ${vaL.personEx[index].companyName ?? ""}",
-                            style: const TextStyle(color: CustomColors.kBlackColor)) : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}", style: const TextStyle(
-                                color: CustomColors.kBlackColor, /*fontSize: 12*/)),
-                    SizedBox(height: mHeight * 0.005),
-                    Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12)),
-                  ],
-                ),
-            )
-            : Padding(
-              padding: EdgeInsets.only(left: mWidth*0.02),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(vaL.personQl[index].couName,
-                            style: const TextStyle(color: CustomColors.kBlueColor,)),
-                        const Spacer(),
-                        PopupMenuButton(
-                            child: CircleAvatar(
-                                radius:10,backgroundColor: Colors.transparent,
-                                child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
-                            onSelected: (item) {
-                              String course = vaL.personQl[index].couName;
-                              String institute = vaL.personQl[index].instName;
-                              String grade = vaL.personQl[index].grade;
-                              String city = vaL.personQl[index].ctyName;
-                              int pQID = vaL.personQl[index].pqId;
-                              String yop = DateFormat("yyyy-MM-dd")
-                                  .format(vaL.personQl[index].yop);
-                              switch (item) {
-                                case 0:
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditQualificationScreen(
-                                                  courseName: course,
-                                                  grade: grade,
-                                                  city: city,
-                                                  institute: institute,
-                                                  yop: yop,
-                                                  pqID: pQID)));
-                                case 1:
-                                  _showDeleteConfirmation(context, "identityPQD",
-                                      vaL.personQl[index].pqId, "");
-                              }
-                            },
-                            itemBuilder: (_) => [
-                                  const PopupMenuItem(
-                                      value: 0, child: Text(CustomString.edit)),
-                                  const PopupMenuItem(
-                                      value: 1, child: Text(CustomString.delete))
-                                ]),
-                        SizedBox(width: mWidth*0.04,)
-                      ],
-                    ),
-                    SizedBox(height: mHeight * 0.006),
-                    Text("Institute: ${vaL.personQl[index].instName}",
-                        style: const TextStyle(color: CustomColors.kBlackColor)),
-                    SizedBox(height: mHeight * 0.005),
-                    Text("Course Type: ${vaL.personQl[index].couName}",
-                        style: const TextStyle(color: CustomColors.kBlackColor)),
-                    SizedBox(height: mHeight * 0.005),
-                    Text("Grade: ${vaL.personQl[index].grade}",
-                        style: const TextStyle(
-                            color: CustomColors.kBlackColor,)),
-                    SizedBox(height: mHeight * 0.005),
-                  /*  Text("City : ${vaL.personQl[index].ctypName}",
-                        style: const TextStyle(
-                            color: CustomColors.kBlackColor, fontSize: 12)),
-                    SizedBox(height: mHeight * 0.005),*/
-                    Text("Year Of Passing: $passingYear",
-                        style: const TextStyle(
-                            color: CustomColors.kLightGrayColor,fontSize: 12)),
-                  ],
-                ),
-            ));
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(vaL.personQl[index].couName,
+                              style: const TextStyle(color: CustomColors.kBlueColor,)),
+                          const Spacer(),
+                          PopupMenuButton(
+                              child: CircleAvatar(
+                                  radius:10,backgroundColor: Colors.transparent,
+                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                              onSelected: (item) {
+                                String course = vaL.personQl[index].couName;
+                                String institute = vaL.personQl[index].instName;
+                                String grade = vaL.personQl[index].grade;
+                                String city = vaL.personQl[index].ctyName;
+                                int pQID = vaL.personQl[index].pqId;
+                                String yop = DateFormat("yyyy-MM-dd")
+                                    .format(vaL.personQl[index].yop);
+                                switch (item) {
+                                  case 0:
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditQualificationScreen(
+                                                    courseName: course,
+                                                    grade: grade,
+                                                    city: city,
+                                                    institute: institute,
+                                                    yop: yop,
+                                                    pqID: pQID)));
+                                  case 1:
+                                    _showDeleteConfirmation(context, "identityPQD",
+                                        vaL.personQl[index].pqId, "");
+                                }
+                              },
+                              itemBuilder: (_) => [
+                                    const PopupMenuItem(
+                                        value: 0, child: Text(CustomString.edit)),
+                                    const PopupMenuItem(
+                                        value: 1, child: Text(CustomString.delete))
+                                  ]),
+                          SizedBox(width: mWidth*0.04,)
+                        ],
+                      ),
+                      SizedBox(height: mHeight * 0.006),
+                      Text("Institute: ${vaL.personQl[index].instName}",
+                          style: const TextStyle(color: CustomColors.kBlackColor)),
+                      SizedBox(height: mHeight * 0.005),
+                      Text("Course Type: ${vaL.personQl[index].couName}",
+                          style: const TextStyle(color: CustomColors.kBlackColor)),
+                      SizedBox(height: mHeight * 0.005),
+                      Text("Grade: ${vaL.personQl[index].grade}",
+                          style: const TextStyle(
+                              color: CustomColors.kBlackColor,)),
+                      SizedBox(height: mHeight * 0.005),
+                    /*  Text("City : ${vaL.personQl[index].ctypName}",
+                          style: const TextStyle(
+                              color: CustomColors.kBlackColor, fontSize: 12)),
+                      SizedBox(height: mHeight * 0.005),*/
+                      Text("Year Of Passing: $passingYear",
+                          style: const TextStyle(
+                              color: CustomColors.kLightGrayColor,fontSize: 12)),
+                      SizedBox(height: mHeight * 0.02),
+                    ],
+                  ),
+              )),
+    );
   }
 
   Widget _buildIndicator() {

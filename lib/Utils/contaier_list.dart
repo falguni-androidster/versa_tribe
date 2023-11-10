@@ -21,9 +21,7 @@ class TextContainerList extends StatelessWidget {
 
     for (String hobby in textData) {
       containerWidgets.add(
-        Padding(
-          padding:
-              EdgeInsets.only(right: mWidth * 0.01, bottom: mHeight * 0.005),
+        Padding(padding: EdgeInsets.only(right: mWidth * 0.01, bottom: mHeight * 0.01),
           child: Container(
               decoration: BoxDecoration(
                   border: Border.all(color: CustomColors.kBlueColor, width: 2),

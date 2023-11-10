@@ -15,7 +15,7 @@ import 'custom_string.dart';
 
 class ApiConfig {
 
-  static const String baseUrl = 'https://192.168.2.111:9443';
+  static const String baseUrl = 'https://srv1.ksgs.local:9443';
 
 // Usage example
 // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
