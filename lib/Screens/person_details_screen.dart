@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -173,7 +174,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: val.personQl.length,
                       itemBuilder: (context, index) {
-                        String date = val.personQl[index].yop.toString();
+                        String date = val.personQl[index].yOP.toString();
                         String passingY =
                             DateFormat.yMMM().format(DateTime.parse(date));
                         return timelineTile(
@@ -199,6 +200,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 right: mWidget * 0.03,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(children: [
                     SizedBox(
@@ -575,10 +577,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 String course = vaL.personQl[index].couName;
                                 String institute = vaL.personQl[index].instName;
                                 String grade = vaL.personQl[index].grade;
-                                String city = vaL.personQl[index].ctyName;
-                                int pQID = vaL.personQl[index].pqId;
-                                String yop = DateFormat("yyyy-MM-dd")
-                                    .format(vaL.personQl[index].yop);
+                                String city = vaL.personQl[index].city;
+                                int pQID = vaL.personQl[index].pQId;
+                                print("-----=->${vaL.personQl[index].yOP}");
+                                String yop = DateFormat("yyyy-MM-dd").format(DateTime.parse("${vaL.personQl[index].yOP}"));
                                 switch (item) {
                                   case 0:
                                     Navigator.push(
@@ -593,8 +595,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                                     yop: yop,
                                                     pqID: pQID)));
                                   case 1:
-                                    _showDeleteConfirmation(context, "identityPQD",
-                                        vaL.personQl[index].pqId, "");
+                                    _showDeleteConfirmation(context, "identityPQD", vaL.personQl[index].pQId, "");
                                 }
                               },
                               itemBuilder: (_) => [
@@ -617,13 +618,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           style: const TextStyle(
                               color: CustomColors.kBlackColor,)),
                       SizedBox(height: mHeight * 0.005),
-                    /*  Text("City : ${vaL.personQl[index].ctypName}",
+                      Text("City : ${vaL.personQl[index].city}",
                           style: const TextStyle(
                               color: CustomColors.kBlackColor, fontSize: 12)),
-                      SizedBox(height: mHeight * 0.005),*/
+                      SizedBox(height: mHeight * 0.005),
                       Text("Year Of Passing: $passingYear",
                           style: const TextStyle(
                               color: CustomColors.kLightGrayColor,fontSize: 12)),
+                      //if (defaultTargetPlatform == TargetPlatform.android)SizedBox(height: mHeight * 0.02),
                       SizedBox(height: mHeight * 0.02),
                     ],
                   ),

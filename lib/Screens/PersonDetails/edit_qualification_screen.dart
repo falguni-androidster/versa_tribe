@@ -354,12 +354,9 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
     );
 
     if (pickedDate != null) {
-      debugPrint(
-          "PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
-      String formatYopDate = DateFormat('yyyy-MM-dd')
-          .format(pickedDate); // we also use "dd-MM-yyyy" format or may more..
-      debugPrint(
-          "FormattedData----->$formatYopDate"); //formatted date output using intl package =>  2021-03-16
+      debugPrint("PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
+      String formatYopDate = DateFormat('yyyy-MM-dd').format(pickedDate); // we also use "dd-MM-yyyy" format or may more..
+      debugPrint("FormattedData----->$formatYopDate"); //formatted date output using intl package =>  2021-03-16
       provider.setYopDate(formatYopDate); //set output date to TextField value.
       yopController.text = provider.yopDateInput;
     } else {}
