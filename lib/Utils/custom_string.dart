@@ -148,9 +148,9 @@ class CustomString {
 /*---------------------------  Person details Screen ------------------------*/
   static const String profileDSHeaderText = 'Person Details';
   static const String createExperience = 'Create Experience';
-  static const String editExperience = 'Edit Experience';
+  static const String editExperience = 'Update Experience';
   static const String createQualification = 'Create Qualification';
-  static const String editQualification = 'Edit Qualification';
+  static const String editQualification = 'Update Qualification';
   static const String createSkill = 'Create Skill';
   static const String editSkill = 'Update Skill';
   static const String createHobby = 'Select Hobby';

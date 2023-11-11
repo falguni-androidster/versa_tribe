@@ -48,6 +48,7 @@ void main() {
       ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider()),
       ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
       ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider()),
+      ChangeNotifierProvider<AddRadioComIndProvider>(create: (_) => AddRadioComIndProvider()),
       ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider())
     ],
     child: const MyApp()
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
         backgroundColor: CustomColors.kBlackColor,
         inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder (
-              borderSide: BorderSide (color: CustomColors.kBlackColor,width: 1),
+              borderSide: BorderSide (color: CustomColors.kBlueColor,width: 1),
           ),
         )
       ),

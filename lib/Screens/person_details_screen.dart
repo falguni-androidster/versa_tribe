@@ -570,6 +570,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               String course = vaL.personQl[index].couName;
                               String institute = vaL.personQl[index].instName;
                               String grade = vaL.personQl[index].grade;
+                              String city = vaL.personQl[index].ctyName;
                               int pQID = vaL.personQl[index].pqId;
                               String yop = DateFormat("yyyy-MM-dd")
                                   .format(vaL.personQl[index].yop);
@@ -582,6 +583,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                               EditQualificationScreen(
                                                   courseName: course,
                                                   grade: grade,
+                                                  city: city,
                                                   institute: institute,
                                                   yop: yop,
                                                   pqID: pQID)));
