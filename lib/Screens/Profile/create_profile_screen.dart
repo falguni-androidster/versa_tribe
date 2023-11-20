@@ -27,12 +27,13 @@ class CreateProfileScreen extends StatefulWidget {
 class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController fNameController = TextEditingController();
-  final TextEditingController lNameController = TextEditingController();
+  TextEditingController lNameController = TextEditingController();
   TextEditingController genderController = TextEditingController();
   TextEditingController dobController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 

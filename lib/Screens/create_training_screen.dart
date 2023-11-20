@@ -16,6 +16,7 @@ class CreateTrainingScreen extends StatefulWidget {
 class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
 
   final _form = GlobalKey<FormState>();
+
   TextEditingController trainingNameController = TextEditingController();
   TextEditingController trainingDiscriptionController = TextEditingController();
 

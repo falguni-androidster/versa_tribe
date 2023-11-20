@@ -82,8 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const Text(
                       CustomString.signupStarted,
                       style: TextStyle(
-                          fontSize: 20, fontFamily: 'Poppins',color: CustomColors.kLightGrayColor),
-                    ),
+                          fontSize: 20, fontFamily: 'Poppins',color: CustomColors.kLightGrayColor)),
 
                     SizedBox(height: size.height * 0.03),
 

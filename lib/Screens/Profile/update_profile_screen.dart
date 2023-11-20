@@ -32,6 +32,7 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
   TextEditingController genderController = TextEditingController();

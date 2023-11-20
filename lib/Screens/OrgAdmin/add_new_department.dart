@@ -6,12 +6,16 @@ import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 
 class AddNewDepartment extends StatefulWidget {
+
   const AddNewDepartment({super.key});
+
   @override
   State<AddNewDepartment> createState() => _AddNewDepartmentState();
 }
 class _AddNewDepartmentState extends State<AddNewDepartment> {
+
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController searchParentDController = TextEditingController();
   TextEditingController newDController = TextEditingController();
 
@@ -118,7 +122,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onPressed: () {
                           ApiConfig.addNewDepartment(context: context,departmentName: newDController.text);
                           },
-                        child: const Text(CustomString.buttonContinue)
+                        child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'),)
                     )
                 )
               ],

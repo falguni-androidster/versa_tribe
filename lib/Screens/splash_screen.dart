@@ -8,16 +8,20 @@ import 'package:versa_tribe/Utils/image_path.dart';
 import '../Utils/custom_string.dart';
 
 class SplashScreen extends StatefulWidget {
+
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
     checkFirstTimeUser();
   }
+
   Future<void> checkFirstTimeUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTimeUser = prefs.getBool(CustomString.firstTimeUser) ?? true;

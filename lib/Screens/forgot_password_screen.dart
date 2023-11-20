@@ -10,6 +10,7 @@ import '../Utils/custom_string.dart';
 import '../Utils/validator.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
+
   const ForgotPasswordScreen({super.key});
 
   @override
@@ -17,8 +18,10 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
+
+  TextEditingController emailController = TextEditingController();
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 

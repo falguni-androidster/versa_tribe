@@ -15,7 +15,7 @@ import 'custom_string.dart';
 
 class ApiConfig {
 
-  static const String baseUrl = 'https://192.168.2.111:9443';
+  static const String baseUrl = 'https://srv1.ksgs.local:9443';
 
 // Usage example
 // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
@@ -339,12 +339,13 @@ class ApiConfig {
     }
   }
   static addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
+    print("---->}>--> $courseName ---> $instituteName---> $grade---> $city ---> $yop");
     Map<String, dynamic> requestData = {
-      "YOP": yop,
-      "Grade": grade,
-      "City": city,
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
+      "City": city,
+      "YOP": yop,
+      "Grade": grade,
     };
 
     String url = "$baseUrl/api/PersonQualifications/Create";
@@ -356,11 +357,11 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification added--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
       ApiConfig.getUserQualification(context);
       Navigator.pop(context);
     } else {
-      debugPrint("Qualification added failed--------->${response.body}");
+
+      debugPrint("Qualification added failed----}----->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Qualification not add please try again..."),
       ));
@@ -398,16 +399,17 @@ class ApiConfig {
     debugPrint("grade--->$grade");
     debugPrint("city--->$city");
     debugPrint("yop--->$yop");
+    debugPrint("PQ_Id--->$personQualificationID");
 
     Map<String, dynamic> requestData = {
       "PQ_Id":personQualificationID,
-      //"Person_Id":personQualificationID,
       "YOP": yop,
       "Grade": grade,
       "City": city,
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
     };
+
 
 
     String url = "$baseUrl/api/PersonQualifications/Update";

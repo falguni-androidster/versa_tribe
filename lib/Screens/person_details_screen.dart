@@ -21,6 +21,7 @@ import 'PersonDetails/edit_skill_screen.dart';
 import 'Profile/update_profile_screen.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
+
   const PersonDetailsScreen({super.key});
 
   @override
@@ -88,13 +89,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 children: [
                   Row(children: [
 
-                    SizedBox(width: size.width * 0.03,),
+                    SizedBox(width: size.width * 0.03),
 
                     const Text(CustomString.experience,
                         style: TextStyle(
                             color: CustomColors.kBlueColor,
                             fontWeight: FontWeight.normal,
-                            fontSize: 16, fontFamily: 'Poppins')),
+                            fontSize: 16,
+                            fontFamily: 'Poppins')),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
@@ -155,7 +157,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       const Text(CustomString.qualification,
                           style: TextStyle(
                               color: CustomColors.kBlueColor,
-                              fontSize: 16, fontFamily: 'Poppins')),
+                              fontSize: 16,
+                              fontFamily: 'Poppins')),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.add,
@@ -252,7 +255,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               PopupMenuButton(
                                   child: CircleAvatar(
                                     radius:10,backgroundColor: Colors.transparent,
-                                      child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                                      child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
                                   onSelected: (item) {
                                     int perSKID =
                                         val.personSkill[index].perSkId!;
@@ -278,10 +281,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                   itemBuilder: (_) => [
                                         const PopupMenuItem(
                                             value: 0,
-                                            child: Text(CustomString.edit)),
+                                            child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                         const PopupMenuItem(
                                             value: 1,
-                                            child: Text(CustomString.delete))
+                                            child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
                                       ]),
                               SizedBox(width: size.width * 0.04)
                             ],
@@ -432,14 +435,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(CustomString.deleteTitle, style: TextStyle(),),
-          content: const Text(CustomString.deleteContent),
+          title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
+          content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the confirmation dialog
               },
-              child: const Text(CustomString.cancel),
+              child: const Text(CustomString.cancel, style: TextStyle(fontFamily: 'Poppins')),
             ),
             TextButton(
               onPressed: () {
@@ -487,7 +490,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
           ),
           endChild: widgetKey == "personExperience"
               ? Padding(
-                padding: EdgeInsets.only(left: mWidth*0.02,),
+                padding: EdgeInsets.only(left: mWidth*0.02),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,7 +498,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor),),
+                          Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                           const Spacer(),
                           PopupMenuButton(
                               // icon: const Icon(
@@ -504,7 +507,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               // ),
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
-                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 15,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 15,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
                               onSelected: (item) {
                                 switch (item) {
                                   case 0:
@@ -534,9 +537,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               },
                               itemBuilder: (_) => [
                                     const PopupMenuItem(
-                                        value: 0, child: Text(CustomString.edit)),
+                                        value: 0, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                     const PopupMenuItem(
-                                        value: 1, child: Text(CustomString.delete))
+                                        value: 1, child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
                                   ]),
                           SizedBox(width: mWidth*0.04,)
                         ],
@@ -544,10 +547,11 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       SizedBox(height: mHeight * 0.006),
                       comN != "" && comN != null ? Text(
                               "Company : ${vaL.personEx[index].companyName ?? ""}",
-                              style: const TextStyle(color: CustomColors.kBlackColor)) : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}", style: const TextStyle(
-                                  color: CustomColors.kBlackColor, /*fontSize: 12*/)),
+                              style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))
+                          : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}",
+                          style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.005),
-                      Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12)),
+                      Text("$sd - $ed * ${vaL.personEx[index].expMonths} Months", style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.02),
                     ],
                   ),
@@ -562,12 +566,12 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(vaL.personQl[index].couName,
-                              style: const TextStyle(color: CustomColors.kBlueColor,)),
+                              style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                           const Spacer(),
                           PopupMenuButton(
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
-                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn),)),
+                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
                               onSelected: (item) {
                                 String course = vaL.personQl[index].couName;
                                 String institute = vaL.personQl[index].instName;
@@ -595,31 +599,31 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               },
                               itemBuilder: (_) => [
                                     const PopupMenuItem(
-                                        value: 0, child: Text(CustomString.edit)),
+                                        value: 0, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                     const PopupMenuItem(
-                                        value: 1, child: Text(CustomString.delete))
+                                        value: 1, child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
                                   ]),
-                          SizedBox(width: mWidth*0.04,)
+                          SizedBox(width: mWidth * 0.04)
                         ],
                       ),
                       SizedBox(height: mHeight * 0.006),
                       Text("Institute: ${vaL.personQl[index].instName}",
-                          style: const TextStyle(color: CustomColors.kBlackColor)),
+                          style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.005),
                       Text("Course Type: ${vaL.personQl[index].couName}",
-                          style: const TextStyle(color: CustomColors.kBlackColor)),
+                          style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.005),
                       Text("Grade: ${vaL.personQl[index].grade}",
                           style: const TextStyle(
-                              color: CustomColors.kBlackColor,)),
+                              color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.005),
                       Text("City : ${vaL.personQl[index].city}",
                           style: const TextStyle(
-                              color: CustomColors.kBlackColor, fontSize: 12)),
+                              color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                       SizedBox(height: mHeight * 0.005),
                       Text("Year Of Passing: $passingYear",
                           style: const TextStyle(
-                              color: CustomColors.kLightGrayColor,fontSize: 12)),
+                              color: CustomColors.kLightGrayColor,fontSize: 12, fontFamily: 'Poppins')),
                       //if (defaultTargetPlatform == TargetPlatform.android)SizedBox(height: mHeight * 0.02),
                       SizedBox(height: mHeight * 0.02),
                     ],

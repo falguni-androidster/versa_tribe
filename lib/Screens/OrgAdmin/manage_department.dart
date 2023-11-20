@@ -8,6 +8,7 @@ import '../../Utils/custom_string.dart';
 class ManageDepartment extends StatefulWidget {
 
   const ManageDepartment({super.key});
+
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();
 }

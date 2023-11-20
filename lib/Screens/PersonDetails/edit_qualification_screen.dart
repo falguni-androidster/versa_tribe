@@ -48,6 +48,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
   void initState() {
     provider = Provider.of<SearchCourseProvider>(context, listen: false);
     providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
+
     provider.courseList.clear();
     providerInstitute.instituteList.clear();
     // TODO: implement initState
@@ -71,6 +72,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
 
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
     final providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
+
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -234,8 +236,8 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     decoration: const InputDecoration(
                         labelText: CustomString.grade,
                         labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14)),
-                    style: const TextStyle(color: CustomColors.kBlackColor)),
+                            color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor,fontFamily: 'Poppins')),
 
                 SizedBox(height: size.height * 0.03),
 

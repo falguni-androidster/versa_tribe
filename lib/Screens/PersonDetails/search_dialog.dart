@@ -10,6 +10,7 @@ class SearchPopupScreen extends StatefulWidget {
 class _SearchPopupScreenState extends State<SearchPopupScreen> {
 
   final TextEditingController _searchController = TextEditingController();
+
   List<String> items = List.generate(50, (index) => 'Item $index');
 
   @override

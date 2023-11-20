@@ -23,6 +23,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
   Widget build(BuildContext context) {
 
     final providerSkill = Provider.of<SearchSkillProvider>(context, listen: false);
+
     var size = MediaQuery.of(context).size;
 
     return Scaffold(

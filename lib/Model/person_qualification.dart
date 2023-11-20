@@ -5,57 +5,62 @@ PersonQualificationModel personQlModelFromJson(String str) => PersonQualificatio
 String personQlModelToJson(PersonQualificationModel data) => json.encode(data.toJson());
 
 class PersonQualificationModel {
-    PersonQualificationModel({
-        required this.status,
-        required this.tStamp,
-        required this.ctyName,
-        required this.pqId,
-        required this.firstName,
-        required this.instName,
-        required this.tOwner,
-        required this.couName,
-        required this.grade,
-        required this.lastName,
-        required this.yop,
-    });
+    int? pQId;
+    String? firstName;
+    String? lastName;
+    String? couName;
+    String? ctypName;
+    String? instName;
+    String? yOP;
+    String? grade;
+    String? city;
+    String? tOwner;
+    String? tStamp;
+    int? status;
 
-    int status;
-    DateTime tStamp;
-    String ctyName;
-    int pqId;
-    String firstName;
-    String instName;
-    String tOwner;
-    String couName;
-    String grade;
-    String lastName;
-    DateTime yop;
+    PersonQualificationModel(
+        {this.pQId,
+            this.firstName,
+            this.lastName,
+            this.couName,
+            this.ctypName,
+            this.instName,
+            this.yOP,
+            this.grade,
+            this.city,
+            this.tOwner,
+            this.tStamp,
+            this.status});
 
-    factory PersonQualificationModel.fromJson(Map<dynamic, dynamic> json) => PersonQualificationModel(
-        status: json["Status"],
-        tStamp: DateTime.parse(json["TStamp"]),
-        ctyName: json["Ctyp_Name"],
-        pqId: json["PQ_Id"],
-        firstName: json["FirstName"],
-        instName: json["Inst_Name"],
-        tOwner: json["TOwner"],
-        couName: json["Cou_Name"],
-        grade: json["Grade"],
-        lastName: json["LastName"],
-        yop: DateTime.parse(json["YOP"]),
-    );
+    PersonQualificationModel.fromJson(Map<String, dynamic> json) {
+        pQId = json['PQ_Id'];
+        firstName = json['FirstName'];
+        lastName = json['LastName'];
+        couName = json['Cou_Name'];
+        ctypName = json['Ctyp_Name'];
+        instName = json['Inst_Name'];
+        yOP = json['YOP'];
+        grade = json['Grade'];
+        city = json['City'];
+        tOwner = json['TOwner'];
+        tStamp = json['TStamp'];
+        status = json['Status'];
+    }
 
-    Map<dynamic, dynamic> toJson() => {
-        "Status": status,
-        "TStamp": tStamp.toIso8601String(),
-        "Ctyp_Name": ctyName,
-        "PQ_Id": pqId,
-        "FirstName": firstName,
-        "Inst_Name": instName,
-        "TOwner": tOwner,
-        "Cou_Name": couName,
-        "Grade": grade,
-        "LastName": lastName,
-        "YOP": yop.toIso8601String(),
-    };
+    Map<String, dynamic> toJson() {
+        final Map<String, dynamic> data = <String, dynamic>{};
+        data['PQ_Id'] = pQId;
+        data['FirstName'] = firstName;
+        data['LastName'] = lastName;
+        data['Cou_Name'] = couName;
+        data['Ctyp_Name'] = ctypName;
+        data['Inst_Name'] = instName;
+        data['YOP'] = yOP;
+        data['Grade'] = grade;
+        data['City'] = city;
+        data['TOwner'] = tOwner;
+        data['TStamp'] = tStamp;
+        data['Status'] = status;
+        return data;
+    }
 }

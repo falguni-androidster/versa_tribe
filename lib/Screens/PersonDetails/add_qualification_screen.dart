@@ -18,6 +18,7 @@ class AddQualificationScreen extends StatefulWidget {
 class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
   final _formKey = GlobalKey<FormState>();
+
   TextEditingController courseController = TextEditingController();
   TextEditingController instituteController = TextEditingController();
   TextEditingController cityController = TextEditingController();
@@ -30,6 +31,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
     final providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
+
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -100,8 +102,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                                       child: Text(
                                           '${val.courseList[index].couName}',
                                           style: const TextStyle(
-                                              color: CustomColors
-                                                  .kLightGrayColor,fontFamily: 'Poppins'))),
+                                              color: CustomColors.kLightGrayColor,fontFamily: 'Poppins'))),
                                 ),
                                 onTap: () async {
                                   courseController.text =
