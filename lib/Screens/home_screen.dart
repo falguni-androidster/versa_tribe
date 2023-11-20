@@ -21,7 +21,8 @@ import 'OrgAdmin/admin_manage.dart';
 import 'manage_organization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String? from;
+  HomeScreen({super.key, this.from});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -47,11 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
     LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
     print("org person =====>${loginResponseModel.orgPerson}");
     print("org admin =====>${loginResponseModel.orgAdmin}");
-    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
+    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());
     List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
 
     final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context,listen: false);
-    final setPtovider = Provider.of<OrganizationProvider>(context,listen: false);
+    final setProvider = Provider.of<OrganizationProvider>(context,listen: false);
     if(loginResponseModel.orgPerson!="[]"){
     oP.forEach((element) {
       oPData = OrgNameId.fromJson(element);
@@ -74,16 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
       finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
       selectedValue = orgAdminList[0];
       if (selectedValue==orgAdminList[0]) {
-        setPtovider.setVisible(true);
+        setProvider.setVisible(true);
       } else {
-        setPtovider.setVisible(false);
+        setProvider.setVisible(false);
       }
 
       //Initial val for dropdown
       proManageVisibility.setString(finalList);
       print("F2---------------->${finalList.length}");
     });}else{}
-
     return loginResponseModel;
   }
   // Function to show the dialog
@@ -91,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        print("KL===>${selectedValue}");
         return AlertDialog(
           title: const Text("Select an Option"),
           content: Consumer<OrganizationProvider>(
@@ -121,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -174,33 +173,35 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
-                print("Test String join org----->${val.string}");
                 return val.string.isNotEmpty && selectedValue != null?
-                Row(
-                    children: [
-                      Consumer<OrganizationProvider>(
-                        builder: (context,val,child) {
-                          return Text("$selectedValue  ",style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16),);
-                        }
-                      ),
-                      CircleAvatar(
-                        radius: 10,backgroundColor: Colors.transparent,
-                        child: SVGIconButton(
-                            svgPath: ImagePath.dropdownIcon,
-                            size: 6.0,
-                            color: CustomColors.kLightGrayColor,
-                            // Replace with the path to your SVG asset
-                            onPressed: () {
-                              _showDialog();
-                            }),
-                      ),
-                    ],
-                  )
+                InkWell(
+                  child: Row(
+                      children: [
+                        Consumer<OrganizationProvider>(
+                          builder: (context,val,child) {
+                            return Text("$selectedValue  ",style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16),);
+                          }
+                        ),
+                        CircleAvatar(
+                          radius: 10,backgroundColor: Colors.transparent,
+                          child: SVGIconButton(
+                              svgPath: ImagePath.dropdownIcon,
+                              size: 6.0,
+                              color: CustomColors.kLightGrayColor,
+                              onPressed: () {
+                                _showDialog();
+                              }),
+                        ),
+                      ],
+                    ),
+                  onTap: (){
+                  _showDialog();
+                  },
+                )
                  : TextButton(onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (
                       context) => const ManageOrganization()));
-                }, child: const Text("join Org",
-                      style: TextStyle(color: CustomColors.kBlueColor),));
+                }, child: const Text("join Org", style: TextStyle(color: CustomColors.kBlueColor),));
               }),
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {

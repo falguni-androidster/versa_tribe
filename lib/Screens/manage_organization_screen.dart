@@ -1,15 +1,13 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../Model/OrgNaneId.dart';
-import '../Model/login_response.dart';
 import '../Providers/manage_org_index_provider.dart';
-import '../Providers/manage_visibility_btn.dart';
-import '../Providers/organization_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import '../Utils/image_path.dart';
@@ -46,51 +44,6 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
     ApiConfig.getManageOrgData(context: context, tabIndex: 0);
     super.initState();
   }
-  checkUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic>? responseList = prefs.getJson('responseModel');
-    LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(responseList);
-    print("org person =====>${loginResponseModel.orgPerson}");
-    print("org admin =====>${loginResponseModel.orgAdmin}");
-    List<dynamic> oP = jsonDecode(loginResponseModel.orgPerson.toString());///jsonDecode for remove string
-    List<dynamic> oA = jsonDecode(loginResponseModel.orgAdmin.toString());
-
-    final proManageVisibility = Provider.of<JoinBtnDropdownBtnProvider>(context,listen: false);
-    final setPtovider = Provider.of<OrganizationProvider>(context,listen: false);
-    if(loginResponseModel.orgPerson!="[]"){
-      oP.forEach((element) {
-        oPData = OrgNameId.fromJson(element);
-        print("orgPerson name---)>${oPData.orgName}");
-        margList.add(oPData.orgName.toString());///Add orgPersonName List in margList
-        selectedValue = margList[0];//Initial val for dropdown
-        finalList = margList;
-        proManageVisibility.setString(finalList);
-        print("F1---------------->${finalList.length}");
-      });}else{}
-
-    if(loginResponseModel.orgAdmin!="[]"){
-      oA.forEach((element) {
-        oAData = OrgNameId.fromJson(element);
-        print("\norgAdmin name---)>${oAData.orgName}");
-        margList.add(oAData.orgName.toString());
-        orgAdminList.add(oAData.orgName.toString());
-
-        var seen = Set<String>();
-        finalList = margList.where((name) => seen.add(name)).toList();///Remove duplicate data and store in final list
-        selectedValue = orgAdminList[0];
-        if (selectedValue==orgAdminList[0]) {
-          setPtovider.setVisible(true);
-        } else {
-          setPtovider.setVisible(false);
-        }
-
-        //Initial val for dropdown
-        proManageVisibility.setString(finalList);
-        print("F2---------------->${finalList.length}");
-      });}else{}
-
-    return loginResponseModel;
-  }
   @override
   Widget build(BuildContext context) {
     final mHeight = MediaQuery
@@ -109,6 +62,8 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
           const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
           onTap: () {
             Navigator.pop(context);
+            //data(context);
+            //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen(from: "ManageOrg",)));
           },
         ),
         title: const Text(CustomString.manageOrganization,
@@ -400,6 +355,20 @@ class _ManageOrganizationState extends State<ManageOrganization>with SingleTicke
         ],
       ),
     );
+  }
+
+  data(context) async {
+      const String loginUrl = '${ApiConfig.baseUrl}/api/Person/MySessionInfo';
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
+      var response = await http.post(Uri.parse(loginUrl),
+          headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      print("Map Data------:/-> ${response.body}");
+          pref.setJson("responseModel", jsonData);
   }
 
   Future<void> joinOrganizationDialog({context, mHeight, mWidth}) async {
