@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +28,7 @@ class PersonDetailsScreen extends StatefulWidget {
 }
 
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
+
   @override
   void initState() {
     // TODO: implement initState
@@ -59,340 +59,45 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
           title: const Text(CustomString.profileDSHeaderText,
               style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: RefreshIndicator(
+        onRefresh: refreshEventList,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
 
-            SizedBox(height: size.height * 0.01),
+              SizedBox(height: size.height * 0.01),
 
-            FutureBuilder<ProfileResponse>(
-              future: ApiConfig().getProfileData(),
-              builder: (context, snapshot) {
-                return containerProfile(snapshot, size.width);
-              },
-            ),
-
-            SizedBox(height: size.height * 0.02),
-
-            /// Experience
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.kBlueColor, width: 2),
-                  borderRadius: BorderRadius.circular(10)),
-              margin: EdgeInsets.only(
-                left: size.width * 0.03,
-                right: size.width * 0.03,
+              FutureBuilder<ProfileResponse>(
+                future: ApiConfig().getProfileData(),
+                builder: (context, snapshot) {
+                  return containerProfile(snapshot, size.width);
+                },
               ),
-              padding: EdgeInsets.only(bottom: size.height * 0.01),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
 
-                    SizedBox(width: size.width * 0.03),
+              SizedBox(height: size.height * 0.02),
 
-                    const Text(CustomString.experience,
-                        style: TextStyle(
-                            color: CustomColors.kBlueColor,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                            fontFamily: 'Poppins')),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AddExperienceScreen()));
-                      },
-                    ),
-                  ]),
-                  Consumer<PersonExperienceProvider>(
-                      builder: (context, val, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: val.personEx.length,
-                      itemBuilder: (context, index) {
-                        String? comN = val.personEx[index].companyName;
-                        String? indN = val.personEx[index].industryFieldName;
-                        String? sDate = val.personEx[index].startDate;
-                        String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
-                        String? eDate = val.personEx[index].endDate;
-                        String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
-                        return timelineTile(
-                            comN: comN,
-                            ed: ed,
-                            sd: sd,
-                            vaL: val,
-                            index: index,
-                            widgetKey: "personExperience");
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ),
-
-            SizedBox(height: size.height * 0.02),
-
-            /// Qualifications
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.kBlueColor, width: 2),
-                  borderRadius: BorderRadius.circular(10)),
-              margin: EdgeInsets.only(
-                left: size.width * 0.03,
-                right: size.width * 0.03,
-              ),
-              padding: EdgeInsets.only(bottom: size.height * 0.01),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(width: size.width * 0.03),
-                      const Text(CustomString.qualification,
-                          style: TextStyle(
-                              color: CustomColors.kBlueColor,
-                              fontSize: 16,
-                              fontFamily: 'Poppins')),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.add,
-                            color: CustomColors.kBlueColor),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AddQualificationScreen()));
-                        },
-                      )
-                    ],
-                  ),
-                  Consumer<PersonQualificationProvider>(
-                      builder: (context, val, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: val.personQl.length,
-                      itemBuilder: (context, index) {
-                        String date = val.personQl[index].yOP.toString();
-                        String passingY =
-                            DateFormat.yMMM().format(DateTime.parse(date));
-                        return timelineTile(
-                          index: index,
-                          vaL: val,
-                          passingYear: passingY,
-                        );
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ),
-
-            SizedBox(height: size.height * 0.02),
-
-            /// Skill
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.kBlueColor, width: 2),
-                  borderRadius: BorderRadius.circular(10)),
-              margin: EdgeInsets.only(
-                left: size.width * 0.03,
-                right: size.width * 0.03,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(children: [
-                    SizedBox(width: size.width * 0.03,),
-                    const Text(CustomString.skill,style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.add,
-                        color: CustomColors.kBlueColor,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AddSkillScreen()));
-                      },
-                    ),
-                  ]),
-                  Consumer<PersonSkillProvider>(builder: (context, val, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: val.personSkill.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.only(
-                              left: size.width * 0.03, bottom: size.height * 0.01),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${val.personSkill[index].skillName}",
-                                    style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
-                                  ),
-                                  SizedBox(height: size.height * 0.005),
-                                  Text(
-                                      "Experience: ${val.personSkill[index].experience ?? ""} months",
-                                      style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                                ],
-                              ),
-                              const Spacer(),
-                              PopupMenuButton(
-                                  child: CircleAvatar(
-                                    radius:10,backgroundColor: Colors.transparent,
-                                      child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
-                                  onSelected: (item) {
-                                    int perSKID =
-                                        val.personSkill[index].perSkId!;
-                                    String skillName =
-                                        val.personSkill[index].skillName!;
-                                    int month =
-                                        val.personSkill[index].experience!;
-                                    switch (item) {
-                                      case 0:
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditSkillScreen(
-                                                        skillName: skillName,
-                                                        months: month,
-                                                        perSkillId: perSKID)));
-                                      case 1:
-                                        _showDeleteConfirmation(context,
-                                            "identityPSD", perSKID, "");
-                                    }
-                                  },
-                                  itemBuilder: (_) => [
-                                        const PopupMenuItem(
-                                            value: 0,
-                                            child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
-                                        const PopupMenuItem(
-                                            value: 1,
-                                            child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
-                                      ]),
-                              SizedBox(width: size.width * 0.04)
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                ],
-              ),
-            ),
-
-            SizedBox(height: size.height * 0.02),
-
-            // /// Hobbies
-            // Container(
-            //   decoration: BoxDecoration(
-            //       border: Border.all(color: CustomColors.kBlueColor, width: 2),
-            //       borderRadius: BorderRadius.circular(10)),
-            //   margin: EdgeInsets.symmetric(horizontal: mWidget * 0.03),
-            //   height: mHeight * 0.20,
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: [
-            //       SizedBox(height: mHeight * 0.01),
-            //       Row(children: [
-            //         SizedBox(width: mWidget * 0.03),
-            //         const Text(CustomString.hobbies,
-            //             style: TextStyle(
-            //                 color: CustomColors.kBlueColor,
-            //                 fontWeight: FontWeight.bold,
-            //                 fontSize: 16)),
-            //         const Spacer(),
-            //         IconButton(
-            //           icon:
-            //               const Icon(Icons.add, color: CustomColors.kBlueColor),
-            //           onPressed: () {
-            //             Navigator.push(
-            //                 context,
-            //                 MaterialPageRoute(
-            //                     builder: (context) => const AddHobbyScreen()));
-            //           },
-            //         ),
-            //       ]),
-            //       Expanded(
-            //         child: Container(
-            //           padding: const EdgeInsets.all(6),
-            //           child: Consumer<PersonHobbyProvider>(
-            //               builder: (context, val, child) {
-            //             return GridView.builder(
-            //                 scrollDirection: Axis.horizontal,
-            //                 gridDelegate:
-            //                     SliverGridDelegateWithMaxCrossAxisExtent(
-            //                   maxCrossAxisExtent: mWidget * 0.1,
-            //                   childAspectRatio: 1 / 5,
-            //                   crossAxisSpacing: 1,
-            //                 ),
-            //                 itemCount: val.personHobby.length,
-            //                 itemBuilder: (context, index) {
-            //                   return Wrap(children: [
-            //                     InkWell(
-            //                         onTap: () {
-            //                           _showDeleteConfirmation(
-            //                               context,
-            //                               "identityPHD",
-            //                               val.personHobby[index].hobbyId,
-            //                               val.personHobby[index].personId);
-            //                         },
-            //                         child: Container(
-            //                             decoration: BoxDecoration(
-            //                                 border: Border.all(
-            //                                     color: CustomColors.kBlueColor,
-            //                                     width: 2),
-            //                                 borderRadius:
-            //                                     BorderRadius.circular(10)),
-            //                             padding: const EdgeInsets.all(5.0),
-            //                             child: Text(
-            //                                 "${val.personHobby[index].name}",
-            //                                 style: const TextStyle(
-            //                                     color: Colors.black,
-            //                                     fontSize: 18))))
-            //                   ]);
-            //                 });
-            //           }),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            // SizedBox(height: mHeight * 0.01),
-
-
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.kBlueColor, width: 2),
-                  borderRadius: BorderRadius.circular(10)),
-              margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
-              child: Padding(
-                padding: EdgeInsets.only(left: size.width * 0.03),
+              /// Experience
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: CustomColors.kBlueColor, width: 2),
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.only(
+                  left: size.width * 0.03,
+                  right: size.width * 0.03,
+                ),
+                padding: EdgeInsets.only(bottom: size.height * 0.01),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: size.height * 0.01),
                     Row(children: [
-                      const Text(CustomString.hobbies,
-                          style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
+                      SizedBox(width: size.width * 0.03),
+                      const Text(CustomString.experience,
+                          style: TextStyle(
+                              color: CustomColors.kBlueColor,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16,
+                              fontFamily: 'Poppins')),
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
@@ -400,34 +105,341 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AddHobbyScreen()));
+                                  builder: (context) =>
+                                      const AddExperienceScreen()));
                         },
                       ),
                     ]),
-
-                    Consumer<PersonHobbyProvider>(
+                    Consumer<PersonExperienceProvider>(
                         builder: (context, val, child) {
-                          List<String> hobbyNameList=[];
-                          List<int> hobbyIdList=[];
-                          List<int> personIdList=[];
-                           for (var element in val.personHobby) {
-                             hobbyNameList.add(element.name!);
-                             hobbyIdList.add(element.hobbyId!);
-                             personIdList.add(element.personId!);
-                           }
-                          return TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList);
-                        }
-                    ),
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: val.personEx.length,
+                        itemBuilder: (context, index) {
+                          String? comN = val.personEx[index].companyName;
+                         // String? indN = val.personEx[index].industryFieldName;
+                          String? sDate = val.personEx[index].startDate;
+                          String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
+                          String? eDate = val.personEx[index].endDate;
+                          String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
+                          return timelineTile(
+                              comN: comN,
+                              ed: ed,
+                              sd: sd,
+                              vaL: val,
+                              index: index,
+                              widgetKey: "personExperience");
+                        },
+                      );
+                    }),
                   ],
                 ),
               ),
-            ),
-            SizedBox(height: size.height * 0.01),
-          ],
+
+              SizedBox(height: size.height * 0.02),
+
+              /// Qualifications
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: CustomColors.kBlueColor, width: 2),
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.only(
+                  left: size.width * 0.03,
+                  right: size.width * 0.03,
+                ),
+                padding: EdgeInsets.only(bottom: size.height * 0.01),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(width: size.width * 0.03),
+                        const Text(CustomString.qualification,
+                            style: TextStyle(
+                                color: CustomColors.kBlueColor,
+                                fontSize: 16,
+                                fontFamily: 'Poppins')),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.add,
+                              color: CustomColors.kBlueColor),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AddQualificationScreen()));
+                          },
+                        )
+                      ],
+                    ),
+                    Consumer<PersonQualificationProvider>(
+                        builder: (context, val, child) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: val.personQl.length,
+                        itemBuilder: (context, index) {
+                          String date = val.personQl[index].yOP.toString();
+                          String passingY =
+                              DateFormat.yMMM().format(DateTime.parse(date));
+                          return timelineTile(
+                            index: index,
+                            vaL: val,
+                            passingYear: passingY,
+                          );
+                        },
+                      );
+                    }),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: size.height * 0.02),
+
+              /// Skill
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: CustomColors.kBlueColor, width: 2),
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.only(
+                  left: size.width * 0.03,
+                  right: size.width * 0.03,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(children: [
+                      SizedBox(width: size.width * 0.03,),
+                      const Text(CustomString.skill,style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.add,
+                          color: CustomColors.kBlueColor,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AddSkillScreen()));
+                        },
+                      ),
+                    ]),
+                    Consumer<PersonSkillProvider>(builder: (context, val, child) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: val.personSkill.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(
+                                left: size.width * 0.03, bottom: size.height * 0.01),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${val.personSkill[index].skillName}",
+                                      style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
+                                    ),
+                                    SizedBox(height: size.height * 0.005),
+                                    Text(
+                                        "Experience: ${val.personSkill[index].experience ?? ""} months",
+                                        style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                                  ],
+                                ),
+                                const Spacer(),
+                                PopupMenuButton(
+                                    child: CircleAvatar(
+                                      radius:10,backgroundColor: Colors.transparent,
+                                        child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                                    onSelected: (item) {
+                                      int perSKID =
+                                          val.personSkill[index].perSkId!;
+                                      String skillName =
+                                          val.personSkill[index].skillName!;
+                                      int month =
+                                          val.personSkill[index].experience!;
+                                      switch (item) {
+                                        case 0:
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditSkillScreen(
+                                                          skillName: skillName,
+                                                          months: month,
+                                                          perSkillId: perSKID)));
+                                        case 1:
+                                          _showDeleteConfirmation(context,
+                                              "identityPSD", perSKID, "");
+                                      }
+                                    },
+                                    itemBuilder: (_) => [
+                                          const PopupMenuItem(
+                                              value: 0,
+                                              child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                                          const PopupMenuItem(
+                                              value: 1,
+                                              child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
+                                        ]),
+                                SizedBox(width: size.width * 0.04)
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: size.height * 0.02),
+
+              // /// Hobbies
+              // Container(
+              //   decoration: BoxDecoration(
+              //       border: Border.all(color: CustomColors.kBlueColor, width: 2),
+              //       borderRadius: BorderRadius.circular(10)),
+              //   margin: EdgeInsets.symmetric(horizontal: mWidget * 0.03),
+              //   height: mHeight * 0.20,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     mainAxisAlignment: MainAxisAlignment.start,
+              //     children: [
+              //       SizedBox(height: mHeight * 0.01),
+              //       Row(children: [
+              //         SizedBox(width: mWidget * 0.03),
+              //         const Text(CustomString.hobbies,
+              //             style: TextStyle(
+              //                 color: CustomColors.kBlueColor,
+              //                 fontWeight: FontWeight.bold,
+              //                 fontSize: 16)),
+              //         const Spacer(),
+              //         IconButton(
+              //           icon:
+              //               const Icon(Icons.add, color: CustomColors.kBlueColor),
+              //           onPressed: () {
+              //             Navigator.push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                     builder: (context) => const AddHobbyScreen()));
+              //           },
+              //         ),
+              //       ]),
+              //       Expanded(
+              //         child: Container(
+              //           padding: const EdgeInsets.all(6),
+              //           child: Consumer<PersonHobbyProvider>(
+              //               builder: (context, val, child) {
+              //             return GridView.builder(
+              //                 scrollDirection: Axis.horizontal,
+              //                 gridDelegate:
+              //                     SliverGridDelegateWithMaxCrossAxisExtent(
+              //                   maxCrossAxisExtent: mWidget * 0.1,
+              //                   childAspectRatio: 1 / 5,
+              //                   crossAxisSpacing: 1,
+              //                 ),
+              //                 itemCount: val.personHobby.length,
+              //                 itemBuilder: (context, index) {
+              //                   return Wrap(children: [
+              //                     InkWell(
+              //                         onTap: () {
+              //                           _showDeleteConfirmation(
+              //                               context,
+              //                               "identityPHD",
+              //                               val.personHobby[index].hobbyId,
+              //                               val.personHobby[index].personId);
+              //                         },
+              //                         child: Container(
+              //                             decoration: BoxDecoration(
+              //                                 border: Border.all(
+              //                                     color: CustomColors.kBlueColor,
+              //                                     width: 2),
+              //                                 borderRadius:
+              //                                     BorderRadius.circular(10)),
+              //                             padding: const EdgeInsets.all(5.0),
+              //                             child: Text(
+              //                                 "${val.personHobby[index].name}",
+              //                                 style: const TextStyle(
+              //                                     color: Colors.black,
+              //                                     fontSize: 18))))
+              //                   ]);
+              //                 });
+              //           }),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: mHeight * 0.01),
+
+
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: CustomColors.kBlueColor, width: 2),
+                    borderRadius: BorderRadius.circular(10)),
+                margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+                child: Padding(
+                  padding: EdgeInsets.only(left: size.width * 0.03),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(height: size.height * 0.01),
+                      Row(children: [
+                        const Text(CustomString.hobbies,
+                            style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.add, color: CustomColors.kBlueColor),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddHobbyScreen()));
+                          },
+                        ),
+                      ]),
+
+                      Consumer<PersonHobbyProvider>(
+                          builder: (context, val, child) {
+                            List<String> hobbyNameList=[];
+                            List<int> hobbyIdList=[];
+                            List<int> personIdList=[];
+                             for (var element in val.personHobby) {
+                               hobbyNameList.add(element.name!);
+                               hobbyIdList.add(element.hobbyId!);
+                               personIdList.add(element.personId!);
+                             }
+                            return TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList);
+                          }
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: size.height * 0.01),
+            ],
+          ),
         ),
       ),
     );
 
+  }
+
+  Future<void> refreshEventList() async {
+    setState(() {
+      ApiConfig.getUserExperience(context);
+      ApiConfig.getUserQualification(context);
+      ApiConfig.getUserSkills(context);
+      ApiConfig.getUserHobby(context);
+    });
+    return;
   }
 
   void _showDeleteConfirmation(BuildContext context, identityKey, int? iD, personId) {
@@ -470,7 +482,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Padding(
-      padding: EdgeInsets.only(left: mWidth*0.02),
+      padding: EdgeInsets.only(left: mWidth * 0.02),
       child: TimelineTile(
           alignment: TimelineAlign.manual,
           lineXY: 0.00,
@@ -490,7 +502,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
           ),
           endChild: widgetKey == "personExperience"
               ? Padding(
-                padding: EdgeInsets.only(left: mWidth*0.02),
+                padding: EdgeInsets.only(left: mWidth * 0.02),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -507,7 +519,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               // ),
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
-                                  child: SvgPicture.asset(ImagePath.moreIcon,width: 15,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                                  child: SvgPicture.asset(ImagePath.moreIcon, width: 15, height: 4, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
                               onSelected: (item) {
                                 switch (item) {
                                   case 0:
@@ -516,23 +528,15 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 EditExperienceScreen(
-                                                    title:
-                                                        CustomString.editExperience,
-                                                    pExJobTitle: vaL
-                                                        .personEx[index].jobTitle!,
+                                                    title: CustomString.editExperience,
+                                                    pExJobTitle: vaL.personEx[index].jobTitle!,
                                                     company: comN ?? "",
-                                                    industry: vaL.personEx[index]
-                                                            .industryFieldName ??
-                                                        "",
-                                                    pExId: vaL
-                                                        .personEx[index].perExpId,
-                                                    sDate: vaL
-                                                        .personEx[index].startDate!,
-                                                    eDate: vaL.personEx[index]
-                                                        .endDate!)));
+                                                    industry: vaL.personEx[index].industryFieldName ?? "",
+                                                    pExId: vaL.personEx[index].perExpId,
+                                                    sDate: vaL.personEx[index].startDate!,
+                                                    eDate: vaL.personEx[index].endDate!)));
                                   case 1:
-                                    _showDeleteConfirmation(context, "identityPED",
-                                        vaL.personEx[index].perExpId, "");
+                                    _showDeleteConfirmation(context, "identityPED", vaL.personEx[index].perExpId, "");
                                 }
                               },
                               itemBuilder: (_) => [
@@ -545,8 +549,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         ],
                       ),
                       SizedBox(height: mHeight * 0.006),
-                      comN != "" && comN != null ? Text(
-                              "Company : ${vaL.personEx[index].companyName ?? ""}",
+                      comN != "" && comN != null ? Text("Company : ${vaL.personEx[index].companyName ?? ""}",
                               style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))
                           : Text("Industry Field: ${vaL.personEx[index].industryFieldName ?? ""}",
                           style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins')),
@@ -695,4 +698,5 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
       ),
     );
   }
+
 }

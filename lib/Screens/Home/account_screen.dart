@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
+import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:versa_tribe/Utils/svg_btn.dart';
 
+import '../../Providers/bottom_tab_provider.dart';
 import '../../Utils/api_config.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
@@ -88,6 +91,7 @@ class _AccountScreenState extends State<AccountScreen> {
               margin: EdgeInsets.symmetric(
                   horizontal: size.width * 0.25, vertical: size.height * 0.02),
               child: ElevatedButton(
+
                   style: ElevatedButton.styleFrom(
                       backgroundColor: CustomColors.kGrayColor),
                   onPressed: () {
@@ -147,9 +151,11 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> logoutClick(context) async {
+    final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
     String logOutUrl = '${ApiConfig.baseUrl}/api/Account/Logout';
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
+      provider.manageBottomTab(const DashboardScreen(), 0);
       clearSharedPreferences(CustomString.isLoggedIn);
       showToast(context, CustomString.logOutSuccess);
       if (!mounted) return;

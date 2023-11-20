@@ -245,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        /*body: Consumer<ManageBottomTabProvider>(builder: (context, val, child) {
+        body: Consumer<ManageBottomTabProvider>(builder: (context, val, child) {
           return PageStorage(
             bucket: bucket,
             child: val.currentScreen,
@@ -281,12 +281,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   tabTitle: CustomString.training,
                   icon: Icons.notes_sharp),
               materialButton(
-                  screen: const ProjectScreen(),
-                  context: context,
-                  tab: 3,
-                  tabTitle: CustomString.message,
-                  icon: Icons.message_outlined),
-              materialButton(
                   screen: const AccountScreen(),
                   context: context,
                   tab: 4,
@@ -294,8 +288,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Icons.person),
             ],
           ),
-        ),*/
-        bottomNavigationBar: Card(
+        ),
+        /*bottomNavigationBar: Card(
           margin: const EdgeInsets.all(10.0),
           elevation: 5,
           child: NavigationBar(
@@ -337,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const ProjectScreen(),
           const TrainingScreen(),
           const AccountScreen()
-        ][currentPageIndex],
+        ][currentPageIndex],*/
       ),
     );
   }
