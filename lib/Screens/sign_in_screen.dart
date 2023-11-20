@@ -333,7 +333,7 @@ class _SignInScreenState extends State<SignInScreen> {
           MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreen()));
+          MaterialPageRoute(builder: (context) =>  HomeScreen()));
     }
   }
 
@@ -350,10 +350,8 @@ class _SignInScreenState extends State<SignInScreen> {
         "grant_type": "password"
       };
       const String loginUrl = '${ApiConfig.baseUrl}/token';
-      var response =
-          await http.post(Uri.parse(loginUrl), body: signInParameter);
-      Map<String, dynamic> jsonData =
-          jsonDecode(response.body); // Return Single Object
+      var response =await http.post(Uri.parse(loginUrl), body: signInParameter);
+      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
       loginResponseModelData = LoginResponseModel.fromJson(jsonData);
       if (jsonData != null) {
         if (loginResponseModelData.accessToken != null) {

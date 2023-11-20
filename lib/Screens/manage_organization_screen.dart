@@ -1,15 +1,13 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../Model/OrgNaneId.dart';
-import '../Model/login_response.dart';
 import '../Providers/manage_org_index_provider.dart';
-import '../Providers/manage_visibility_btn.dart';
-import '../Providers/organization_provider.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/custom_string.dart';
 import '../Utils/image_path.dart';
@@ -117,6 +115,8 @@ class _ManageOrganizationState extends State<ManageOrganization>
               const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
           onTap: () {
             Navigator.pop(context);
+            //data(context);
+            //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen(from: "ManageOrg",)));
           },
         ),
         title: const Text(CustomString.manageOrganization,style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
@@ -419,6 +419,20 @@ class _ManageOrganizationState extends State<ManageOrganization>
         ],
       ),
     );
+  }
+
+  data(context) async {
+      const String loginUrl = '${ApiConfig.baseUrl}/api/Person/MySessionInfo';
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
+      var response = await http.post(Uri.parse(loginUrl),
+          headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      Map<String, dynamic> jsonData = jsonDecode(response.body);
+      print("Map Data------:/-> ${response.body}");
+          pref.setJson("responseModel", jsonData);
   }
 
   Future<void> joinOrganizationDialog({context, mHeight, mWidth}) async {

@@ -338,7 +338,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 
   Future<void> updateProfileClick(context) async {
