@@ -193,7 +193,7 @@ class _AccountScreenState extends State<AccountScreen> {
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: CustomColors.kBlueColor),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: size.width*0.02, vertical: size.height*0.02),
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.02, vertical: size.height * 0.02),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

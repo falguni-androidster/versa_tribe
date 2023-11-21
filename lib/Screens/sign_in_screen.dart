@@ -326,14 +326,14 @@ class _SignInScreenState extends State<SignInScreen> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const SignUpScreen()));
     } else if (screenName == 'forgotScreen') {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const ForgotPasswordScreen()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
     } else if (screenName == 'profileScreen') {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>  HomeScreen()));
+          MaterialPageRoute(builder: (context) =>  const HomeScreen()));
     }
   }
 
