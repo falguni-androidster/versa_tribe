@@ -76,6 +76,17 @@ class CustomString {
   static const String createProfile = 'createProfile';
   static const String updateProfile = 'Update Profile';
   static const String fNameRequired = '* FirstName is required...';
+  static const String orgNameRequired = '* Organization Name is required...';
+  static const String aboutOrgRequired = '* This field is required...';
+  static const String mobileRequired = '* Mobile number is required...';
+  static const String mobileLabel = 'Mobile Number';
+  static const String emailLabel = 'Email Address';
+  static const String orgName = 'Organization Name';
+  static const String orgDetail = 'Organization Detail';
+  static const String updateOrgDetail = 'Update Organization';
+  static const String aboutOrgName = 'About Organization';
+  static const String contactInfo = 'Contact Information';
+  static const String addressInfo = 'Address Information';
   static const String firstName = 'First Name';
   static const String lNameRequired = '* LastName is required...';
   static const String lastName = 'Last Name';

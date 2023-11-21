@@ -458,6 +458,37 @@ class ApiConfig {
       ));
     }
   }
+  static editOrgAdminProfile({context, orgId, aboutOrg, city, country, number,email,}) async {
+    debugPrint("OrgAdminProfile----->$orgId");
+    Map<String, dynamic> requestData =
+    {
+      "Org_Id": orgId,
+      "About_org": aboutOrg,
+      "City": city,
+      "Country": country,
+      "Contact_email": email,
+      "Contact_number": number,
+    };
+
+    String url = "$baseUrl/api/OrgInfo/Update";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("edit OrgAdminProfile Success--------->${response.body}");
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      ApiConfig.getUserSkills(context);
+      Navigator.pop(context);
+    } else {
+      debugPrint("OrgAdminProfile edit failed--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("OrgAdminProfile edit failed try again..."),
+      ));
+    }
+  }
 
   static searchCourse({context, courseString}) async {
     final provider = Provider.of<SearchCourseProvider>(context,listen: false);
@@ -749,11 +780,11 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
-  static addNewDepartment({context, departmentName}) async {
+  static addNewDepartment({context, departmentName,parentDepId}) async {
     Map<String, dynamic> requestData = {
       "Org_Id": 16,
       "Dept_Name": departmentName,
-      "Parent_dept_Id": 1089
+      "Parent_dept_Id": parentDepId
     };
     String url = "$baseUrl/api/Departments/Create";
     SharedPreferences pref = await SharedPreferences.getInstance();

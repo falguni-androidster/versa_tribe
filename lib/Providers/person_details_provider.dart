@@ -199,6 +199,8 @@ class SearchParentDPProvider with ChangeNotifier{
   List<SearchDpModel> get dpList => _dpList;
   bool _visible = false;
   bool get visible => _visible;
+  bool _visibilitySearch = false;
+  bool get visibilitySearch => _visibilitySearch;
 
   setSearchedDP(dpName){
     dpName.forEach((ob){
@@ -209,6 +211,13 @@ class SearchParentDPProvider with ChangeNotifier{
 
   setVisible(vi) {
     _visible = vi;
+    notifyListeners();
+  }
+
+  setVisibilitySearchList(val) {
+    _visibilitySearch = val;
+  }
+  notify(){
     notifyListeners();
   }
 }
