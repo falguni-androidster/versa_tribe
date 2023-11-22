@@ -57,20 +57,21 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
         leading: InkWell(
           child:
           const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-          onTap: () {
-            Navigator.pop(context);
-            //data(context);
-            //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen(from: "ManageOrg",)));
+          onTap: () async {
+            //Navigator.pop(context);
+           await ApiConfig.getDataSwitching(context: context);
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
           },
         ),
         title: const Text(CustomString.manageOrganization, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
         centerTitle: true,
         actions: [
-          IconButton(
-              onPressed: (){
-                joinOrganizationDialog(context: context, mHeight: size.height, mWidth: size.width);
-                },
-              icon: const Icon(Icons.add,color: CustomColors.kBlackColor))
+          IconButton(onPressed: (){
+            organizationNameController.text="";
+            departmentNameController.text="";
+            requestNewDepartmentController.text="";
+            joinOrganizationDialog(context: context, mHeight: size.height, mWidth: size.width);
+            }, icon: const Icon(Icons.add,color: CustomColors.kBlackColor,))
         ],
       ),
       /// x-request Button for join org

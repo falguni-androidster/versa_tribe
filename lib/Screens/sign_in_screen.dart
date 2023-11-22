@@ -38,7 +38,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
-  GoogleSignIn googleSignIn = GoogleSignIn(clientId: "357379333718-5fa457fd718dagivjgkmi1rtloeu1j0u.apps.googleusercontent.com");
+  GoogleSignIn googleSignIn = GoogleSignIn(
+      clientId: "357379333718-5fa457fd718dagivjgkmi1rtloeu1j0u.apps.googleusercontent.com");
 
   @override
   void initState() {
@@ -64,9 +65,9 @@ class _SignInScreenState extends State<SignInScreen> {
   void _handleSignIn(context) async {
     await googleSignIn.signOut();
     GoogleSignInAccount? user = await googleSignIn.signIn();
-    if(user == null){
+    if (user == null) {
       showToast(context, "Google Login Failed");
-    }else{
+    } else {
       showToast(context, "Google Login Success");
     }
   }
@@ -74,16 +75,18 @@ class _SignInScreenState extends State<SignInScreen> {
   void checkSignInStatus() async {
     await Future.delayed(const Duration(seconds: 2));
     bool isSignedIn = await googleSignIn.isSignedIn();
-    if(isSignedIn){
+    if (isSignedIn) {
       print("User Signed In");
-    }else{
+    } else {
       print("User Signed Out");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -353,17 +356,64 @@ class _SignInScreenState extends State<SignInScreen> {
           MaterialPageRoute(builder: (context) => const SignUpScreen()));
     } else if (screenName == 'forgotScreen') {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
+          MaterialPageRoute(
+              builder: (context) => const ForgotPasswordScreen()));
     } else if (screenName == 'profileScreen') {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>  const HomeScreen()));
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
     }
   }
 
   Future<void> signInClick(context) async {
+    LoginResponseModel loginResponseModelData;
+    if (connectivityResult == ConnectivityResult.none) {
+      showToast(context, CustomString.checkNetworkConnection);
+    } else if (connectivityResult == ConnectivityResult.mobile) {
+      showToast(context, CustomString.notConnectServer);
+    } else {
+      Map signInParameter = {
+        "username": emailController.text.toString(),
+        "password": passwordController.text.toString(),
+        "grant_type": "password"
+      };
+      const String loginUrl = '${ApiConfig.baseUrl}/token';
+      var response = await http.post(
+          Uri.parse(loginUrl), body: signInParameter);
+      Map<String, dynamic> jsonData = jsonDecode(
+          response.body); // Return Single Object
+      loginResponseModelData = LoginResponseModel.fromJson(jsonData);
+      if (jsonData != null) {
+        if (loginResponseModelData.accessToken != null) {
+          await ApiConfig.getDataSwitching(context: context);
+          final SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setString(CustomString.accessToken,
+              loginResponseModelData.accessToken.toString());
+          showToast(context, CustomString.accountLoginSuccess);
+          // For example, if login is successful
+          pref.setBool(CustomString.isLoggedIn, true);
+          if (loginResponseModelData.profileExist != "True") {
+            if (!mounted) return;
+            _navigateToNextScreen(
+                context: context, screenName: 'profileScreen');
+          } else {
+            if (!mounted) return;
+            _navigateToNextScreen(
+                context: context,
+                screenName: "mainScreen",
+                loginData: loginResponseModelData);
+          }
+        } else {
+          showToast(context, CustomString.checkYourEmail);
+        }
+      } else {
+        showToast(context, CustomString.loginFailed);
+      }
+    }
+  }
+/* Future<void> signInClick(context) async {
     LoginResponseModel loginResponseModelData;
     if (connectivityResult == ConnectivityResult.none) {
       showToast(context, CustomString.checkNetworkConnection);
@@ -406,6 +456,6 @@ class _SignInScreenState extends State<SignInScreen> {
         showToast(context, CustomString.loginFailed);
       }
     }
-  }
-
+  }*/
+}
 }

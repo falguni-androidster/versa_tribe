@@ -14,9 +14,9 @@ import 'manage_department.dart';
 
 class ManageAdminScreen extends StatefulWidget {
 
-  final String title;
-  const ManageAdminScreen({required this.title, super.key});
-
+  final String orgNAME;
+  final int orgID;
+  const ManageAdminScreen({required this.orgNAME,required this.orgID, super.key});
   @override
   State<ManageAdminScreen> createState() => _ManageAdminScreenState();
 }
@@ -24,7 +24,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    print("ORGID***--->${widget.orgID}");
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -37,7 +37,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
         ),
         centerTitle: true,
-        title: Text(widget.title,
+        title: Text(widget.orgNAME,
             style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
@@ -53,7 +53,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             InkWell(
               child: containerButton(height: size.height * 0.06, text: CustomString.manageDepartment),
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ManageDepartment()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDepartment(orgId: widget.orgID)));
               },
             ),
             InkWell(
@@ -123,8 +123,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.title?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14)),
-                    Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    Text(widget.orgNAME?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14, fontFamily: 'Poppins')),
                     const SizedBox(height: 2),
                     Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
                   ],
@@ -134,7 +133,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               InkWell(
                 child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgName: widget.title??""/*snapshot.data?.firstName ?? ''*/)));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgName: widget.orgNAME??""/*snapshot.data?.firstName ?? ''*/,orgId:widget.orgID)));
                 },
               )
             ],

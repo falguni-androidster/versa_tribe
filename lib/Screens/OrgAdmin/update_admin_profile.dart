@@ -14,7 +14,8 @@ import '../../Utils/custom_toast.dart';
 
 class UpdateAdminProfile extends StatefulWidget {
   final String orgName;
-  const UpdateAdminProfile({super.key, required this.orgName});
+  final int orgId;
+  const UpdateAdminProfile({super.key, required this.orgName, required this.orgId});
   @override
   State<UpdateAdminProfile> createState() => _UpdateAdminProfileState();
 }
@@ -30,10 +31,11 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   TextEditingController countryController = TextEditingController();
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
-  int? orgID = 16;
+  int? orgID;
 
   @override
   void initState() {
+    orgID = widget.orgId;
     super.initState();
     // Listen for connectivity changes and update the UI accordingly.
     _checkConnectivity();

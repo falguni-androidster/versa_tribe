@@ -7,16 +7,16 @@ import '../../Utils/custom_string.dart';
 
 class AddNewDepartment extends StatefulWidget {
 
-  const AddNewDepartment({super.key});
+  int? orgId;
+
+  AddNewDepartment({super.key, required this.orgId});
 
   @override
   State<AddNewDepartment> createState() => _AddNewDepartmentState();
 }
-
 class _AddNewDepartmentState extends State<AddNewDepartment> {
 
   final _formKey = GlobalKey<FormState>();
-
   TextEditingController searchParentDController = TextEditingController();
   TextEditingController newDController = TextEditingController();
 
