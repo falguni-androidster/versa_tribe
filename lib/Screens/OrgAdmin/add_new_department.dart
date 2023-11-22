@@ -12,12 +12,14 @@ class AddNewDepartment extends StatefulWidget {
   @override
   State<AddNewDepartment> createState() => _AddNewDepartmentState();
 }
+
 class _AddNewDepartmentState extends State<AddNewDepartment> {
 
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController searchParentDController = TextEditingController();
   TextEditingController newDController = TextEditingController();
+
   late int pDepId;
 
   @override
@@ -60,22 +62,9 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                     style:
                     const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
                 ),
+
                 SizedBox(height: size.height * 0.01),
-                TextFormField(
-                  enabled: false,
-                  controller: searchParentDController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return CustomString.parentDP;
-                    } else {
-                      return null;
-                    }
-                  },
-                  decoration: const InputDecoration(
-                      hintText: CustomString.parentDepartment,
-                      hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
-                ),
+
                 Consumer<SearchParentDPProvider>(
                     builder: (context, val, child) {
                       return Row(
@@ -93,30 +82,9 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         ],
                       );
                     }),
-                SizedBox(height: mHeight*0.01,),
-
-                Consumer<SearchParentDPProvider>(
-                    builder: (context, val, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Checkbox(value: val.visible,
-                              onChanged: (value){
-                            val.setVisible(value);
-                            if(value==false){
-                              searchParentDController.clear();
-                            }else{
-                              val.setVisibilitySearchList(true);
-                              ApiConfig.searchPDepartment(context: context,oderId: 16);
-                            }
-                          }),
-                          const Text("Choose parent department"),
-                        ],
-                      );
-                    }),
 
                 Consumer<SearchParentDPProvider>(builder: (context, val, child) {
-                    return val.visible == true? TextFormField(
+                    return val.visible == true ? TextFormField(
                       controller: searchParentDController,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -128,13 +96,13 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onTap: (){
                           val.setVisibilitySearchList(true);
                           val.notifyListeners();
-                          ApiConfig.searchPDepartment(context: context,oderId: 16);
+                          ApiConfig.searchPDepartment(context: context, orderId: 16);
                         },
                       decoration: const InputDecoration(
                           hintText: "Parent department",
-                          hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14)),
-                          style: const TextStyle(color: CustomColors.kBlackColor)
-                    ):const SizedBox();
+                          hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
+                    ) : const SizedBox();
                   }
                 ),
 
@@ -144,8 +112,8 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                       shrinkWrap: true,
                       itemCount: val.dpList.length,
                       itemBuilder: (context, index) {
-                        return val.visible == true ? InkWell(
-                          child: val.dpList[index].parentDeptName != null ? Card(
+                        return InkWell(
+                          child: val.dpList[index].parentDeptName!=null?Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
                             color: CustomColors.kGrayColor,
@@ -156,10 +124,8 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                     '${val.dpList[index].parentDeptName}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor))),
-                          ) : Container(),
+                                    style: const TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))),
+                          ):Container(),
                           onTap: () async {
                             searchParentDController.text = val.dpList[index].parentDeptName ?? searchParentDController.text;
                             pDepId = val.dpList[index].parentDeptId!;
@@ -169,20 +135,14 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         );
                       }): Container();
                 }),
-                SizedBox(
-                  width: mWidth,
-                    child: ElevatedButton(onPressed: (){
-                      print("parent Dep ID--=-=----->$pDepId");
-                      ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,parentDepId: pDepId);
-                    }, child: const Text("Continue")))
-                SizedBox(height: size.height * 0.1),
+
                 SizedBox(
                   width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
                           ApiConfig.addNewDepartment(context: context,departmentName: newDController.text);
                           },
-                        child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'),)
+                        child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))
                     )
                 )
               ],

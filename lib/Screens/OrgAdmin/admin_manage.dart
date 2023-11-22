@@ -38,7 +38,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         ),
         centerTitle: true,
         title: Text(widget.title,
-            style: const TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
+            style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -93,7 +93,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Row(
           children: [
-            Text(text,style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 14, fontFamily: 'Poppins')),
+            Text(text, style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 14, fontFamily: 'Poppins')),
             const Spacer(),
             const Icon(Icons.arrow_forward_ios_sharp, color: CustomColors.kWhiteColor, size: 20)
           ],
