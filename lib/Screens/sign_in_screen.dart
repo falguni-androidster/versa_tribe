@@ -32,6 +32,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -60,17 +61,15 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
-  void _handleSignIn() async {
+  void _handleSignIn(context) async {
     await googleSignIn.signOut();
     GoogleSignInAccount? user = await googleSignIn.signIn();
     if(user == null){
-      print("Sign In Failed");
+      showToast(context, "Google Login Failed");
     }else{
-      print("Sign In Success");
+      showToast(context, "Google Login Success");
     }
-
   }
-
 
   void checkSignInStatus() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -273,7 +272,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                _handleSignIn();
+                                _handleSignIn(context);
                               },
                               icon: Image.asset(ImagePath.googlePath),
                               label: const Text(CustomString.google,
