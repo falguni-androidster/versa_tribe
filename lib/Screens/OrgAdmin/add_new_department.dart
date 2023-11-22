@@ -18,6 +18,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
 
   TextEditingController searchParentDController = TextEditingController();
   TextEditingController newDController = TextEditingController();
+  late int pDepId;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +26,18 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-          //replace with our own icon data.
+        leading: Consumer<SearchParentDPProvider>(
+            builder: (context, val, child) {
+            return IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                val.setVisibilitySearchList(false);
+                val.notify();
+              },
+              icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
+              //replace with our own icon data.
+            );
+          }
         ),
         centerTitle: true,
         title: const Text(CustomString.addNewDP, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
@@ -86,8 +93,54 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         ],
                       );
                     }),
+                SizedBox(height: mHeight*0.01,),
+
+                Consumer<SearchParentDPProvider>(
+                    builder: (context, val, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(value: val.visible,
+                              onChanged: (value){
+                            val.setVisible(value);
+                            if(value==false){
+                              searchParentDController.clear();
+                            }else{
+                              val.setVisibilitySearchList(true);
+                              ApiConfig.searchPDepartment(context: context,oderId: 16);
+                            }
+                          }),
+                          const Text("Choose parent department"),
+                        ],
+                      );
+                    }),
+
                 Consumer<SearchParentDPProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                    return val.visible == true? TextFormField(
+                      controller: searchParentDController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.parentDP;
+                        } else {
+                          return null;
+                        }
+                      },
+                        onTap: (){
+                          val.setVisibilitySearchList(true);
+                          val.notifyListeners();
+                          ApiConfig.searchPDepartment(context: context,oderId: 16);
+                        },
+                      decoration: const InputDecoration(
+                          hintText: "Parent department",
+                          hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14)),
+                          style: const TextStyle(color: CustomColors.kBlackColor)
+                    ):const SizedBox();
+                  }
+                ),
+
+                Consumer<SearchParentDPProvider>(builder: (context, val, child) {
+                  return val.visibilitySearch==true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.dpList.length,
                       itemBuilder: (context, index) {
@@ -109,12 +162,19 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                           ) : Container(),
                           onTap: () async {
                             searchParentDController.text = val.dpList[index].parentDeptName ?? searchParentDController.text;
-                            val.setVisible(false);
+                            pDepId = val.dpList[index].parentDeptId!;
+                            val.setVisibilitySearchList(false);
+                            val.notifyListeners();
                           },
-                        )
-                            : Container();
-                      });
+                        );
+                      }): Container();
                 }),
+                SizedBox(
+                  width: mWidth,
+                    child: ElevatedButton(onPressed: (){
+                      print("parent Dep ID--=-=----->$pDepId");
+                      ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,parentDepId: pDepId);
+                    }, child: const Text("Continue")))
                 SizedBox(height: size.height * 0.1),
                 SizedBox(
                   width: size.width,

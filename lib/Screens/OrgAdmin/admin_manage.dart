@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
-import 'package:versa_tribe/Screens/Profile/update_profile_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 
@@ -34,7 +35,6 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-          //replace with our own icon data.
         ),
         centerTitle: true,
         title: Text(widget.title,
@@ -102,20 +102,6 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
     );
   }
 
-  // Navigate to next Screen
-  void _navigateToNextScreen(BuildContext context,String screen) {
-    if(screen == 'signInScreen'){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const SignInScreen()));
-    }else if(screen == 'ManageOrganization'){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ManageOrganization()));
-    }else if(screen == 'PersonDetails'){
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
-    }
-  }
-
   Widget containerProfile(snapshot){
     return Card(
       margin: const EdgeInsets.only(top: 30,left: 10,right: 10,bottom: 20),
@@ -137,6 +123,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(widget.title?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14)),
                     Text('${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     const SizedBox(height: 2),
                     Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
@@ -145,9 +132,9 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               ),
               const Spacer(),
               InkWell(
-                child: const Icon(Icons.edit,color: CustomColors.kBlackColor),
+                child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgName: widget.title??""/*snapshot.data?.firstName ?? ''*/)));
                 },
               )
             ],
