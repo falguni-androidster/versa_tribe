@@ -72,8 +72,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontSize: 50,
                           color: CustomColors.kBlueColor,
                           fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.underline
+                          fontWeight: FontWeight.w500,
+                          decoration: TextDecoration.underline,
+                          decorationColor: CustomColors.kBlueColor
                       ),
                     ),
 

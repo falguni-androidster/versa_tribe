@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
@@ -36,6 +37,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
+  GoogleSignIn googleSignIn = GoogleSignIn(clientId: "357379333718-5fa457fd718dagivjgkmi1rtloeu1j0u.apps.googleusercontent.com");
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +50,7 @@ class _SignInScreenState extends State<SignInScreen> {
         connectivityResult = result;
       });
     });
+    checkSignInStatus();
   }
 
   Future<void> _checkConnectivity() async {
@@ -54,6 +58,28 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       connectivityResult = connectResult;
     });
+  }
+
+  void _handleSignIn() async {
+    await googleSignIn.signOut();
+    GoogleSignInAccount? user = await googleSignIn.signIn();
+    if(user == null){
+      print("Sign In Failed");
+    }else{
+      print("Sign In Success");
+    }
+
+  }
+
+
+  void checkSignInStatus() async {
+    await Future.delayed(const Duration(seconds: 2));
+    bool isSignedIn = await googleSignIn.isSignedIn();
+    if(isSignedIn){
+      print("User Signed In");
+    }else{
+      print("User Signed Out");
+    }
   }
 
   @override
@@ -89,7 +115,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           color: CustomColors.kBlueColor,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Poppins',
-                          decoration: TextDecoration.underline),
+                          decoration: TextDecoration.underline,
+                          decorationColor: CustomColors.kBlueColor),
                     ),
 
                     SizedBox(height: size.height * 0.02),
@@ -246,7 +273,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                // Handle social button click
+                                _handleSignIn();
                               },
                               icon: Image.asset(ImagePath.googlePath),
                               label: const Text(CustomString.google,
@@ -381,4 +408,5 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
+
 }

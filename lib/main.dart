@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       routes: {
-        '/addExScreen': (context) => const AddExperienceScreen(),
+        '/addExScreen': (context) => const AddExperienceScreen()
       },
     );
   }
