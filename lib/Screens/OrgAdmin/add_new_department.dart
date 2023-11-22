@@ -6,7 +6,8 @@ import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 
 class AddNewDepartment extends StatefulWidget {
-  const AddNewDepartment({super.key});
+  int? orgId;
+  AddNewDepartment({super.key, required this.orgId});
   @override
   State<AddNewDepartment> createState() => _AddNewDepartmentState();
 }
@@ -138,7 +139,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                   width: mWidth,
                     child: ElevatedButton(onPressed: (){
                       print("parent Dep ID--=-=----->$pDepId");
-                      ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,parentDepId: pDepId);
+                      ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,parentDepId: pDepId,orgID: widget.orgId);
                     }, child: const Text("Continue")))
               ],
             ),

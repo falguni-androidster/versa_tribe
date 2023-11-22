@@ -326,8 +326,8 @@ class _SignInScreenState extends State<SignInScreen> {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const SignUpScreen()));
     } else if (screenName == 'forgotScreen') {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const ForgotPasswordScreen()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
     } else if (screenName == 'profileScreen') {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
@@ -338,6 +338,50 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signInClick(context) async {
+    LoginResponseModel loginResponseModelData;
+    if (connectivityResult == ConnectivityResult.none) {
+      showToast(context, CustomString.checkNetworkConnection);
+    } else if (connectivityResult == ConnectivityResult.mobile) {
+      showToast(context, CustomString.notConnectServer);
+    } else {
+      Map signInParameter = {
+        "username": emailController.text.toString(),
+        "password": passwordController.text.toString(),
+        "grant_type": "password"
+      };
+      const String loginUrl = '${ApiConfig.baseUrl}/token';
+      var response =await http.post(Uri.parse(loginUrl), body: signInParameter);
+      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
+      loginResponseModelData = LoginResponseModel.fromJson(jsonData);
+      if (jsonData != null) {
+        if (loginResponseModelData.accessToken != null) {
+           await ApiConfig.getDataSwitching(context: context);
+          final SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setString(CustomString.accessToken,
+              loginResponseModelData.accessToken.toString());
+          showToast(context, CustomString.accountLoginSuccess);
+          // For example, if login is successful
+          pref.setBool(CustomString.isLoggedIn, true);
+          if (loginResponseModelData.profileExist != "True") {
+            if (!mounted) return;
+            _navigateToNextScreen(
+                context: context, screenName: 'profileScreen');
+          } else {
+            if (!mounted) return;
+            _navigateToNextScreen(
+                context: context,
+                screenName: "mainScreen",
+                loginData: loginResponseModelData);
+          }
+        } else {
+          showToast(context, CustomString.checkYourEmail);
+        }
+      } else {
+        showToast(context, CustomString.loginFailed);
+      }
+    }
+  }
+ /* Future<void> signInClick(context) async {
     LoginResponseModel loginResponseModelData;
     if (connectivityResult == ConnectivityResult.none) {
       showToast(context, CustomString.checkNetworkConnection);
@@ -380,5 +424,5 @@ class _SignInScreenState extends State<SignInScreen> {
         showToast(context, CustomString.loginFailed);
       }
     }
-  }
+  }*/
 }

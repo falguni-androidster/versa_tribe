@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Model/department.dart';
+import 'package:versa_tribe/Providers/switch_provider.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 
+import '../Model/SwitchDataModel.dart';
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
@@ -619,6 +621,30 @@ class ApiConfig {
   }
 
   /*-----------  Manage ORG Screen  ----------------*/
+  static getDataSwitching({context}) async {
+    final provider = Provider.of<SwitchProvider>(context,listen: false);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/Person/MySessionInfo";
+      final response = await http.post(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("OrgPersonAdmin Data------->${response.body}");
+        Map<String,dynamic> data = jsonDecode(response.body);
+        await provider.setSwitchData(SwitchDataModel.fromJson(data));
+        provider.notify();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("OrgPersonAdmin Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("OrgPersonAdmin experience------>$e");
+    }
+  }
   static getManageOrgData({context, tabIndex}) async {
     final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
     provider.manageOrgDataList.clear();
@@ -780,9 +806,9 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
-  static addNewDepartment({context, departmentName,parentDepId}) async {
+  static addNewDepartment({context, departmentName,parentDepId,orgID}) async {
     Map<String, dynamic> requestData = {
-      "Org_Id": 16,
+      "Org_Id": orgID,
       "Dept_Name": departmentName,
       "Parent_dept_Id": parentDepId
     };

@@ -6,7 +6,8 @@ import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 
 class ManageDepartment extends StatefulWidget {
-  const ManageDepartment({super.key});
+  int orgId;
+  ManageDepartment({super.key, required this.orgId});
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();
 }
@@ -33,7 +34,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
         title: const Text(CustomString.manageDepartment,
             style: TextStyle(color: CustomColors.kBlueColor)),
         actions: [IconButton(onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddNewDepartment()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNewDepartment(orgId: widget.orgId,)));
         }, icon: const Icon(Icons.add,color: CustomColors.kBlackColor,))],
       ),
       // body: FutureBuilder(

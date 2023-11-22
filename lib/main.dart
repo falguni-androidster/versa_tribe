@@ -15,6 +15,7 @@ import 'Providers/manage_visibility_btn.dart';
 import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
 import 'Providers/person_details_provider.dart';
+import 'Providers/switch_provider.dart';
 import 'Screens/splash_screen.dart';
 import 'Utils/custom_colors.dart';
 
@@ -49,7 +50,8 @@ void main() {
       ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
       ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider()),
       ChangeNotifierProvider<AddRadioComIndProvider>(create: (_) => AddRadioComIndProvider()),
-      ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider())
+      ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider()),
+      ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider())
     ],
     child: const MyApp()
   ));
