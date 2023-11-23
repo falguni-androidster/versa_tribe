@@ -116,54 +116,71 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final size = MediaQuery.of(context).size;
         return Dialog(
-          child : Consumer<OrganizationProvider>(
-              builder: (context, val, child) {
-                return
-                  /*DropdownButton<String>(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  value: selectedValue,
-                  items: finalList.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, style: const TextStyle(fontFamily: 'Poppins')),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    selectedValue = newValue!;
-                    val.notify();
-                    val.setSwitchOrganization(newValue);
-                    if (orgAdminList.contains(newValue)) {
-                      val.setVisible(true);
-                      Navigator.of(context).pop();
-                    } else {
-                      val.setVisible(false);
-                      Navigator.of(context).pop();
-                    }
-                  },
-                );*/
-                  ListView.builder(
-                    itemCount: finalPersonAdminList.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Consumer<OrganizationProvider>(
-                            builder: (context,val,child) {
-                            return Text(finalPersonAdminList[index].orgName!, style: TextStyle(fontFamily: 'Poppins',color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : null));
-                          }
-                        ),
-                        onTap: () {
-                          selectedValue = finalPersonAdminList[index].orgName!;
-                          orgId = finalPersonAdminList[index].orgId!;
-                          orgAdmin = finalPersonAdminList[index].isAdmin!;
-                          val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+          child : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: size.height*0.075,
+                child: Scaffold(
+                  appBar: AppBar(iconTheme:const IconThemeData(color: CustomColors.kBlackColor),
+                    backgroundColor: CustomColors.kGrayColor,elevation: 0,
+                    title: const Text(CustomString.switchOrganization,style: TextStyle(color: CustomColors.kBlueColor),),),
+                ),
+              ),
+              Consumer<OrganizationProvider>(
+                  builder: (context, val, child) {
+                    return
+                      /*DropdownButton<String>(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      value: selectedValue,
+                      items: finalList.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value, style: const TextStyle(fontFamily: 'Poppins')),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        selectedValue = newValue!;
+                        val.notify();
+                        val.setSwitchOrganization(newValue);
+                        if (orgAdminList.contains(newValue)) {
+                          val.setVisible(true);
                           Navigator.of(context).pop();
+                        } else {
+                          val.setVisible(false);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    );*/
+                      ListView.builder(
+                        itemCount: finalPersonAdminList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: size.width*0.01),
+                              height: size.height*0.05,
+                                child: Card(
+                                   color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                        child: Text(" ${finalPersonAdminList[index].orgName!}", style: TextStyle(fontFamily: 'Poppins',color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kWhiteColor : null))))),
+                            onTap: () {
+                              selectedValue = finalPersonAdminList[index].orgName!;
+                              orgId = finalPersonAdminList[index].orgId!;
+                              orgAdmin = finalPersonAdminList[index].isAdmin!;
+                              val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+                              Navigator.of(context).pop();
+                            },
+                          );
                         },
                       );
-                    },
-                  );
-              }
+                  }
+              ),
+            ],
           ),
           /*actions: <Widget>[
             TextButton(

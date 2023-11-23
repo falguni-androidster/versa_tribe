@@ -76,6 +76,7 @@ class CustomString {
   static const String createProfile = 'createProfile';
   static const String updateProfile = 'Update Profile';
   static const String fNameRequired = '* FirstName is required...';
+  static const String switchOrganization = 'Switch Organization';
   static const String orgNameRequired = '* Organization Name is required...';
   static const String aboutOrgRequired = '* This field is required...';
   static const String mobileRequired = '* Mobile number is required...';
