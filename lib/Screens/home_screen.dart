@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Model/OrgNaneId.dart';
-import 'package:versa_tribe/Providers/manage_visibility_btn.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Providers/switch_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
@@ -20,11 +18,8 @@ import 'OrgAdmin/admin_manage.dart';
 import 'manage_organization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-
   final String? from;
-
   const HomeScreen({super.key, this.from});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -43,13 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   initState() {
-   checkUser();
+    setInitialValue();
+   // checkUser();
     super.initState();
   }
-  Future<List<OrgAdminPersonList>> checkUser() async {
+  setInitialValue() async {
+    final selectedOrgProvider = Provider.of<OrganizationProvider>(context,listen: false);
+    final switchProvider = Provider.of<SwitchProvider>(context,listen: false);
+    await ApiConfig.getDataSwitching(context: context);
+    List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
+    //print("----->SWITCH DATAInitial--->${adminPersonList[0].orgName}");
+    selectedValue = adminPersonList[0].orgName!;
+    orgId = adminPersonList[0].orgId!;
+    orgAdmin = adminPersonList[0].isAdmin!;
+    finalPersonAdminList=adminPersonList;
+    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+    return adminPersonList;
+  }
+  checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context,listen: false);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
-    print("----->SWITCH DATA--->${adminPersonList[0].orgName}");
+    //print("----->SWITCH DATA--->${adminPersonList[0].orgName}");
     selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
@@ -82,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if(loginResponseModel.orgAdmin!="[]"){
     oA.forEach((element) {
       oAData = OrgNameId.fromJson(element);
-      print("\norgAdmin name---)>${oAData.orgName}");
+      print("\n orgAdmin name---)>${oAData.orgName}");
       margList.add(oAData.orgName.toString());
       orgAdminList.add(oAData.orgName.toString());
 
@@ -107,49 +116,71 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final size = MediaQuery.of(context).size;
         return Dialog(
-          child : Consumer<OrganizationProvider>(
-              builder: (context, val, child) {
-                return
-                  /*DropdownButton<String>(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  value: selectedValue,
-                  items: finalList.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value, style: const TextStyle(fontFamily: 'Poppins')),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    selectedValue = newValue!;
-                    val.notify();
-
-                    val.setSwitchOrganization(newValue);
-                    if (orgAdminList.contains(newValue)) {
-                      val.setVisible(true);
-                    } else {
-                      val.setVisible(false);
-                    }
-                  },
-                );*/
-                  ListView.builder(
-                    itemCount: finalPersonAdminList.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(finalPersonAdminList[index].orgName!, style: TextStyle(fontFamily: 'Poppins',color: selectedValue == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : null)),
-                        onTap: () {
-                          selectedValue = finalPersonAdminList[index].orgName!;
-                          orgId = finalPersonAdminList[index].orgId!;
-                          orgAdmin = finalPersonAdminList[index].isAdmin!;
-                          val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+          child : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: size.height*0.075,
+                child: Scaffold(
+                  appBar: AppBar(iconTheme:const IconThemeData(color: CustomColors.kBlackColor),
+                    backgroundColor: CustomColors.kGrayColor,elevation: 0,
+                    title: const Text(CustomString.switchOrganization,style: TextStyle(color: CustomColors.kBlueColor),),),
+                ),
+              ),
+              Consumer<OrganizationProvider>(
+                  builder: (context, val, child) {
+                    return
+                      /*DropdownButton<String>(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      value: selectedValue,
+                      items: finalList.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value, style: const TextStyle(fontFamily: 'Poppins')),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        selectedValue = newValue!;
+                        val.notify();
+                        val.setSwitchOrganization(newValue);
+                        if (orgAdminList.contains(newValue)) {
+                          val.setVisible(true);
                           Navigator.of(context).pop();
+                        } else {
+                          val.setVisible(false);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    );*/
+                      ListView.builder(
+                        itemCount: finalPersonAdminList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: size.width*0.01),
+                              height: size.height*0.05,
+                                child: Card(
+                                   color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                        child: Text(" ${finalPersonAdminList[index].orgName!}", style: TextStyle(fontFamily: 'Poppins',color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kWhiteColor : null))))),
+                            onTap: () {
+                              selectedValue = finalPersonAdminList[index].orgName!;
+                              orgId = finalPersonAdminList[index].orgId!;
+                              orgAdmin = finalPersonAdminList[index].isAdmin!;
+                              val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+                              Navigator.of(context).pop();
+                            },
+                          );
                         },
                       );
-                    },
-                  );
-              }
+                  }
+              ),
+            ],
           ),
           /*actions: <Widget>[
             TextButton(
@@ -205,41 +236,41 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
-                print("------SELECTED IN CON---$selectedValue");
-                return selectedValue != null?
-                InkWell(
-                  child: Row(
-                      children: [
-                        Consumer<OrganizationProvider>(
-                          builder: (context,val,child) {
-                            return Text("$selectedValue  ", style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
-                          }
+            Consumer<OrganizationProvider>(
+                builder: (context,val,child) {
+                    return val.switchOrganization !=null?InkWell(
+                      child: Row(
+                          children: [
+                            Consumer<OrganizationProvider>(
+                              builder: (context,val,child) {
+                                return Text("${val.switchOrganization}  ", style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
+                              }
+                          ),
+                          CircleAvatar(
+                            radius: 10,backgroundColor: Colors.transparent,
+                            child: SVGIconButton(
+                                svgPath: ImagePath.dropdownIcon,
+                                size: 6.0,
+                                color: CustomColors.kLightGrayColor,
+                                onPressed: () async {
+                                  await ApiConfig.getDataSwitching(context: context);
+                                  checkUser();
+                                  _showDialog();
+                                }),
+                          ),
+                        ],
                       ),
-                      CircleAvatar(
-                        radius: 10,backgroundColor: Colors.transparent,
-                        child: SVGIconButton(
-                            svgPath: ImagePath.dropdownIcon,
-                            size: 6.0,
-                            color: CustomColors.kLightGrayColor,
-                            onPressed: () {
-                              ApiConfig.getDataSwitching(context: context);
-                              checkUser();
-                              _showDialog();
-                            }),
-                      ),
-                    ],
-                  ),
-                  onTap: (){
-                    ApiConfig.getDataSwitching(context: context);
-                    checkUser();
-                  _showDialog();
-                  },
-                ) : TextButton(
+                      onTap: () async {
+                       await ApiConfig.getDataSwitching(context: context);
+                        checkUser();
+                      _showDialog();
+                      },
+                    ): TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
-                }, child: const Text(CustomString.joinOrg, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
-              }),
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
+                    }, child: const Text(CustomString.joinOrg, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
+                  }
+                ),
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,
