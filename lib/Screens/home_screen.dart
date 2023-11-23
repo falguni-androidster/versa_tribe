@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Model/OrgNaneId.dart';
-import 'package:versa_tribe/Providers/manage_visibility_btn.dart';
 import 'package:versa_tribe/Providers/organization_provider.dart';
 import 'package:versa_tribe/Providers/switch_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
@@ -20,8 +18,8 @@ import 'OrgAdmin/admin_manage.dart';
 import 'manage_organization_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  String? from;
-  HomeScreen({super.key, this.from});
+  final String? from;
+  const HomeScreen({super.key, this.from});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -40,13 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   initState() {
-   checkUser();
+    setInitialValue();
+   // checkUser();
     super.initState();
   }
-  Future<List<OrgAdminPersonList>> checkUser() async {
+  setInitialValue() async {
+    final selectedOrgProvider = Provider.of<OrganizationProvider>(context,listen: false);
+    final switchProvider = Provider.of<SwitchProvider>(context,listen: false);
+    await ApiConfig.getDataSwitching(context: context);
+    List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
+    //print("----->SWITCH DATAInitial--->${adminPersonList[0].orgName}");
+    selectedValue = adminPersonList[0].orgName!;
+    orgId = adminPersonList[0].orgId!;
+    orgAdmin = adminPersonList[0].isAdmin!;
+    finalPersonAdminList=adminPersonList;
+    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+    return adminPersonList;
+  }
+  checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context,listen: false);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
-    print("----->SWITCH DATA--->${adminPersonList[0].orgName}");
+    //print("----->SWITCH DATA--->${adminPersonList[0].orgName}");
     selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
@@ -79,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if(loginResponseModel.orgAdmin!="[]"){
     oA.forEach((element) {
       oAData = OrgNameId.fromJson(element);
-      print("\norgAdmin name---)>${oAData.orgName}");
+      print("\n orgAdmin name---)>${oAData.orgName}");
       margList.add(oAData.orgName.toString());
       orgAdminList.add(oAData.orgName.toString());
 
@@ -136,7 +148,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
-                        title: Text(finalPersonAdminList[index].orgName!, style: TextStyle(fontFamily: 'Poppins',color: selectedValue == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : null)),
+                        title: Consumer<OrganizationProvider>(
+                            builder: (context,val,child) {
+                            return Text(finalPersonAdminList[index].orgName!, style: TextStyle(fontFamily: 'Poppins',color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : null));
+                          }
+                        ),
                         onTap: () {
                           selectedValue = finalPersonAdminList[index].orgName!;
                           orgId = finalPersonAdminList[index].orgId!;
@@ -203,41 +219,41 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Consumer<JoinBtnDropdownBtnProvider>(builder: (context,val,child) {
-                print("------SELECTED IN CON---$selectedValue");
-                return selectedValue != null?
-                InkWell(
-                  child: Row(
-                      children: [
-                        Consumer<OrganizationProvider>(
-                          builder: (context,val,child) {
-                            return Text("$selectedValue  ", style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
-                          }
+            Consumer<OrganizationProvider>(
+                builder: (context,val,child) {
+                    return val.switchOrganization !=null?InkWell(
+                      child: Row(
+                          children: [
+                            Consumer<OrganizationProvider>(
+                              builder: (context,val,child) {
+                                return Text("${val.switchOrganization}  ", style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
+                              }
+                          ),
+                          CircleAvatar(
+                            radius: 10,backgroundColor: Colors.transparent,
+                            child: SVGIconButton(
+                                svgPath: ImagePath.dropdownIcon,
+                                size: 6.0,
+                                color: CustomColors.kLightGrayColor,
+                                onPressed: () async {
+                                  await ApiConfig.getDataSwitching(context: context);
+                                  checkUser();
+                                  _showDialog();
+                                }),
+                          ),
+                        ],
                       ),
-                      CircleAvatar(
-                        radius: 10,backgroundColor: Colors.transparent,
-                        child: SVGIconButton(
-                            svgPath: ImagePath.dropdownIcon,
-                            size: 6.0,
-                            color: CustomColors.kLightGrayColor,
-                            onPressed: () {
-                              ApiConfig.getDataSwitching(context: context);
-                              checkUser();
-                              _showDialog();
-                            }),
-                      ),
-                    ],
-                  ),
-                  onTap: (){
-                    ApiConfig.getDataSwitching(context: context);
-                    checkUser();
-                  _showDialog();
-                  },
-                ) : TextButton(
+                      onTap: () async {
+                       await ApiConfig.getDataSwitching(context: context);
+                        checkUser();
+                      _showDialog();
+                      },
+                    ): TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
-                }, child: const Text(CustomString.joinOrg, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
-              }),
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
+                    }, child: const Text(CustomString.joinOrg, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
+                  }
+                ),
               const Spacer(),
               /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
                 return Switch(value: val.visibleCall,

@@ -73,7 +73,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                               searchParentDController.clear();
                             }else{
                               val.setVisibilitySearchList(true);
-                              ApiConfig.searchPDepartment(context: context,oderId: 16);
+                              ApiConfig.searchPDepartment(context: context,oderId: widget.orgId);
                             }
                           }),
                           const Text("Choose parent department"),
@@ -94,7 +94,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onTap: (){
                           val.setVisibilitySearchList(true);
                           val.notifyListeners();
-                          ApiConfig.searchPDepartment(context: context,oderId: 16);
+                          ApiConfig.searchPDepartment(context: context,oderId: widget.orgId);
                         },
                       decoration: const InputDecoration(
                           hintText: "Parent department",
