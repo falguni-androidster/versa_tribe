@@ -7,9 +7,9 @@ import '../../Utils/custom_string.dart';
 
 class AddNewDepartment extends StatefulWidget {
 
-  int? orgId;
+  final int? orgId;
 
-  AddNewDepartment({super.key, required this.orgId});
+  const AddNewDepartment({super.key, required this.orgId});
 
   @override
   State<AddNewDepartment> createState() => _AddNewDepartmentState();
@@ -76,7 +76,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                               searchParentDController.clear();
                             }else{
                               val.setVisibilitySearchList(true);
-                              ApiConfig.searchPDepartment(context: context,oderId: widget.orgId);
+                              ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                             }
                           }),
                           const Text(CustomString.chooseParentDepartment, style: TextStyle(fontSize: 14, fontFamily: 'Poppins')),
@@ -97,7 +97,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onTap: (){
                           val.setVisibilitySearchList(true);
                           val.notifyListeners();
-                          ApiConfig.searchPDepartment(context: context,oderId: widget.orgId);
+                          ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                         },
                       decoration: const InputDecoration(
                           hintText: "Parent department",
