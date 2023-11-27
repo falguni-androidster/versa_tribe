@@ -70,9 +70,11 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                       if (value != "") {
                         ApiConfig.searchHobby(context: context, hobbyString: value);
                         providerHobby.hobbyList.clear();
+                        providerHobby.setVisible(true);
+                      }else{
+                        providerHobby.setVisible(false);
                       }
                       providerHobby.hobbyList.clear();
-                      providerHobby.setVisible(true);
                     },
                     cursorColor: CustomColors.kBlueColor,
                     decoration: const InputDecoration(
@@ -81,12 +83,12 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                             color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins')),
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                 Consumer<SearchHobbyProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.hobbyList.length,
                       itemBuilder: (context, index) {
-                        debugPrint("INSTITUTE--------->${val.hobbyList[index].name}");
-                        return val.visible == true ? InkWell(
+                        debugPrint("hobby search--------->${val.hobbyList[index].name}");
+                        return InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
@@ -108,9 +110,8 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                                     hobbyController.text;
                             val.setVisible(false);
                           },
-                        )
-                            : Container();
-                      });
+                        );
+                      }): Container();
                 }),
 
                 SizedBox(height: size.height * 0.03),

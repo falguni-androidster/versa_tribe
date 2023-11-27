@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import '../Model/manage_organization.dart';
+import 'package:versa_tribe/Model/approve_organization.dart';
+import '../Model/request_organization.dart';
 import '../Model/department.dart';
 import '../Model/search_organigation.dart';
 
@@ -15,12 +16,20 @@ class IndexProvider with ChangeNotifier{
 }
 
 class DisplayManageOrgProvider with ChangeNotifier{
-  final List<ManageOrgModel> _manageOrgDataList =[];
-  List<ManageOrgModel> get manageOrgDataList => _manageOrgDataList;
+  final List<RequestOrgModel> _requestOrgDataList =[];
+  List<RequestOrgModel> get requestOrgDataList => _requestOrgDataList;
+  final List<ApproveOrgModel> _approveOrgDataList =[];
+  List<ApproveOrgModel> get approveOrgDataList => _approveOrgDataList;
 
-  setManageOrgData(manageOrgData){
-    manageOrgData.forEach((ob){
-      _manageOrgDataList.add(ManageOrgModel.fromJson(ob));
+  setRequestOrgData(requestOrgData){
+   requestOrgData.forEach((ob){
+      _requestOrgDataList.add(RequestOrgModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+  setApproveOrgData(approveOrgData){
+   approveOrgData.forEach((ob){
+      _approveOrgDataList.add(ApproveOrgModel.fromJson(ob));
       notifyListeners();
     });
   }

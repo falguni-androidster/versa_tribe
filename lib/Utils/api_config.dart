@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,8 @@ import 'custom_string.dart';
 
 class ApiConfig {
 
-  static const String baseUrl = 'https://srv1.ksgs.local:9443';
+  // static const String baseUrl = 'https://srv1.ksgs.local:9443';
+  static const String baseUrl = 'https://api.gigpro.in';
 
 // Usage example
 // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
@@ -63,6 +65,7 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
+        debugPrint("experience-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.setPersonEx(data);
       } else {
@@ -85,6 +88,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      debugPrint("qualification-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonQl(data);
     } else {
@@ -104,6 +108,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      debugPrint("skill-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonSkill(data);
     } else {
@@ -123,6 +128,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      debugPrint("hobby-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonHobby(data);
     } else {
@@ -131,8 +137,7 @@ class ApiConfig {
       ));
     }
   }
-  static deletePersonEx(context, int? perExpId) async {
-    try{
+  static Future deletePersonEx(context, int? perExpId) async {
       String url = "$baseUrl/api/PersonExperiences/Delete?id=$perExpId";
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
@@ -149,9 +154,7 @@ class ApiConfig {
           content: Text("Try again Data not delete..."),
         ));
       }
-    }catch(e){
-      debugPrint("Exception------->$e");
-    }
+      return response.body;
   }
   static deletePersonQL(context, int? perQLId) async {
     try{
@@ -224,7 +227,12 @@ class ApiConfig {
     DateTime startDate = DateTime.parse(sDate);
     DateTime endDate = DateTime.parse(eDate);
     int result = monthsBetweenDates(startDate, endDate);
+    debugPrint('Com name----------->> $comName');
+    debugPrint('Ind name----------->> $indName');
     debugPrint('Number of months----------->> $result');
+    debugPrint('job title----------->> $jobTitle');
+    debugPrint('start date----------->> $sDate');
+    debugPrint('end date----------->> $eDate');
 
     // Map<String, dynamic> requestData = {
     //   "Experience": {
@@ -255,6 +263,7 @@ class ApiConfig {
       ApiConfig.getUserExperience(context);
       Navigator.pop(context);
     } else {
+      debugPrint("error: response----->>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Try again..."),
       ));
@@ -647,10 +656,10 @@ class ApiConfig {
   }
   static getManageOrgData({context, tabIndex}) async {
     final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
-    provider.manageOrgDataList.clear();
+    provider.requestOrgDataList.clear();
+    provider.approveOrgDataList.clear();
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    // String? personId = pref.getString('PersonId');
     try{
       String url = "$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex";
       final response = await http.get(Uri.parse(url), headers: {
@@ -658,9 +667,12 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("check Data------->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.setManageOrgData(data);
+       tabIndex==0? debugPrint("requested data------->${response.body}"):
+        debugPrint("approved data------->${response.body}");
+        List<dynamic> data = await jsonDecode(response.body);
+       tabIndex==0?
+       provider.setRequestOrgData(data):
+       provider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),

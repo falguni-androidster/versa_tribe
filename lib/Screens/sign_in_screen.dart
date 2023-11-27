@@ -386,6 +386,7 @@ class _SignInScreenState extends State<SignInScreen> {
           response.body); // Return Single Object
       loginResponseModelData = LoginResponseModel.fromJson(jsonData);
       if (jsonData != null) {
+        print("------->${loginResponseModelData.accessToken}");
         if (loginResponseModelData.accessToken != null) {
           await ApiConfig.getDataSwitching(context: context);
           final SharedPreferences pref = await SharedPreferences.getInstance();

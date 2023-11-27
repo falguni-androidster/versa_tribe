@@ -51,8 +51,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: size.width * 0.04, vertical: size.height * 0.02),
+            padding: EdgeInsets.symmetric(horizontal: size.width * 0.03, vertical: size.height * 0.02),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,13 +66,15 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                       }
                     },
                     onChanged: (value) {
-                      if (value != "") {
+                      if (value != "" && value.isNotEmpty) {
                         ApiConfig.searchCourse(
                             context: context, courseString: value);
                         provider.courseList.clear();
+                        provider.setVisible(true);
+                      }else{
+                        provider.setVisible(false);
                       }
                       provider.courseList.clear();
-                      provider.setVisible(true);
                     },
                     decoration: const InputDecoration(
                         labelText: CustomString.courseName,
@@ -82,14 +83,13 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
                 Consumer<SearchCourseProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.courseList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "--------->${val.courseList[index].couName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("company name--------->${val.courseList[index].couName}");
+                        return  InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -109,12 +109,12 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                                       val.courseList[index].couName ??
                                           courseController.text;
                                   val.setVisible(false);
-                                })
-                            : Container();
-                      });
+                                });
+                      })
+                  : Container();
                 }),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
 
                 /// Institute name
                 TextFormField(
@@ -131,6 +131,8 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                         ApiConfig.searchInstitute(
                             context: context, instituteString: value);
                         providerInstitute.instituteList.clear();
+                      }else{
+                        providerInstitute.setVisible(false);
                       }
                       providerInstitute.instituteList.clear();
                       providerInstitute.setVisible(true);
@@ -143,14 +145,13 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
                 Consumer<SearchInstituteProvider>(
                     builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true
+                      ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.instituteList.length,
                       itemBuilder: (context, index) {
-                        debugPrint(
-                            "INSTITUTE--------->${val.instituteList[index].instName}");
-                        return val.visible == true
-                            ? InkWell(
+                        debugPrint("institute name--------->${val.instituteList[index].instName}");
+                        return InkWell(
                                 child: Card(
                                   shadowColor: CustomColors.kBlueColor,
                                   elevation: 3,
@@ -171,12 +172,29 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                                           instituteController.text;
                                   val.setVisible(false);
                                 },
-                              )
-                            : Container();
-                      });
+                              );
+                      }):Container();
                 }),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
+
+                /// Grade
+                TextFormField(
+                    controller: gradeController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return CustomString.gradeRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        labelText: CustomString.grade,
+                        labelStyle: TextStyle(
+                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+
+                SizedBox(height: size.height * 0.02),
 
                 /// City name
                 TextFormField(
@@ -203,53 +221,38 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                             color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
 
-                /// Grade
-                TextFormField(
-                    controller: gradeController,
+                /// Year Of Passing
+                SizedBox(
+                  width: size.width/2.1,
+                  child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return CustomString.gradeRequired;
+                        return CustomString.passingDateRequired;
                       } else {
                         return null;
                       }
                     },
+                    controller: yopController,
+                    textAlign: TextAlign.center,
+                    //editing controller of this TextField
                     decoration: const InputDecoration(
-                        labelText: CustomString.grade,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-
-                SizedBox(height: size.height * 0.03),
-
-                /// Year Of Passing
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return CustomString.passingDateRequired;
-                    } else {
-                      return null;
-                    }
-                  },
-                  controller: yopController,
-                  textAlign: TextAlign.center,
-                  //editing controller of this TextField
-                  decoration: const InputDecoration(
-                    labelText: CustomString.passingDate,
-                    labelStyle: TextStyle(
-                        color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
-                    suffixIcon: Icon(Icons.calendar_month, color: CustomColors.kBlueColor),
+                      labelText: CustomString.passingDate,
+                      labelStyle: TextStyle(
+                          color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
+                      suffixIcon: Icon(Icons.calendar_month, color: CustomColors.kBlueColor),
+                    ),
+                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                    readOnly: true,
+                    //set it true, so that user will not able to edit text
+                    onTap: () async {
+                      _showDatePicker(context: context);
+                    },
                   ),
-                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-                  readOnly: true,
-                  //set it true, so that user will not able to edit text
-                  onTap: () async {
-                    _showDatePicker(context: context);
-                  },
                 ),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
 
                 /// Button
                 SizedBox(

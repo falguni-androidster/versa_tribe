@@ -9,7 +9,7 @@ class PersonQualificationModel {
     String? firstName;
     String? lastName;
     String? couName;
-    String? ctypName;
+    String? ctyName;
     String? instName;
     String? yOP;
     String? grade;
@@ -23,7 +23,7 @@ class PersonQualificationModel {
             this.firstName,
             this.lastName,
             this.couName,
-            this.ctypName,
+            this.ctyName,
             this.instName,
             this.yOP,
             this.grade,
@@ -37,7 +37,7 @@ class PersonQualificationModel {
         firstName = json['FirstName'];
         lastName = json['LastName'];
         couName = json['Cou_Name'];
-        ctypName = json['Ctyp_Name'];
+        ctyName = json['Cty_Name'];
         instName = json['Inst_Name'];
         yOP = json['YOP'];
         grade = json['Grade'];
@@ -53,7 +53,7 @@ class PersonQualificationModel {
         data['FirstName'] = firstName;
         data['LastName'] = lastName;
         data['Cou_Name'] = couName;
-        data['Ctyp_Name'] = ctypName;
+        data['Cty_Name'] = ctyName;
         data['Inst_Name'] = instName;
         data['YOP'] = yOP;
         data['Grade'] = grade;

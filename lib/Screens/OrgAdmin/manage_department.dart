@@ -29,6 +29,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
         leading: IconButton(
@@ -98,7 +99,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
           if (snapshot.hasData) {
             children = <Widget>[
            Expanded(
-             child: ListView.builder(
+             child: snapshot.data!.isNotEmpty? ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context,index){
                         return Card(
@@ -125,7 +126,16 @@ class _ManageDepartmentState extends State<ManageDepartment> {
                             ],
                           ),
                         );
-                      }),
+                      }):Center(
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+          SizedBox(height: size.height*0.02,),
+          SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
+          SizedBox(height: size.height*0.2,),
+          const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+          ],),
+          ),
               )
             ];
           } else if (snapshot.hasError) {

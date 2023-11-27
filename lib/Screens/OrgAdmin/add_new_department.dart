@@ -96,7 +96,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                       },
                         onTap: (){
                           val.setVisibilitySearchList(true);
-                          val.notifyListeners();
+                          val.notify();
                           ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                         },
                       decoration: const InputDecoration(

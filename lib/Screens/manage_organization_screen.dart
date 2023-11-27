@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,7 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
         leading: InkWell(
@@ -103,12 +105,16 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
             padding: EdgeInsets.only(top: size.height * 0.02, left: size.width * 0.02, right: size.height * 0.02),
             child: Consumer<IndexProvider>(builder: (context, val, child) {
               return TabBar(
-                onTap: (value) {
+                onTap: (value) async {
                   val.setIndex(value);
                   if (value == 0) {
-                    ApiConfig.getManageOrgData(context: context, tabIndex: 0);
-                  } else if (value == 1) {
-                    ApiConfig.getManageOrgData(context: context, tabIndex: 1);
+                    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
+                    provider.requestOrgDataList.clear();
+                   await ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+                  } else {
+                    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
+                    provider.requestOrgDataList.clear();
+                   await ApiConfig.getManageOrgData(context: context, tabIndex: 1);
                   }
 
                   ///currently hide this field it will used in future.
@@ -169,10 +175,10 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                 ///Requested
                 Consumer<DisplayManageOrgProvider>(
                     builder: (context, val, child) {
-                      return val.manageOrgDataList.isNotEmpty ?
+                      return val.requestOrgDataList.isNotEmpty ?
                       ListView.builder(
                           shrinkWrap: true,
-                          itemCount: val.manageOrgDataList.length,
+                          itemCount: val.requestOrgDataList.length,
                           itemBuilder: (context, index) {
                             return Container(
                               height: size.height * 0.08,
@@ -195,33 +201,42 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           const Text(CustomString.requestedToJoin),
-                                          Text(val.manageOrgDataList[index].orgName ?? "",
+                                          Text(val.requestOrgDataList[index].orgName ?? "",
                                               style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                                         ],
                                       ),
                                       SizedBox(height: size.height * 0.01),
-                                      Text("${CustomString.requestedDepartment} ${val.manageOrgDataList[index].deptName ?? val.manageOrgDataList[index].deptReq}",
+                                      Text("${CustomString.requestedDepartment} ${val.requestOrgDataList[index].deptName ?? val.requestOrgDataList[index].deptReq}",
                                           style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
                                     ],
                                   ),
                                   ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
                                       onPressed: () {
-                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.manageOrgDataList[index].orgId,personID:val.manageOrgDataList[index].personId);
+                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.requestOrgDataList[index].orgId,personID:val.requestOrgDataList[index].personId);
                                       },
                                       child: const Text(CustomString.cancel, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                 ],
                               ),
                             );
-                          }) : Center(child: Image.asset(ImagePath.noData));
+                          }) : Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(height: size.height*0.02,),
+                                SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
+                                SizedBox(height: size.height*0.2,),
+                                const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                              ],),
+                          );
                     }
                 ),
 
                 ///Approved
                 Consumer<DisplayManageOrgProvider>(
                     builder: (context, val, child) {
-                      return val.manageOrgDataList.isNotEmpty ? ListView.builder(
+                      return val.approveOrgDataList.isNotEmpty ? ListView.builder(
                           shrinkWrap: true,
-                          itemCount: val.manageOrgDataList.length,
+                          itemCount: val.approveOrgDataList.length,
                           itemBuilder: (context, index) {
                             // child: RichText(
                             //   text: TextSpan(
@@ -256,26 +271,35 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                               text: TextSpan(
                                                   text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
                                                   children: [
-                                                    TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                                    TextSpan(text: val.approveOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                                                     const TextSpan(text: CustomString.requestApproved2,style: TextStyle( fontFamily: 'Poppins'))
                                                   ]
                                               ),)
                                         ),
                                         SizedBox(height: size.height * 0.005),
-                                        Text("${CustomString.department} ${val.manageOrgDataList[index].deptName ?? ""}",
+                                        Text("${CustomString.department} ${val.approveOrgDataList[index].deptName ?? ""}",
                                             style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
                                       ],
                                     ),
                                   ),
                                   ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
                                       onPressed: () {
-                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.manageOrgDataList[index].orgId,personID:val.manageOrgDataList[index].personId);
+                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.approveOrgDataList[index].orgId,personID:val.approveOrgDataList[index].personId);
                                       },
                                       child: const Text(CustomString.leave, style: TextStyle(color: CustomColors.kBlackColor,  fontFamily: 'Poppins'))),
                                 ],
                               ),
                             );
-                          }) : Center(child: Image.asset(ImagePath.noData));
+                          }) : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: size.height*0.02,),
+                            SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
+                            SizedBox(height: size.height*0.2,),
+                            const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                          ],),
+                      );
                     }
                 ),
 

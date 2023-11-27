@@ -88,9 +88,11 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                         ApiConfig.searchSkill(
                             context: context, skillString: value);
                         providerSkill.skillList.clear();
+                        providerSkill.setVisible(true);
+                      }else{
+                        providerSkill.setVisible(false);
                       }
                       providerSkill.skillList.clear();
-                      providerSkill.setVisible(true);
                     },
                     cursorColor: CustomColors.kBlueColor,
                     decoration: const InputDecoration(
@@ -100,13 +102,13 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
                 Consumer<SearchSkillProvider>(builder: (context, val, child) {
-                  return ListView.builder(
+                  return val.visible == true ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.skillList.length,
                       itemBuilder: (context, index) {
                         debugPrint(
-                            "INSTITUTE--------->${val.skillList[index].skillName}");
-                        return val.visible == true ? InkWell(
+                            "Skill name--------->${val.skillList[index].skillName}");
+                        return InkWell(
                           child: Card(
                             shadowColor: CustomColors.kBlueColor,
                             elevation: 3,
@@ -128,12 +130,11 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                                     skillController.text;
                             val.setVisible(false);
                           },
-                        )
-                            : Container();
-                      });
+                        );
+                      }): Container();
                 }),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
 
                 /// Experience(months)
                 TextFormField(
@@ -152,7 +153,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                             color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
 
-                SizedBox(height: size.height * 0.03),
+                SizedBox(height: size.height * 0.02),
 
                 /// Submit Button
                 SizedBox(

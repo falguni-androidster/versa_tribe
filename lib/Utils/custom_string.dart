@@ -73,7 +73,7 @@ class CustomString {
 
 /*------------------------  Profile Screen --------------------------*/
 
-  static const String createProfile = 'createProfile';
+  static const String createProfile = 'Create Profile';
   static const String updateProfile = 'Update Profile';
   static const String fNameRequired = '* FirstName is required...';
   static const String switchOrganization = 'Switch Organization';
@@ -120,7 +120,7 @@ class CustomString {
   static const String message = 'Message';
   static const String account = 'Account';
 
-  static const String joinOrg = 'Join Org';
+  static const String joinOrg = 'Join Organization';
 
 
 /*------------------------  Account Screen --------------------------*/
@@ -131,7 +131,7 @@ class CustomString {
   static const String help = 'Help & Support';
   static const String about = 'About';
   static const String logout = 'Logout';
-  static const String version = 'Version 1.0';
+  static const String version = 'Version: Unknown';
 
 
 /*---------------------------- Training Screen --------------------------*/
@@ -158,8 +158,13 @@ class CustomString {
 
 
 /*---------------------------  Person details Screen ------------------------*/
-  static const String profileDSHeaderText = 'Person Details';
+  static const String profileDSHeaderText = 'Personal Details';
   static const String createExperience = 'Create Experience';
+  static const String noExperienceFound = 'No Experience Found';
+  static const String noDataFound = 'No Data Found';
+  static const String noQualificationFound = 'No Qualification Found';
+  static const String noSkillFound = 'No Skill Found';
+  static const String noHobbiesFound = 'No Hobbies Found';
   static const String editExperience = 'Update Experience';
   static const String createQualification = 'Create Qualification';
   static const String editQualification = 'Update Qualification';

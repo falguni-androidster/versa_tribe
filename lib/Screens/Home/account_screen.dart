@@ -88,7 +88,7 @@ class _AccountScreenState extends State<AccountScreen> {
             Container(
               height: size.height * 0.06,
               margin: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.25, vertical: size.height * 0.02),
+                  horizontal: size.width * 0.20, vertical: size.height * 0.02),
               child: ElevatedButton(
 
                   style: ElevatedButton.styleFrom(

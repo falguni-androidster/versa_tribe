@@ -67,173 +67,175 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
 
-              SizedBox(height: size.height * 0.02),
+                SizedBox(height: size.height * 0.05),
 
-              /// Profile Pic
-              const Center(
-                child: CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage:
-                  AssetImage(ImagePath.profilePath),
-                ),
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// First Name Form Field
-              TextFormField(
-                controller: fNameController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return CustomString.fNameRequired;
-                  } // using regular expression
-                  else {
-                    return null;
-                  }
-                },
-                decoration: const InputDecoration(
-                    labelText: CustomString.firstName,
-                    labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
-                ),
-                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// Last Name Form Field
-              TextFormField(
-                controller: lNameController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return CustomString.lNameRequired;
-                  } // using regular expression
-                  else {
-                    return null;
-                  }
-                },
-                decoration: const InputDecoration(
-                    labelText: CustomString.lastName,
-                    labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
-                ),
-                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// Gender Field
-              const Text(
-                CustomString.selectGender,
-                style: TextStyle(fontSize: 14,fontFamily: 'Poppins'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  radioButton(CustomString.male),
-                  const Text(CustomString.male,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
-                  radioButton(CustomString.female),
-                  const Text(CustomString.female,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
-                  radioButton(CustomString.other),
-                  const Text(CustomString.other, style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
-                ],
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// Date of Birth Field
-              TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return CustomString.dateOfBirthRequired;
-                  } else {
-                    return null;
-                  }
-                },
-                controller: dobController,
-                textAlign: TextAlign.center,
-                //editing controller of this TextField
-                decoration: const InputDecoration(
-                  labelText: CustomString.dateOfBirth,
-                  labelStyle: TextStyle(
-                      color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
-                  suffixIcon: Icon(Icons.calendar_month,
-                      color: CustomColors.kBlueColor),
-                ),
-                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-                onTap: () async {
-                  _showDatePicker(context: context);
-                },
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// City Form Field
-              TextFormField(
-                controller: cityController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return CustomString.cityRequired;
-                  } // using regular expression
-                  else {
-                    return null;
-                  }
-                },
-                decoration: const InputDecoration(
-                    labelText: CustomString.city,
-                    labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
-                ),
-                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// Country Form Field
-              TextFormField(
-                controller: countryController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return CustomString.countryRequired;
-                  } // using regular expression
-                  else {
-                    return null;
-                  }
-                },
-                decoration: const InputDecoration(
-                    labelText: CustomString.country,
-                    labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
-                ),
-                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
-              ),
-
-              SizedBox(height: size.height * 0.02),
-
-              /// Create Profile Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    createProfileClick(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.kBlueColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      padding: const EdgeInsets.all(14)),
-                  child: const Text(
-                    CustomString.updateProfile,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600),
+                /// Profile Pic
+                const Center(
+                  child: CircleAvatar(
+                    radius: 50.0,
+                    backgroundImage:
+                    AssetImage(ImagePath.profilePath),
                   ),
                 ),
-              ),
-            ],
+
+                SizedBox(height: size.height * 0.02),
+
+                /// First Name Form Field
+                TextFormField(
+                  controller: fNameController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return CustomString.fNameRequired;
+                    } // using regular expression
+                    else {
+                      return null;
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      labelText: CustomString.firstName,
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
+                  ),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// Last Name Form Field
+                TextFormField(
+                  controller: lNameController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return CustomString.lNameRequired;
+                    } // using regular expression
+                    else {
+                      return null;
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      labelText: CustomString.lastName,
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
+                  ),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// Gender Field
+                const Text(
+                  CustomString.selectGender,
+                  style: TextStyle(fontSize: 14,fontFamily: 'Poppins'),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    radioButton(CustomString.male),
+                    const Text(CustomString.male,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
+                    SizedBox(width: size.width * 0.1),
+                    radioButton(CustomString.female),
+                    const Text(CustomString.female,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
+                  ],
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// Date of Birth Field
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return CustomString.dateOfBirthRequired;
+                    } else {
+                      return null;
+                    }
+                  },
+                  controller: dobController,
+                  textAlign: TextAlign.start,
+                  //editing controller of this TextField
+                  decoration: const InputDecoration(
+                    labelText: CustomString.dateOfBirth,
+                    labelStyle: TextStyle(
+                        color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
+                    suffixIcon: Icon(Icons.calendar_month,
+                        color: CustomColors.kBlueColor),
+                  ),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                  onTap: () async {
+                    _showDatePicker(context: context);
+                  },
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// City Form Field
+                TextFormField(
+                  controller: cityController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return CustomString.cityRequired;
+                    } // using regular expression
+                    else {
+                      return null;
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      labelText: CustomString.city,
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')
+                  ),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// Country Form Field
+                TextFormField(
+                  controller: countryController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return CustomString.countryRequired;
+                    } // using regular expression
+                    else {
+                      return null;
+                    }
+                  },
+                  decoration: const InputDecoration(
+                      labelText: CustomString.country,
+                      labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins'),
+                  ),
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
+                ),
+
+                SizedBox(height: size.height * 0.02),
+
+                /// Create Profile Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      createProfileClick(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColors.kBlueColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        padding: const EdgeInsets.all(14)),
+                    child: const Text(
+                      CustomString.createProfile,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

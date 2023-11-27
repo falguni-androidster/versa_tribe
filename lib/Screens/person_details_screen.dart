@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -59,9 +60,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
           title: const Text(CustomString.profileDSHeaderText,
               style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
 
-      body: RefreshIndicator(
-        onRefresh: refreshEventList,
-        child: SingleChildScrollView(
+      body: //RefreshIndicator(
+      //  onRefresh: refreshEventList,
+       // child:
+        SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
@@ -71,7 +73,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               FutureBuilder<ProfileResponse>(
                 future: ApiConfig().getProfileData(),
                 builder: (context, snapshot) {
-                  return containerProfile(snapshot, size.width);
+                  return containerProfile(snapshot, size);
                 },
               ),
 
@@ -81,12 +83,15 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: CustomColors.kBlueColor, width: 2),
-                    borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  color: CustomColors.kWhiteColor
+                ),
+                padding: EdgeInsets.only(bottom: defaultTargetPlatform==TargetPlatform.iOS? 0: size.height * 0.02
+                ),
                 margin: EdgeInsets.only(
                   left: size.width * 0.03,
                   right: size.width * 0.03,
                 ),
-                padding: EdgeInsets.only(bottom: size.height * 0.01),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -112,7 +117,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ]),
                     Consumer<PersonExperienceProvider>(
                         builder: (context, val, child) {
-                      return ListView.builder(
+                      return val.personEx.isNotEmpty?ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: val.personEx.length,
@@ -124,6 +129,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           String? eDate = val.personEx[index].endDate;
                           String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
                           return timelineTile(
+                            context: context,
                               comN: comN,
                               ed: ed,
                               sd: sd,
@@ -131,7 +137,17 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               index: index,
                               widgetKey: "personExperience");
                         },
-                      );
+                      ): SizedBox(
+                        width: size.width,
+                        height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                          child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                          Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                            const Text(CustomString.noExperienceFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                        ],),
+                      ));
                     }),
                   ],
                 ),
@@ -142,13 +158,16 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               /// Qualifications
               Container(
                 decoration: BoxDecoration(
+                    color: CustomColors.kWhiteColor,
                     border: Border.all(color: CustomColors.kBlueColor, width: 2),
                     borderRadius: BorderRadius.circular(10)),
+                padding: EdgeInsets.only(
+                    bottom: defaultTargetPlatform==TargetPlatform.iOS? size.height * 0: size.height * 0.02
+                ),
                 margin: EdgeInsets.only(
                   left: size.width * 0.03,
                   right: size.width * 0.03,
                 ),
-                padding: EdgeInsets.only(bottom: size.height * 0.01),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -176,7 +195,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ),
                     Consumer<PersonQualificationProvider>(
                         builder: (context, val, child) {
-                      return ListView.builder(
+                      return val.personQl.isNotEmpty?ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: val.personQl.length,
@@ -185,12 +204,23 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           String passingY =
                               DateFormat.yMMM().format(DateTime.parse(date));
                           return timelineTile(
+                            context: context,
                             index: index,
                             vaL: val,
                             passingYear: passingY,
                           );
                         },
-                      );
+                      ):SizedBox(
+                          width: size.width,
+                          height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                          child: Center(
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                          Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                          const Text(CustomString.noQualificationFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                          ],),
+                          ));
                     }),
                   ],
                 ),
@@ -201,6 +231,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               /// Skill
               Container(
                 decoration: BoxDecoration(
+                    color: CustomColors.kWhiteColor,
                     border: Border.all(color: CustomColors.kBlueColor, width: 2),
                     borderRadius: BorderRadius.circular(10)),
                 margin: EdgeInsets.only(
@@ -228,14 +259,13 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       ),
                     ]),
                     Consumer<PersonSkillProvider>(builder: (context, val, child) {
-                      return ListView.builder(
+                      return val.personSkill.isNotEmpty?ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: val.personSkill.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.only(
-                                left: size.width * 0.03, bottom: size.height * 0.01),
+                            margin: EdgeInsets.only(left: size.width * 0.03, bottom: size.height * 0.01),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -275,8 +305,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                                           months: month,
                                                           perSkillId: perSKID)));
                                         case 1:
-                                          _showDeleteConfirmation(context,
-                                              "identityPSD", perSKID, "");
+                                          _showDeleteConfirmation(context, "identityPSD", perSKID, "");
                                       }
                                     },
                                     itemBuilder: (_) => [
@@ -292,7 +321,17 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                             ),
                           );
                         },
-                      );
+                      ):SizedBox(
+                          width: size.width,
+                          height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                const Text(CustomString.noSkillFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                              ],),
+                          ));
                     }),
                   ],
                 ),
@@ -378,9 +417,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               // ),
               // SizedBox(height: mHeight * 0.01),
 
-
+              ///Hobbies
               Container(
                 decoration: BoxDecoration(
+                  color: CustomColors.kWhiteColor,
                     border: Border.all(color: CustomColors.kBlueColor, width: 2),
                     borderRadius: BorderRadius.circular(10)),
                 margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
@@ -416,7 +456,18 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                hobbyIdList.add(element.hobbyId!);
                                personIdList.add(element.personId!);
                              }
-                            return TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList);
+                            return val.personHobby.isNotEmpty?
+                            TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList):SizedBox(
+                                width: size.width,
+                                height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                      const Text(CustomString.noHobbiesFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                    ],),
+                                ));
                           }
                       ),
                     ],
@@ -427,7 +478,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
             ],
           ),
         ),
-      ),
+     // ),
     );
 
   }
@@ -442,10 +493,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     return;
   }
 
-  void _showDeleteConfirmation(BuildContext context, identityKey, int? iD, personId) {
+  void _showDeleteConfirmation(context, identityKey, int? iD, personId) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
           content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
@@ -461,11 +512,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 // Add your delete logic here
                 if (identityKey == "identityPED") {
                   ApiConfig.deletePersonEx(context, iD);
-                } else if (identityKey == "identityPQD") {
+                }
+                else if (identityKey == "identityPQD") {
                   ApiConfig.deletePersonQL(context, iD);
-                } else if (identityKey == "identityPSD") {
+                }
+                else if (identityKey == "identityPSD") {
                   ApiConfig.deletePersonSkill(context, iD);
-                } else if (identityKey == "identityPHD") {
+                }
+                else if (identityKey == "identityPHD") {
                   ApiConfig.deletePersonHobby(context, personId, iD);
                 }
                 Navigator.of(context).pop(); // Close the confirmation dialog
@@ -478,14 +532,14 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  Widget timelineTile({index, vaL, comN, sd, ed, widgetKey, passingYear}) {
+  Widget timelineTile({context,index, vaL, comN, sd, ed, widgetKey, passingYear}) {
     var mHeight = MediaQuery.of(context).size.height;
     var mWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: EdgeInsets.only(left: mWidth * 0.02),
       child: TimelineTile(
           alignment: TimelineAlign.manual,
-          lineXY: 0.00,
+          lineXY: 0.0,
           isFirst: index == 0 ? true : false,
           isLast: index == index - 1 ? true : false,
           indicatorStyle: IndicatorStyle(
@@ -582,7 +636,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 String city = vaL.personQl[index].city;
                                 int pQID = vaL.personQl[index].pQId;
                                 print("-----=->${vaL.personQl[index].yOP}");
-                                String yop = DateFormat("yyyy-MM-dd").format(DateTime.parse("${vaL.personQl[index].yOP}"));
+                                String yop = DateFormat("yyyy/MM/dd").format(DateTime.parse("${vaL.personQl[index].yOP}"));
                                 switch (item) {
                                   case 0:
                                     Navigator.push(
@@ -645,15 +699,15 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  Widget containerProfile(snapshot, mWidget) {
+  Widget containerProfile(snapshot, size) {
     return Card(
       elevation: 5,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
       ),
       margin: EdgeInsets.only(
-        left: mWidget * 0.03,
-        right: mWidget * 0.03,
+        left: size.width * 0.03,
+        right: size.width * 0.03,
       ),
       child: Container(
         decoration: const BoxDecoration(
@@ -670,7 +724,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   radius: 40,
                   child: Image.asset(ImagePath.profilePath)),
               Padding(
-                padding: const EdgeInsets.all(25.0),
+                padding: EdgeInsets.symmetric(vertical: size.height*0.03,horizontal: size.width*0.01),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

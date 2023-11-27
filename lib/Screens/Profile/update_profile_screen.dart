@@ -56,7 +56,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     fNameController.text = widget.firstName;
     lNameController.text = widget.lastName;
     genderController.text = widget.gender;
-    dobController.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.dob));
+    dobController.text = DateFormat('yyyy/MM/dd').format(DateTime.parse(widget.dob));
     cityController.text = widget.city;
     countryController.text = widget.country;
   }
@@ -162,14 +162,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     style: TextStyle(fontSize: 14,fontFamily: 'Poppins'),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       radioButton(CustomString.male),
                       const Text(CustomString.male,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
+                      SizedBox(width: size.width * 0.1),
                       radioButton(CustomString.female),
                       const Text(CustomString.female,style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
-                      radioButton(CustomString.other),
-                      const Text(CustomString.other, style: TextStyle(fontFamily: 'Poppins',fontSize: 12)),
                     ],
                   ),
 
@@ -185,7 +184,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       }
                     },
                     controller: dobController,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                     //editing controller of this TextField
                     decoration: const InputDecoration(
                       labelText: CustomString.dateOfBirth,
@@ -310,7 +309,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (pickedDate != null) {
       debugPrint(
           "PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
-      String formatYopDate = DateFormat('yyyy-MM-dd')
+      String formatYopDate = DateFormat('yyyy/MM/dd')
           .format(pickedDate); // we also use "dd-MM-yyyy" format or may more..
       debugPrint(
           "FormattedData----->$formatYopDate"); //formatted date output using intl package =>  2021-03-16

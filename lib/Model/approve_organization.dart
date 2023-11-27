@@ -1,4 +1,4 @@
-class ManageOrgModel {
+class ApproveOrgModel {
   int? personId;
   String? firstName;
   String? lastName;
@@ -13,7 +13,7 @@ class ManageOrgModel {
   String? tStamp;
   String? tOwner;
 
-  ManageOrgModel(
+  ApproveOrgModel(
       {this.personId,
         this.firstName,
         this.lastName,
@@ -28,7 +28,7 @@ class ManageOrgModel {
         this.tStamp,
         this.tOwner});
 
-  ManageOrgModel.fromJson(Map<String, dynamic> json) {
+  ApproveOrgModel.fromJson(Map<String, dynamic> json) {
     personId = json['Person_Id'];
     firstName = json['FirstName'];
     lastName = json['LastName'];
