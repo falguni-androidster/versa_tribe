@@ -45,7 +45,7 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
     ///currently hide this field it will used in future.
     // _tabController = TabController(length: 4, vsync: this);
     _tabController = TabController(length: 2, vsync: this);
-    ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+    //ApiConfig.getManageOrgData(context: context, tabIndex: 0);
     super.initState();
   }
   @override
@@ -77,8 +77,8 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
             }, icon: const Icon(Icons.add,color: CustomColors.kBlackColor,))
         ],
       ),
-      /// x-request Button for join org
-      /*floatingActionButton: FloatingActionButton.extended(
+      /// request Button for join org
+ /*     floatingActionButton: FloatingActionButton.extended(
         label: const Row(
           children: [
             Padding(
@@ -94,7 +94,7 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
         ),
         backgroundColor: CustomColors.kBlueColor,
         onPressed: () {
-          joinOrganizationDialog(context: context, mHeight: mHeight, mWidth: mWidth);
+          joinOrganizationDialog(context: context, mHeight: size.height, mWidth: size.width);
         },
       ),*/
       body: Column(
@@ -108,13 +108,9 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                 onTap: (value) async {
                   val.setIndex(value);
                   if (value == 0) {
-                    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
-                    provider.requestOrgDataList.clear();
-                   await ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+                    //ApiConfig.getManageOrgData(context: context, tabIndex: 0);
                   } else {
-                    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
-                    provider.requestOrgDataList.clear();
-                   await ApiConfig.getManageOrgData(context: context, tabIndex: 1);
+                    //ApiConfig.getManageOrgData(context: context, tabIndex: 1);
                   }
 
                   ///currently hide this field it will used in future.
@@ -172,136 +168,170 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
               controller: _tabController,
               children: <Widget>[
 
-                ///Requested
-                Consumer<DisplayManageOrgProvider>(
-                    builder: (context, val, child) {
-                      return val.requestOrgDataList.isNotEmpty ?
-                      ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: val.requestOrgDataList.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: size.height * 0.08,
-                              decoration: const BoxDecoration(
-                                  border: BorderDirectional(
-                                      bottom: BorderSide(width: 0.5),
-                                      top: BorderSide(width: 0.1))
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: size.width * 0.03,
-                                  vertical: size.height * 0.005),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+               ///Requested
+               FutureBuilder(
+                            future: ApiConfig.getManageOrgData(context: context, tabIndex: 0),
+                            builder: (context,snapshot) {
+                              if(snapshot.connectionState==ConnectionState.waiting){
+                                return SizedBox(
+                                  height: size.height*0.21,
+                                  child: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }else if(snapshot.connectionState==ConnectionState.done){
+                                return Consumer<DisplayManageOrgProvider>(
+                                    builder: (context, val, child) {
+                                      return val.requestOrgDataList.isNotEmpty ?
+                                      ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: val.requestOrgDataList.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              height: size.height * 0.08,
+                                              decoration: const BoxDecoration(
+                                                  border: BorderDirectional(
+                                                      bottom: BorderSide(width: 0.5),
+                                                      top: BorderSide(width: 0.1))
+                                              ),
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: size.width * 0.03,
+                                                  vertical: size.height * 0.005),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  SizedBox(
+                                                    width: size.width * 0.7,
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Flexible(
+                                                            child: RichText(
+                                                              text: TextSpan(
+                                                                  text: CustomString.requestedToJoin,style: DefaultTextStyle.of(context).style,
+                                                                  children: [
+                                                                    TextSpan(text: val.requestOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                                                  ]
+                                                              ),)
+                                                        ),
+                                                        SizedBox(height: size.height * 0.01),
+                                                        Text("${CustomString.requestedDepartment} ${val.requestOrgDataList[index].deptName ?? val.requestOrgDataList[index].deptReq}",
+                                                            style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
+                                                      onPressed: () {
+                                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.requestOrgDataList[index].orgId,personID:val.requestOrgDataList[index].personId);
+                                                      },
+                                                      child: const Text(CustomString.cancel, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
+                                                ],
+                                              ),
+                                            );
+                                          }) : Center(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(height: size.height*0.02,),
+                                            SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
+                                            SizedBox(height: size.height*0.2,),
+                                            const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                          ],),
+                                      );
+                                    }
+                                );
+                              }
+                              return Container();
+                            }
+                          ),
+
+               ///Approved
+               FutureBuilder(
+                      future: ApiConfig.getManageOrgData(context: context, tabIndex: 1),
+                      builder: (context,snapshot) {
+                      if(snapshot.connectionState==ConnectionState.waiting){
+                        return SizedBox(
+                          height: size.height*0.21,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }else if(snapshot.connectionState==ConnectionState.done){
+                        return Consumer<DisplayManageOrgProvider>(
+                            builder: (context, val, child) {
+                              return val.approveOrgDataList.isNotEmpty ? ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: val.approveOrgDataList.length,
+                                  itemBuilder: (context, index) {
+                                    // child: RichText(
+                                    //   text: TextSpan(
+                                    //   text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
+                                    //     children: [
+                                    //       TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor)),
+                                    //       const TextSpan(text: CustomString.requestApproved2)
+                                    //     ]
+                                    // ),),
+                                    return Container(
+                                      height: size.height * 0.08,
+                                      decoration: const BoxDecoration(
+                                          border: BorderDirectional(
+                                              bottom: BorderSide(width: 0.5),
+                                              top: BorderSide(width: 0.1))
+                                      ),
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: size.width * 0.03,
+                                          vertical: size.height * 0.005),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text(CustomString.requestedToJoin),
-                                          Text(val.requestOrgDataList[index].orgName ?? "",
-                                              style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                          SizedBox(
+                                            width: size.width * 0.7,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Flexible(
+                                                    child: RichText(
+                                                      text: TextSpan(
+                                                          text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
+                                                          children: [
+                                                            TextSpan(text: val.approveOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                                            const TextSpan(text: CustomString.requestApproved2,style: TextStyle( fontFamily: 'Poppins'))
+                                                          ]
+                                                      ),)
+                                                ),
+                                                SizedBox(height: size.height * 0.005),
+                                                Text("${CustomString.department} ${val.approveOrgDataList[index].deptName ?? ""}",
+                                                    style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
+                                              ],
+                                            ),
+                                          ),
+                                          ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
+                                              onPressed: () {
+                                                ApiConfig.deleteOrgRequest(context: context,orgID: val.approveOrgDataList[index].orgId,personID:val.approveOrgDataList[index].personId);
+                                              },
+                                              child: const Text(CustomString.leave, style: TextStyle(color: CustomColors.kBlackColor,  fontFamily: 'Poppins'))),
                                         ],
                                       ),
-                                      SizedBox(height: size.height * 0.01),
-                                      Text("${CustomString.requestedDepartment} ${val.requestOrgDataList[index].deptName ?? val.requestOrgDataList[index].deptReq}",
-                                          style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
-                                    ],
-                                  ),
-                                  ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
-                                      onPressed: () {
-                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.requestOrgDataList[index].orgId,personID:val.requestOrgDataList[index].personId);
-                                      },
-                                      child: const Text(CustomString.cancel, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
-                                ],
-                              ),
-                            );
-                          }) : Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(height: size.height*0.02,),
-                                SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
-                                SizedBox(height: size.height*0.2,),
-                                const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                              ],),
-                          );
-                    }
-                ),
-
-                ///Approved
-                Consumer<DisplayManageOrgProvider>(
-                    builder: (context, val, child) {
-                      return val.approveOrgDataList.isNotEmpty ? ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: val.approveOrgDataList.length,
-                          itemBuilder: (context, index) {
-                            // child: RichText(
-                            //   text: TextSpan(
-                            //   text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
-                            //     children: [
-                            //       TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor)),
-                            //       const TextSpan(text: CustomString.requestApproved2)
-                            //     ]
-                            // ),),
-                            return Container(
-                              height: size.height * 0.08,
-                              decoration: const BoxDecoration(
-                                  border: BorderDirectional(
-                                      bottom: BorderSide(width: 0.5),
-                                      top: BorderSide(width: 0.1))
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: size.width * 0.03,
-                                  vertical: size.height * 0.005),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: size.width * 0.7,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                            child: RichText(
-                                              text: TextSpan(
-                                                  text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
-                                                  children: [
-                                                    TextSpan(text: val.approveOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-                                                    const TextSpan(text: CustomString.requestApproved2,style: TextStyle( fontFamily: 'Poppins'))
-                                                  ]
-                                              ),)
-                                        ),
-                                        SizedBox(height: size.height * 0.005),
-                                        Text("${CustomString.department} ${val.approveOrgDataList[index].deptName ?? ""}",
-                                            style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
-                                      ],
-                                    ),
-                                  ),
-                                  ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
-                                      onPressed: () {
-                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.approveOrgDataList[index].orgId,personID:val.approveOrgDataList[index].personId);
-                                      },
-                                      child: const Text(CustomString.leave, style: TextStyle(color: CustomColors.kBlackColor,  fontFamily: 'Poppins'))),
-                                ],
-                              ),
-                            );
-                          }) : Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(height: size.height*0.02,),
-                            SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
-                            SizedBox(height: size.height*0.2,),
-                            const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                          ],),
-                      );
-                    }
-                ),
+                                    );
+                                  }) : Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: size.height*0.02,),
+                                    SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
+                                    SizedBox(height: size.height*0.2,),
+                                    const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                  ],),
+                              );
+                            }
+                        );
+                      }
+                        return Container();
+                      }
+                    ),
 
                 ///currently hide this field it will used in future.
                 /*    ///Rejected
