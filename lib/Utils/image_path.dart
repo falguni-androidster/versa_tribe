@@ -18,4 +18,10 @@ class ImagePath {
   static const String editProfileIcon = 'assets/svg/Edit Square.svg';
   static const String closeIcon = 'assets/svg/Close Circle.svg';
 
+  static const String dashboard = 'assets/svg/ic_dashboard.svg';
+  static const String project = 'assets/svg/ic_project.svg';
+  static const String training = 'assets/svg/ic_training.svg';
+  static const String messenger = 'assets/svg/ic_messenger.svg';
+  static const String account = 'assets/svg/ic_account.svg';
+
 }

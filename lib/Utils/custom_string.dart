@@ -117,7 +117,7 @@ class CustomString {
   static const String dashboard = 'Dashboard';
   static const String project = 'Project';
   static const String training = 'Training';
-  static const String message = 'Message';
+  static const String messenger = 'Messenger';
   static const String account = 'Account';
 
   static const String joinOrg = 'Join Organization';

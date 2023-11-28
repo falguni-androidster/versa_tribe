@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/profile_response.dart';
-import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:versa_tribe/Utils/svg_btn.dart';
@@ -88,14 +87,14 @@ class _AccountScreenState extends State<AccountScreen> {
             Container(
               height: size.height * 0.06,
               margin: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.20, vertical: size.height * 0.02),
-              child: ElevatedButton(
-
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.kGrayColor),
+                  horizontal: size.width * 0.2, vertical: size.height * 0.02),
+              child: MaterialButton(
                   onPressed: () {
                     logoutClick(context);
                   },
+                  color: CustomColors.kGrayColor,
+                  elevation: 6,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -111,7 +110,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           size: 18,
                           color: CustomColors.kLightGrayColor)
                     ],
-                  )),
+                  )
+              ),
             ),
             const Text(CustomString.version,
                 style: TextStyle(fontSize: 16, color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
@@ -154,7 +154,7 @@ class _AccountScreenState extends State<AccountScreen> {
     String logOutUrl = '${ApiConfig.baseUrl}/api/Account/Logout';
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
-      provider.manageBottomTab(const DashboardScreen(), 0);
+      provider.manageBottomTab(0);
       clearSharedPreferences(CustomString.isLoggedIn);
       showToast(context, CustomString.logOutSuccess);
       if (!mounted) return;
@@ -167,8 +167,8 @@ class _AccountScreenState extends State<AccountScreen> {
   // Navigate to next Screen
   void _navigateToNextScreen(BuildContext context, String screen) {
     if (screen == 'signInScreen') {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const SignInScreen()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else if (screen == 'ManageOrganization') {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const ManageOrganization()));
