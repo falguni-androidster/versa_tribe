@@ -34,10 +34,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ApiConfig.getUserExperience(context);
-    ApiConfig.getUserQualification(context);
-    ApiConfig.getUserSkills(context);
-    ApiConfig.getUserHobby(context);
+    //ApiConfig.getUserExperience(context);
+    //ApiConfig.getUserQualification(context);
+    //ApiConfig.getUserSkills(context);
+    //ApiConfig.getUserHobby(context);
   }
 
   @override
@@ -73,7 +73,19 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               FutureBuilder<ProfileResponse>(
                 future: ApiConfig().getProfileData(),
                 builder: (context, snapshot) {
-                  return containerProfile(snapshot, size);
+                  if(snapshot.connectionState==ConnectionState.waiting){
+                    return SizedBox(
+                      height: size.height*0.21,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  else if(snapshot.connectionState==ConnectionState.done){
+                    return containerProfile(snapshot, size);
+                  }else{debugPrint("-----Profile print future builder else------");
+                  }
+                  return Container();
                 },
               ),
 
@@ -115,7 +127,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         },
                       ),
                     ]),
-                    Consumer<PersonExperienceProvider>(
+                    ///Experience 0.1
+                    /*Consumer<PersonExperienceProvider>(
                         builder: (context, val, child) {
                       return val.personEx.isNotEmpty?ListView.builder(
                         shrinkWrap: true,
@@ -148,7 +161,64 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                             const Text(CustomString.noExperienceFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
                         ],),
                       ));
-                    }),
+                    }),*/
+                    /// Experience 0.2
+                    FutureBuilder(
+                      future: ApiConfig.getUserExperience(context),
+                      builder: (context,snapshot) {
+                         if(snapshot.connectionState == ConnectionState.waiting){
+                          return SizedBox(
+                            height: size.height*0.21,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                         }
+                         else if(snapshot.connectionState == ConnectionState.done){
+                           debugPrint("Done State Experience  ----------- ${snapshot.hasError} and ${snapshot.hasData} ");
+                           return Consumer<PersonExperienceProvider>(
+                               builder: (context, val, child) {
+                                 return val.personEx.isNotEmpty?
+                                 ListView.builder(
+                                   shrinkWrap: true,
+                                   physics: const NeverScrollableScrollPhysics(),
+                                   itemCount: val.personEx.length,
+                                   itemBuilder: (context, index) {
+                                     String? comN = val.personEx[index].companyName;
+                                     // String? indN = val.personEx[index].industryFieldName;
+                                     String? sDate = val.personEx[index].startDate;
+                                     String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
+                                     String? eDate = val.personEx[index].endDate;
+                                     String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
+                                     return timelineTile(
+                                         context: context,
+                                         comN: comN,
+                                         ed: ed,
+                                         sd: sd,
+                                         vaL: val,
+                                         index: index,
+                                         widgetKey: "personExperience");
+                                   },
+                                 ):
+                                 SizedBox(
+                                     width: size.width,
+                                     height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                                     child: Center(
+                                       child: Column(
+                                         crossAxisAlignment: CrossAxisAlignment.center,
+                                         children: [
+                                           Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                           const Text(CustomString.noExperienceFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                         ],),
+                                     ));
+                               });
+                         }
+                         else{
+                           debugPrint("-----Experience print future builder else------");
+                         }
+                         return Container();
+                      }
+                    ),
                   ],
                 ),
               ),
@@ -193,7 +263,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         )
                       ],
                     ),
-                    Consumer<PersonQualificationProvider>(
+                    /// Qualification 0.1
+                    /*Consumer<PersonQualificationProvider>(
                         builder: (context, val, child) {
                       return val.personQl.isNotEmpty?ListView.builder(
                         shrinkWrap: true,
@@ -221,7 +292,54 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           const Text(CustomString.noQualificationFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
                           ],),
                           ));
-                    }),
+                    }),*/
+                    /// Qualification 0.2
+                    FutureBuilder(
+                      future: ApiConfig.getUserQualification(context),
+                      builder: (context,snapshot) {
+                        if(snapshot.connectionState==ConnectionState.waiting){
+                          return SizedBox(
+                            height: size.height*0.21,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        else if(snapshot.connectionState==ConnectionState.done){
+                          return Consumer<PersonQualificationProvider>(
+                              builder: (context, val, child) {
+                                return val.personQl.isNotEmpty?ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: val.personQl.length,
+                                  itemBuilder: (context, index) {
+                                    String date = val.personQl[index].yOP.toString();
+                                    String passingY =
+                                    DateFormat.yMMM().format(DateTime.parse(date));
+                                    return timelineTile(
+                                      context: context,
+                                      index: index,
+                                      vaL: val,
+                                      passingYear: passingY,
+                                    );
+                                  },
+                                ):SizedBox(
+                                    width: size.width,
+                                    height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                                    child: Center(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                          const Text(CustomString.noQualificationFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                        ],),
+                                    ));
+                              });
+                        }else{debugPrint("-----Qualification print future builder else------");
+                        }
+                        return Container();
+                      }
+                    ),
                   ],
                 ),
               ),
@@ -258,88 +376,182 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         },
                       ),
                     ]),
-                    Consumer<PersonSkillProvider>(builder: (context, val, child) {
-                      return val.personSkill.isNotEmpty?ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: val.personSkill.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.only(left: size.width * 0.03, bottom: size.height * 0.01),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${val.personSkill[index].skillName}",
-                                      style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
-                                    ),
-                                    SizedBox(height: size.height * 0.005),
-                                    Text(
-                                        "Experience: ${val.personSkill[index].experience ?? ""} months",
-                                        style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                                  ],
-                                ),
-                                const Spacer(),
-                                PopupMenuButton(
-                                    child: CircleAvatar(
-                                      radius:10,backgroundColor: Colors.transparent,
-                                        child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
-                                    onSelected: (item) {
-                                      int perSKID =
-                                          val.personSkill[index].perSkId!;
-                                      String skillName =
-                                          val.personSkill[index].skillName!;
-                                      int month =
-                                          val.personSkill[index].experience!;
-                                      switch (item) {
-                                        case 0:
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditSkillScreen(
-                                                          skillName: skillName,
-                                                          months: month,
-                                                          perSkillId: perSKID)));
-                                        case 1:
-                                          _showDeleteConfirmation(context, "identityPSD", perSKID, "");
-                                      }
-                                    },
-                                    itemBuilder: (_) => [
-                                          const PopupMenuItem(
-                                              value: 0,
-                                              child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
-                                          const PopupMenuItem(
-                                              value: 1,
-                                              child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
-                                        ]),
-                                SizedBox(width: size.width * 0.04)
-                              ],
+                    // /// skill 0.1
+                    // Consumer<PersonSkillProvider>(builder: (context, val, child) {
+                    //   return val.personSkill.isNotEmpty?ListView.builder(
+                    //     shrinkWrap: true,
+                    //     physics: const NeverScrollableScrollPhysics(),
+                    //     itemCount: val.personSkill.length,
+                    //     itemBuilder: (context, index) {
+                    //       return Container(
+                    //         margin: EdgeInsets.only(left: size.width * 0.03, bottom: size.height * 0.01),
+                    //         child: Row(
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Column(
+                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //               children: [
+                    //                 Text(
+                    //                   "${val.personSkill[index].skillName}",
+                    //                   style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
+                    //                 ),
+                    //                 SizedBox(height: size.height * 0.005),
+                    //                 Text(
+                    //                     "Experience: ${val.personSkill[index].experience ?? ""} months",
+                    //                     style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                    //               ],
+                    //             ),
+                    //             const Spacer(),
+                    //             PopupMenuButton(
+                    //                 child: CircleAvatar(
+                    //                   radius:10,backgroundColor: Colors.transparent,
+                    //                     child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                    //                 onSelected: (item) {
+                    //                   int perSKID =
+                    //                       val.personSkill[index].perSkId!;
+                    //                   String skillName =
+                    //                       val.personSkill[index].skillName!;
+                    //                   int month =
+                    //                       val.personSkill[index].experience!;
+                    //                   switch (item) {
+                    //                     case 0:
+                    //                       Navigator.push(
+                    //                           context,
+                    //                           MaterialPageRoute(
+                    //                               builder: (context) =>
+                    //                                   EditSkillScreen(
+                    //                                       skillName: skillName,
+                    //                                       months: month,
+                    //                                       perSkillId: perSKID)));
+                    //                     case 1:
+                    //                       _showDeleteConfirmation(context, "identityPSD", perSKID, "");
+                    //                   }
+                    //                 },
+                    //                 itemBuilder: (_) => [
+                    //                       const PopupMenuItem(
+                    //                           value: 0,
+                    //                           child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                    //                       const PopupMenuItem(
+                    //                           value: 1,
+                    //                           child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
+                    //                     ]),
+                    //             SizedBox(width: size.width * 0.04)
+                    //           ],
+                    //         ),
+                    //       );
+                    //     },
+                    //   ):SizedBox(
+                    //       width: size.width,
+                    //       height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                    //       child: Center(
+                    //         child: Column(
+                    //           crossAxisAlignment: CrossAxisAlignment.center,
+                    //           children: [
+                    //             Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                    //             const Text(CustomString.noSkillFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                    //           ],),
+                    //       ));
+                    // }),
+                    /// skill 0.2
+                    FutureBuilder(
+                      future: ApiConfig.getUserSkills(context),
+                      builder: (context, snapshot) {
+                        if(snapshot.connectionState==ConnectionState.waiting){
+                          return SizedBox(
+                            height: size.height*0.21,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
                             ),
                           );
-                        },
-                      ):SizedBox(
-                          width: size.width,
-                          height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(ImagePath.noData,fit: BoxFit.fill,),
-                                const Text(CustomString.noSkillFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                              ],),
-                          ));
-                    }),
+                        }else if(snapshot.connectionState==ConnectionState.done){
+                          return Consumer<PersonSkillProvider>(builder: (context, val, child) {
+                            return val.personSkill.isNotEmpty?ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: val.personSkill.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.only(left: size.width * 0.03, bottom: size.height * 0.01),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${val.personSkill[index].skillName}",
+                                            style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
+                                          ),
+                                          SizedBox(height: size.height * 0.005),
+                                          Text(
+                                              "Experience: ${val.personSkill[index].experience ?? ""} months",
+                                              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      PopupMenuButton(
+                                          child: CircleAvatar(
+                                              radius:10,backgroundColor: Colors.transparent,
+                                              child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                                          onSelected: (item) {
+                                            int perSKID =
+                                            val.personSkill[index].perSkId!;
+                                            String skillName =
+                                            val.personSkill[index].skillName!;
+                                            int month =
+                                            val.personSkill[index].experience!;
+                                            switch (item) {
+                                              case 0:
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            EditSkillScreen(
+                                                                skillName: skillName,
+                                                                months: month,
+                                                                perSkillId: perSKID)));
+                                              case 1:
+                                                _showDeleteConfirmation(context, "identityPSD", perSKID, "");
+                                            }
+                                          },
+                                          itemBuilder: (_) => [
+                                            const PopupMenuItem(
+                                                value: 0,
+                                                child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                                            const PopupMenuItem(
+                                                value: 1,
+                                                child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
+                                          ]),
+                                      SizedBox(width: size.width * 0.04)
+                                    ],
+                                  ),
+                                );
+                              },
+                            ):SizedBox(
+                                width: size.width,
+                                height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                      const Text(CustomString.noSkillFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                    ],),
+                                ));
+                          });
+                        }else{
+                          debugPrint("-----Skill print future builder else------");
+                        }
+                        return Container();
+                      }
+                    ),
                   ],
                 ),
               ),
 
               SizedBox(height: size.height * 0.02),
 
-              // /// Hobbies
+              // /// Hobbies 0.1
               // Container(
               //   decoration: BoxDecoration(
               //       border: Border.all(color: CustomColors.kBlueColor, width: 2),
@@ -445,7 +657,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           },
                         ),
                       ]),
-
+                   /*   /// hobbies 0.2
                       Consumer<PersonHobbyProvider>(
                           builder: (context, val, child) {
                             List<String> hobbyNameList=[];
@@ -469,6 +681,49 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                     ],),
                                 ));
                           }
+                      ),*/
+                      /// hobbies 0.3
+                      FutureBuilder(
+                        future: ApiConfig.getUserHobby(context),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState==ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height*0.21,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState==ConnectionState.done){
+                            return Consumer<PersonHobbyProvider>(
+                                builder: (context, val, child) {
+                                  List<String> hobbyNameList=[];
+                                  List<int> hobbyIdList=[];
+                                  List<int> personIdList=[];
+                                  for (var element in val.personHobby) {
+                                    hobbyNameList.add(element.name!);
+                                    hobbyIdList.add(element.hobbyId!);
+                                    personIdList.add(element.personId!);
+                                  }
+                                  return val.personHobby.isNotEmpty?
+                                  TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList):SizedBox(
+                                      width: size.width,
+                                      height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
+                                      child: Center(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Image.asset(ImagePath.noData,fit: BoxFit.fill,),
+                                            const Text(CustomString.noHobbiesFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                          ],),
+                                      ));
+                                }
+                            );
+                          }else{
+                            debugPrint("-----Hobbies print future builder else------");
+                          }
+                   return Container();
+                        }
                       ),
                     ],
                   ),

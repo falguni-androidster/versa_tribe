@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -11,8 +10,6 @@ import 'package:versa_tribe/Screens/sign_up_screen.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Utils/custom_toast.dart';
-import 'package:versa_tribe/Utils/shared_preference.dart';
-
 import '../Model/login_response.dart';
 import '../Providers/password_provider.dart';
 import '../Utils/api_config.dart';
@@ -48,9 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
     _checkConnectivity();
     // Listen for connectivity changes and update the UI accordingly.
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(() {
         connectivityResult = result;
-      });
     });
     checkSignInStatus();
   }
@@ -73,7 +68,6 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void checkSignInStatus() async {
-    await Future.delayed(const Duration(seconds: 2));
     bool isSignedIn = await googleSignIn.isSignedIn();
     if (isSignedIn) {
       print("User Signed In");
@@ -350,7 +344,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // Navigate to Next Screen
-  void _navigateToNextScreen({context, screenName, loginData}) {
+  Future<void> _navigateToNextScreen({context, screenName, loginData}) async {
     if (screenName == 'signupScreen') {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const SignUpScreen()));
@@ -385,7 +379,7 @@ class _SignInScreenState extends State<SignInScreen> {
       Map<String, dynamic> jsonData = jsonDecode(
           response.body); // Return Single Object
       loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-      if (jsonData != null) {
+      if (response.body.isNotEmpty) {
         print("------->${loginResponseModelData.accessToken}");
         if (loginResponseModelData.accessToken != null) {
           await ApiConfig.getDataSwitching(context: context);
@@ -410,52 +404,9 @@ class _SignInScreenState extends State<SignInScreen> {
           showToast(context, CustomString.checkYourEmail);
         }
       } else {
+        const CircularProgressIndicator();
         showToast(context, CustomString.loginFailed);
       }
     }
   }
-/* Future<void> signInClick(context) async {
-    LoginResponseModel loginResponseModelData;
-    if (connectivityResult == ConnectivityResult.none) {
-      showToast(context, CustomString.checkNetworkConnection);
-    } else if (connectivityResult == ConnectivityResult.mobile) {
-      showToast(context, CustomString.notConnectServer);
-    } else {
-      Map signInParameter = {
-        "username": emailController.text.toString(),
-        "password": passwordController.text.toString(),
-        "grant_type": "password"
-      };
-      const String loginUrl = '${ApiConfig.baseUrl}/token';
-      var response =await http.post(Uri.parse(loginUrl), body: signInParameter);
-      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
-      loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-      if (jsonData != null) {
-        if (loginResponseModelData.accessToken != null) {
-          final SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setJson("responseModel", jsonData);
-          pref.setString(CustomString.accessToken,
-              loginResponseModelData.accessToken.toString());
-          showToast(context, CustomString.accountLoginSuccess);
-          // For example, if login is successful
-          pref.setBool(CustomString.isLoggedIn, true);
-          if (loginResponseModelData.profileExist != "True") {
-            if (!mounted) return;
-            _navigateToNextScreen(
-                context: context, screenName: 'profileScreen');
-          } else {
-            if (!mounted) return;
-            _navigateToNextScreen(
-                context: context,
-                screenName: "mainScreen",
-                loginData: loginResponseModelData);
-          }
-        } else {
-          showToast(context, CustomString.checkYourEmail);
-        }
-      } else {
-        showToast(context, CustomString.loginFailed);
-      }
-    }
-  }*/
 }
