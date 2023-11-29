@@ -12,6 +12,7 @@ import '../Model/SwitchDataModel.dart';
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
+import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/manage_organization_screen.dart';
 import '../Screens/person_details_screen.dart';
 import 'custom_string.dart';
@@ -39,7 +40,7 @@ class ApiConfig {
 
     if (response.statusCode == 200) {
       // If server returns a 200 OK response, parse the JSON
-      // print('Response data: ${response.body}');
+      print('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
       ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
       pref.setString('PersonId', yourModel.personId.toString());
@@ -401,6 +402,36 @@ class ApiConfig {
       debugPrint("Skill adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Skill add failed try again..."),
+      ));
+    }
+  }
+  static addOrgPersonData({context,orgId, aboutORG, city, country, email, mobileNo, orgName}) async {
+    Map<String, dynamic> requestData =
+    {
+      "Org_Id": orgId,
+      "About_org": aboutORG,
+      "City": city,
+      "Country": country,
+      "Contact_email": email,
+      "Contact_number": mobileNo,
+    };
+
+    String url = "$baseUrl/api/OrgInfo/Create";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Add OrgPerson Data load Success--------->${response.body}");
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UpdateAdminProfile(orgId: orgId, orgName: orgName)));
+      // ApiConfig.getUserSkills(context);
+      // Navigator.pop(context);
+    } else {
+      debugPrint("OrgPerson Data load failed--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("OrgPerson Data failed try again..."),
       ));
     }
   }

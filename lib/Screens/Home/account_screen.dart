@@ -37,7 +37,19 @@ class _AccountScreenState extends State<AccountScreen> {
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
-                return containerProfile(snapshot);
+                if(snapshot.connectionState==ConnectionState.waiting){
+                  return SizedBox(
+                    height: size.height*0.21,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                else if(snapshot.connectionState==ConnectionState.done){
+                  return containerProfile(snapshot);
+                }else{debugPrint("-----Profile print future builder in Account screen------");
+                }
+                return Container();
               },
             ),
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Model/OrgAdminProfile.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
@@ -8,6 +9,7 @@ import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:http/http.dart' as http;
 
+import '../../Providers/manage_visibility_btn.dart';
 import '../../Utils/api_config.dart';
 import '../../Utils/custom_string.dart';
 import '../../Utils/custom_toast.dart';
@@ -32,7 +34,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
   int? orgID;
-
+  dynamic providerBtn;
   @override
   void initState() {
     orgID = widget.orgId;
@@ -45,7 +47,11 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
       });
     });
 
-    getAdminProfileOldData().then((value){
+    ///Call this or future builder
+/*
+    getAdminProfileOldData(orgId: widget.orgId).then((value){
+      providerBtn = Provider.of<OrgProfileBtnVisibility>(context,listen:false);
+      value.orgId==null?providerBtn.setVisibility(false):null;
       //orgID = value.orgId!;
       orgNameController.text = widget.orgName;
       aboutOrgController.text = value.aboutOrg!;
@@ -54,6 +60,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
       emailController.text = value.contactEmail!;
       countryController.text = value.country!;
     });
+*/
     // orgNameController.text = widget.orgName;
     // aboutOrgController.text = "ABOUT ORG";
     // cityController.text = widget.city;
@@ -67,22 +74,24 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
       connectivityResult = connectResult;
     });
   }
-  Future<OrgAdminProfile> getAdminProfileOldData() async {
+  Future<OrgAdminProfile> getAdminProfileOldData({orgId}) async {
     OrgAdminProfile orgAdminProfile = OrgAdminProfile();
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    const String profileUrl = '${ApiConfig.baseUrl}/api/OrgInfo/ById?id=16';
+    String profileUrl = '${ApiConfig.baseUrl}/api/OrgInfo/ById?id=$orgId';
     final response = await http.get(Uri.parse(profileUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
+    debugPrint("get OrgPerson data Response------->>  ${response.body}");
     if (response.statusCode == 200) {
-      print("------->O>->  ${response.body}");
+      debugPrint("get OrgPerson data Response------->O>->  ${response.body}");
        dynamic data = jsonDecode(response.body);
       orgAdminProfile = OrgAdminProfile.fromJson(data);
     } else {
-      showToast(context, CustomString.somethingWrongMessage);
+      orgAdminProfile = OrgAdminProfile();
+     // showToast(context, CustomString.somethingWrongMessage);
     }
     return orgAdminProfile;
   }
@@ -108,202 +117,237 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
         body: Form(
           key: _formKey,
           child: SingleChildScrollView(
-              child:  Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-
-                    SizedBox(height: size.height * 0.02),
-
-                    /// Profile Pic
-                    const Center(
-                      child: CircleAvatar(
-                        radius: 50.0,
-                        backgroundImage:
-                        AssetImage(ImagePath.profilePath),
+              child:  FutureBuilder(
+                future: getAdminProfileOldData(orgId: widget.orgId).then((value){
+                  providerBtn = Provider.of<OrgProfileBtnVisibility>(context,listen:false);
+                  value.orgId==null?providerBtn.setVisibility(false):null;
+                  //orgID = value.orgId!;
+                  orgNameController.text = widget.orgName;
+                  aboutOrgController.text = value.aboutOrg!;
+                  cityController.text = value.city!;
+                  mobileController.text = value.contactNumber!;
+                  emailController.text = value.contactEmail!;
+                  countryController.text = value.country!;
+                }),
+                  builder: (context,val) {
+                  if(val.connectionState==ConnectionState.waiting){
+                    return SizedBox(
+                      height: size.height*0.21,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
                       ),
-                    ),
+                    );
+                  }else if(val.connectionState==ConnectionState.done){
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
 
-                    SizedBox(height: size.height * 0.02),
+                          SizedBox(height: size.height * 0.02),
 
-                    /// organization Name Field
-                    TextFormField(
-                      readOnly: true,
-                      controller: orgNameController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.orgNameRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.orgName,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontSize: 14,
-                              fontFamily: 'Poppins')),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
-                    ),
-
-                    SizedBox(height: size.height * 0.01),
-
-                    /// About Organization Field
-                    const Text(CustomString.aboutOrgName,
-                        style: TextStyle(
-                            color: CustomColors.kBlueColor,
-                            fontSize: 16)),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      maxLines: 3,
-                      controller: aboutOrgController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.aboutOrgRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.aboutOrgName,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontFamily: 'Poppins',
-                              fontSize: 14)),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,
-                          fontFamily: 'Poppins'),
-                    ),
-
-                    SizedBox(height: size.height * 0.01),
-
-                    /// mobile number Field
-                    const Text(CustomString.contactInfo,
-                        style: TextStyle(
-                            color: CustomColors.kBlueColor,
-                            fontSize: 16)),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      controller: mobileController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.mobileRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.mobileLabel,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontFamily: 'Poppins',
-                              fontSize: 14)),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,
-                          fontFamily: 'Poppins'),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      controller: emailController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.emailRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.emailLabel,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontFamily: 'Poppins',
-                              fontSize: 14)),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,
-                          fontFamily: 'Poppins'),
-                    ),
-
-                    SizedBox(height: size.height * 0.01),
-
-                    /// Contact Fields
-                    const Text(CustomString.addressInfo,
-                        style: TextStyle(
-                            color: CustomColors.kBlueColor,
-                            fontSize: 16)),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      controller: cityController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.cityRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.city,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontFamily: 'Poppins',
-                              fontSize: 14)),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,
-                          fontFamily: 'Poppins'),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      controller: countryController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.countryRequired;
-                        } // using regular expression
-                        else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.country,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontSize: 14,fontFamily: 'Poppins')),
-                      style: const TextStyle(
-                          color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
-                    ),
-
-                    SizedBox(height: size.height * 0.02),
-
-                    /// Update Profile Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed:orgID!=null? (){
-                          ApiConfig.editOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text);
-                        }:(){},
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: CustomColors.kBlueColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                          /// Profile Pic
+                          const Center(
+                            child: CircleAvatar(
+                              radius: 50.0,
+                              backgroundImage:
+                              AssetImage(ImagePath.profilePath),
                             ),
-                            padding: const EdgeInsets.all(14)),
-                        child: const Text(
-                          CustomString.updateOrgDetail,
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600),
-                        ),
+                          ),
+
+                          SizedBox(height: size.height * 0.02),
+
+                          /// organization Name Field
+                          TextFormField(
+                            readOnly: true,
+                            controller: orgNameController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.orgNameRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.orgName,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins')),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
+                          ),
+
+                          SizedBox(height: size.height * 0.01),
+
+                          /// About Organization Field
+                          const Text(CustomString.aboutOrgName,
+                              style: TextStyle(
+                                  color: CustomColors.kBlueColor,
+                                  fontSize: 16)),
+                          SizedBox(height: size.height * 0.02),
+                          TextFormField(
+                            maxLines: 3,
+                            controller: aboutOrgController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.aboutOrgRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.aboutOrgName,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontFamily: 'Poppins',
+                                    fontSize: 14)),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,
+                                fontFamily: 'Poppins'),
+                          ),
+
+                          SizedBox(height: size.height * 0.01),
+
+                          /// mobile number Field
+                          const Text(CustomString.contactInfo,
+                              style: TextStyle(
+                                  color: CustomColors.kBlueColor,
+                                  fontSize: 16)),
+                          SizedBox(height: size.height * 0.02),
+                          TextFormField(
+                            controller: mobileController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.mobileRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.mobileLabel,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontFamily: 'Poppins',
+                                    fontSize: 14)),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,
+                                fontFamily: 'Poppins'),
+                          ),
+                          SizedBox(height: size.height * 0.02),
+                          TextFormField(
+                            controller: emailController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.emailRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.emailLabel,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontFamily: 'Poppins',
+                                    fontSize: 14)),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,
+                                fontFamily: 'Poppins'),
+                          ),
+
+                          SizedBox(height: size.height * 0.01),
+
+                          /// Contact Fields
+                          const Text(CustomString.addressInfo,
+                              style: TextStyle(
+                                  color: CustomColors.kBlueColor,
+                                  fontSize: 16)),
+                          SizedBox(height: size.height * 0.02),
+                          TextFormField(
+                            controller: cityController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.cityRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.city,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontFamily: 'Poppins',
+                                    fontSize: 14)),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,
+                                fontFamily: 'Poppins'),
+                          ),
+                          SizedBox(height: size.height * 0.02),
+                          TextFormField(
+                            controller: countryController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.countryRequired;
+                              } // using regular expression
+                              else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.country,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontSize: 14,fontFamily: 'Poppins')),
+                            style: const TextStyle(
+                                color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
+                          ),
+
+                          SizedBox(height: size.height * 0.02),
+
+                          /// Update/Create Profile Button
+                          SizedBox(
+                            width: double.infinity,
+                            child: Consumer<OrgProfileBtnVisibility>(
+                                builder: (context,val,child) {
+                                  return ElevatedButton(
+                                    onPressed:orgID!=null? (){
+                                      val.updateBtnVisible==true? ApiConfig.editOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text):
+                                      ApiConfig.addOrgPersonData(context: context,orgId: orgID,aboutORG: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,mobileNo: mobileController.text, orgName: widget.orgName);
+                                    }:(){},
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: CustomColors.kBlueColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(6),
+                                        ),
+                                        padding: const EdgeInsets.all(14)),
+                                    child: val.updateBtnVisible==true?const Text(CustomString.updateOrgDetail, style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600),
+                                    ):const Text(CustomString.createOrgDetail, style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600),
+                                    ),
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
+                    );
+                  }else{
+                    debugPrint("------error when load data in update admin profile-----");
+                  }
+                  return Container();
+                }
               )
           ),
         ));

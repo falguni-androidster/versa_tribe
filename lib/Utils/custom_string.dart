@@ -85,6 +85,7 @@ class CustomString {
   static const String orgName = 'Organization Name';
   static const String orgDetail = 'Organization Detail';
   static const String updateOrgDetail = 'Update Organization';
+  static const String createOrgDetail = 'Create Organization';
   static const String aboutOrgName = 'About Organization';
   static const String contactInfo = 'Contact Information';
   static const String addressInfo = 'Address Information';
