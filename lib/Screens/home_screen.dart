@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -136,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size= MediaQuery.of(context).size;
     final screenIndexProvider = Provider.of<ManageBottomTabProvider>(context);
     int currentScreenIndex = screenIndexProvider.currentTab;
     return WillPopScope(
@@ -250,14 +252,54 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(10.0),
+        ///Bottom navigation bar 1
+        bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
+          onDestinationSelected: (int index) {
+            screenIndexProvider.manageBottomTab(index);
+          },
+          elevation: 10,
+          height: size.height*0.07,
+          shadowColor: CustomColors.kLightGrayColor,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          backgroundColor: CustomColors.kWhiteColor,
+          indicatorColor: CustomColors.kPrimaryColor,
+          selectedIndex: currentScreenIndex,
+          destinations: <Widget>[
+            NavigationDestination(
+                selectedIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                label: CustomString.dashboard),
+            NavigationDestination(
+                selectedIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                label: CustomString.project),
+            NavigationDestination(
+                selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                label: CustomString.training),
+            NavigationDestination(
+                selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                label: CustomString.messenger),
+            NavigationDestination(
+                selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                label: CustomString.account),
+          ],
+        ):
+        Card(
+          elevation: 3,
+          clipBehavior: Clip.hardEdge,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          margin: EdgeInsets.only(bottom: size.height*0.02,left: size.width*0.03,right: size.width*0.03),
           child: NavigationBar(
             onDestinationSelected: (int index) {
               screenIndexProvider.manageBottomTab(index);
             },
-            elevation: 10,
-            shadowColor: CustomColors.kBlackColor,
+            animationDuration: const Duration(seconds: 1),
+            elevation: 3,
+            height: size.height*0.1,
+            shadowColor: CustomColors.kLightGrayColor,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
             backgroundColor: CustomColors.kWhiteColor,
             indicatorColor: CustomColors.kPrimaryColor,
@@ -286,6 +328,79 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+
+          ///Bottom navigation bar 2
+          /*bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
+            onDestinationSelected: (int index) {
+              screenIndexProvider.manageBottomTab(index);
+            },
+            elevation: 10,
+            height: size.height*0.07,
+            shadowColor: CustomColors.kLightGrayColor,
+            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            backgroundColor: CustomColors.kWhiteColor,
+            indicatorColor: CustomColors.kPrimaryColor,
+            selectedIndex: currentScreenIndex,
+            destinations: <Widget>[
+              NavigationDestination(
+                  selectedIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  label: CustomString.dashboard),
+              NavigationDestination(
+                  selectedIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  label: CustomString.project),
+              NavigationDestination(
+                  selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  label: CustomString.training),
+              NavigationDestination(
+                  selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  label: CustomString.messenger),
+              NavigationDestination(
+                  selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  label: CustomString.account),
+            ],
+          ):
+          Card(
+            elevation: 3,
+            clipBehavior: Clip.hardEdge,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            margin: EdgeInsets.only(bottom: size.height*0.02,left: size.width*0.03,right: size.width*0.03),
+            child: BottomNavigationBar(
+              onTap: (int index){
+                screenIndexProvider.manageBottomTab(index);
+              },
+              elevation: 3,
+              currentIndex: currentScreenIndex,
+              selectedItemColor: CustomColors.kBlueColor,
+              backgroundColor: CustomColors.kWhiteColor,
+              items: [
+                BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                    icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                    label: CustomString.dashboard),
+                BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                    icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                    label: CustomString.project),
+                BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                    icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                    label: CustomString.training),
+                BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                    icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                    label: CustomString.messenger),
+                BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
+                    icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                    label: CustomString.account),
+              ],
+            ),
+          ),*/
         body: <Widget>[
           const DashboardScreen(),
           const ProjectScreen(),

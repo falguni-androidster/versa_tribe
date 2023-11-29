@@ -51,7 +51,8 @@ void main() {
       ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider()),
       ChangeNotifierProvider<AddRadioComIndProvider>(create: (_) => AddRadioComIndProvider()),
       ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider()),
-      ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider())
+      ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider()),
+      ChangeNotifierProvider<OrgProfileBtnVisibility>(create: (_) => OrgProfileBtnVisibility()),
     ],
     child: const MyApp()
   ));

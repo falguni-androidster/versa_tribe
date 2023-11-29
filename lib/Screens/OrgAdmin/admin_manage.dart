@@ -47,7 +47,19 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
-                return containerProfile(snapshot);
+                if(snapshot.connectionState==ConnectionState.waiting){
+                  return SizedBox(
+                    height: size.height*0.21,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }else if(snapshot.connectionState==ConnectionState.done){
+                  return containerProfile(snapshot, size);
+                }else{
+                  debugPrint("<-problem-------Admin data get------>");
+                }
+                return Container();
               },
             ),
             InkWell(
@@ -102,31 +114,47 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
     );
   }
 
-  Widget containerProfile(snapshot){
+
+  Widget containerProfile(snapshot, size) {
     return Card(
-      margin: const EdgeInsets.only(top: 30,left: 10,right: 10,bottom: 20),
       elevation: 5,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
+      ),
+      margin: EdgeInsets.only(
+        top: size.height * 0.015,
+        bottom: size.height * 0.02,
+        left: size.width * 0.03,
+        right: size.width * 0.03,
+      ),
       child: Container(
         alignment: Alignment.center,
+        // decoration: const BoxDecoration(
+        //     borderRadius: BorderRadius.all(Radius.circular(10)),
+        //     color: CustomColors.kWhiteColor
+        // ),
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: CustomColors.kWhiteColor
-        ),
+          border: Border(
+            bottom: BorderSide(color: CustomColors.kBlueColor, width: 2),
+          ),),
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(backgroundColor: CustomColors.kWhiteColor,radius: 40, child: Image.asset(ImagePath.profilePath)),
+              CircleAvatar(
+                  backgroundColor: CustomColors.kWhiteColor,
+                  radius: 40,
+                  child: Image.asset(ImagePath.profilePath)),
               Padding(
-                padding: const EdgeInsets.all(25.0),
+                padding: EdgeInsets.symmetric(vertical: size.height*0.03,horizontal: size.width*0.01),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.orgNAME?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14, fontFamily: 'Poppins')),
-                    const SizedBox(height: 2),
-                    Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
-                  ],
+                  const SizedBox(height: 2),
+                  Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                ]
                 ),
               ),
               const Spacer(),
