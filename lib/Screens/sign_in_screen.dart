@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +58,15 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
+  void checkSignInStatus() async {
+    bool isSignedIn = await googleSignIn.isSignedIn();
+    if (isSignedIn) {
+      print("User Signed In");
+    } else {
+      print("User Signed Out");
+    }
+  }
+
   void _handleSignIn(context) async {
     await googleSignIn.signOut();
     googleSignIn = GoogleSignIn(scopes: ['email']);
@@ -86,20 +96,28 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  void checkSignInStatus() async {
-    bool isSignedIn = await googleSignIn.isSignedIn();
-    if (isSignedIn) {
-      print("User Signed In");
-    } else {
-      print("User Signed Out");
+  Future<void> _loginWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        // Access token obtained
+        final AccessToken accessToken = result.accessToken!;
+        print('Access Token: ${accessToken.token}');
+        // Use the access token for further operations
+      } else {
+        // Login failed or was canceled by the user
+        print('Facebook login failed');
+      }
+    } catch (e) {
+      // Handle exceptions
+      print('Error logging in with Facebook: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -305,9 +323,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Handle social button click
-                              },
+                              onPressed: _loginWithFacebook,
                               icon: Image.asset(ImagePath.facebookPath),
                               label: const Text(CustomString.facebook,
                                   style: TextStyle(
