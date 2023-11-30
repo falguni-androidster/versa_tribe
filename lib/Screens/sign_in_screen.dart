@@ -36,7 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
   GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: "357379333718-5fa457fd718dagivjgkmi1rtloeu1j0u.apps.googleusercontent.com");
+      clientId: '801650424679-ek1nauh6jfcq7n7ie3du4b5e2b5d4pgg.apps.googleusercontent.com');
 
   @override
   void initState() {
@@ -59,11 +59,30 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _handleSignIn(context) async {
     await googleSignIn.signOut();
-    GoogleSignInAccount? user = await googleSignIn.signIn();
-    if (user == null) {
-      showToast(context, "Google Login Failed");
-    } else {
-      showToast(context, "Google Login Success");
+    googleSignIn = GoogleSignIn(scopes: ['email']);
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      // Process the signed-in user if the sign-in was successful
+      if (googleSignInAccount != null) {
+        // Signed in successfully, do something with the account data
+        // For example:
+        // String email = googleSignInAccount.email;
+        // String displayName = googleSignInAccount.displayName;
+        // Obtain the authentication tokens (ID Token and Access Token)
+        GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
+
+        // Access the Access Token
+        String accessToken = googleAuth.accessToken ?? "";
+        print("Access Token: $accessToken");
+        showToast(context, "Google Login Success");
+      } else {
+        // User cancelled the sign-in process
+        showToast(context, "Google Login Failed");
+      }
+    } catch (error) {
+      // Handle the sign-in error
+      print("Error signing in with Google: $error");
     }
   }
 
