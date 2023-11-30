@@ -226,13 +226,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               onPressed: () {
                                 // Handle social button click
                               },
-                              icon: Image.asset(ImagePath.facebookPath),
-                              label: const Text(CustomString.facebook,
+                              icon: Image.asset(ImagePath.googlePath),
+                              label: const Text(CustomString.google,
                                   style: TextStyle(
-                                  fontFamily: 'Poppins', fontSize: 12)),
+                                      fontFamily: 'Poppins', fontSize: 12)),
                               style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(12),
                                 foregroundColor: Colors.black, backgroundColor: CustomColors.kGrayColor,
-                                padding: const EdgeInsets.all(12)
                               ),
                             ),
                           ),
@@ -244,13 +244,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               onPressed: () {
                                 // Handle social button click
                               },
-                              icon: Image.asset(ImagePath.googlePath),
-                              label: const Text(CustomString.google,
+                              icon: Image.asset(ImagePath.facebookPath),
+                              label: const Text(CustomString.facebook,
                                   style: TextStyle(
                                       fontFamily: 'Poppins', fontSize: 12)),
                               style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(12),
-                                foregroundColor: Colors.black, backgroundColor: CustomColors.kGrayColor,
+                                  foregroundColor: Colors.black, backgroundColor: CustomColors.kGrayColor,
+                                  padding: const EdgeInsets.all(12)
                               ),
                             ),
                           ),
