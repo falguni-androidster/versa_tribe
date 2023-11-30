@@ -32,13 +32,24 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    print("----->init state Method<-----");
     super.initState();
     //ApiConfig.getUserExperience(context);
     //ApiConfig.getUserQualification(context);
     //ApiConfig.getUserSkills(context);
     //ApiConfig.getUserHobby(context);
   }
+  @override
+  void dispose() {
+    print("----->Dispose Method<-----");
+    super.dispose();
+  }
+  @override
+  void didChangeDependencies() {
+    print("----->Did change dependency Method<-----");
+    super.didChangeDependencies();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -737,6 +748,59 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
 
   }
+  Widget containerProfile(snapshot, size) {
+    return Card(
+      elevation: 5,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
+      ),
+      margin: EdgeInsets.only(
+        left: size.width * 0.03,
+        right: size.width * 0.03,
+      ),
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: CustomColors.kBlueColor, width: 2),
+          ),),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                  backgroundColor: CustomColors.kWhiteColor,
+                  radius: 40,
+                  child: Image.asset(ImagePath.profilePath)),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: size.height*0.03,horizontal: size.width*0.01),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        '${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',
+                        style: const TextStyle(
+                            color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    const SizedBox(height: 2),
+                    Text(snapshot.data?.tOwner ?? '',
+                        style: const TextStyle(
+                            color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
+                  ],
+                ),
+              ),
+              const Spacer(),
+              InkWell(
+                child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> refreshEventList() async {
     setState(() {
@@ -751,7 +815,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   void _showDeleteConfirmation(context, identityKey, int? iD, personId) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
           content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
@@ -763,7 +827,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               child: const Text(CustomString.cancel, style: TextStyle(fontFamily: 'Poppins')),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // Add your delete logic here
                 if (identityKey == "identityPED") {
                   ApiConfig.deletePersonEx(context, iD);
@@ -774,10 +838,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 else if (identityKey == "identityPSD") {
                   ApiConfig.deletePersonSkill(context, iD);
                 }
-                else if (identityKey == "identityPHD") {
-                  ApiConfig.deletePersonHobby(context, personId, iD);
-                }
-                Navigator.of(context).pop(); // Close the confirmation dialog
+                // else if (identityKey == "identityPHD") {
+                //   ApiConfig.deletePersonHobby(context, personId, iD);
+                // }
               },
               child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
             ),
@@ -950,60 +1013,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
         Icons.radio_button_checked,
         color: CustomColors.kBlueColor,
         size: 20,
-      ),
-    );
-  }
-
-  Widget containerProfile(snapshot, size) {
-    return Card(
-      elevation: 5,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
-      ),
-      margin: EdgeInsets.only(
-        left: size.width * 0.03,
-        right: size.width * 0.03,
-      ),
-      child: Container(
-        decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: CustomColors.kBlueColor, width: 2),
-        ),),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                  backgroundColor: CustomColors.kWhiteColor,
-                  radius: 40,
-                  child: Image.asset(ImagePath.profilePath)),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: size.height*0.03,horizontal: size.width*0.01),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        '${snapshot.data?.firstName ?? ''} ${snapshot.data?.lastName ?? ''}',
-                        style: const TextStyle(
-                            color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                    const SizedBox(height: 2),
-                    Text(snapshot.data?.tOwner ?? '',
-                        style: const TextStyle(
-                            color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
-                  ],
-                ),
-              ),
-              const Spacer(),
-              InkWell(
-                child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
-                },
-              )
-            ],
-          ),
-        ),
       ),
     );
   }

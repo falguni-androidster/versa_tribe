@@ -382,7 +382,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (response.body.isNotEmpty) {
         print("------->${loginResponseModelData.accessToken}");
         if (loginResponseModelData.accessToken != null) {
-          await ApiConfig.getDataSwitching(context: context);
+          //await ApiConfig.getDataSwitching(context: context);
           final SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setString(CustomString.accessToken,
               loginResponseModelData.accessToken.toString());
