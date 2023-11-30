@@ -70,9 +70,8 @@ class ApiConfig {
         List<dynamic> data = jsonDecode(response.body);
         provider.setPersonEx(data);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Data not found...")
-        ));
+        //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Experience Data not found...")));
+        debugPrint("Experience Data not found...");
       }
     }catch(e){
       debugPrint("experience------>$e");
@@ -93,9 +92,10 @@ class ApiConfig {
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonQl(data);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Data not found..."),
-      ));
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text("Data not found..."),
+      // ));
+      debugPrint("Qualification Data not found...");
     }
   }
   static getUserSkills(context) async {
@@ -113,9 +113,10 @@ class ApiConfig {
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonSkill(data);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Data not found..."),
-      ));
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text("Data not found..."),
+      // ));
+      debugPrint("Skill Data not found...");
     }
   }
   static getUserHobby(context) async {
@@ -133,11 +134,13 @@ class ApiConfig {
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonHobby(data);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Data not found..."),
-      ));
+      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //   content: Text("Data not found..."),
+      // ));
+      debugPrint("Hobby Data not found...");
     }
   }
+
   static Future deletePersonEx(context, int? perExpId) async {
       String url = "$baseUrl/api/PersonExperiences/Delete?id=$perExpId";
       SharedPreferences pref = await SharedPreferences.getInstance();
@@ -190,7 +193,7 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         debugPrint("skill delete success--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
       } else {
         debugPrint("skill delete failed--status-code--->${response.statusCode}-->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -224,6 +227,7 @@ class ApiConfig {
       debugPrint("Exception------->$e");
     }
   }
+
   static addExData({context, jobTitle, comName, indName, sDate, eDate}) async {
     DateTime startDate = DateTime.parse(sDate);
     DateTime endDate = DateTime.parse(eDate);
@@ -261,7 +265,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      ApiConfig.getUserExperience(context);
+      //ApiConfig.getUserExperience(context);
       Navigator.pop(context);
     } else {
       debugPrint("error: response----->>${response.body}");
@@ -269,62 +273,6 @@ class ApiConfig {
         content: Text("Try again..."),
       ));
     }
-  }
-  static updateExData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
-    DateTime startDate = DateTime.parse(sDate);
-    DateTime endDate = DateTime.parse(eDate);
-
-    int result = monthsBetweenDates(startDate, endDate);
-    debugPrint('Number of months between the two dates:-----> $result');
-    debugPrint('person ex id-----> $peronExperienceId');
-    debugPrint('company-----> $comName');
-    debugPrint('industry-----> $indName');
-    debugPrint('job title-----> $jobTitle');
-    debugPrint('state date-----> $sDate');
-    debugPrint('end date-----> $eDate');
-
-    Map<String, dynamic> requestData = {
-      "PerExp_Id": peronExperienceId,
-      "Company_Name": comName,
-      "Industry_Field_Name": indName,
-      "Exp_months": result,
-      "Job_Title": jobTitle,
-      "Start_date": sDate,
-      "End_Date": eDate
-    };
-
-    try{
-      String url = "$baseUrl/api/PersonExperiences/Update";
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
-      final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        // debugPrint("if--------->${response.body}");
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-        ApiConfig.getUserExperience(context);
-        Navigator.pop(context);
-      } else {
-        //debugPrint("else--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again details not update..."),
-        ));
-      }
-    }catch(e){
-      debugPrint("Exception------->$e");
-    }
-  }
-  static int monthsBetweenDates(DateTime startDate, DateTime endDate) {
-    int months = 0;
-
-    while (startDate.isBefore(endDate)) {
-      months++;
-      startDate = DateTime(startDate.year, startDate.month + 1, startDate.day);
-    }
-
-    return months;
   }
   static addHobbyData({context, hobbyName}) async {
     String hobby = hobbyName;
@@ -341,7 +289,7 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint("Add hobby success--------->${response.body}");
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      ApiConfig.getUserHobby(context);
+      //ApiConfig.getUserHobby(context);
       Navigator.pop(context);
     } else {
       debugPrint("hobby adding failed--------->${response.body}");
@@ -369,7 +317,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification added--------->${response.body}");
-      ApiConfig.getUserQualification(context);
+     // ApiConfig.getUserQualification(context);
       Navigator.pop(context);
     } else {
 
@@ -395,9 +343,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add Skills Success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      ApiConfig.getUserSkills(context);
-      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
     } else {
       debugPrint("Skill adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -435,6 +381,63 @@ class ApiConfig {
       ));
     }
   }
+
+  static updateExData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
+    DateTime startDate = DateTime.parse(sDate);
+    DateTime endDate = DateTime.parse(eDate);
+
+    int result = monthsBetweenDates(startDate, endDate);
+    debugPrint('Number of months between the two dates:-----> $result');
+    debugPrint('person ex id-----> $peronExperienceId');
+    debugPrint('company-----> $comName');
+    debugPrint('industry-----> $indName');
+    debugPrint('job title-----> $jobTitle');
+    debugPrint('state date-----> $sDate');
+    debugPrint('end date-----> $eDate');
+
+    Map<String, dynamic> requestData = {
+      "PerExp_Id": peronExperienceId,
+      "Company_Name": comName,
+      "Industry_Field_Name": indName,
+      "Exp_months": result,
+      "Job_Title": jobTitle,
+      "Start_date": sDate,
+      "End_Date": eDate
+    };
+
+    try{
+      String url = "$baseUrl/api/PersonExperiences/Update";
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
+      final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        // debugPrint("if--------->${response.body}");
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        //ApiConfig.getUserExperience(context);
+        Navigator.pop(context);
+      } else {
+        //debugPrint("else--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again details not update..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("Exception------->$e");
+    }
+  }
+  static int monthsBetweenDates(DateTime startDate, DateTime endDate) {
+    int months = 0;
+
+    while (startDate.isBefore(endDate)) {
+      months++;
+      startDate = DateTime(startDate.year, startDate.month + 1, startDate.day);
+    }
+
+    return months;
+  }
   static editQualificationData({context, courseName, instituteName, grade,city, yop, personQualificationID}) async {
     debugPrint("course--->$courseName");
     debugPrint("instituteName--->$instituteName");
@@ -463,7 +466,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification edit success--------->${response.body}");
-      ApiConfig.getUserQualification(context);
+      //ApiConfig.getUserQualification(context);
       Navigator.pop(context);
     } else {
       debugPrint("Qualification edit failed--------->${response.body}");
@@ -490,9 +493,8 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("edit Skills Success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      ApiConfig.getUserSkills(context);
-      Navigator.pop(context);
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
     } else {
       debugPrint("Skill edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -753,6 +755,7 @@ class ApiConfig {
       debugPrint("---------------No-->${response.body}");
     }
   }
+
   static joinOrgRequest({context,orgID, dpID, dpName}) async {
     debugPrint("organizationId---->$orgID");
     debugPrint("departmentId---->$dpID");

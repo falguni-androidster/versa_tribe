@@ -74,13 +74,7 @@ class TextContainerList extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Add your delete logic here
-                if (identityKey == "identityPED") {
-                  ApiConfig.deletePersonEx(context, iD);
-                } else if (identityKey == "identityPQD") {
-                  ApiConfig.deletePersonQL(context, iD);
-                } else if (identityKey == "identityPSD") {
-                  ApiConfig.deletePersonSkill(context, iD);
-                } else if (identityKey == "identityPHD") {
+                if (identityKey == "identityPHD") {
                   ApiConfig.deletePersonHobby(context, personId, iD);
                 }
                 Navigator.of(context).pop(); // Close the confirmation dialog
