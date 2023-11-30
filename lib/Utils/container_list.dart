@@ -77,7 +77,6 @@ class TextContainerList extends StatelessWidget {
                 if (identityKey == "identityPHD") {
                   ApiConfig.deletePersonHobby(context, personId, iD);
                 }
-                Navigator.of(context).pop(); // Close the confirmation dialog
               },
               child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
             ),
