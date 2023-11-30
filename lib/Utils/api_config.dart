@@ -151,7 +151,8 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         debugPrint("if--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        getUserExperience(context);
+        Navigator.pop(context);
       } else {
         debugPrint("else--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -171,7 +172,8 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         debugPrint("if--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        getUserQualification(context);
+        Navigator.pop(context);
       } else {
         debugPrint("else--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -193,7 +195,11 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         debugPrint("skill delete success--------->${response.body}");
-         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        //Navigator.pushReplacementNamed(context, "/personDetailScreen");
+        ///When is use above navigator then replacement not work
+        getUserSkills(context);
+        Navigator.of(context).pop();
       } else {
         debugPrint("skill delete failed--status-code--->${response.statusCode}-->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -216,7 +222,11 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         debugPrint("hobby delete success--------->${response.body}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+        //Navigator.pushReplacementNamed(context, "/personDetailScreen");
+        ///When is use above navigator then replacement not work
+        ApiConfig.getUserHobby(context);
+        Navigator.pop(context);
       } else {
         debugPrint("hobby delete failed---status-code--->${response.statusCode} and error-->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -265,7 +275,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      //ApiConfig.getUserExperience(context);
+      getUserExperience(context);
       Navigator.pop(context);
     } else {
       debugPrint("error: response----->>${response.body}");
@@ -289,7 +299,9 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint("Add hobby success--------->${response.body}");
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      //ApiConfig.getUserHobby(context);
+      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
+      ///When is use above navigator then replacement not work
+      ApiConfig.getUserHobby(context);
       Navigator.pop(context);
     } else {
       debugPrint("hobby adding failed--------->${response.body}");
@@ -317,7 +329,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification added--------->${response.body}");
-     // ApiConfig.getUserQualification(context);
+      getUserQualification(context);
       Navigator.pop(context);
     } else {
 
@@ -343,7 +355,11 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add Skills Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
+      ///When is use above navigator then replacement not work
+      getUserSkills(context);
+      Navigator.of(context).pop();
     } else {
       debugPrint("Skill adding failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -415,8 +431,7 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         // debugPrint("if--------->${response.body}");
-        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-        //ApiConfig.getUserExperience(context);
+        getUserExperience(context);
         Navigator.pop(context);
       } else {
         //debugPrint("else--------->${response.body}");
@@ -455,8 +470,6 @@ class ApiConfig {
       "Inst_Name": instituteName,
     };
 
-
-
     String url = "$baseUrl/api/PersonQualifications/Update";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -466,7 +479,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Qualification edit success--------->${response.body}");
-      //ApiConfig.getUserQualification(context);
+      getUserQualification(context);
       Navigator.pop(context);
     } else {
       debugPrint("Qualification edit failed--------->${response.body}");
@@ -493,8 +506,11 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("edit Skills Success--------->${response.body}");
-
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
+      ///When is use above navigator then replacement not work
+      getUserSkills(context);
+      Navigator.of(context).pop();
     } else {
       debugPrint("Skill edit failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -524,7 +540,6 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint("edit OrgAdminProfile Success--------->${response.body}");
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      ApiConfig.getUserSkills(context);
       Navigator.pop(context);
     } else {
       debugPrint("OrgAdminProfile edit failed--------->${response.body}");

@@ -16,6 +16,7 @@ import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
 import 'Providers/person_details_provider.dart';
 import 'Providers/switch_provider.dart';
+import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
 import 'Utils/custom_colors.dart';
 
@@ -77,7 +78,8 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       routes: {
-        '/addExScreen': (context) => const AddExperienceScreen()
+        '/addExScreen': (context) => const AddExperienceScreen(),
+        '/personDetailScreen': (context) => const PersonDetailsScreen()
       },
     );
   }
