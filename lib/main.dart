@@ -54,6 +54,7 @@ void main() {
       ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider()),
       ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider()),
       ChangeNotifierProvider<OrgProfileBtnVisibility>(create: (_) => OrgProfileBtnVisibility()),
+      ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
     ],
     child: const MyApp()
   ));
