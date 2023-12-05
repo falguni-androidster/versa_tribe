@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/add_new_department.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
@@ -25,13 +27,13 @@ class _ManageDepartmentState extends State<ManageDepartment> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        elevation: 0,
+        backgroundColor: CustomColors.kGrayColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -91,42 +93,77 @@ class _ManageDepartmentState extends State<ManageDepartment> {
       // ),
 
       body: FutureBuilder(
-        future: ApiConfig.getDepartment(orgId: 16), // a previously-obtained Future<String> or null
+        future: ApiConfig.
+        getDepartment(orgId: widget.orgId), // a previously-obtained Future<String> or null
         //future: _calculation, // a previously-obtained Future<String> or null
         builder: (BuildContext context,snapshot) {
-          print(snapshot.runtimeType);
           List<Widget> children;
           if (snapshot.hasData) {
             children = <Widget>[
            Expanded(
-             child: snapshot.data!.isNotEmpty? ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context,index){
-                        return Card(
-                          margin: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.height * 0.005),
-                          elevation: 4,
-                          child: Row(
-                            children: [
-                              CircleAvatar(radius: 30,child: Image.asset(ImagePath.noData,fit: BoxFit.cover)),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(snapshot.data![index].deptName!,style: const TextStyle(fontFamily: 'Poppins')), snapshot.data![index].parentDeptName!=null ?
-                                  Row(
-                                    children: [
-                                      const Text("PD : ", style: TextStyle(fontFamily: 'Poppins')),
-                                      Text(snapshot.data![index].parentDeptName!,style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-                                    ],
-                                  ) : Container(),
-                                ],
-                              ),
-                              const Spacer(),
-                              IconButton(onPressed: (){}, icon: const Icon(Icons.more_vert))
-                            ],
-                          ),
-                        );
-                      }):Center(
+             child: snapshot.data!.isNotEmpty? Padding(
+               padding: EdgeInsets.only(top: size.height * 0.018),
+               child: ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context,index){
+                          return Container(
+                            decoration: const BoxDecoration(
+                              color: CustomColors.kGrayColor,
+                              borderRadius: BorderRadius.all(Radius.circular(5))
+                            ),
+                            margin: EdgeInsets.only(left: size.width * 0.025,right: size.width * 0.03, top: size.height * 0.01,bottom: size.height * 0.005),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(size.height*0.01+size.width*0.01),
+                                  child: Container(
+                                    clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                                      child: Image.asset("assets/images/5.jpeg",height: size.height*0.05,fit: BoxFit.cover,)),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(snapshot.data![index].deptName!,style: const TextStyle(fontFamily: 'Poppins')), snapshot.data![index].parentDeptName!=null ?
+                                    Row(
+                                      children: [
+                                        const Text("PD : ", style: TextStyle(fontFamily: 'Poppins')),
+                                        Text(snapshot.data![index].parentDeptName!,style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                      ],
+                                    ) : Container(),
+                                  ],
+                                ),
+                                const Spacer(),
+                                PopupMenuButton(
+                                    child:
+                                    CircleAvatar(
+                                        radius:10,backgroundColor: Colors.transparent,
+                                        child: SvgPicture.asset(ImagePath.more,width: size.width*0.1,height: size.height*0.5,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                                    onSelected: (item) {
+                                      //  int perSKID = val.personSkill[index].perSkId!;
+                                      //  String skillName = val.personSkill[index].skillName!;
+                                      // int month = val.personSkill[index].experience!;
+                                      switch (item) {
+                                        case 0:
+                                        // Navigator.push(context, MaterialPageRoute(builder: (context) => EditSkillScreen(skillName: skillName, months: month, perSkillId: perSKID)));
+                                        case 1:
+                                          _showDeleteConfirmation(context,snapshot.data?[index].deptId);
+                                      }
+                                    },
+                                    itemBuilder: (_) => [
+                                      const PopupMenuItem(
+                                          value: 0,
+                                          child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                                      const PopupMenuItem(
+                                          value: 1,
+                                          child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
+                                    ]),
+                              ],
+                            ),
+                          );
+                        }),
+             ):Center(
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -138,7 +175,8 @@ class _ManageDepartmentState extends State<ManageDepartment> {
           ),
               )
             ];
-          } else if (snapshot.hasError) {
+          }
+          else if (snapshot.hasError) {
             children = <Widget>[
               const Icon(
                 Icons.error_outline,
@@ -150,13 +188,10 @@ class _ManageDepartmentState extends State<ManageDepartment> {
                 child: Text('Error: ${snapshot.error}',style: const TextStyle(fontFamily: 'Poppins')),
               ),
             ];
-          } else {
+          }
+          else {
             children = const <Widget>[
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(color: Colors.cyanAccent),
-              ),
+              CircularProgressIndicator(),
               Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text('Awaiting result...',style: TextStyle(fontFamily: 'Poppins')),
@@ -173,4 +208,33 @@ class _ManageDepartmentState extends State<ManageDepartment> {
       ),
     );
   }
+
+  void _showDeleteConfirmation(context, int? deptId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
+          content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the confirmation dialog
+              },
+              child: const Text(CustomString.cancel, style: TextStyle(fontFamily: 'Poppins')),
+            ),
+            TextButton(
+              onPressed: () async {
+                ApiConfig.deleteDepartment(context: context,departmentID: deptId,orgId: widget.orgId);
+              },
+              child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+
+

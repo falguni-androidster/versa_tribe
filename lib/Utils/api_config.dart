@@ -7,11 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Model/department.dart';
 import 'package:versa_tribe/Providers/switch_provider.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
+import 'package:versa_tribe/Utils/shared_preference.dart';
 
 import '../Model/SwitchDataModel.dart';
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
+import '../Screens/OrgAdmin/manage_department.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/manage_organization_screen.dart';
 import '../Screens/person_details_screen.dart';
@@ -815,6 +817,25 @@ class ApiConfig {
       debugPrint("Data not Delete Try again----------No-->${response.body}");
     }
   }
+  static deleteDepartment({context, departmentID,orgId}) async {
+    print("dept--->$departmentID ---$orgId");
+    String apiUrl = "$baseUrl/api/Departments/Delete?dept_Id=$departmentID";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      debugPrint("Delete Department Success-------------yes-->${response.body}");
+      getDepartment(orgId: orgId);
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again Department not delete...")));
+      debugPrint("Department not Delete Try again----------No-->${response.body}");
+    }
+  }
 
   static Future<List<DepartmentModel>> getDepartment({context, orgId}) async {
     List<DepartmentModel>dpM =[];
@@ -840,7 +861,7 @@ class ApiConfig {
       }
     }catch(e){
       debugPrint("experience------>$e");
-      Image.asset(ImagePath.splashPath,fit: BoxFit.cover,);
+      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
     }
     return dpM;
   }
@@ -861,6 +882,7 @@ class ApiConfig {
         provider.setSearchedDP(data);
         return data;
       } else {
+        debugPrint("error data------>${response.body}");
         Image.asset(ImagePath.noData,fit: BoxFit.cover,);
       }
     }catch(e){
@@ -882,15 +904,10 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add department success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      //ApiConfig.getUserHobby(context);
-      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageDepartment(orgId: orgID,)));
     } else {
       debugPrint("department adding failed--------->${response.body}");
       Image.asset(ImagePath.noData,fit: BoxFit.cover,);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("department not add try again..."),
-      ));
     }
   }
 }

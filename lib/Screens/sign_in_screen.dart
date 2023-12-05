@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,10 +37,12 @@ class _SignInScreenState extends State<SignInScreen> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
-  GoogleSignIn googleSignIn = GoogleSignIn(
-      clientId: '801650424679-ek1nauh6jfcq7n7ie3du4b5e2b5d4pgg.apps.googleusercontent.com');
+  GoogleSignIn googleSignIn =   GoogleSignIn(clientId: 'com.googleusercontent.apps.329226536237-94d1980cvhahrd1k8ddut1vmaaosjkq2');
 
-  @override
+  //defaultTargetPlatform == TargetPlatform.android?
+  //GoogleSignIn(clientId: '801650424679-gfhm5fbk06pbqugfdp8cr1854bo6t46c.apps.googleusercontent.com'):
+  //GoogleSignIn(clientId: '329226536237-94d1980cvhahrd1k8ddut1vmaaosjkq2.apps.googleusercontent.com');
+
   void initState() {
     super.initState();
     // Check initial connectivity status when the widget is first built.
@@ -69,30 +72,42 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _handleSignIn(context) async {
     await googleSignIn.signOut();
-    googleSignIn = GoogleSignIn(scopes: ['email']);
-
+    googleSignIn = GoogleSignIn(scopes: ['email'],);
     try {
       final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
       // Process the signed-in user if the sign-in was successful
       if (googleSignInAccount != null) {
-        // Signed in successfully, do something with the account data
-        // For example:
-        // String email = googleSignInAccount.email;
-        // String displayName = googleSignInAccount.displayName;
-        // Obtain the authentication tokens (ID Token and Access Token)
-        GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
+        String id = googleSignInAccount.id;
+        String email = googleSignInAccount.email;
+        String? serverAuthCode = googleSignInAccount.serverAuthCode;
+        String? profilePhoto = googleSignInAccount.photoUrl;
+        String? displayName = googleSignInAccount.displayName;
+        debugPrint("------>id: $id");
+        debugPrint("------>email: $email");
+        debugPrint("------>serverAuthCode: $serverAuthCode");
+        debugPrint("------>profilePhoto: $profilePhoto");
+        debugPrint("------>displayName: $displayName");
 
+
+        GoogleSignInAuthentication googleAuth = await googleSignInAccount.authentication;
         // Access the Access Token
-        String accessToken = googleAuth.accessToken ?? "";
-        print("Access Token: $accessToken");
-        showToast(context, "Google Login Success");
+        String accessToken = googleAuth.accessToken!;
+        String? idToken = googleAuth.idToken;
+        var runtimeType = googleAuth.runtimeType;
+        int hashCode = googleAuth.hashCode;
+        debugPrint("------>Access Token: $accessToken");
+        debugPrint("------>id Token: $idToken");
+        debugPrint("------>runtimeType: $runtimeType");
+        debugPrint("------>hashCode: $hashCode");
+
+        showToast(context, "Google Login Success...");
       } else {
         // User cancelled the sign-in process
-        showToast(context, "Google Login Failed");
+        showToast(context, "Google Login Cancel...");
       }
     } catch (error) {
       // Handle the sign-in error
-      print("Error signing in with Google: $error");
+      debugPrint("Error signing in with Google------*>: $error");
     }
   }
 

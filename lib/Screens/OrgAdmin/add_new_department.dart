@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Model/department.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
+import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../../Providers/person_details_provider.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
@@ -20,10 +23,21 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
   TextEditingController searchParentDController = TextEditingController();
   TextEditingController newDController = TextEditingController();
 
-  late int pDepId;
+  int? pDepId;
+  List<DepartmentModel>? dataVal;
+  @override
+  void initState() {
+    super.initState();
+    data();
+  }
+ Future data() async {
+    List<DepartmentModel>? dataVal = await ApiConfig.getDepartment(orgId: widget.orgId);
+    return dataVal;
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("---->>>${dataVal?[2].parentDeptId}");
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -70,13 +84,14 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Checkbox(value: val.visible, onChanged: (value){
+                          Checkbox(value: val.visible,
+                            onChanged: (value){
                             val.setVisible(value);
                             if(value == false){
                               searchParentDController.clear();
                             }else{
                               val.setVisibilitySearchList(true);
-                              ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
+                              //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                             }
                           }),
                           const Text(CustomString.chooseParentDepartment, style: TextStyle(fontSize: 14, fontFamily: 'Poppins')),
@@ -97,51 +112,47 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onTap: (){
                           val.setVisibilitySearchList(true);
                           val.notify();
-                          ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
+                          //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                         },
                       decoration: const InputDecoration(
                           hintText: "Parent department",
                           hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
                           style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
                     ) : const SizedBox();
-                  }
-                ),
+                  }),
 
-                Consumer<SearchParentDPProvider>(builder: (context, val, child) {
-                  return val.visibilitySearch==true
-                      ? ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: val.dpList.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          child: val.dpList[index].parentDeptName!=null?Card(
-                            shadowColor: CustomColors.kBlueColor,
-                            elevation: 3,
-                            color: CustomColors.kGrayColor,
-                            child: Container(
-                                padding:
-                                EdgeInsets.only(left: size.width * 0.02),
-                                height: size.height * 0.05,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    '${val.dpList[index].parentDeptName}',
-                                    style: const TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))),
-                          ):Container(),
-                          onTap: () async {
-                            searchParentDController.text = val.dpList[index].parentDeptName ?? searchParentDController.text;
-                            pDepId = val.dpList[index].parentDeptId!;
-                            val.setVisibilitySearchList(false);
-                            val.notifyListeners();
-                          },
-                        );
-                      }): Container();
-                }),
+                // ListView.builder(
+                // shrinkWrap: true,
+                // itemCount: dataVal?.length,
+                // itemBuilder: (context, index) {
+                //   return InkWell(
+                //     child:Card(
+                //       shadowColor: CustomColors.kBlueColor,
+                //       elevation: 3,
+                //       color: CustomColors.kGrayColor,
+                //       child: Container(
+                //           padding:
+                //           EdgeInsets.only(left: size.width * 0.02),
+                //           height: size.height * 0.05,
+                //           alignment: Alignment.centerLeft,
+                //           child: Text(
+                //               '${dataVal?[index].parentDeptName}',
+                //               style: const TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))),
+                //     ),
+                //     onTap: () async {
+                //       searchParentDController.text = dataVal?[index].parentDeptName ?? searchParentDController.text;
+                //       pDepId = dataVal?[index].parentDeptId!;
+                //       //val.setVisibilitySearchList(false);
+                //       //val.notifyListeners();
+                //     },
+                //   );
+                // }),
 
                 SizedBox(
                   width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          ApiConfig.addNewDepartment(context: context,departmentName: newDController.text);
+                          ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,orgID: widget.orgId );
                           },
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))
                     )

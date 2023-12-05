@@ -8,7 +8,18 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
+  - FBAEMKit (14.1.0):
+    - FBSDKCoreKit_Basics (= 14.1.0)
+  - FBSDKCoreKit (14.1.0):
+    - FBAEMKit (= 14.1.0)
+    - FBSDKCoreKit_Basics (= 14.1.0)
+  - FBSDKCoreKit_Basics (14.1.0)
+  - FBSDKLoginKit (14.1.0):
+    - FBSDKCoreKit (= 14.1.0)
   - Flutter (1.0.0)
+  - flutter_facebook_auth (4.4.1):
+    - FBSDKLoginKit (= 14.1.0)
+    - Flutter
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 7.0)
@@ -28,12 +39,17 @@ PODS:
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `Flutter`)
+  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 SPEC REPOS:
   trunk:
     - AppAuth
+    - FBAEMKit
+    - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
+    - FBSDKLoginKit
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
@@ -44,6 +60,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   Flutter:
     :path: Flutter
+  flutter_facebook_auth:
+    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   shared_preferences_foundation:
@@ -52,7 +70,12 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
+  FBAEMKit: a899515e45476027f73aef377b5cffadcd56ca3a
+  FBSDKCoreKit: 24f8bc8d3b5b2a8c5c656a1329492a12e8efa792
+  FBSDKCoreKit_Basics: 6e578c9bdc7aa1365dbbbde633c9ebb536bcaa98
+  FBSDKLoginKit: 787de205d524c3a4b17d527916f1d066e4361660
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_facebook_auth: 361ac7a57263ebf327f26089507ead0d66558ee8
   google_sign_in_ios: 8115e3fbe097e6509beb819ed602d47369d9011f
   GoogleSignIn: b232380cf495a429b8095d3178a8d5855b42e842
   GTMAppAuth: 99fb010047ba3973b7026e45393f51f27ab965ae
