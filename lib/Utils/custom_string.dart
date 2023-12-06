@@ -144,6 +144,10 @@ class CustomString {
   static const String trainingDescription = 'Training Description';
   static const String startDate = 'Start Date';
   static const String endDate = 'End Date';
+  static const String personLimitRequired = '* Person Limit is required...';
+  static const String personLimit = 'Person Limit';
+
+  static const String trainingCreatedSuccess = ' Training Created Successfully!! ';
 
 /*---------------------------- Organization Screen --------------------------*/
   static const String joinOrganization = 'Join Organization';

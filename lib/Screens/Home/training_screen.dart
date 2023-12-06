@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
 
-import '../create_training_screen.dart';
+import '../Training/create_training_screen.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
