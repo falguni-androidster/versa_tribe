@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:versa_tribe/Model/department.dart';
 
 import '../Model/person_experience.dart';
 import '../Model/person_hobby.dart';
@@ -75,6 +76,36 @@ class PersonHobbyProvider with ChangeNotifier{
   }
 }
 
+///DepartmentProvider class
+class DepartmentProvider with ChangeNotifier{
+  final List<DepartmentModel> _department =[];
+  List<DepartmentModel> get department => _department;
+
+  setDepartment(departmentsData){
+    print("---------------------------Department Provider----->$departmentsData");
+    departmentsData.forEach((ob){
+      _department.add(DepartmentModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+
+///--------------------------------------------------
+  bool _visible = false;
+  bool get visible => _visible;
+  bool _visibilitySearch = false;
+  bool get visibilitySearch => _visibilitySearch;
+
+  setVisible(vi) {
+    _visible = vi;
+    notifyListeners();
+  }
+  setVisibilitySearchList(val) {
+    _visibilitySearch = val;
+  }
+  notify(){
+    notifyListeners();
+  }
+}
 
 
 ///Search Course data for Qualification add field class
@@ -197,10 +228,6 @@ class SearchExIndustryProvider with ChangeNotifier{
 class SearchParentDPProvider with ChangeNotifier{
   final List<SearchDpModel> _dpList =[];
   List<SearchDpModel> get dpList => _dpList;
-  bool _visible = false;
-  bool get visible => _visible;
-  bool _visibilitySearch = false;
-  bool get visibilitySearch => _visibilitySearch;
 
   setSearchedDP(dpName){
     dpName.forEach((ob){
@@ -209,15 +236,4 @@ class SearchParentDPProvider with ChangeNotifier{
     });
   }
 
-  setVisible(vi) {
-    _visible = vi;
-    notifyListeners();
-  }
-
-  setVisibilitySearchList(val) {
-    _visibilitySearch = val;
-  }
-  notify(){
-    notifyListeners();
-  }
 }

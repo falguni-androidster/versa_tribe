@@ -11,6 +11,7 @@ import '../../Utils/custom_string.dart';
 import '../manage_organization_screen.dart';
 import '../sign_in_screen.dart';
 import 'manage_department.dart';
+import 'manage_org_members.dart';
 
 class ManageAdminScreen extends StatefulWidget {
 
@@ -77,7 +78,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             InkWell(
               child: containerButton(height: size.height * 0.06, text: CustomString.manageOrgMembers),
               onTap: (){
-
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID,)));
               },
             ),
             InkWell(

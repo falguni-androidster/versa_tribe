@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:versa_tribe/Model/approve_organization.dart';
+import '../Model/ApproveMembeModel.dart';
+import '../Model/PendingRequestMembers.dart';
 import '../Model/request_organization.dart';
 import '../Model/department.dart';
 import '../Model/search_organigation.dart';
@@ -11,6 +13,15 @@ class IndexProvider with ChangeNotifier{
 
   setIndex(index){
     _index = index;
+    notifyListeners();
+  }
+
+///----AdminSide----
+  int _orgMemberIndex=0;
+  int get orgMemberIndex=>_orgMemberIndex;
+
+  setOrgMemberIndex(index){
+    _orgMemberIndex = index;
     notifyListeners();
   }
 }
@@ -30,6 +41,26 @@ class DisplayManageOrgProvider with ChangeNotifier{
   setApproveOrgData(approveOrgData){
    approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveOrgModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+class DisplayOrgMemberProvider with ChangeNotifier{
+  final List<PendingRequestMemberModel> _requestPendingOrgDataList =[];
+  List<PendingRequestMemberModel> get requestPendingOrgDataList => _requestPendingOrgDataList;
+  final List<ApproveMemberModel> _approveOrgDataList =[];
+  List<ApproveMemberModel> get approveOrgDataList => _approveOrgDataList;
+
+  setPendingRequestOrgData(requestOrgData){
+    requestOrgData.forEach((ob){
+      _requestPendingOrgDataList.add(PendingRequestMemberModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+  setApproveOrgData(approveOrgData){
+    approveOrgData.forEach((ob){
+      _approveOrgDataList.add(ApproveMemberModel.fromJson(ob));
       notifyListeners();
     });
   }

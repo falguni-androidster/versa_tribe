@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Model/department.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/shared_preference.dart';
 import '../../Providers/person_details_provider.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
@@ -24,20 +21,13 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
   TextEditingController newDController = TextEditingController();
 
   int? pDepId;
-  List<DepartmentModel>? dataVal;
   @override
   void initState() {
     super.initState();
-    data();
-  }
- Future data() async {
-    List<DepartmentModel>? dataVal = await ApiConfig.getDepartment(orgId: widget.orgId);
-    return dataVal;
   }
 
   @override
   Widget build(BuildContext context) {
-    print("---->>>${dataVal?[2].parentDeptId}");
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -47,14 +37,25 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
             return IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                val.setVisibilitySearchList(false);
-                val.notify();
               },
               icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
               //replace with our own icon data.
             );
           }
         ),
+        // leading: Consumer<SearchParentDPProvider>(
+        //     builder: (context, val, child) {
+        //     return IconButton(
+        //       onPressed: () {
+        //         Navigator.pop(context);
+        //         val.setVisibilitySearchList(false);
+        //         val.notify();
+        //       },
+        //       icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
+        //       //replace with our own icon data.
+        //     );
+        //   }
+        // ),
         centerTitle: true,
         title: const Text(CustomString.addNewDP, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
@@ -76,10 +77,9 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                     style:
                     const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
                 ),
-
                 SizedBox(height: size.height * 0.01),
 
-                Consumer<SearchParentDPProvider>(
+                Consumer<DepartmentProvider>(
                     builder: (context, val, child) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -90,7 +90,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                             if(value == false){
                               searchParentDController.clear();
                             }else{
-                              val.setVisibilitySearchList(true);
+                              //val.setVisibilitySearchList(true);
                               //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                             }
                           }),
@@ -99,8 +99,8 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                       );
                     }),
 
-                Consumer<SearchParentDPProvider>(builder: (context, val, child) {
-                    return val.visible == true ? TextFormField(
+                Consumer<DepartmentProvider>(builder: (context, val, child) {
+                    return searchParentDController.text != "" ? TextFormField(
                       controller: searchParentDController,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -110,49 +110,56 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         }
                       },
                         onTap: (){
-                          val.setVisibilitySearchList(true);
-                          val.notify();
+                          //val.setVisibilitySearchList(true);
+                          //val.notify();
                           //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                         },
+                        enabled: false,
                       decoration: const InputDecoration(
                           hintText: "Parent department",
                           hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
                           style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
                     ) : const SizedBox();
-                  }),
+                  }
+                  ),
 
-                // ListView.builder(
-                // shrinkWrap: true,
-                // itemCount: dataVal?.length,
-                // itemBuilder: (context, index) {
-                //   return InkWell(
-                //     child:Card(
-                //       shadowColor: CustomColors.kBlueColor,
-                //       elevation: 3,
-                //       color: CustomColors.kGrayColor,
-                //       child: Container(
-                //           padding:
-                //           EdgeInsets.only(left: size.width * 0.02),
-                //           height: size.height * 0.05,
-                //           alignment: Alignment.centerLeft,
-                //           child: Text(
-                //               '${dataVal?[index].parentDeptName}',
-                //               style: const TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))),
-                //     ),
-                //     onTap: () async {
-                //       searchParentDController.text = dataVal?[index].parentDeptName ?? searchParentDController.text;
-                //       pDepId = dataVal?[index].parentDeptId!;
-                //       //val.setVisibilitySearchList(false);
-                //       //val.notifyListeners();
-                //     },
-                //   );
-                // }),
+                Consumer<DepartmentProvider>(
+                  builder: (context,val,child) {
+                    return val.visible == true ?ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: val.department.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        child:Card(
+                          shadowColor: CustomColors.kBlueColor,
+                          elevation: 3,
+                          color: CustomColors.kGrayColor,
+                          child: Container(
+                              padding:
+                              EdgeInsets.only(left: size.width * 0.02),
+                              height: size.height * 0.05,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                  '${val.department[index].deptName}',
+                                  style: const TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))),
+                        ),
+                        onTap: () async {
+                          searchParentDController.text = val.department[index].deptName ?? searchParentDController.text;
+                          pDepId = val.department[index].deptId;
+                          val.setVisibilitySearchList(true);
+                          val.setVisible(false);
+                        },
+                      );
+                    }): const SizedBox();
+                  }
+                ),
 
                 SizedBox(
                   width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          ApiConfig.addNewDepartment(context: context,departmentName: newDController.text,orgID: widget.orgId );
+                          print("cheque---parent department Id------>$pDepId");
+                          ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
                           },
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))
                     )

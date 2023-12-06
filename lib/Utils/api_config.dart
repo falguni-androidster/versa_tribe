@@ -142,6 +142,31 @@ class ApiConfig {
       debugPrint("Hobby Data not found...");
     }
   }
+  static getDepartment({context, orgId}) async {
+    debugPrint("DepartmentID------>$orgId");
+    debugPrint("DepartmentID2------>$orgId");
+    //List<DepartmentModel>dpM =[];
+    String url = "$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+    if (response.statusCode == 200) {
+        debugPrint("Department***------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        // data.forEach((singleObject){
+        //   dpM.add(DepartmentModel.fromJson(singleObject));
+        // });
+        final provider = Provider.of<DepartmentProvider>(context, listen: false);
+        provider.department.clear();
+        provider.setDepartment(data);
+      } else {
+        print("--Error to get department--->${response.body}");
+      }
+    }
+
 
   static Future deletePersonEx(context, int? perExpId) async {
       String url = "$baseUrl/api/PersonExperiences/Delete?id=$perExpId";
@@ -732,6 +757,34 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
+  static getOrgMemberData({context, tabIndex}) async {
+    final provider = Provider.of<DisplayOrgMemberProvider>(context, listen: false);
+    provider.requestPendingOrgDataList.clear();
+    provider.approveOrgDataList.clear();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/OrgPersons/ListByOrg?org_Name=Ksq_FlutterTech&Request_Status=$tabIndex";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+       tabIndex==0? debugPrint("pending requested data------->${response.body}"):
+        debugPrint("approved data------->${response.body}");
+        List<dynamic> data = await jsonDecode(response.body);
+       tabIndex==0?
+       provider.setPendingRequestOrgData(data):
+       provider.setApproveOrgData(data);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
   static searchOrg({context, orgString}) async {
     final provider = Provider.of<SearchOrgProvider>(context,listen: false);
     String apiUrl = "$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString";
@@ -829,42 +882,14 @@ class ApiConfig {
         });
     if (response.statusCode == 200) {
       debugPrint("Delete Department Success-------------yes-->${response.body}");
-      getDepartment(orgId: orgId);
-      Navigator.of(context).pop();
+      await getDepartment(context: context,orgId: orgId);
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again Department not delete...")));
       debugPrint("Department not Delete Try again----------No-->${response.body}");
     }
   }
 
-  static Future<List<DepartmentModel>> getDepartment({context, orgId}) async {
-    List<DepartmentModel>dpM =[];
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId";
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Department***------->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        data.forEach((singleObject){
-           dpM.add(DepartmentModel.fromJson(singleObject));
-          print("dp name---->${dpM[0].parentDeptName}--->dpId-->${dpM[0].parentDeptId}");
-        });
-        print("--length--->${dpM.length}");
-        //return dpM;
-      } else {
-        Image.asset(ImagePath.noData,fit: BoxFit.cover,);
-      }
-    }catch(e){
-      debugPrint("experience------>$e");
-      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
-    }
-    return dpM;
-  }
   static searchPDepartment({context, orderId}) async {
     final provider = Provider.of<SearchParentDPProvider>(context,listen: false);
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -889,11 +914,11 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
-  static addNewDepartment({context, departmentName,parentDepId,orgID}) async {
+  static addNewDepartment({context, departmentName,depId,orgID}) async {
     Map<String, dynamic> requestData = {
       "Org_Id": orgID,
       "Dept_Name": departmentName,
-      "Parent_dept_Id": parentDepId
+      "Parent_dept_Id": depId
     };
     String url = "$baseUrl/api/Departments/Create";
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -904,9 +929,34 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Add department success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageDepartment(orgId: orgID,)));
+      await getDepartment(context: context,orgId: orgID);
+      Navigator.pop(context);
     } else {
       debugPrint("department adding failed--------->${response.body}");
+      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+    }
+  }
+  static editDepartment({context, departmentName,depId,parentDepId, orgID}) async {
+    print("////********>>>>>>$parentDepId");
+    Map<String, dynamic> requestData = {
+      "Org_Id": orgID,
+      "Dept_Id": depId,
+      "Dept_Name": departmentName,
+      "Parent_dept_Id": parentDepId
+    };
+    String url = "$baseUrl/api/Departments/Update";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Edit department success--------->${response.body}");
+      await getDepartment(context: context,orgId: orgID);
+      Navigator.pop(context);
+    } else {
+      debugPrint("department edit failed--------->${response.body}");
       Image.asset(ImagePath.noData,fit: BoxFit.cover,);
     }
   }
