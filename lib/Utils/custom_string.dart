@@ -18,9 +18,13 @@ class CustomString {
       'Foc.io helps you boost your productivity on a different level';
 
 
+  static const String reject = 'Reject';
+  static const String assign = 'Assign';
   static const String submit = 'Submit';
   static const String cancel = 'Cancel';
   static const String leave = 'Leave';
+  static const String no = 'NO';
+  static const String yes = 'YES';
 
 
 /*------------------- API Calling Messages  ------------------*/
@@ -128,6 +132,7 @@ class CustomString {
 
   static const String personDetails = 'Personal Details';
   static const String manageOrganization = 'Manage Organization';
+  static const String manageOrgMember = 'Manage Org. Members';
   static const String settings = 'Settings & Privacy';
   static const String help = 'Help & Support';
   static const String about = 'About';
@@ -204,6 +209,7 @@ class CustomString {
   static const String parentDepartment = 'Parent department';
   static const String chooseParentDepartment = 'Choose parent department';
 
+  static const String view = 'View';
   static const String edit = 'Edit';
   static const String delete = 'Delete';
 
@@ -216,19 +222,23 @@ class CustomString {
 /*--------------------------  Delete Confirmation Dialog -----------------------*/
   static const String deleteTitle = 'Delete Confirmation';
   static const String deleteContent = 'Are you sure you want to delete this item?';
+  static const String removeContent = 'Are you sure you want to proceed with removing this user?';
 
 
 /*--------------------------  Manage Organization -----------------------*/
   static const String requestedToJoin = "You Requested To Join ";
+  static const String requestedToJoinAdmin  = "requested to join ";
+  static const String approvedToJoinAdmin  = "Joined";
   static const String requestedDepartment = "Req. Department: ";
   static const String requestApproved1 = "Your Request To Join ";
   static const String requestApproved2 = " Is Approved";
   static const String department = "Department: ";
 
+  static const String pendingRequested = 'Pending Request';
   static const String requested = 'Requested';
   static const String approved = 'Approved';
   static const String rejected = 'Rejected';
-  static const String removed = 'Removed';
+  static const String remove = 'Remove';
 
 /*--------------------------  Manage Organization -----------------------*/
   static const String manageDepartment = "Manage Department";

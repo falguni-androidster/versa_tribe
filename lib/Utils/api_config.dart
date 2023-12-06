@@ -757,6 +757,34 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
+  static getOrgMemberData({context, tabIndex}) async {
+    final provider = Provider.of<DisplayOrgMemberProvider>(context, listen: false);
+    provider.requestPendingOrgDataList.clear();
+    provider.approveOrgDataList.clear();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/OrgPersons/ListByOrg?org_Name=Ksq_FlutterTech&Request_Status=$tabIndex";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+       tabIndex==0? debugPrint("pending requested data------->${response.body}"):
+        debugPrint("approved data------->${response.body}");
+        List<dynamic> data = await jsonDecode(response.body);
+       tabIndex==0?
+       provider.setPendingRequestOrgData(data):
+       provider.setApproveOrgData(data);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
   static searchOrg({context, orgString}) async {
     final provider = Provider.of<SearchOrgProvider>(context,listen: false);
     String apiUrl = "$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString";

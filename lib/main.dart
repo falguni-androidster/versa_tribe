@@ -55,6 +55,7 @@ void main() {
       ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider()),
       ChangeNotifierProvider<OrgProfileBtnVisibility>(create: (_) => OrgProfileBtnVisibility()),
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
+      ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
     ],
     child: const MyApp()
   ));
