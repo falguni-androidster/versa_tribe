@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:versa_tribe/Model/SwitchDataModel.dart';
+import 'package:flutter/material.dart';
+import 'package:versa_tribe/Model/switch_data.dart';
 
 class SwitchProvider with ChangeNotifier{
   SwitchDataModel _switchDataModel=SwitchDataModel();

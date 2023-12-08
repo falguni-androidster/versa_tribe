@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/profile_gender_provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/custom_string.dart';
-import '../../Providers/date_provider.dart';
-import '../../Providers/person_details_provider.dart';
+import 'package:versa_tribe/extension.dart';
 
 class EditExperienceScreen extends StatefulWidget {
 
@@ -175,7 +170,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                           },
                           onChanged: (value) {
                             if (value != "" && value.isNotEmpty) {
-                              print("Selected--======---=-=-->${val.selectedValue}");
+                              debugPrint("Selected--======---=-=-->${val.selectedValue}");
                               val.selectedValue == "Company"
                                   ? ApiConfig.searchExCompany(
                                       context: context, companyString: value)
@@ -297,8 +292,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             },
                             controller: startDateController,
                             textAlign: TextAlign.center,
-
-                            //editing controller of this TextField
                             decoration: const InputDecoration(
                               labelText: CustomString.startDate,
                               labelStyle: TextStyle(
@@ -310,7 +303,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             style: const TextStyle(
                                 color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                             readOnly: true,
-                            //set it true, so that user will not able to edit text
                             onTap: () async {
                               _showDatePicker(
                                   context: context, key: "startDate");
@@ -334,7 +326,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             },
                             controller: endDateController,
                             textAlign: TextAlign.center,
-                            //editing controller of this TextField
                             decoration: const InputDecoration(
                               labelText: CustomString.endDate,
                               labelStyle: TextStyle(
@@ -346,7 +337,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             style: const TextStyle(
                                 color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                             readOnly: true,
-                            //set it true, so that user will not able to edit text
                             onTap: startDateController.text == ""
                                 ? () {}
                                 : () async {
@@ -423,13 +413,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
             :  widget.company != ""
                 ? "Industry"
                 : val.selectedValue:val.selectedValue,
-        // groupValue: widget.company != null && widget.company != ""
-        //     ? "Company"
-        //     : widget.industry != null && widget.company != ""
-        //         ? "Industry"
-        //         : val.selectedValue,
         onChanged: (value) {
-          print("Updated Radio value--->>$value");
           val.setRadioValue(value);
           val.callNotify();
         },
@@ -449,9 +433,9 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: CustomColors.kBlueColor, // <-- SEE HERE
-              onPrimary: CustomColors.kWhiteColor, // <-- SEE HERE
-              onSurface: CustomColors.kBlackColor, // <-- SEE HERE
+              primary: CustomColors.kBlueColor,
+              onPrimary: CustomColors.kWhiteColor,
+              onSurface: CustomColors.kBlackColor,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
@@ -465,12 +449,9 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
     );
     if (key == "startDate") {
       if (pickedDate != null) {
-        debugPrint(
-            "Start-PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
+        debugPrint("Start-PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
         String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-        //String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-        debugPrint(
-            "Start-FormattedData----->$formattedDate"); //formatted date output using intl package =>  2021-03-16
+        debugPrint("Start-FormattedData----->$formattedDate"); //formatted date output using intl package =>  2021-03-16
         provider.setStartDate(
             formattedDate, pickedDate); //set output date to TextField value.
         endDateController.text =
@@ -482,7 +463,6 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
         debugPrint(
             "End-PickedData-------->$pickedDate"); //pickedDate output format => 2021-03-10 00:00:00.000
         String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-        //String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
         debugPrint(
             "End-FormattedData----->$formattedDate"); //formatted date output using intl package =>  2021-03-16
         provider

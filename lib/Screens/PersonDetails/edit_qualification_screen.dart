@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/custom_string.dart';
-
-import '../../Model/person_qualification.dart';
-import '../../Providers/date_provider.dart';
-import '../../Providers/person_details_provider.dart';
+import 'package:versa_tribe/extension.dart';
 
 class EditQualificationScreen extends StatefulWidget {
 

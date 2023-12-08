@@ -1,17 +1,11 @@
 import 'dart:convert';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-
-import '../../Providers/date_provider.dart';
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
+import 'package:versa_tribe/extension.dart';
 
 class CreateTrainingScreen extends StatefulWidget {
 
@@ -27,7 +21,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController trainingNameController = TextEditingController();
-  TextEditingController trainingDiscriptionController = TextEditingController();
+  TextEditingController trainingDescriptionController = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
   TextEditingController personLimitController = TextEditingController();
@@ -101,7 +95,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
 
                 /// Training Description Field
                 TextFormField(
-                    controller: trainingDiscriptionController,
+                    controller: trainingDescriptionController,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return CustomString.trainingDescriptionRequired;
@@ -282,7 +276,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
         Map<String, dynamic> data = {
           'Org_Id': widget.orgId,
           'Training_Name': trainingNameController.text.toString(),
-          'Description': trainingDiscriptionController.text.toString(),
+          'Description': trainingDescriptionController.text.toString(),
           'Start_Date': startDateController.text.toString(),
           'End_Date': endDateController.text.toString(),
           'PersonLimit': personLimitController.text.toString(),

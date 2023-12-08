@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
-
-import '../Providers/onboarding_provider.dart';
-import '../Utils/custom_colors.dart';
-import '../Utils/custom_string.dart';
+import 'package:versa_tribe/extension.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -110,19 +106,19 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     _onBoardingPages(
                         img: ImagePath.onBoardingPath,
                         onBoardingTitle: CustomString.onBoardingScreenTitle,
-                        onBoardingDis: CustomString.onBoardingScreenDiscription),
+                        onBoardingDis: CustomString.onBoardingScreenDescription),
                     _onBoardingPages(
                         img: ImagePath.onBoardingPath,
                         onBoardingTitle: CustomString.onBoardingScreenTitle,
-                        onBoardingDis: CustomString.onBoardingScreenDiscription),
+                        onBoardingDis: CustomString.onBoardingScreenDescription),
                     _onBoardingPages(
                         img: ImagePath.onBoardingPath,
                         onBoardingTitle: CustomString.onBoardingScreenTitle,
-                        onBoardingDis: CustomString.onBoardingScreenDiscription),
+                        onBoardingDis: CustomString.onBoardingScreenDescription),
                     _onBoardingPages(
                         img: ImagePath.onBoardingPath,
                         onBoardingTitle: CustomString.onBoardingScreenTitle,
-                        onBoardingDis: CustomString.onBoardingScreenDiscription),
+                        onBoardingDis: CustomString.onBoardingScreenDescription),
                   ],
                 );
               }),

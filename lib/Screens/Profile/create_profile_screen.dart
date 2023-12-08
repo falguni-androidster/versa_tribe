@@ -1,20 +1,12 @@
 import 'dart:convert';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:http/http.dart' as http;
-
-import '../../Providers/date_provider.dart';
-import '../../Providers/profile_gender_provider.dart';
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
 import '../home_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class CreateProfileScreen extends StatefulWidget {
 

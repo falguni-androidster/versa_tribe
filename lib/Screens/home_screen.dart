@@ -3,21 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
-import 'package:versa_tribe/Providers/organization_provider.dart';
-import 'package:versa_tribe/Providers/switch_provider.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import '../Model/SwitchDataModel.dart';
-import '../Utils/custom_colors.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/image_path.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
 import 'OrgAdmin/admin_manage.dart';
 import 'manage_organization_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -63,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     List<OrgAdminPersonList> adminPersonList =
         switchProvider.switchData.orgAdminPersonList!;
-    //print("----->SWITCH DATA--->${adminPersonList[0].orgName}");
     selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
@@ -150,8 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontFamily: 'Poppins')),
               actions: <CupertinoDialogAction>[
                 CupertinoDialogAction(
-                  /// This parameter indicates this action is the default,
-                  /// and turns the action's text to bold text.
                   isDefaultAction: true,
                   onPressed: () {
                     Navigator.pop(context, false);
@@ -160,10 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontFamily: 'Poppins')),
                 ),
                 CupertinoDialogAction(
-
-                    /// This parameter indicates the action would perform
-                    /// a destructive action such as deletion, and turns
-                    /// the action's text color to red.
                     isDestructiveAction: true,
                     onPressed: () {
                       Navigator.pop(context, true);
@@ -229,14 +215,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontFamily: 'Poppins')));
               }),
               const Spacer(),
-              /* Consumer<CallSwitchProvider>(builder: (context, val, child) {
-                return Switch(value: val.visibleCall,
-                  onChanged: (value) {
-                    value = val.setVisible();
-                  },
-                );
-              }),
-              const SizedBox(width: 10),*/
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return val.isAdmin == true || orgAdmin == true
                     ? SVGIconButton(

@@ -1,17 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
 import 'package:versa_tribe/Utils/shared_preference.dart';
-import '../Model/OrgNaneId.dart';
-import '../Providers/manage_org_index_provider.dart';
-import '../Utils/custom_colors.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/image_path.dart';
 import 'home_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ManageOrganization extends StatefulWidget {
 
@@ -34,18 +28,13 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
   TextEditingController departmentNameController = TextEditingController();
   TextEditingController requestNewDepartmentController = TextEditingController();
 
-  // define your tab controller here
   late TabController _tabController;
   late int orgID;
   int? dpID;
 
   @override
   void initState() {
-    // initialise your tab controller here
-    ///currently hide this field it will used in future.
-    // _tabController = TabController(length: 4, vsync: this);
     _tabController = TabController(length: 2, vsync: this);
-    //ApiConfig.getManageOrgData(context: context, tabIndex: 0);
     super.initState();
   }
   @override
@@ -63,7 +52,7 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
           onTap: () async {
             //Navigator.pop(context);
            await ApiConfig.getDataSwitching(context: context);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomeScreen()));
           },
         ),
         title: const Text(CustomString.manageOrganization, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
@@ -101,7 +90,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            //padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
             padding: EdgeInsets.only(top: size.height * 0.02, left: size.width * 0.02, right: size.height * 0.02),
             child: Consumer<IndexProvider>(builder: (context, val, child) {
               return TabBar(
@@ -112,13 +100,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                   } else {
                     //ApiConfig.getManageOrgData(context: context, tabIndex: 1);
                   }
-
-                  ///currently hide this field it will used in future.
-                  /* else if (value == 2) {
-                    ApiConfig.getManageOrgData(context: context, tabIndex: -1);
-                  } else if (value == 3) {
-                    ApiConfig.getManageOrgData(context: context, tabIndex: -2);
-                  }*/
                 },
                 isScrollable:true,
                 labelPadding: const EdgeInsets.symmetric(horizontal: 5),
@@ -143,22 +124,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                           BorderRadius.all(Radius.circular(5)),
                           color: CustomColors.kGrayColor),
                       child: const Text(CustomString.approved, style: TextStyle(fontFamily: 'Poppins'))),
-
-                  ///currently hide this field it will used in future.
-                  /*   Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(5)),
-                          color: CustomColors.kGrayColor),
-                      child: const Text(CustomString.rejected)),
-                  Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: const BoxDecoration(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(5)),
-                          color: CustomColors.kGrayColor),
-                      child: const Text(CustomString.removed)),*/
                 ],
               );
             }),
@@ -264,14 +229,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                   shrinkWrap: true,
                                   itemCount: val.approveOrgDataList.length,
                                   itemBuilder: (context, index) {
-                                    // child: RichText(
-                                    //   text: TextSpan(
-                                    //   text: CustomString.requestApproved1,style: DefaultTextStyle.of(context).style,
-                                    //     children: [
-                                    //       TextSpan(text: val.manageOrgDataList[index].orgName??"",style: const TextStyle(color: CustomColors.kBlueColor)),
-                                    //       const TextSpan(text: CustomString.requestApproved2)
-                                    //     ]
-                                    // ),),
                                     return Container(
                                       height: size.height * 0.08,
                                       decoration: const BoxDecoration(
@@ -332,53 +289,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                         return Container();
                       }
                     ),
-
-                ///currently hide this field it will used in future.
-                /*    ///Rejected
-                Consumer<DisplayManageOrgProvider>(
-                    builder: (context, val, child) {
-                      return val.manageOrgDataList.isNotEmpty ? ListView
-                          .builder(
-                          shrinkWrap: true,
-                          itemCount: val.manageOrgDataList.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: mHeight * 0.08,
-                              decoration: const BoxDecoration(
-                                  border: BorderDirectional(
-                                      bottom: BorderSide(width: 0.5),
-                                      top: BorderSide(width: 0.1))
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: mWidth * 0.03,
-                                  vertical: mHeight * 0.005),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Text(CustomString.requestApproved1),
-                                      Text(
-                                        val.manageOrgDataList[index].orgName ??
-                                            "", style: const TextStyle(
-                                          color: CustomColors.kBlueColor),),
-                                      const Text(CustomString.requestApproved2),
-                                    ],
-                                  ),
-                                  SizedBox(height: mHeight * 0.01,),
-                                  Text("${CustomString.department} ${val
-                                      .manageOrgDataList[index].deptName ??
-                                      ""}", style: const TextStyle(fontSize: 10,
-                                      color: CustomColors.kLightGrayColor)),
-                                ],
-                              ),
-                            );
-                          }) : Center(child: Image.asset(ImagePath.noData));
-                    }
-                ),
-                Center(child:  Image.asset(ImagePath.noData)),*/
               ],
             ),
           ),
@@ -397,7 +307,6 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
           'Authorization': 'Bearer $token',
         });
     Map<String, dynamic> jsonData = jsonDecode(response.body);
-    print("Map Data------:/-> ${response.body}");
     pref.setJson("responseModel", jsonData);
   }
 

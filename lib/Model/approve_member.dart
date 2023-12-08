@@ -1,17 +1,3 @@
-/// Person_Id : 4
-/// FirstName : "Shubham"
-/// LastName : "Shukla"
-/// Person_TOwner : "sbmshukla17@gmail.com"
-/// Org_Id : 5
-/// Org_Name : "Ksq_FlutterTech"
-/// Dept_Id : 93
-/// Dept_Name : "Kotlin"
-/// Request_Status : 0
-/// Request_Status_Name : "REQUESTED"
-/// Dept_Req : null
-/// TStamp : "2023-12-05T05:34:06.5850185"
-/// TOwner : "sbmshukla17@gmail.com"
-
 class ApproveMemberModel {
   ApproveMemberModel({
       int? personId, 

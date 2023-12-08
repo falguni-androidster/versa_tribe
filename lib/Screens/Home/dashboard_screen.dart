@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../Utils/custom_colors.dart';
-
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 

@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ManageBottomTabProvider with ChangeNotifier{
   int _currentTab = 0; // to keep track of active tab index

@@ -1,17 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:versa_tribe/Model/department.dart';
-
-import '../Model/person_experience.dart';
-import '../Model/person_hobby.dart';
-import '../Model/person_qualification.dart';
-import '../Model/person_skill.dart';
-import '../Model/search_company.dart';
-import '../Model/search_course.dart';
-import '../Model/search_dp.dart';
-import '../Model/search_hobby.dart';
-import '../Model/search_industry.dart';
-import '../Model/search_institute.dart';
-import '../Model/search_skill.dart';
+import 'package:flutter/material.dart';
+import 'package:versa_tribe/extension.dart';
 
 
 ///PersonExperienceProvider class
@@ -20,7 +8,6 @@ class PersonExperienceProvider with ChangeNotifier{
   List<PersonExperienceModel> get personEx => _personEx;
 
   setPersonEx(pEx){
-    //print("--->$pEx");
     pEx.forEach((ob) async {
       _personEx.add(PersonExperienceModel.fromJson(ob));
       notifyListeners();
@@ -82,7 +69,6 @@ class DepartmentProvider with ChangeNotifier{
   List<DepartmentModel> get department => _department;
 
   setDepartment(departmentsData){
-    print("---------------------------Department Provider----->$departmentsData");
     departmentsData.forEach((ob){
       _department.add(DepartmentModel.fromJson(ob));
       notifyListeners();

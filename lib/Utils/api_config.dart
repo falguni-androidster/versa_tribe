@@ -3,30 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Providers/switch_provider.dart';
-import 'package:versa_tribe/Providers/training_provider.dart';
-import 'package:versa_tribe/Utils/custom_toast.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 
-import '../Model/SwitchDataModel.dart';
-import '../Model/profile_response.dart';
-import '../Providers/manage_org_index_provider.dart';
-import '../Providers/person_details_provider.dart';
-import '../Screens/OrgAdmin/manage_department.dart';
 import '../Screens/OrgAdmin/manage_org_members.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/manage_organization_screen.dart';
-import 'custom_string.dart';
+import '../extension.dart';
+
 
 class ApiConfig {
 
   // static const String baseUrl = 'https://srv1.ksgs.local:9443';
   static const String baseUrl = 'https://api.gigpro.in';
-
-  // Usage example
-  // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
-  // For instance, when using the http package for making network requests:
-  // http.get('${ApiConfig.baseUrl}/endpoint')
 
   /*------------ Profile Screen --------------*/
   Future<ProfileResponse> getProfileData() async {
@@ -329,16 +316,6 @@ class ApiConfig {
     debugPrint('start date----------->> $sDate');
     debugPrint('end date----------->> $eDate');
 
-    // Map<String, dynamic> requestData = {
-    //   "Experience": {
-    //     "Company_Name": comName,
-    //     "Industry_Field_Name": indName
-    //   },
-    //   "Exp_months": result,
-    //   "Job_Title": jobTitle,
-    //   "Start_date": sDate,
-    //   "End_Date": eDate
-    // };
     Map<String, dynamic> requestData = {
       "Company_Name": comName,
       "Industry_Field_Name": indName,
@@ -990,30 +967,6 @@ class ApiConfig {
     }
   }
 
-  static searchPDepartment({context, orderId}) async {
-    final provider = Provider.of<SearchParentDPProvider>(context,listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/OrgDepts/GetDeptsByOrg?Org_Id=$orderId";
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        provider.dpList.clear();
-        debugPrint("Department search ++++++++++->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.setSearchedDP(data);
-        return data;
-      } else {
-        debugPrint("error data------>${response.body}");
-        Image.asset(ImagePath.noData,fit: BoxFit.cover,);
-      }
-    }catch(e){
-      debugPrint("experience------>$e");
-    }
-  }
   static addNewDepartment({context, departmentName,depId,orgID}) async {
     Map<String, dynamic> requestData = {
       "Org_Id": orgID,

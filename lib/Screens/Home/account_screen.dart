@@ -2,18 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Model/profile_response.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
-import 'package:versa_tribe/Utils/svg_btn.dart';
-
-import '../../Providers/bottom_tab_provider.dart';
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
+import '../../Utils/svg_btn.dart';
 import '../manage_organization_screen.dart';
 import '../sign_in_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -156,11 +149,6 @@ class _AccountScreenState extends State<AccountScreen> {
                     color: CustomColors.kWhiteColor, fontSize: 16,fontFamily: 'Poppins')),
             const Spacer(),
             const Icon(Icons.arrow_forward_ios_sharp,color: CustomColors.kWhiteColor,size: 20)
-            /*SVGIconButton(
-                svgPath: ImagePath.rightShiftIcon,
-                onPressed: () {},
-                size: 14,
-                color: CustomColors.kWhiteColor)*/
           ],
         ),
       ),

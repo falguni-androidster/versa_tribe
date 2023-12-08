@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class OrganizationProvider with ChangeNotifier{
   String? _switchOrganization;
@@ -19,7 +19,6 @@ class OrganizationProvider with ChangeNotifier{
   bool _visible = false;
   bool get visible=>_visible;
   setVisible(value){
-    print("Visiblity====>$value");
     _visible=value;
     notifyListeners();
   }

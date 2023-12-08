@@ -1,10 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:versa_tribe/Model/approve_organization.dart';
-import '../Model/ApproveMembeModel.dart';
-import '../Model/PendingRequestMembers.dart';
-import '../Model/request_organization.dart';
-import '../Model/department.dart';
-import '../Model/search_organigation.dart';
+import 'package:flutter/material.dart';
+import 'package:versa_tribe/extension.dart';
 
 ///tab bar index provider
 class IndexProvider with ChangeNotifier{
