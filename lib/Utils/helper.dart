@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:versa_tribe/Utils/custom_colors.dart';
 
+import '../Providers/manage_org_index_provider.dart';
+import 'api_config.dart';
 import 'custom_string.dart';
 
 /// return days,hours,seconds ago from timeStamp
@@ -42,27 +46,27 @@ class DateUtil {
   }
 }
 
-showRemoveConfirmation({context}) {
+showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
+        //title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
         content: const Text(CustomString.removeContent, style: TextStyle(fontFamily: 'Poppins')),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close the confirmation dialog
             },
-            child: const Text(CustomString.no, style: TextStyle(fontFamily: 'Poppins')),
+            child: const Text(CustomString.no, style: TextStyle(fontFamily: 'Poppins',color: CustomColors.kLightGrayColor)),
           ),
           TextButton(
             onPressed: () async {
               // Add your delete logic here
-              // ApiConfig.deleteOrgRequest(context: context,orgID: val.approveOrgDataList[index].orgId,personID:val.approveOrgDataList[index].personId);
+              ApiConfig.deleteOrgFromAdminSide(context:context, indexedOrgID:indexedOrgId, personID:personId, orgName: orgName,orgID: orgId);
             },
             child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
-          ),
+          )
         ],
       );
     },

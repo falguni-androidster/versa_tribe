@@ -12,6 +12,8 @@ import '../Model/SwitchDataModel.dart';
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
+import '../Screens/OrgAdmin/manage_department.dart';
+import '../Screens/OrgAdmin/manage_org_members.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/manage_organization_screen.dart';
 import 'custom_string.dart';
@@ -808,14 +810,14 @@ class ApiConfig {
       debugPrint("experience------>$e");
     }
   }
-  static getOrgMemberData({context, tabIndex}) async {
+  static getOrgMemberData({context,orgName, tabIndex}) async {
     final provider = Provider.of<DisplayOrgMemberProvider>(context, listen: false);
     provider.requestPendingOrgDataList.clear();
     provider.approveOrgDataList.clear();
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     try{
-      String url = "$baseUrl/api/OrgPersons/ListByOrg?org_Name=Ksq_FlutterTech&Request_Status=$tabIndex";
+      String url = "$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex";
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -834,6 +836,35 @@ class ApiConfig {
       }
     }catch(e){
       debugPrint("experience------>$e");
+    }
+  }
+  static updateAssignOrgRequestStatus({context,orgID, personID, depID,orgName, reqStatus}) async {
+    Map<String, dynamic> requestData =
+    {
+      "Org_Id": orgID,
+      "Perosn_Id": personID,
+      "Dept_Id": depID,
+      "Request_Status": reqStatus,
+      "Dept_Req": ""
+    };
+
+    String url = "$baseUrl/api/OrgPersons/Request/Update";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Department Assign Success--------->${response.body}");
+      ///When is use above navigator then replacement not work
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageOrgMembers(orgID: orgID,orgNAME: orgName,)));
+    } else {
+      debugPrint("Department Assign failed--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Department Assign failed..."),
+      ));
     }
   }
   static searchOrg({context, orgString}) async {
@@ -921,8 +952,26 @@ class ApiConfig {
       debugPrint("Data not Delete Try again----------No-->${response.body}");
     }
   }
+  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID}) async {
+    String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageOrgMembers(orgID: orgID,orgNAME: orgName,)));
+      debugPrint("Delete ORG Success-------------yes-->${response.body}");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
+      debugPrint("----not Delete Try again----------No-->${response.body}");
+    }
+  }
   static deleteDepartment({context, departmentID,orgId}) async {
-    debugPrint("dept--->$departmentID ---$orgId");
+    print("dept--->$departmentID ---$orgId");
     String apiUrl = "$baseUrl/api/Departments/Delete?dept_Id=$departmentID";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);

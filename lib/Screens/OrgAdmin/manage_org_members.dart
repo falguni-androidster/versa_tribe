@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/add_new_department.dart';
 import 'package:versa_tribe/Utils/api_config.dart';
+import 'package:versa_tribe/Utils/custom_toast.dart';
 import '../../Providers/manage_org_index_provider.dart';
+import '../../Providers/person_details_provider.dart';
 import '../../Utils/custom_colors.dart';
 import '../../Utils/custom_string.dart';
 import '../../Utils/helper.dart';
@@ -23,12 +27,104 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
   void initState() {
     // initialise your tab controller here
     _tabController = TabController(length: 2, vsync: this);
+    ApiConfig.getDepartment(context: context,orgId: widget.orgID);
     super.initState();
+  }
+  void _showDialog({reqDepName,context,orgID,personID,depID}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final size = MediaQuery.of(context).size;
+        return Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: size.height * 0.075,
+                child: Scaffold(
+                  appBar: AppBar(
+                    iconTheme: const IconThemeData(color: CustomColors.kBlackColor),
+                    backgroundColor: CustomColors.kGrayColor,
+                    elevation: 0,
+                    title: const Text(
+                      CustomString.assignDepartment,
+                      style: TextStyle(color: CustomColors.kBlueColor),
+                    ),
+                  ),
+                ),
+              ),
+              Consumer<DepartmentProvider>(builder: (context, val, child) {
+                return Column(
+                  children: [
+                    InkWell(
+                      child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: size.width * 0.01),
+                          height: size.height * 0.05,
+                          child: const Card(
+                              color: CustomColors.kGrayColor,
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(" Create New Department +",
+                                      style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          color: CustomColors.kBlueColor))))),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AddNewDepartment(orgId: widget.orgID)));
+                      },
+                    ),
+                    ListView.builder(
+                      itemCount: val.department.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                              height: size.height * 0.05,
+                              child: Card(
+                                  color: val.department[index].deptName == reqDepName ? CustomColors.kBlueColor : CustomColors.kGrayColor,
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(" ${val.department[index].deptName}",
+                                          style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              color: val.department[index].deptName == reqDepName ? CustomColors.kWhiteColor : null)
+                                      )
+                                  )
+                              )
+                          ),
+                          onTap: () {
+                            ApiConfig.updateAssignOrgRequestStatus(context: context,orgID: orgID,personID: personID,depID: val.department[index].deptId,reqStatus: 1,orgName: widget.orgNAME);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
   }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
+    return /*EasyRefresh(
+      triggerAxis: axisDirectionToAxis(AxisDirection.down),
+      onRefresh: () async {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME, orgID:widget.orgID)));
+      },
+      onLoad: () async {
+
+      },
+      child: */Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
@@ -46,11 +142,12 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            //padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
             padding: EdgeInsets.only(top: size.height * 0.02, left: size.width * 0.02, right: size.height * 0.02),
             child: Consumer<IndexProvider>(builder: (context, val, child) {
               return TabBar(
                 onTap: (value) async {
+                  debugPrint("Index Value for Tabs-----}$value");
+                  //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME, orgID:widget.orgID)));
                   val.setOrgMemberIndex(value);
                   if (value == 0) {
                   } else {
@@ -90,7 +187,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
               children: <Widget>[
                 ///Pending Requested
                 FutureBuilder(
-                    future: ApiConfig.getOrgMemberData(context: context, tabIndex: 0),
+                    future: ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0),
                     builder: (context,snapshot) {
                       if(snapshot.connectionState==ConnectionState.waiting){
                         return SizedBox(
@@ -108,10 +205,10 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                   itemCount: val.requestPendingOrgDataList.length,
                                   itemBuilder: (context, index) {
                                     return Container(
-                                      height: size.height * 0.1,
+                                      height: defaultTargetPlatform == TargetPlatform.iOS?size.height * 0.1:size.height * 0.13,
                                       decoration: const BoxDecoration(
                                           border: BorderDirectional(
-                                              bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),
+                                            bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),
                                           )
                                       ),
                                       margin: EdgeInsets.symmetric(
@@ -124,14 +221,14 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Flexible(
-                                                child: RichText(
-                                                  text: TextSpan(
-                                                      text: "${val.requestPendingOrgDataList[index].firstName} ${val.requestPendingOrgDataList[index].lastName} ${CustomString.requestedToJoinAdmin}",style: DefaultTextStyle.of(context).style,
-                                                      children: [
-                                                        TextSpan(text: val.requestPendingOrgDataList[index].deptName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-                                                      ]
-                                                  ),
+                                              child: RichText(
+                                                text: TextSpan(
+                                                    text: "${val.requestPendingOrgDataList[index].firstName} ${val.requestPendingOrgDataList[index].lastName} ${CustomString.requestedToJoinAdmin}",style: DefaultTextStyle.of(context).style,
+                                                    children: [
+                                                      TextSpan(text: val.requestPendingOrgDataList[index].deptName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                                    ]
                                                 ),
+                                              ),
                                             ),
                                             //SizedBox(height: size.height * 0.01),
                                             Text(timeAgo(val.requestPendingOrgDataList[index].tStamp.toString()),
@@ -141,8 +238,8 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                                 SizedBox(
                                                   width: size.width/2.2,
                                                   child: ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
-                                                      onPressed: () {
-                                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId);
+                                                      onPressed: () async {
+                                                        showRemoveConfirmation(context:context, indexedOrgId:val.requestPendingOrgDataList[index].orgId, personId:val.requestPendingOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID);
                                                       },
                                                       child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                                 ),
@@ -151,7 +248,8 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                                   width: size.width/2.2,
                                                   child: ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kBlueColor),),
                                                       onPressed: () {
-                                                        ApiConfig.deleteOrgRequest(context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId);
+                                                        _showDialog(reqDepName:val.requestPendingOrgDataList[index].deptName,context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId,depID: val.requestPendingOrgDataList[index].deptId);
+                                                        debugPrint("------->${val.requestPendingOrgDataList[index].orgId}");
                                                       },
                                                       child: const Text(CustomString.assign, style: TextStyle(color: CustomColors.kWhiteColor, fontFamily: 'Poppins'))),
                                                 ),
@@ -181,7 +279,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
 
                 ///Approved
                 FutureBuilder(
-                    future: ApiConfig.getOrgMemberData(context: context, tabIndex: 1),
+                    future: ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 1),
                     builder: (context,snapshot) {
                       if(snapshot.connectionState==ConnectionState.waiting){
                         return SizedBox(
@@ -201,7 +299,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                       //height: size.height * 0.1,
                                       decoration: const BoxDecoration(
                                           border: BorderDirectional(
-                                              bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),)
+                                            bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),)
                                       ),
                                       margin: EdgeInsets.symmetric(
                                           horizontal: size.width * 0.03,
@@ -216,6 +314,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
+                                                SizedBox(height: size.height * 0.004),
                                                 Flexible(
                                                     child: RichText(
                                                       text: TextSpan(
@@ -239,10 +338,11 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                               onSelected: (item) {
                                                 switch (item) {
                                                   case 0:
-
+                                                    showToast(context, "View Clicked");
                                                   case 1:
                                                   ///edit logic
-                                                  /*  Navigator.push(
+                                                    showToast(context, "Edit Clicked");
+                                                /*  Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) =>
@@ -255,18 +355,18 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                                                     sDate: vaL.personEx[index].startDate!,
                                                                     eDate: vaL.personEx[index].endDate!)));*/
                                                   case 2:
-                                                  showRemoveConfirmation(context: context);
+                                                    showRemoveConfirmation(context:context, indexedOrgId:val.approveOrgDataList[index].orgId, personId:val.approveOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID);
                                                 }
                                               },
                                               itemBuilder: (_) => [
                                                 const PopupMenuItem(
                                                     value: 0, child: Text(CustomString.view, style: TextStyle(fontFamily: 'Poppins'))),
                                                 const PopupMenuItem(
-                                                    value: 0, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                                                    value: 1, child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
                                                 const PopupMenuItem(
-                                                    value: 1, child: Text(CustomString.remove, style: TextStyle(fontFamily: 'Poppins')))
+                                                    value: 2, child: Text(CustomString.remove, style: TextStyle(fontFamily: 'Poppins')))
                                               ]),
-                                          ],
+                                        ],
                                       ),
                                     );
                                   }) :
@@ -291,6 +391,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
           ),
         ],
       ),
+    // ),
     );
   }
 }
