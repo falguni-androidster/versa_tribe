@@ -415,8 +415,6 @@ class _SignInScreenState extends State<SignInScreen> {
     LoginResponseModel loginResponseModelData;
     if (connectivityResult == ConnectivityResult.none) {
       showToast(context, CustomString.checkNetworkConnection);
-    } else if (connectivityResult == ConnectivityResult.mobile) {
-      showToast(context, CustomString.notConnectServer);
     } else {
       Map signInParameter = {
         "username": emailController.text.toString(),

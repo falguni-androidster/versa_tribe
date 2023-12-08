@@ -58,6 +58,9 @@ class DisplayOrgMemberProvider with ChangeNotifier{
       notifyListeners();
     });
   }
+  notify(){
+    notifyListeners();
+  }
   setApproveOrgData(approveOrgData){
     approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveMemberModel.fromJson(ob));
