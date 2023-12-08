@@ -1,22 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Model/department.dart';
 import 'package:versa_tribe/Providers/switch_provider.dart';
+import 'package:versa_tribe/Providers/training_provider.dart';
+import 'package:versa_tribe/Utils/custom_toast.dart';
 import 'package:versa_tribe/Utils/image_path.dart';
-import 'package:versa_tribe/Utils/shared_preference.dart';
 
 import '../Model/SwitchDataModel.dart';
 import '../Model/profile_response.dart';
 import '../Providers/manage_org_index_provider.dart';
 import '../Providers/person_details_provider.dart';
-import '../Screens/OrgAdmin/manage_department.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/manage_organization_screen.dart';
-import '../Screens/person_details_screen.dart';
 import 'custom_string.dart';
 
 class ApiConfig {
@@ -24,14 +21,14 @@ class ApiConfig {
   // static const String baseUrl = 'https://srv1.ksgs.local:9443';
   static const String baseUrl = 'https://api.gigpro.in';
 
-// Usage example
-// You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
-// For instance, when using the http package for making network requests:
-// http.get('${ApiConfig.baseUrl}/endpoint')
+  // Usage example
+  // You can use ApiConfig.baseUrl wherever you need to make API calls in your app.
+  // For instance, when using the http package for making network requests:
+  // http.get('${ApiConfig.baseUrl}/endpoint')
 
   /*------------ Profile Screen --------------*/
   Future<ProfileResponse> getProfileData() async {
-    const String profileUrl = '${ApiConfig.baseUrl}/api/Person/MyProfile';
+    const String profileUrl = '$baseUrl/api/Person/MyProfile';
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -42,7 +39,7 @@ class ApiConfig {
 
     if (response.statusCode == 200) {
       // If server returns a 200 OK response, parse the JSON
-      print('OrgPerson Profile data-----------> ${response.body}');
+      debugPrint('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
       ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
       pref.setString('PersonId', yourModel.personId.toString());
@@ -53,7 +50,60 @@ class ApiConfig {
     }
   }
 
-  /*-----------  Profile Details Screen  ----------------*/
+
+  /*------------------------------------------   Training Screen   ---------------------------------------------*/
+  static getTrainingData(context) async {
+
+    final provider = Provider.of<TrainingListProvider>(context, listen: false);
+    provider.getTrainingList.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String trainingUrl = '$baseUrl/api/Training/User/GetList';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        // If server returns a 200 OK response, parse the JSON
+        debugPrint('Training data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getTrainingList.clear();
+        provider.setListTraining(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Training Data not found...");
+      }
+    }catch(e){
+      debugPrint("Training------>$e");
+    }
+  }
+
+  static deleteTraining(context, int? trainingId) async {
+    String url = "$baseUrl/api/Training/Delete?id=$trainingId";
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("if--------->${response.body}");
+      getTrainingData(context);
+      Navigator.pop(context);
+    } else {
+      debugPrint("else--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again Data not delete..."),
+      ));
+    }
+    return response.body;
+  }
+
+  /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
+
   static getUserExperience(context) async {
     final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
     provider.personEx.clear();
@@ -163,12 +213,12 @@ class ApiConfig {
         provider.department.clear();
         provider.setDepartment(data);
       } else {
-        print("--Error to get department--->${response.body}");
+        debugPrint("--Error to get department--->${response.body}");
       }
     }
 
 
-  static Future deletePersonEx(context, int? perExpId) async {
+  static deletePersonEx(context, int? perExpId) async {
       String url = "$baseUrl/api/PersonExperiences/Delete?id=$perExpId";
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
@@ -188,6 +238,7 @@ class ApiConfig {
       }
       return response.body;
   }
+
   static deletePersonQL(context, int? perQLId) async {
     try{
       String url = "$baseUrl/api/PersonQualifications/5?id=$perQLId";
@@ -338,7 +389,7 @@ class ApiConfig {
     }
   }
   static addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
-    print("---->}>--> $courseName ---> $instituteName---> $grade---> $city ---> $yop");
+    debugPrint("---->}>--> $courseName ---> $instituteName---> $grade---> $city ---> $yop");
     Map<String, dynamic> requestData = {
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
@@ -871,7 +922,7 @@ class ApiConfig {
     }
   }
   static deleteDepartment({context, departmentID,orgId}) async {
-    print("dept--->$departmentID ---$orgId");
+    debugPrint("dept--->$departmentID ---$orgId");
     String apiUrl = "$baseUrl/api/Departments/Delete?dept_Id=$departmentID";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -937,7 +988,7 @@ class ApiConfig {
     }
   }
   static editDepartment({context, departmentName,depId,parentDepId, orgID}) async {
-    print("////********>>>>>>$parentDepId");
+    debugPrint("////********>>>>>>$parentDepId");
     Map<String, dynamic> requestData = {
       "Org_Id": orgID,
       "Dept_Id": depId,

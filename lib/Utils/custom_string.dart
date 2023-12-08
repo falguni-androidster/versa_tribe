@@ -153,6 +153,12 @@ class CustomString {
   static const String personLimit = 'Person Limit';
 
   static const String trainingCreatedSuccess = ' Training Created Successfully!! ';
+  static const String noTrainingFound = 'No Training Found';
+
+  static const String manageCriteria = 'Manage Criteria';
+  static const String manageRequest = 'Manage Request';
+
+  static const String manageTraining = 'Manage Training';
 
 /*---------------------------- Organization Screen --------------------------*/
   static const String joinOrganization = 'Join Organization';
@@ -184,7 +190,7 @@ class CustomString {
   static const String experience = 'Experience';
   static const String qualification = 'Qualification';
   static const String skill = 'Skill';
-  static const String hobbies = 'Hobbies';
+  static const String hobby = 'Hobby';
   static const String jobTitleRequired = '* Job title is Required....';
   static const String jobTitle = 'Job title';
   static const String selectYourCompanyAndIndustry = 'Select Your Company / Industry';

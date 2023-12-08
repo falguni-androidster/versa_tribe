@@ -155,8 +155,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if (_formKey.currentState!.validate()) {
       if (connectivityResult == ConnectivityResult.none) {
         showToast(context, CustomString.checkNetworkConnection);
-      } else if (connectivityResult == ConnectivityResult.mobile) {
-        showToast(context, CustomString.notConnectServer);
       } else {
         // put Loading
         Map data = {

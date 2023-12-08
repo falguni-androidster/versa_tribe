@@ -25,4 +25,8 @@ class ImagePath {
   static const String messenger = 'assets/svg/ic_messenger.svg';
   static const String account = 'assets/svg/ic_account.svg';
 
+  static const String addIcon = 'assets/svg/ic_add.svg';
+  static const String editIcon = 'assets/svg/ic_edit.svg';
+  static const String deleteIcon = 'assets/svg/ic_delete.svg';
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'custom_string.dart';
 
@@ -30,6 +31,14 @@ String timeAgo(String timestamp) {
     return 'Yesterday';
   } else {
     return '${difference.inDays} days ago';
+  }
+}
+
+class DateUtil {
+  static const dateFormat = 'dd/MM/yyyy';
+  String formattedDate(DateTime dateTime) {
+    debugPrint('dateTime ($dateTime)');
+    return DateFormat(dateFormat).format(dateTime);
   }
 }
 
