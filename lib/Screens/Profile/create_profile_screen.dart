@@ -300,15 +300,13 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
   Future<void> createProfileClick(context) async {
     if (_formKey.currentState!.validate()) {
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
-      } else if(connectivityResult == ConnectivityResult.mobile){
-        showToast(context, CustomString.notConnectServer);
       } else {
         // Put Loading
         const CircularProgressIndicator();

@@ -404,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: <Widget>[
           const DashboardScreen(),
           const ProjectScreen(),
-          const TrainingScreen(),
+          TrainingScreen(orgId: orgId),
           const ProjectScreen(),
           const AccountScreen()
         ][currentScreenIndex]

@@ -27,6 +27,7 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: CustomColors.kWhiteColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,7 +38,7 @@ class _AccountScreenState extends State<AccountScreen> {
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
-                if(snapshot.connectionState==ConnectionState.waiting){
+                if(snapshot.connectionState == ConnectionState.waiting){
                   return SizedBox(
                     height: size.height*0.21,
                     child: const Center(
@@ -45,9 +46,10 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                   );
                 }
-                else if(snapshot.connectionState==ConnectionState.done){
+                else if(snapshot.connectionState == ConnectionState.done){
                   return containerProfile(snapshot);
-                }else{debugPrint("-----Profile print future builder in Account screen------");
+                }else{
+                  debugPrint("-----Profile print future builder in Account screen------");
                 }
                 return Container();
               },
@@ -57,7 +59,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
             InkWell(
               child: containerButton(
-                  height: size.height * 0.06, text: CustomString.personDetails),
+                  height: size.height * 0.06,
+                  text: CustomString.personDetails),
               onTap: () {
                 _navigateToNextScreen(context, 'PersonDetails');
               },
@@ -74,7 +77,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
             InkWell(
               child: containerButton(
-                  height: size.height * 0.06, text: CustomString.settings),
+                  height: size.height * 0.06,
+                  text: CustomString.settings),
               onTap: () {
                 // logoutClick(context);
               },
@@ -82,7 +86,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
             InkWell(
               child: containerButton(
-                  height: size.height * 0.06, text: CustomString.help),
+                  height: size.height * 0.06,
+                  text: CustomString.help),
               onTap: () {
                 // logoutClick(context);
               },
@@ -90,7 +95,8 @@ class _AccountScreenState extends State<AccountScreen> {
 
             InkWell(
               child: containerButton(
-                  height: size.height * 0.06, text: CustomString.about),
+                  height: size.height * 0.06,
+                  text: CustomString.about),
               onTap: () {
                 // logoutClick(context);
               },

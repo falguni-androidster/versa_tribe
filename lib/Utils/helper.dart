@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
+import 'package:intl/intl.dart';
 
 import '../Providers/manage_org_index_provider.dart';
 import 'api_config.dart';
@@ -37,6 +38,14 @@ String timeAgo(String timestamp) {
   }
 }
 
+class DateUtil {
+  static const dateFormat = 'dd/MM/yyyy';
+  String formattedDate(DateTime dateTime) {
+    debugPrint('dateTime ($dateTime)');
+    return DateFormat(dateFormat).format(dateTime);
+  }
+}
+
 showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
   showDialog(
     context: context,
@@ -51,15 +60,16 @@ showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
             },
             child: const Text(CustomString.no, style: TextStyle(fontFamily: 'Poppins',color: CustomColors.kLightGrayColor)),
           ),
-               TextButton(
-                onPressed: () async {
-                  // Add your delete logic here
-                   ApiConfig.deleteOrgFromAdminSide(context:context, indexedOrgID:indexedOrgId, personID:personId, orgName: orgName,orgID: orgId);
-                },
-                child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
-              )
+          TextButton(
+            onPressed: () async {
+              // Add your delete logic here
+              ApiConfig.deleteOrgFromAdminSide(context:context, indexedOrgID:indexedOrgId, personID:personId, orgName: orgName,orgID: orgId);
+            },
+            child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
+          )
         ],
       );
     },
   );
 }
+

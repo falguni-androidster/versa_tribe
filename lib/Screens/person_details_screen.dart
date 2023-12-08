@@ -655,7 +655,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     children: [
                       SizedBox(height: size.height * 0.01),
                       Row(children: [
-                        const Text(CustomString.hobbies,
+                        const Text(CustomString.hobby,
                             style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
                         const Spacer(),
                         IconButton(

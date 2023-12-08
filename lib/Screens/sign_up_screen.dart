@@ -307,8 +307,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState!.validate()) {
       if(connectivityResult == ConnectivityResult.none){
         showToast(context, CustomString.checkNetworkConnection);
-      } else if(connectivityResult == ConnectivityResult.mobile){
-        showToast(context, CustomString.notConnectServer);
       } else {
         if (passwordController.text.toString() != confirmPasswordController.text.toString()) {
           showToast(context, CustomString.passwordAndConfirmPasswordNotMatch);

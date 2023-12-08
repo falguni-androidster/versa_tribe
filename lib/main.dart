@@ -16,6 +16,7 @@ import 'Providers/onboarding_provider.dart';
 import 'Providers/password_provider.dart';
 import 'Providers/person_details_provider.dart';
 import 'Providers/switch_provider.dart';
+import 'Providers/training_provider.dart';
 import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
 import 'Utils/custom_colors.dart';
@@ -57,6 +58,7 @@ void main() {
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
       ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
       ChangeNotifierProvider<TrainingDobProvider>(create: (_) => TrainingDobProvider()),
+      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider())
     ],
     child: const MyApp()
   ));
