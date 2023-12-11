@@ -102,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(height: size.height * 0.02),
 
                     /// Password Field
-                    Consumer<PwdProvider>(builder: (context, val, child) {
+                    Consumer<SignUpPwdProvider>(builder: (context, val, child) {
                       return TextFormField(
                         controller: passwordController,
                         obscureText: val.visible,

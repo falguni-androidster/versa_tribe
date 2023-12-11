@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
-import '../Training/create_training_screen.dart';
 import '../Training/training_item_screen.dart';
 
 class TrainingScreen extends StatefulWidget {
@@ -25,16 +24,16 @@ class _TrainingScreenState extends State<TrainingScreen> {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      floatingActionButton: Padding(
+      /*floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 20.0),
         child: FloatingActionButton(
           onPressed: (){
-            _navigateToNextScreen(context);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTrainingScreen(orgId: widget.orgId)));
           },
           backgroundColor: CustomColors.kBlueColor,
           child: const Icon(Icons.add,color: CustomColors.kWhiteColor),
         ),
-      ),
+      ),*/
       body: FutureBuilder(
         future: ApiConfig.getTrainingData(context),
         builder: (context, snapshot) {
@@ -121,10 +120,6 @@ class _TrainingScreenState extends State<TrainingScreen> {
         },
       ),
     );
-  }
-
-  void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTrainingScreen(orgId: widget.orgId)));
   }
 
   void _showDeleteConfirmation(context, trainingId) {

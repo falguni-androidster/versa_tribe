@@ -189,7 +189,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     SizedBox(height: size.height * 0.02),
 
                     /// Password Field
-                    Consumer<PwdProvider>(builder: (context, val, child) {
+                    Consumer<SignInPwdProvider>(builder: (context, val, child) {
                       return TextFormField(
                         controller: passwordController,
                         obscureText: val.visible,

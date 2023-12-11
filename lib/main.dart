@@ -11,8 +11,9 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<OnBoardingProvider>(create: (_) => OnBoardingProvider()),
-      ChangeNotifierProvider<PwdProvider>(create: (_) => PwdProvider()),
+      ChangeNotifierProvider<SignInPwdProvider>(create: (_) => SignInPwdProvider()),
       ChangeNotifierProvider<ConfirmPwdProvider>(create: (_) => ConfirmPwdProvider()),
+      ChangeNotifierProvider<SignUpPwdProvider>(create: (_) => SignUpPwdProvider()),
       ChangeNotifierProvider<ProfileGenderProvider>(create: (_) => ProfileGenderProvider()),
       ChangeNotifierProvider<DobProvider>(create: (_) => DobProvider()),
       ChangeNotifierProvider<ManageBottomTabProvider>(create: (_) => ManageBottomTabProvider()),
@@ -37,13 +38,17 @@ void main() {
       ChangeNotifierProvider<SearchParentDPProvider>(create: (_) => SearchParentDPProvider()),
       ChangeNotifierProvider<RadioComIndProvider>(create: (_) => RadioComIndProvider()),
       ChangeNotifierProvider<AddRadioComIndProvider>(create: (_) => AddRadioComIndProvider()),
-      ChangeNotifierProvider<JoinBtnDropdownBtnProvider>(create: (_) => JoinBtnDropdownBtnProvider()),
       ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider()),
       ChangeNotifierProvider<OrgProfileBtnVisibility>(create: (_) => OrgProfileBtnVisibility()),
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
       ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
       ChangeNotifierProvider<TrainingDobProvider>(create: (_) => TrainingDobProvider()),
-      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider())
+      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider()),
+      ChangeNotifierProvider<TrainingExperienceProvider>(create: (_) => TrainingExperienceProvider()),
+      ChangeNotifierProvider<TrainingQualificationProvider>(create: (_) => TrainingQualificationProvider()),
+      ChangeNotifierProvider<TrainingSkillProvider>(create: (_) => TrainingSkillProvider()),
+      ChangeNotifierProvider<TrainingHobbyProvider>(create: (_) => TrainingHobbyProvider())
+
     ],
     child: const MyApp()
   ));

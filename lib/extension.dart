@@ -31,15 +31,13 @@ export 'Model/switch_data.dart';
 export 'Model/training_response.dart';
 
 export 'Providers/bottom_tab_provider.dart';
-export 'Providers/call_switch_provider.dart';
-export 'Providers/confirm_password_provider.dart';
+export 'Providers/password_provider.dart';
 export 'Providers/date_provider.dart';
 export 'Providers/manage_org_index_provider.dart';
 export 'Providers/manage_visibility_btn.dart';
 export 'Providers/onboarding_provider.dart';
 export 'Providers/organization_provider.dart';
-export 'Providers/password_provider.dart';
 export 'Providers/person_details_provider.dart';
-export 'Providers/profile_gender_provider.dart';
+export 'Providers/profile_provider.dart';
 export 'Providers/switch_provider.dart';
 export 'Providers/training_provider.dart';

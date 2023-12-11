@@ -91,6 +91,106 @@ class ApiConfig {
     return response.body;
   }
 
+  static getTrainingExperience(context, int? trainingId) async {
+    final provider = Provider.of<TrainingExperienceProvider>(context, listen: false);
+    provider.trainingEx.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Training_Criteria/GetExpCriteria?trainingId=$trainingId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("experience-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setTrainingEx(data);
+      } else {
+        debugPrint("Experience Data not found...");
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
+
+  static getTrainingQualification(context, int? trainingId) async {
+    final provider = Provider.of<TrainingQualificationProvider>(context, listen: false);
+    provider.trainingQua.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Training_Criteria/GetQualifications?trainingId=$trainingId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("qualification-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setTrainingQua(data);
+      } else {
+        debugPrint("Qualification Data not found...");
+      }
+    }catch(e){
+      debugPrint("qualification------>$e");
+    }
+  }
+
+  static getTrainingSkill(context, int? trainingId) async {
+    final provider = Provider.of<TrainingSkillProvider>(context, listen: false);
+    provider.trainingSkill.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Training_Criteria/GetSkillsByTrainingId?trainingId=$trainingId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("skill-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setTrainingSkill(data);
+      } else {
+        debugPrint("Skill Data not found...");
+      }
+    }catch(e){
+      debugPrint("skill------>$e");
+    }
+  }
+
+  static getTrainingHobby(context, int? trainingId) async {
+    final provider = Provider.of<TrainingHobbyProvider>(context, listen: false);
+    provider.trainingHobby.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Training_Criteria/Hobby/GetByTrainingId?trainingId=$trainingId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("hobby-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setTrainingHobby(data);
+      } else {
+        debugPrint("Hobby Data not found...");
+      }
+    }catch(e){
+      debugPrint("hobby------>$e");
+    }
+  }
+
   /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
 
   static getUserExperience(context) async {

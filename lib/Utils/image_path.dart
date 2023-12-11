@@ -29,4 +29,6 @@ class ImagePath {
   static const String editIcon = 'assets/svg/ic_edit.svg';
   static const String deleteIcon = 'assets/svg/ic_delete.svg';
 
+  static const String tickCircleIcon = 'assets/svg/ic_tickCircle.svg';
+
 }
