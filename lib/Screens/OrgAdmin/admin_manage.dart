@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:versa_tribe/Model/profile_response.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
-import 'package:versa_tribe/Screens/person_details_screen.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
-import '../manage_organization_screen.dart';
-import '../sign_in_screen.dart';
 import 'manage_department.dart';
 import 'manage_org_members.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ManageAdminScreen extends StatefulWidget {
 
@@ -25,7 +18,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("ORGID***--->${widget.orgID}");
+    debugPrint("orgID***--->${widget.orgID}");
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -130,10 +123,6 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
       ),
       child: Container(
         alignment: Alignment.center,
-        // decoration: const BoxDecoration(
-        //     borderRadius: BorderRadius.all(Radius.circular(10)),
-        //     color: CustomColors.kWhiteColor
-        // ),
         decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(color: CustomColors.kBlueColor, width: 2),
@@ -152,7 +141,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.orgNAME?? '',style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14, fontFamily: 'Poppins')),
+                    Text(widget.orgNAME,style: const TextStyle(color: CustomColors.kBlackColor,fontSize: 14, fontFamily: 'Poppins')),
                   const SizedBox(height: 2),
                   Text(snapshot.data?.tOwner ?? '', style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                 ]
@@ -162,7 +151,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               InkWell(
                 child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgName: widget.orgNAME??""/*snapshot.data?.firstName ?? ''*/,orgId:widget.orgID)));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgName: widget.orgNAME,orgId:widget.orgID)));
                 },
               )
             ],

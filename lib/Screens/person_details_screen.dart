@@ -4,13 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/custom_string.dart';
-import '../Model/profile_response.dart';
-import '../Providers/person_details_provider.dart';
 import '../Utils/container_list.dart';
-import '../Utils/image_path.dart';
 import 'PersonDetails/add_experience_screen.dart';
 import 'PersonDetails/add_hobby_screen.dart';
 import 'PersonDetails/add_qualification_screen.dart';
@@ -19,6 +13,7 @@ import 'PersonDetails/edit_experience_screen.dart';
 import 'PersonDetails/edit_qualification_screen.dart';
 import 'PersonDetails/edit_skill_screen.dart';
 import 'Profile/update_profile_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
 
@@ -29,27 +24,6 @@ class PersonDetailsScreen extends StatefulWidget {
 }
 
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
-
-  @override
-  void initState() {
-    print("----->init state Method<-----");
-    super.initState();
-    //ApiConfig.getUserExperience(context);
-    //ApiConfig.getUserQualification(context);
-    //ApiConfig.getUserSkills(context);
-    //ApiConfig.getUserHobby(context);
-  }
-  @override
-  void dispose() {
-    print("----->Dispose Method<-----");
-    super.dispose();
-  }
-  @override
-  void didChangeDependencies() {
-    print("----->Did change dependency Method<-----");
-    super.didChangeDependencies();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +39,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               },
               icon: const Icon(Icons.arrow_back_ios,
                   color: CustomColors.kBlackColor)
-              //replace with our own icon data.
               ),
           centerTitle: true,
           title: const Text(CustomString.profileDSHeaderText,
@@ -138,42 +111,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         },
                       ),
                     ]),
-                    ///Experience 0.1
-                    /*Consumer<PersonExperienceProvider>(
-                        builder: (context, val, child) {
-                      return val.personEx.isNotEmpty?ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: val.personEx.length,
-                        itemBuilder: (context, index) {
-                          String? comN = val.personEx[index].companyName;
-                         // String? indN = val.personEx[index].industryFieldName;
-                          String? sDate = val.personEx[index].startDate;
-                          String sd = DateFormat.yMMM().format(DateTime.parse(sDate!));
-                          String? eDate = val.personEx[index].endDate;
-                          String ed = DateFormat.yMMM().format(DateTime.parse(eDate!));
-                          return timelineTile(
-                            context: context,
-                              comN: comN,
-                              ed: ed,
-                              sd: sd,
-                              vaL: val,
-                              index: index,
-                              widgetKey: "personExperience");
-                        },
-                      ): SizedBox(
-                        width: size.width,
-                        height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
-                          child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                          Image.asset(ImagePath.noData,fit: BoxFit.fill,),
-                            const Text(CustomString.noExperienceFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                        ],),
-                      ));
-                    }),*/
-                    /// Experience 0.2
+
                     FutureBuilder(
                       future: ApiConfig.getUserExperience(context),
                       builder: (context,snapshot) {
@@ -274,37 +212,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         )
                       ],
                     ),
-                    /// Qualification 0.1
-                    /*Consumer<PersonQualificationProvider>(
-                        builder: (context, val, child) {
-                      return val.personQl.isNotEmpty?ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: val.personQl.length,
-                        itemBuilder: (context, index) {
-                          String date = val.personQl[index].yOP.toString();
-                          String passingY =
-                              DateFormat.yMMM().format(DateTime.parse(date));
-                          return timelineTile(
-                            context: context,
-                            index: index,
-                            vaL: val,
-                            passingYear: passingY,
-                          );
-                        },
-                      ):SizedBox(
-                          width: size.width,
-                          height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
-                          child: Center(
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                          Image.asset(ImagePath.noData,fit: BoxFit.fill,),
-                          const Text(CustomString.noQualificationFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                          ],),
-                          ));
-                    }),*/
-                    /// Qualification 0.2
+
                     FutureBuilder(
                       future: ApiConfig.getUserQualification(context),
                       builder: (context,snapshot) {
@@ -387,83 +295,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         },
                       ),
                     ]),
-                    // /// skill 0.1
-                    // Consumer<PersonSkillProvider>(builder: (context, val, child) {
-                    //   return val.personSkill.isNotEmpty?ListView.builder(
-                    //     shrinkWrap: true,
-                    //     physics: const NeverScrollableScrollPhysics(),
-                    //     itemCount: val.personSkill.length,
-                    //     itemBuilder: (context, index) {
-                    //       return Container(
-                    //         margin: EdgeInsets.only(left: size.width * 0.03, bottom: size.height * 0.01),
-                    //         child: Row(
-                    //           crossAxisAlignment: CrossAxisAlignment.center,
-                    //           children: [
-                    //             Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Text(
-                    //                   "${val.personSkill[index].skillName}",
-                    //                   style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 14, fontFamily: 'Poppins'),
-                    //                 ),
-                    //                 SizedBox(height: size.height * 0.005),
-                    //                 Text(
-                    //                     "Experience: ${val.personSkill[index].experience ?? ""} months",
-                    //                     style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                    //               ],
-                    //             ),
-                    //             const Spacer(),
-                    //             PopupMenuButton(
-                    //                 child: CircleAvatar(
-                    //                   radius:10,backgroundColor: Colors.transparent,
-                    //                     child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
-                    //                 onSelected: (item) {
-                    //                   int perSKID =
-                    //                       val.personSkill[index].perSkId!;
-                    //                   String skillName =
-                    //                       val.personSkill[index].skillName!;
-                    //                   int month =
-                    //                       val.personSkill[index].experience!;
-                    //                   switch (item) {
-                    //                     case 0:
-                    //                       Navigator.push(
-                    //                           context,
-                    //                           MaterialPageRoute(
-                    //                               builder: (context) =>
-                    //                                   EditSkillScreen(
-                    //                                       skillName: skillName,
-                    //                                       months: month,
-                    //                                       perSkillId: perSKID)));
-                    //                     case 1:
-                    //                       _showDeleteConfirmation(context, "identityPSD", perSKID, "");
-                    //                   }
-                    //                 },
-                    //                 itemBuilder: (_) => [
-                    //                       const PopupMenuItem(
-                    //                           value: 0,
-                    //                           child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
-                    //                       const PopupMenuItem(
-                    //                           value: 1,
-                    //                           child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
-                    //                     ]),
-                    //             SizedBox(width: size.width * 0.04)
-                    //           ],
-                    //         ),
-                    //       );
-                    //     },
-                    //   ):SizedBox(
-                    //       width: size.width,
-                    //       height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
-                    //       child: Center(
-                    //         child: Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.center,
-                    //           children: [
-                    //             Image.asset(ImagePath.noData,fit: BoxFit.fill,),
-                    //             const Text(CustomString.noSkillFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                    //           ],),
-                    //       ));
-                    // }),
-                    /// skill 0.2
                     FutureBuilder(
                       future: ApiConfig.getUserSkills(context),
                       builder: (context, snapshot) {
@@ -562,84 +393,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
               SizedBox(height: size.height * 0.02),
 
-              // /// Hobbies 0.1
-              // Container(
-              //   decoration: BoxDecoration(
-              //       border: Border.all(color: CustomColors.kBlueColor, width: 2),
-              //       borderRadius: BorderRadius.circular(10)),
-              //   margin: EdgeInsets.symmetric(horizontal: mWidget * 0.03),
-              //   height: mHeight * 0.20,
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     mainAxisAlignment: MainAxisAlignment.start,
-              //     children: [
-              //       SizedBox(height: mHeight * 0.01),
-              //       Row(children: [
-              //         SizedBox(width: mWidget * 0.03),
-              //         const Text(CustomString.hobbies,
-              //             style: TextStyle(
-              //                 color: CustomColors.kBlueColor,
-              //                 fontWeight: FontWeight.bold,
-              //                 fontSize: 16)),
-              //         const Spacer(),
-              //         IconButton(
-              //           icon:
-              //               const Icon(Icons.add, color: CustomColors.kBlueColor),
-              //           onPressed: () {
-              //             Navigator.push(
-              //                 context,
-              //                 MaterialPageRoute(
-              //                     builder: (context) => const AddHobbyScreen()));
-              //           },
-              //         ),
-              //       ]),
-              //       Expanded(
-              //         child: Container(
-              //           padding: const EdgeInsets.all(6),
-              //           child: Consumer<PersonHobbyProvider>(
-              //               builder: (context, val, child) {
-              //             return GridView.builder(
-              //                 scrollDirection: Axis.horizontal,
-              //                 gridDelegate:
-              //                     SliverGridDelegateWithMaxCrossAxisExtent(
-              //                   maxCrossAxisExtent: mWidget * 0.1,
-              //                   childAspectRatio: 1 / 5,
-              //                   crossAxisSpacing: 1,
-              //                 ),
-              //                 itemCount: val.personHobby.length,
-              //                 itemBuilder: (context, index) {
-              //                   return Wrap(children: [
-              //                     InkWell(
-              //                         onTap: () {
-              //                           _showDeleteConfirmation(
-              //                               context,
-              //                               "identityPHD",
-              //                               val.personHobby[index].hobbyId,
-              //                               val.personHobby[index].personId);
-              //                         },
-              //                         child: Container(
-              //                             decoration: BoxDecoration(
-              //                                 border: Border.all(
-              //                                     color: CustomColors.kBlueColor,
-              //                                     width: 2),
-              //                                 borderRadius:
-              //                                     BorderRadius.circular(10)),
-              //                             padding: const EdgeInsets.all(5.0),
-              //                             child: Text(
-              //                                 "${val.personHobby[index].name}",
-              //                                 style: const TextStyle(
-              //                                     color: Colors.black,
-              //                                     fontSize: 18))))
-              //                   ]);
-              //                 });
-              //           }),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              // SizedBox(height: mHeight * 0.01),
-
               ///Hobbies
               Container(
                 decoration: BoxDecoration(
@@ -668,32 +421,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           },
                         ),
                       ]),
-                   /*   /// hobbies 0.2
-                      Consumer<PersonHobbyProvider>(
-                          builder: (context, val, child) {
-                            List<String> hobbyNameList=[];
-                            List<int> hobbyIdList=[];
-                            List<int> personIdList=[];
-                             for (var element in val.personHobby) {
-                               hobbyNameList.add(element.name!);
-                               hobbyIdList.add(element.hobbyId!);
-                               personIdList.add(element.personId!);
-                             }
-                            return val.personHobby.isNotEmpty?
-                            TextContainerList(textData: hobbyNameList, personId:personIdList,hobbyId:hobbyIdList):SizedBox(
-                                width: size.width,
-                                height: defaultTargetPlatform == TargetPlatform.iOS?size.height*0.21:size.height*0.25,
-                                child: Center(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Image.asset(ImagePath.noData,fit: BoxFit.fill,),
-                                      const Text(CustomString.noHobbiesFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
-                                    ],),
-                                ));
-                          }
-                      ),*/
-                      /// hobbies 0.3
                       FutureBuilder(
                         future: ApiConfig.getUserHobby(context),
                         builder: (context,snapshot) {
@@ -838,9 +565,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 else if (identityKey == "identityPSD") {
                   ApiConfig.deletePersonSkill(context, iD);
                 }
-                // else if (identityKey == "identityPHD") {
-                //   ApiConfig.deletePersonHobby(context, personId, iD);
-                // }
               },
               child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
             ),
@@ -885,10 +609,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                           const Spacer(),
                           PopupMenuButton(
-                              // icon: const Icon(
-                              //   Icons.more_horiz,
-                              //   color: CustomColors.kBlueColor,
-                              // ),
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
                                   child: SvgPicture.asset(ImagePath.moreIcon, width: 15, height: 4, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
@@ -953,7 +673,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 String grade = vaL.personQl[index].grade;
                                 String city = vaL.personQl[index].city;
                                 int pQID = vaL.personQl[index].pQId;
-                                print("-----=->${vaL.personQl[index].yOP}");
+                                debugPrint("-----=->${vaL.personQl[index].yOP}");
                                 String yop = DateFormat("yyyy/MM/dd").format(DateTime.parse("${vaL.personQl[index].yOP}"));
                                 switch (item) {
                                   case 0:

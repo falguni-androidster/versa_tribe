@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class OnBoardingProvider with ChangeNotifier {
   int _currentPage = 0;

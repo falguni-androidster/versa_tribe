@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:versa_tribe/Model/training_response.dart';
 
 /// TrainingListProvider class

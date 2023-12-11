@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ProfileGenderProvider with ChangeNotifier{
   String _selectedValue = 'Male';

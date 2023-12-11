@@ -3,14 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/add_new_department.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_toast.dart';
-import '../../Providers/manage_org_index_provider.dart';
-import '../../Providers/person_details_provider.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/helper.dart';
-import '../../Utils/image_path.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ManageOrgMembers extends StatefulWidget {
   final String orgNAME;
@@ -113,18 +106,11 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return /*EasyRefresh(
-      triggerAxis: axisDirectionToAxis(AxisDirection.down),
-      onRefresh: () async {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME, orgID:widget.orgID)));
-      },
-      onLoad: () async {
-
-      },
-      child: */Scaffold(
+    return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
@@ -176,7 +162,6 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                           BorderRadius.all(Radius.circular(5)),
                           color: CustomColors.kGrayColor),
                       child: const Text(CustomString.approved, style: TextStyle(fontFamily: 'Poppins'))),
-
                 ],
               );
             }),
@@ -230,7 +215,6 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                                 ),
                                               ),
                                             ),
-                                            //SizedBox(height: size.height * 0.01),
                                             Text(timeAgo(val.requestPendingOrgDataList[index].tStamp.toString()),
                                                 style: const TextStyle(fontSize: 12, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
                                             Row(
@@ -342,18 +326,6 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
                                                   case 1:
                                                   ///edit logic
                                                     showToast(context, "Edit Clicked");
-                                                /*  Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                EditExperienceScreen(
-                                                                    title: CustomString.editExperience,
-                                                                    pExJobTitle: vaL.personEx[index].jobTitle!,
-                                                                    company: comN ?? "",
-                                                                    industry: vaL.personEx[index].industryFieldName ?? "",
-                                                                    pExId: vaL.personEx[index].perExpId,
-                                                                    sDate: vaL.personEx[index].startDate!,
-                                                                    eDate: vaL.personEx[index].endDate!)));*/
                                                   case 2:
                                                     showRemoveConfirmation(context:context, indexedOrgId:val.approveOrgDataList[index].orgId, personId:val.approveOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID);
                                                 }
@@ -391,7 +363,6 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
           ),
         ],
       ),
-    // ),
     );
   }
 }

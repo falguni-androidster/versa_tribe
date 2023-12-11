@@ -14,7 +14,7 @@ class CustomString {
   static const String getStarted = 'Get started';
 
   static const String onBoardingScreenTitle = 'Boost Productivity';
-  static const String onBoardingScreenDiscription =
+  static const String onBoardingScreenDescription =
       'Foc.io helps you boost your productivity on a different level';
 
 

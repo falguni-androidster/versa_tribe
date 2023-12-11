@@ -1,18 +1,10 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/confirm_password_provider.dart';
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Utils/custom_toast.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 
-import '../Providers/password_provider.dart';
-import '../Utils/api_config.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/validator.dart';
+import 'package:versa_tribe/extension.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

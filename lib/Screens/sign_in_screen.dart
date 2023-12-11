@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,16 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Screens/Profile/create_profile_screen.dart';
 import 'package:versa_tribe/Screens/sign_up_screen.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Utils/custom_toast.dart';
-import '../Model/login_response.dart';
-import '../Providers/password_provider.dart';
-import '../Utils/api_config.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/image_path.dart';
-import '../Utils/validator.dart';
 import 'forgot_password_screen.dart';
+import 'package:versa_tribe/extension.dart';
 
 class SignInScreen extends StatefulWidget {
 
@@ -37,36 +29,25 @@ class _SignInScreenState extends State<SignInScreen> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
-  GoogleSignIn googleSignIn =   GoogleSignIn(clientId: 'com.googleusercontent.apps.329226536237-94d1980cvhahrd1k8ddut1vmaaosjkq2');
+  GoogleSignIn googleSignIn =   GoogleSignIn(clientId: '801650424679-gfhm5fbk06pbqugfdp8cr1854bo6t46c.apps.googleusercontent.com');
 
-  //defaultTargetPlatform == TargetPlatform.android?
-  //GoogleSignIn(clientId: '801650424679-gfhm5fbk06pbqugfdp8cr1854bo6t46c.apps.googleusercontent.com'):
-  //GoogleSignIn(clientId: '329226536237-94d1980cvhahrd1k8ddut1vmaaosjkq2.apps.googleusercontent.com');
-
+  @override
   void initState() {
     super.initState();
-    // Check initial connectivity status when the widget is first built.
-    _checkConnectivity();
     // Listen for connectivity changes and update the UI accordingly.
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      debugPrint("Network connection------->$result");
         connectivityResult = result;
     });
     checkSignInStatus();
   }
 
-  Future<void> _checkConnectivity() async {
-    var connectResult = await Connectivity().checkConnectivity();
-    setState(() {
-      connectivityResult = connectResult;
-    });
-  }
-
   void checkSignInStatus() async {
     bool isSignedIn = await googleSignIn.isSignedIn();
     if (isSignedIn) {
-      print("User Signed In");
+      debugPrint("User Signed In");
     } else {
-      print("User Signed Out");
+      debugPrint("User Signed Out");
     }
   }
 
@@ -118,15 +99,15 @@ class _SignInScreenState extends State<SignInScreen> {
       if (result.status == LoginStatus.success) {
         // Access token obtained
         final AccessToken accessToken = result.accessToken!;
-        print('Access Token: ${accessToken.token}');
+        debugPrint('Access Token: ${accessToken.token}');
         // Use the access token for further operations
       } else {
         // Login failed or was canceled by the user
-        print('Facebook login failed');
+        debugPrint('Facebook login failed');
       }
     } catch (e) {
       // Handle exceptions
-      print('Error logging in with Facebook: $e');
+      debugPrint('Error logging in with Facebook: $e');
     }
   }
 
@@ -415,7 +396,9 @@ class _SignInScreenState extends State<SignInScreen> {
     LoginResponseModel loginResponseModelData;
     if (connectivityResult == ConnectivityResult.none) {
       showToast(context, CustomString.checkNetworkConnection);
-    } else {
+    }
+    else
+    {
       Map signInParameter = {
         "username": emailController.text.toString(),
         "password": passwordController.text.toString(),
@@ -428,14 +411,12 @@ class _SignInScreenState extends State<SignInScreen> {
           response.body); // Return Single Object
       loginResponseModelData = LoginResponseModel.fromJson(jsonData);
       if (response.body.isNotEmpty) {
-        print("------->${loginResponseModelData.accessToken}");
+        debugPrint("------->${loginResponseModelData.accessToken}");
         if (loginResponseModelData.accessToken != null) {
-          //await ApiConfig.getDataSwitching(context: context);
           final SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setString(CustomString.accessToken,
               loginResponseModelData.accessToken.toString());
           showToast(context, CustomString.accountLoginSuccess);
-          // For example, if login is successful
           pref.setBool(CustomString.isLoggedIn, true);
           if (loginResponseModelData.profileExist != "True") {
             if (!mounted) return;

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import '../../Providers/person_details_provider.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
+import 'package:versa_tribe/extension.dart';
 
 class EditDepartment extends StatefulWidget {
 
@@ -27,10 +24,6 @@ class _EditDepartmentState extends State<EditDepartment> {
   int? pDepId=0;
   @override
   void initState() {
-    print("--{{{---->${widget.parentDepId}");
-    print("--{{{---->${widget.depId}");
-    print("--{{{---->${widget.depName}");
-    print("--{{{---->${widget.parentDepName}");
     newDController.text = widget.depName.toString();
     searchParentDController.text = widget.parentDepName??"";
     super.initState();
@@ -49,7 +42,6 @@ class _EditDepartmentState extends State<EditDepartment> {
                   Navigator.pop(context);
                 },
                 icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-                //replace with our own icon data.
               );
             }
         ),
@@ -155,7 +147,6 @@ class _EditDepartmentState extends State<EditDepartment> {
                     width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          print("cheque---parent department Id------>$pDepId------>${widget.parentDepId}");
                           ApiConfig.editDepartment(context: context,departmentName: newDController.text, depId: widget.depId, parentDepId:pDepId==0?widget.parentDepId==0||widget.parentDepId==null?pDepId:widget.parentDepId:pDepId, orgID: widget.orgId );
                         },
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))

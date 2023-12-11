@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/custom_string.dart';
-
-import '../../Providers/person_details_provider.dart';
+import 'package:versa_tribe/extension.dart';
 
 class AddHobbyScreen extends StatefulWidget {
   const AddHobbyScreen({super.key});
@@ -28,7 +24,6 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
   }
   @override
   Widget build(BuildContext context) {
-
     final providerHobby = Provider.of<SearchHobbyProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
 
@@ -39,9 +34,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon:
-              const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-          //replace with our own icon data.
+          icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
         ),
         centerTitle: true,
         title: const Text(CustomString.createHobby,
@@ -98,24 +91,17 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                                 EdgeInsets.only(left: size.width * 0.02),
                                 height: size.height * 0.05,
                                 alignment: Alignment.centerLeft,
-                                child: Text(
-                                    '${val.hobbyList[index].name}',
-                                    style: const TextStyle(
-                                        color: CustomColors
-                                            .kLightGrayColor,fontFamily: 'Poppins'))),
+                                child: Text('${val.hobbyList[index].name}',
+                                    style: const TextStyle(color: CustomColors.kLightGrayColor,fontFamily: 'Poppins'))),
                           ),
                           onTap: () async {
-                            hobbyController.text =
-                                val.hobbyList[index].name ??
-                                    hobbyController.text;
+                            hobbyController.text = val.hobbyList[index].name ?? hobbyController.text;
                             val.setVisible(false);
                           },
                         );
                       }): Container();
                 }),
-
                 SizedBox(height: size.height * 0.03),
-
                 /// Submit Button
                 SizedBox(
                     width: double.infinity,
@@ -131,14 +117,9 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                         }
                       },
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              CustomColors.kBlueColor),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      side: const BorderSide(
-                                          color: Colors.transparent)))),
+                          backgroundColor: MaterialStateProperty.all(CustomColors.kBlueColor),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: const BorderSide(color: Colors.transparent)))),
                       child: const Text(CustomString.buttonContinue,
                           style: TextStyle(
                             color: CustomColors.kWhiteColor,

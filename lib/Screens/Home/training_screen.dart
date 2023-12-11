@@ -2,13 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/training_provider.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
+import 'package:versa_tribe/extension.dart';
 
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/helper.dart';
-import '../../Utils/image_path.dart';
 import '../Training/create_training_screen.dart';
 import '../Training/training_item_screen.dart';
 

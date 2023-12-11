@@ -1,25 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/bottom_tab_provider.dart';
-import 'package:versa_tribe/Providers/confirm_password_provider.dart';
-import 'package:versa_tribe/Providers/organization_provider.dart';
-import 'package:versa_tribe/Providers/profile_gender_provider.dart';
 import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
-
-import 'Providers/call_switch_provider.dart';
-import 'Providers/date_provider.dart';
-import 'Providers/manage_org_index_provider.dart';
-import 'Providers/manage_visibility_btn.dart';
-import 'Providers/onboarding_provider.dart';
-import 'Providers/password_provider.dart';
-import 'Providers/person_details_provider.dart';
-import 'Providers/switch_provider.dart';
-import 'Providers/training_provider.dart';
 import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
-import 'Utils/custom_colors.dart';
+import 'package:versa_tribe/extension.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -74,7 +59,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: CustomColors.kWhiteColor,
-        backgroundColor: CustomColors.kBlackColor,
+          bottomAppBarTheme: const BottomAppBarTheme(color: CustomColors.kBlackColor),
         inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder (
               borderSide: BorderSide (color: CustomColors.kBlueColor,width: 1),

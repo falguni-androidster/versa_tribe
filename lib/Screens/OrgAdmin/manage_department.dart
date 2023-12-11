@@ -1,22 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Providers/person_details_provider.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/add_new_department.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/edit_department.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ManageDepartment extends StatefulWidget {
 
   final int orgId;
 
-  ManageDepartment({super.key, required this.orgId});
+  const ManageDepartment({super.key, required this.orgId});
 
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import '../../Providers/person_details_provider.dart';
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
+import 'package:versa_tribe/extension.dart';
 
 class AddNewDepartment extends StatefulWidget {
 
@@ -43,19 +40,6 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
             );
           }
         ),
-        // leading: Consumer<SearchParentDPProvider>(
-        //     builder: (context, val, child) {
-        //     return IconButton(
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //         val.setVisibilitySearchList(false);
-        //         val.notify();
-        //       },
-        //       icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-        //       //replace with our own icon data.
-        //     );
-        //   }
-        // ),
         centerTitle: true,
         title: const Text(CustomString.addNewDP, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
@@ -158,7 +142,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                   width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          print("cheque---parent department Id------>$pDepId");
+                          debugPrint("cheque---parent department Id------>$pDepId");
                           ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
                           },
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))

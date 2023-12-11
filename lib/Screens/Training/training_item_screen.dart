@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:versa_tribe/Model/training_response.dart';
-import 'package:versa_tribe/Utils/custom_toast.dart';
-
-import '../../Utils/custom_colors.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/helper.dart';
-import '../../Utils/image_path.dart';
+import 'package:versa_tribe/extension.dart';
 
 class TrainingItemScreen extends StatefulWidget {
 

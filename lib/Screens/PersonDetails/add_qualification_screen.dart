@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/date_provider.dart';
-import 'package:versa_tribe/Utils/api_config.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/custom_string.dart';
-
-import '../../Providers/person_details_provider.dart';
+import 'package:versa_tribe/extension.dart';
 
 class AddQualificationScreen extends StatefulWidget {
   const AddQualificationScreen({super.key});
@@ -31,7 +26,6 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
     final providerInstitute = Provider.of<SearchInstituteProvider>(context, listen: false);
-
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -44,8 +38,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor), //replace with our own icon data.
         ),
         centerTitle: true,
-        title: const Text(CustomString.createQualification,
-            style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
+        title: const Text(CustomString.createQualification, style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -206,15 +199,6 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                         return null;
                       }
                     },
-                    /* onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchInstitute(
-                            context: context, instituteString: value);
-                        providerInstitute.instituteList.clear();
-                      }
-                      providerInstitute.instituteList.clear();
-                      providerInstitute.setVisible(true);
-                    },*/
                     decoration: const InputDecoration(
                         labelText: CustomString.city,
                         labelStyle: TextStyle(
@@ -236,7 +220,6 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                     },
                     controller: yopController,
                     textAlign: TextAlign.center,
-                    //editing controller of this TextField
                     decoration: const InputDecoration(
                       labelText: CustomString.passingDate,
                       labelStyle: TextStyle(
@@ -245,7 +228,6 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                     ),
                     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                     readOnly: true,
-                    //set it true, so that user will not able to edit text
                     onTap: () async {
                       _showDatePicker(context: context);
                     },

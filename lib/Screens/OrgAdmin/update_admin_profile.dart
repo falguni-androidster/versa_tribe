@@ -3,16 +3,9 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Model/OrgAdminProfile.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:http/http.dart' as http;
-
-import '../../Providers/manage_visibility_btn.dart';
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
+import 'package:versa_tribe/extension.dart';
 
 class UpdateAdminProfile extends StatefulWidget {
   final String orgName;
@@ -35,6 +28,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   ConnectivityResult connectivityResult = ConnectivityResult.none;
   int? orgID;
   dynamic providerBtn;
+
   @override
   void initState() {
     orgID = widget.orgId;
@@ -91,7 +85,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
       orgAdminProfile = OrgAdminProfile.fromJson(data);
     } else {
       orgAdminProfile = OrgAdminProfile();
-     // showToast(context, CustomString.somethingWrongMessage);
     }
     return orgAdminProfile;
   }
@@ -143,7 +136,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-
                           SizedBox(height: size.height * 0.02),
 
                           /// Profile Pic
@@ -386,6 +378,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
     }
   }
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 }

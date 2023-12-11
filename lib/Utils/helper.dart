@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:versa_tribe/Utils/custom_colors.dart';
-
-import '../Providers/manage_org_index_provider.dart';
+import 'package:intl/intl.dart';
 import 'api_config.dart';
 import 'custom_string.dart';
 
@@ -72,3 +69,4 @@ showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
     },
   );
 }
+

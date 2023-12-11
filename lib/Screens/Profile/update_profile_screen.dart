@@ -4,15 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
-import 'package:versa_tribe/Utils/image_path.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/extension.dart';
 
-import '../../Providers/date_provider.dart';
-import '../../Providers/profile_gender_provider.dart';
-import '../../Utils/api_config.dart';
-import '../../Utils/custom_string.dart';
-import '../../Utils/custom_toast.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
 
@@ -337,7 +331,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
   Future<void> updateProfileClick(context) async {

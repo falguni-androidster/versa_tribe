@@ -2,12 +2,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
-import 'package:versa_tribe/Utils/custom_toast.dart';
-
-import '../Utils/api_config.dart';
-import '../Utils/custom_colors.dart';
-import '../Utils/custom_string.dart';
-import '../Utils/validator.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
 
