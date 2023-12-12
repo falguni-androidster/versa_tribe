@@ -13,9 +13,6 @@ class PersonExperienceProvider with ChangeNotifier{
       notifyListeners();
     });
   }
-  notifyListen(){
-    notifyListeners();
-  }
 }
 
 
@@ -25,7 +22,6 @@ class PersonQualificationProvider with ChangeNotifier{
   List<PersonQualificationModel> get personQl => _personQl;
 
   setPersonQl(pQualification){
-    //print("QL--->$pQualification");
     pQualification.forEach((ob){
       _personQl.add(PersonQualificationModel.fromJson(ob));
       notifyListeners();
@@ -40,7 +36,6 @@ class PersonSkillProvider with ChangeNotifier{
   List<PersonSkillModel> get personSkill => _personSkill;
 
   setPersonSkill(pHobby){
-    //print("SkillFromProvider----->$pSkill");
     pHobby.forEach((ob){
       _personSkill.add(PersonSkillModel.fromJson(ob));
       notifyListeners();
@@ -55,7 +50,6 @@ class PersonHobbyProvider with ChangeNotifier{
   List<PersonHobbyModel> get personHobby => _personHobby;
 
   setPersonHobby(pHobby){
-    //print("HobbyFromProvider----->$pHobby");
     pHobby.forEach((ob){
       _personHobby.add(PersonHobbyModel.fromJson(ob));
       notifyListeners();

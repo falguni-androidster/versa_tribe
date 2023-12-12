@@ -7,5 +7,17 @@ class SwitchProvider with ChangeNotifier{
   setSwitchData(SwitchDataModel data){
     _switchDataModel = data;
   }
-  notify(){notifyListeners();}
+  notify(){
+    notifyListeners();
+  }
+}
+
+class CallSwitchProvider with ChangeNotifier{
+  bool visibleCall = true;
+  bool get _visibleCall => visibleCall;
+
+  setVisible() {
+    visibleCall = !_visibleCall;
+    notifyListeners();
+  }
 }

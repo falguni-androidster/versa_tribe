@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:versa_tribe/Model/training_experience.dart';
+import 'package:versa_tribe/Model/training_hobby.dart';
+import 'package:versa_tribe/Model/training_qualification.dart';
 import 'package:versa_tribe/Model/training_response.dart';
+import 'package:versa_tribe/Model/training_skill.dart';
 
 /// TrainingListProvider class
 class TrainingListProvider with ChangeNotifier{
@@ -9,6 +13,58 @@ class TrainingListProvider with ChangeNotifier{
   setListTraining(listTraining){
     listTraining.forEach((ob){
       _getTrainingList.add(TrainingResponse.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingExperienceProvider class
+class TrainingExperienceProvider with ChangeNotifier{
+  final List<TrainingExperienceModel> _trainingEx =[];
+  List<TrainingExperienceModel> get trainingEx => _trainingEx;
+
+  setTrainingEx(tEx){
+    tEx.forEach((ob) async {
+      _trainingEx.add(TrainingExperienceModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingQualificationProvider class
+class TrainingQualificationProvider with ChangeNotifier{
+  final List<TrainingQualificationModel> _trainingQua =[];
+  List<TrainingQualificationModel> get trainingQua => _trainingQua;
+
+  setTrainingQua(tQua){
+    tQua.forEach((ob) async {
+      _trainingQua.add(TrainingQualificationModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingSkillProvider class
+class TrainingSkillProvider with ChangeNotifier{
+  final List<TrainingSkillModel> _trainingSkill =[];
+  List<TrainingSkillModel> get trainingSkill => _trainingSkill;
+
+  setTrainingSkill(tSkill){
+    tSkill.forEach((ob) async {
+      _trainingSkill.add(TrainingSkillModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingHobbyProvider class
+class TrainingHobbyProvider with ChangeNotifier{
+  final List<TrainingHobbyModel> _trainingHobby =[];
+  List<TrainingHobbyModel> get trainingHobby => _trainingHobby;
+
+  setTrainingHobby(tHobby){
+    tHobby.forEach((ob) async {
+      _trainingHobby.add(TrainingHobbyModel.fromJson(ob));
       notifyListeners();
     });
   }
