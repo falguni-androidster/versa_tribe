@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +23,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   TextEditingController emailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-
-  ConnectivityResult connectivityResult = ConnectivityResult.none;
   int? orgID;
   dynamic providerBtn;
 
@@ -33,14 +30,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   void initState() {
     orgID = widget.orgId;
     super.initState();
-    // Listen for connectivity changes and update the UI accordingly.
-    _checkConnectivity();
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(() {
-        connectivityResult = result;
-      });
-    });
-
     ///Call this or future builder
 /*
     getAdminProfileOldData(orgId: widget.orgId).then((value){
@@ -62,12 +51,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
     // emailController.text = "abc123@gmail.com";
     // countryController.text = widget.country;
   }
-  Future<void> _checkConnectivity() async {
-    var connectResult = await Connectivity().checkConnectivity();
-    setState(() {
-      connectivityResult = connectResult;
-    });
-  }
+
   Future<OrgAdminProfile> getAdminProfileOldData({orgId}) async {
     OrgAdminProfile orgAdminProfile = OrgAdminProfile();
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -348,11 +332,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
 
   Future<void> updateProfileClick(context) async {
     if (_formKey.currentState!.validate()) {
-      if (connectivityResult == ConnectivityResult.none) {
-        showToast(context, CustomString.checkNetworkConnection);
-      } else if (connectivityResult == ConnectivityResult.mobile) {
-        showToast(context, CustomString.notConnectServer);
-      } else {
         SharedPreferences pref = await SharedPreferences.getInstance();
         String? token = pref.getString(CustomString.accessToken);
 
@@ -374,7 +353,6 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
         } else {
           showToast(context, CustomString.somethingWrongMessage);
         }
-      }
     }
   }
   void _navigateToNextScreen(BuildContext context) {

@@ -43,7 +43,8 @@ void main() {
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
       ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
       ChangeNotifierProvider<TrainingDobProvider>(create: (_) => TrainingDobProvider()),
-      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider())
+      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider()),
+      ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet())
     ],
     child: const MyApp()
   ));

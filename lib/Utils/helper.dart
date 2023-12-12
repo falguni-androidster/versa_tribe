@@ -1,8 +1,18 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Utils/custom_colors.dart';
 import 'package:intl/intl.dart';
-import 'api_config.dart';
-import 'custom_string.dart';
+import 'package:provider/provider.dart';
+import 'package:versa_tribe/extension.dart';
+
+///check internet connectivity in our app
+String connection(context){
+  final provider = Provider.of<CheckInternet>(context,listen:false);
+  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    debugPrint("Network connection------->$result");
+      provider.checkConnectivity(result);
+  });
+  return provider.status;
+}
 
 /// return days,hours,seconds ago from timeStamp
 String timeAgo(String timestamp) {

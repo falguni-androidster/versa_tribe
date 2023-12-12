@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,16 +29,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   ConnectivityResult connectivityResult = ConnectivityResult.none;
 
-  GoogleSignIn googleSignIn =   GoogleSignIn(clientId: '801650424679-gfhm5fbk06pbqugfdp8cr1854bo6t46c.apps.googleusercontent.com');
+  GoogleSignIn googleSignIn = GoogleSignIn(clientId: '801650424679-gfhm5fbk06pbqugfdp8cr1854bo6t46c.apps.googleusercontent.com');
 
   @override
   void initState() {
     super.initState();
     // Listen for connectivity changes and update the UI accordingly.
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      debugPrint("Network connection------->$result");
-        connectivityResult = result;
-    });
+    connection(context);
     checkSignInStatus();
   }
 
@@ -393,12 +390,10 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signInClick(context) async {
+    final provider = Provider.of<CheckInternet>(context,listen:false);
+    print("status-internet------>${provider.status}");
     LoginResponseModel loginResponseModelData;
-    if (connectivityResult == ConnectivityResult.none) {
-      showToast(context, CustomString.checkNetworkConnection);
-    }
-    else
-    {
+    if (provider.status == "Connected") {
       Map signInParameter = {
         "username": emailController.text.toString(),
         "password": passwordController.text.toString(),
@@ -437,5 +432,9 @@ class _SignInScreenState extends State<SignInScreen> {
         showToast(context, CustomString.loginFailed);
       }
     }
+    else{
+    showToast(context, CustomString.checkNetworkConnection);
+    }
+
   }
 }
