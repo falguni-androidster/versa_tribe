@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -26,28 +25,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
   TextEditingController dobController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-
-  ConnectivityResult connectivityResult = ConnectivityResult.none;
-
-  @override
-  void initState() {
-    super.initState();
-    // Check initial connectivity status when the widget is first built.
-    _checkConnectivity();
-    // Listen for connectivity changes and update the UI accordingly.
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(() {
-        connectivityResult = result;
-      });
-    });
-  }
-
-  Future<void> _checkConnectivity() async {
-    var connectResult = await Connectivity().checkConnectivity();
-    setState(() {
-      connectivityResult = connectResult;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -297,11 +274,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
 
   Future<void> createProfileClick(context) async {
     if (_formKey.currentState!.validate()) {
-      if(connectivityResult == ConnectivityResult.none){
-        showToast(context, CustomString.checkNetworkConnection);
-      } else {
-        // Put Loading
-        const CircularProgressIndicator();
         SharedPreferences pref = await SharedPreferences.getInstance();
         String? token = pref.getString(CustomString.accessToken);
 
@@ -326,7 +298,6 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         } else {
           showToast(context, CustomString.somethingWrongMessage);
         }
-      }
     }
   }
 }

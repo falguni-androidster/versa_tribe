@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
@@ -15,30 +14,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   TextEditingController emailController = TextEditingController();
-
-  ConnectivityResult connectivityResult = ConnectivityResult.none;
-
-  @override
-  void initState() {
-    super.initState();
-    // Check initial connectivity status when the widget is first built.
-    _checkConnectivity();
-    // Listen for connectivity changes and update the UI accordingly.
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      setState(() {
-        connectivityResult = result;
-      });
-    });
-  }
-
-  Future<void> _checkConnectivity() async {
-    var connectResult = await Connectivity().checkConnectivity();
-    setState(() {
-      connectivityResult = connectResult;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,10 +124,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> forgotClick(context) async {
     if (_formKey.currentState!.validate()) {
-      if (connectivityResult == ConnectivityResult.none) {
-        showToast(context, CustomString.checkNetworkConnection);
-      } else {
-        // put Loading
         Map data = {
           'Email': emailController.text.toString(),
         };
@@ -168,7 +140,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         } else {
           showToast(context, CustomString.wrongEmail);
         }
-      }
     }
   }
 }

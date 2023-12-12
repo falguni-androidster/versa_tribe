@@ -31,10 +31,9 @@ class CustomString {
 
   static const String loading = 'Loading.............';
   static const String somethingWrongMessage = 'Something Went To Wrong!!';
-  static const String notConnectServer = 'Not Connect to server';
-  static const String checkNetworkConnection = 'Check Your Internet Connection';
+  static const String checkNetworkConnection = 'Check your internet connection...';
   static const String accountAlreadyTaken = 'Account Already Exist!!';
-  static const String checkYourEmail = 'Please Check Your Email Confirm it than Login.';
+  static const String checkYourEmail = 'Check email & password than login.';
 
 
 /*-------------------- Login Screen & Registration Screen & Forgot Password Screen ----------------------*/
