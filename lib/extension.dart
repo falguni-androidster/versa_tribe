@@ -29,6 +29,12 @@ export 'Model/search_organization.dart';
 export 'Model/search_skill.dart';
 export 'Model/switch_data.dart';
 export 'Model/training_response.dart';
+export 'Model/training_experience.dart';
+export 'Model/training_qualification.dart';
+export 'Model/training_hobby.dart';
+export 'Model/training_skill.dart';
+export 'Model/training_join_members.dart';
+export 'Model/training_pending_requests.dart';
 
 export 'Providers/bottom_tab_provider.dart';
 export 'Providers/password_provider.dart';

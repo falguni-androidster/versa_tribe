@@ -19,6 +19,7 @@ class CustomString {
 
 
   static const String reject = 'Reject';
+  static const String approve = 'Approve';
   static const String assign = 'Assign';
   static const String submit = 'Submit';
   static const String cancel = 'Cancel';
@@ -159,6 +160,21 @@ class CustomString {
   static const String manageRequest = 'Manage Request';
 
   static const String manageTraining = 'Manage Training';
+
+  static const String takeTraining = 'Take Training';
+  static const String giveTraining = 'Give Training';
+
+  static const String trainingDetails = 'Training Details';
+  static const String joinedMembers = 'Joined Members';
+  static const String pendingRequest = 'Pending Request';
+  static const String joinTraining = 'Join Training';
+  static const String trainingJoined = 'Training Joined';
+
+  static const String noExperienceCriteriaFound = 'No Experience Criteria Found...';
+  static const String noQualificationCriteriaFound = 'No Qualification Criteria Found...';
+  static const String noSkillCriteriaFound = 'No Skill Criteria Found...';
+  static const String noHobbyCriteriaFound = 'No Hobby Criteria Found...';
+
 
 /*---------------------------- Organization Screen --------------------------*/
   static const String joinOrganization = 'Join Organization';

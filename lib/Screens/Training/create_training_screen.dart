@@ -258,7 +258,7 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
         });
         if (response.statusCode == 200) {
           debugPrint(response.body);
-          ApiConfig.getTrainingData(context);
+          ApiConfig.getGiveTrainingData(context);
           showToast(context, CustomString.trainingCreatedSuccess);
           Navigator.pop(context);
         } else {

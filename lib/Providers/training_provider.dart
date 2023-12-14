@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Model/training_experience.dart';
-import 'package:versa_tribe/Model/training_hobby.dart';
-import 'package:versa_tribe/Model/training_qualification.dart';
-import 'package:versa_tribe/Model/training_response.dart';
-import 'package:versa_tribe/Model/training_skill.dart';
+import 'package:versa_tribe/extension.dart';
 
 /// TrainingListProvider class
 class TrainingListProvider with ChangeNotifier{
@@ -65,6 +61,32 @@ class TrainingHobbyProvider with ChangeNotifier{
   setTrainingHobby(tHobby){
     tHobby.forEach((ob) async {
       _trainingHobby.add(TrainingHobbyModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingJoinedMembersProvider class
+class TrainingJoinedMembersProvider with ChangeNotifier{
+  final List<TrainingJoinedMembersModel> _trainingJoinedMembers =[];
+  List<TrainingJoinedMembersModel> get trainingJoinedMembers => _trainingJoinedMembers;
+
+  setTrainingJoinedMembers(tJoinedMembers){
+    tJoinedMembers.forEach((ob) async {
+      _trainingJoinedMembers.add(TrainingJoinedMembersModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingPendingRequestProvider class
+class TrainingPendingRequestProvider with ChangeNotifier{
+  final List<TrainingPendingRequestsModel> _trainingPendingRequests =[];
+  List<TrainingPendingRequestsModel> get trainingPendingRequests => _trainingPendingRequests;
+
+  setTrainingPendingRequests(tPendingRequests){
+    tPendingRequests.forEach((ob) async {
+      _trainingPendingRequests.add(TrainingPendingRequestsModel.fromJson(ob));
       notifyListeners();
     });
   }

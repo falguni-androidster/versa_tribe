@@ -49,10 +49,8 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
         leading: InkWell(
           child:
           const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
-          onTap: () async {
-            //Navigator.pop(context);
-           await ApiConfig.getDataSwitching(context: context);
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomeScreen()));
+          onTap: () {
+            arrowBackPressed(context);
           },
         ),
         title: const Text(CustomString.manageOrganization, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
@@ -186,7 +184,7 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                                       ],
                                                     ),
                                                   ),
-                                                  ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor),),
+                                                  ElevatedButton(style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.kGrayColor)),
                                                       onPressed: () {
                                                         ApiConfig.deleteOrgRequest(context: context,orgID: val.requestOrgDataList[index].orgId,personID:val.requestOrgDataList[index].personId);
                                                       },
@@ -198,18 +196,17 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            SizedBox(height: size.height*0.02,),
-                                            SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
-                                            SizedBox(height: size.height*0.2,),
-                                            const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                            SizedBox(height: size.height * 0.02),
+                                            SizedBox(height: size.height * 0.2, width: size.width / 1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
+                                            SizedBox(height: size.height * 0.2),
+                                            const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor))
                                           ],),
                                       );
                                     }
                                 );
                               }
                               return Container();
-                            }
-                          ),
+                            }),
 
                ///Approved
                FutureBuilder(
@@ -277,10 +274,10 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    SizedBox(height: size.height*0.02,),
-                                    SizedBox(height: size.height*0.2,width: size.width/1.5,child: Image.asset(ImagePath.noData,fit: BoxFit.fill,)),
-                                    SizedBox(height: size.height*0.2,),
-                                    const Text(CustomString.noDataFound,style: TextStyle(color: CustomColors.kLightGrayColor),)
+                                    SizedBox(height: size.height * 0.02),
+                                    SizedBox(height: size.height * 0.2, width: size.width/1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
+                                    SizedBox(height: size.height * 0.2),
+                                    const Text(CustomString.noDataFound, style: TextStyle(color: CustomColors.kLightGrayColor))
                                   ],),
                               );
                             }
@@ -533,5 +530,10 @@ class _ManageOrganizationState extends State<ManageOrganization> with SingleTick
         );
       },
     );
+  }
+
+  arrowBackPressed(context) async{
+    await ApiConfig.getDataSwitching(context: context);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const HomeScreen()));
   }
 }

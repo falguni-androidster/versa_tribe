@@ -48,6 +48,8 @@ void main() {
       ChangeNotifierProvider<TrainingQualificationProvider>(create: (_) => TrainingQualificationProvider()),
       ChangeNotifierProvider<TrainingSkillProvider>(create: (_) => TrainingSkillProvider()),
       ChangeNotifierProvider<TrainingHobbyProvider>(create: (_) => TrainingHobbyProvider()),
+      ChangeNotifierProvider<TrainingJoinedMembersProvider>(create: (_) => TrainingJoinedMembersProvider()),
+      ChangeNotifierProvider<TrainingPendingRequestProvider>(create: (_) => TrainingPendingRequestProvider()),
       ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet())
     ],
     child: const MyApp()

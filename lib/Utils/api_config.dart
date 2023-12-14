@@ -41,7 +41,36 @@ class ApiConfig {
 
 
   /*------------------------------------------   Training Screen   ---------------------------------------------*/
-  static getTrainingData(context) async {
+  static getGiveTrainingData(context) async {
+
+    final provider = Provider.of<TrainingListProvider>(context, listen: false);
+    provider.getTrainingList.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String trainingUrl = '$baseUrl/api/Training/User/GetList';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        // If server returns a 200 OK response, parse the JSON
+        debugPrint('Training data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getTrainingList.clear();
+        provider.setListTraining(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Training Data not found...");
+      }
+    }catch(e){
+      debugPrint("Training------>$e");
+    }
+  }
+
+  static getTakeTrainingData(context) async {
 
     final provider = Provider.of<TrainingListProvider>(context, listen: false);
     provider.getTrainingList.clear();
@@ -80,7 +109,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("if--------->${response.body}");
-      getTrainingData(context);
+      getGiveTrainingData(context);
       Navigator.pop(context);
     } else {
       debugPrint("else--------->${response.body}");
@@ -188,6 +217,56 @@ class ApiConfig {
       }
     }catch(e){
       debugPrint("hobby------>$e");
+    }
+  }
+
+  static getTrainingJoinedMembers(context, trainingId, isJoin) async {
+    final provider = Provider.of<TrainingJoinedMembersProvider>(context, listen: false);
+    provider.trainingJoinedMembers.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        List<dynamic> data = await jsonDecode(response.body);
+        provider.setTrainingJoinedMembers(data);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("Joined Members------>$e");
+    }
+  }
+
+  static getTrainingPendingRequests(context, trainingId, isJoin) async {
+    final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
+    provider.trainingPendingRequests.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    try{
+      String url = "$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        List<dynamic> data = await jsonDecode(response.body);
+        provider.setTrainingPendingRequests(data);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Something went wrong..."),
+        ));
+      }
+    }catch(e){
+      debugPrint("Pending Requests------>$e");
     }
   }
 
@@ -834,7 +913,8 @@ class ApiConfig {
     }
   }
 
-  /*-----------  Manage ORG Screen  ----------------*/
+  /*-----------------------------------------  Manage Organization Screen  -------------------------------------*/
+
   static getDataSwitching({context}) async {
     final provider = Provider.of<SwitchProvider>(context,listen: false);
     SharedPreferences pref = await SharedPreferences.getInstance();
