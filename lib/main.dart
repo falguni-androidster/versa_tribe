@@ -43,13 +43,16 @@ void main() {
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
       ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
       ChangeNotifierProvider<TrainingDobProvider>(create: (_) => TrainingDobProvider()),
-      ChangeNotifierProvider<TrainingListProvider>(create: (_) => TrainingListProvider()),
+      ChangeNotifierProvider<GiveTrainingListProvider>(create: (_) => GiveTrainingListProvider()),
+      ChangeNotifierProvider<TakeTrainingListProvider>(create: (_) => TakeTrainingListProvider()),
       ChangeNotifierProvider<TrainingExperienceProvider>(create: (_) => TrainingExperienceProvider()),
       ChangeNotifierProvider<TrainingQualificationProvider>(create: (_) => TrainingQualificationProvider()),
       ChangeNotifierProvider<TrainingSkillProvider>(create: (_) => TrainingSkillProvider()),
       ChangeNotifierProvider<TrainingHobbyProvider>(create: (_) => TrainingHobbyProvider()),
       ChangeNotifierProvider<TrainingJoinedMembersProvider>(create: (_) => TrainingJoinedMembersProvider()),
       ChangeNotifierProvider<TrainingPendingRequestProvider>(create: (_) => TrainingPendingRequestProvider()),
+      ChangeNotifierProvider<RequestTrainingListProvider>(create: (_) => RequestTrainingListProvider()),
+      ChangeNotifierProvider<AcceptTrainingListProvider>(create: (_) => AcceptTrainingListProvider()),
       ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet())
     ],
     child: const MyApp()

@@ -43,8 +43,8 @@ class ApiConfig {
   /*------------------------------------------   Training Screen   ---------------------------------------------*/
   static getGiveTrainingData(context) async {
 
-    final provider = Provider.of<TrainingListProvider>(context, listen: false);
-    provider.getTrainingList.clear();
+    final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
+    provider.getGiveTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -57,42 +57,100 @@ class ApiConfig {
       });
       if (response.statusCode == 200) {
         // If server returns a 200 OK response, parse the JSON
-        debugPrint('Training data-----------> ${response.body}');
+        debugPrint('Give Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.getTrainingList.clear();
-        provider.setListTraining(data);
+        provider.getGiveTrainingList.clear();
+        provider.setGiveListTraining(data);
       } else {
         showToast(context, CustomString.noDataFound);
-        debugPrint("Training Data not found...");
+        debugPrint("Give Training Data not found...");
       }
     }catch(e){
       debugPrint("Training------>$e");
     }
   }
 
-  static getTakeTrainingData(context) async {
+  static getTakeTrainingData({context, orgId}) async {
 
-    final provider = Provider.of<TrainingListProvider>(context, listen: false);
-    provider.getTrainingList.clear();
+    final provider = Provider.of<TakeTrainingListProvider>(context, listen: false);
+    provider.getTakeTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
     try{
-      String trainingUrl = '$baseUrl/api/Training/User/GetList';
+      String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
         // If server returns a 200 OK response, parse the JSON
-        debugPrint('Training data-----------> ${response.body}');
+        debugPrint('Take Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.getTrainingList.clear();
-        provider.setListTraining(data);
+        provider.getTakeTrainingList.clear();
+        provider.setTakeListTraining(data);
       } else {
         showToast(context, CustomString.noDataFound);
-        debugPrint("Training Data not found...");
+        debugPrint("Take Training Data not found...");
+      }
+    }catch(e){
+      debugPrint("Training------>$e");
+    }
+  }
+
+  static getRequestedTraining({context, isJoin}) async {
+
+    final provider = Provider.of<RequestTrainingListProvider>(context, listen: false);
+    provider.getRequestedTrainingList.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        // If server returns a 200 OK response, parse the JSON
+        debugPrint('Requested Training data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getRequestedTrainingList.clear();
+        provider.setRequestedTrainingList(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Requested Training Data not found...");
+      }
+    }catch(e){
+      debugPrint("Training------>$e");
+    }
+  }
+
+  static getAcceptedTraining({context, isJoin}) async {
+
+    final provider = Provider.of<AcceptTrainingListProvider>(context, listen: false);
+    provider.getAcceptedTrainingList.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        // If server returns a 200 OK response, parse the JSON
+        debugPrint('Accepted Training data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getAcceptedTrainingList.clear();
+        provider.setAcceptedTrainingList(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Accepted Training Data not found...");
       }
     }catch(e){
       debugPrint("Training------>$e");
@@ -267,6 +325,49 @@ class ApiConfig {
       }
     }catch(e){
       debugPrint("Pending Requests------>$e");
+    }
+  }
+
+  /// Cancel Request Training
+  deleteRequestTraining({context, trainingId, screen}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    String? personId = pref.getString('PersonId');
+    String apiUrl = "${ApiConfig.baseUrl}/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId";
+    final response = await http.delete(Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.delete);
+      getAcceptedTraining(context: context, isJoin: true);
+      getRequestedTraining(context: context, isJoin: false);
+    } else {
+      showToast(context, 'Try Again.....');
+    }
+  }
+
+  /// Approve Request Training
+  approveRequestTraining({context, trainingId, isJoin}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    String? personId = pref.getString('PersonId');
+    Map<String, dynamic> requestData = {
+      "Training_Id": trainingId,
+      "Person_Id": personId,
+      "Is_Join": isJoin,
+    };
+    String url = "${ApiConfig.baseUrl}/api/Training_Join/Update";
+    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.approved);
+      ApiConfig.getTrainingPendingRequests(context, trainingId, false);
+    } else {
+      showToast(context, 'Try Again.....');
     }
   }
 

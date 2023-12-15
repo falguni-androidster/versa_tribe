@@ -1,14 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:versa_tribe/Model/accept_training.dart';
+import 'package:versa_tribe/Model/request_training.dart';
+import 'package:versa_tribe/Model/take_training_response.dart';
 import 'package:versa_tribe/extension.dart';
 
-/// TrainingListProvider class
-class TrainingListProvider with ChangeNotifier{
-  final List<TrainingResponse> _getTrainingList = [];
-  List<TrainingResponse> get getTrainingList => _getTrainingList;
+/// GiveTrainingListProvider class
+class GiveTrainingListProvider with ChangeNotifier{
+  final List<GiveTrainingResponse> _getGiveTrainingList = [];
+  List<GiveTrainingResponse> get getGiveTrainingList => _getGiveTrainingList;
 
-  setListTraining(listTraining){
+  setGiveListTraining(listTraining){
     listTraining.forEach((ob){
-      _getTrainingList.add(TrainingResponse.fromJson(ob));
+      _getGiveTrainingList.add(GiveTrainingResponse.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TakeTrainingListProvider class
+class TakeTrainingListProvider with ChangeNotifier{
+  final List<TakeTrainingResponse> _getTakeTrainingList = [];
+  List<TakeTrainingResponse> get getTakeTrainingList => _getTakeTrainingList;
+
+  setTakeListTraining(listTraining){
+    listTraining.forEach((ob){
+      _getTakeTrainingList.add(TakeTrainingResponse.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// OutgoingRequestTrainingListProvider class
+class RequestTrainingListProvider with ChangeNotifier{
+  final List<RequestedTrainingModel> _getRequestedTrainingList = [];
+  List<RequestedTrainingModel> get getRequestedTrainingList => _getRequestedTrainingList;
+
+  setRequestedTrainingList(listTraining){
+    listTraining.forEach((ob){
+      _getRequestedTrainingList.add(RequestedTrainingModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// OutgoingRequestTrainingListProvider class
+class AcceptTrainingListProvider with ChangeNotifier{
+  final List<AcceptedTrainingModel> _getAcceptedTrainingList = [];
+  List<AcceptedTrainingModel> get getAcceptedTrainingList => _getAcceptedTrainingList;
+
+  setAcceptedTrainingList(listTraining){
+    listTraining.forEach((ob){
+      _getAcceptedTrainingList.add(AcceptedTrainingModel.fromJson(ob));
       notifyListeners();
     });
   }

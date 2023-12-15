@@ -169,6 +169,7 @@ class CustomString {
   static const String pendingRequest = 'Pending Request';
   static const String joinTraining = 'Join Training';
   static const String trainingJoined = 'Training Joined';
+  static const String accepted = 'Accepted';
 
   static const String noExperienceCriteriaFound = 'No Experience Criteria Found...';
   static const String noQualificationCriteriaFound = 'No Qualification Criteria Found...';

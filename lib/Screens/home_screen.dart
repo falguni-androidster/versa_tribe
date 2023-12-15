@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   initState() {
     setInitialValue();
+    ApiConfig().getProfileData();
     super.initState();
   }
 
@@ -53,8 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
-    List<OrgAdminPersonList> adminPersonList =
-        switchProvider.switchData.orgAdminPersonList!;
+    List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
     selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
