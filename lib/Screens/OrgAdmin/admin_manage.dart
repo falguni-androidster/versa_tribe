@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/manage_training.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
+import 'package:versa_tribe/Screens/Training/give_training_item_screen.dart';
 
 import 'manage_department.dart';
 import 'manage_org_members.dart';
@@ -60,6 +62,12 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               child: containerButton(height: size.height * 0.06, text: CustomString.manageDepartment),
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDepartment(orgId: widget.orgID)));
+              },
+            ),
+            InkWell(
+              child: containerButton(height: size.height * 0.06, text: CustomString.manageTraining),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageTrainingScreen(orgId: widget.orgID)));
               },
             ),
             InkWell(

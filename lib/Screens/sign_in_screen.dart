@@ -469,7 +469,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> signInClick(context) async {
     final provider = Provider.of<CheckInternet>(context,listen:false);
-    print("status-internet------>${provider.status}");
+    debugPrint("status-internet------>${provider.status}");
     LoginResponseModel loginResponseModelData;
     if (provider.status == "Connected") {
       Map signInParameter = {
@@ -478,10 +478,8 @@ class _SignInScreenState extends State<SignInScreen> {
         "grant_type": "password"
       };
       const String loginUrl = '${ApiConfig.baseUrl}/token';
-      var response = await http.post(
-          Uri.parse(loginUrl), body: signInParameter);
-      Map<String, dynamic> jsonData = jsonDecode(
-          response.body); // Return Single Object
+      var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
+      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
       loginResponseModelData = LoginResponseModel.fromJson(jsonData);
       if (response.body.isNotEmpty) {
         debugPrint("------->${loginResponseModelData.accessToken}");
@@ -493,14 +491,10 @@ class _SignInScreenState extends State<SignInScreen> {
           pref.setBool(CustomString.isLoggedIn, true);
           if (loginResponseModelData.profileExist != "True") {
             if (!mounted) return;
-            _navigateToNextScreen(
-                context: context, screenName: 'profileScreen');
+            _navigateToNextScreen(context: context, screenName: 'profileScreen');
           } else {
             if (!mounted) return;
-            _navigateToNextScreen(
-                context: context,
-                screenName: "mainScreen",
-                loginData: loginResponseModelData);
+            _navigateToNextScreen(context: context, screenName: "mainScreen", loginData: loginResponseModelData);
           }
         } else {
           showToast(context, CustomString.checkYourEmail);

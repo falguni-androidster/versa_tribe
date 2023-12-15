@@ -1,18 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Model/training_experience.dart';
-import 'package:versa_tribe/Model/training_hobby.dart';
-import 'package:versa_tribe/Model/training_qualification.dart';
-import 'package:versa_tribe/Model/training_response.dart';
-import 'package:versa_tribe/Model/training_skill.dart';
+import 'package:versa_tribe/Model/accept_training.dart';
+import 'package:versa_tribe/Model/request_training.dart';
+import 'package:versa_tribe/Model/take_training_response.dart';
+import 'package:versa_tribe/extension.dart';
 
-/// TrainingListProvider class
-class TrainingListProvider with ChangeNotifier{
-  final List<TrainingResponse> _getTrainingList = [];
-  List<TrainingResponse> get getTrainingList => _getTrainingList;
+/// GiveTrainingListProvider class
+class GiveTrainingListProvider with ChangeNotifier{
+  final List<GiveTrainingResponse> _getGiveTrainingList = [];
+  List<GiveTrainingResponse> get getGiveTrainingList => _getGiveTrainingList;
 
-  setListTraining(listTraining){
+  setGiveListTraining(listTraining){
     listTraining.forEach((ob){
-      _getTrainingList.add(TrainingResponse.fromJson(ob));
+      _getGiveTrainingList.add(GiveTrainingResponse.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TakeTrainingListProvider class
+class TakeTrainingListProvider with ChangeNotifier{
+  final List<TakeTrainingResponse> _getTakeTrainingList = [];
+  List<TakeTrainingResponse> get getTakeTrainingList => _getTakeTrainingList;
+
+  setTakeListTraining(listTraining){
+    listTraining.forEach((ob){
+      _getTakeTrainingList.add(TakeTrainingResponse.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// OutgoingRequestTrainingListProvider class
+class RequestTrainingListProvider with ChangeNotifier{
+  final List<RequestedTrainingModel> _getRequestedTrainingList = [];
+  List<RequestedTrainingModel> get getRequestedTrainingList => _getRequestedTrainingList;
+
+  setRequestedTrainingList(listTraining){
+    listTraining.forEach((ob){
+      _getRequestedTrainingList.add(RequestedTrainingModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// OutgoingRequestTrainingListProvider class
+class AcceptTrainingListProvider with ChangeNotifier{
+  final List<AcceptedTrainingModel> _getAcceptedTrainingList = [];
+  List<AcceptedTrainingModel> get getAcceptedTrainingList => _getAcceptedTrainingList;
+
+  setAcceptedTrainingList(listTraining){
+    listTraining.forEach((ob){
+      _getAcceptedTrainingList.add(AcceptedTrainingModel.fromJson(ob));
       notifyListeners();
     });
   }
@@ -65,6 +103,32 @@ class TrainingHobbyProvider with ChangeNotifier{
   setTrainingHobby(tHobby){
     tHobby.forEach((ob) async {
       _trainingHobby.add(TrainingHobbyModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingJoinedMembersProvider class
+class TrainingJoinedMembersProvider with ChangeNotifier{
+  final List<TrainingJoinedMembersModel> _trainingJoinedMembers =[];
+  List<TrainingJoinedMembersModel> get trainingJoinedMembers => _trainingJoinedMembers;
+
+  setTrainingJoinedMembers(tJoinedMembers){
+    tJoinedMembers.forEach((ob) async {
+      _trainingJoinedMembers.add(TrainingJoinedMembersModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// TrainingPendingRequestProvider class
+class TrainingPendingRequestProvider with ChangeNotifier{
+  final List<TrainingPendingRequestsModel> _trainingPendingRequests =[];
+  List<TrainingPendingRequestsModel> get trainingPendingRequests => _trainingPendingRequests;
+
+  setTrainingPendingRequests(tPendingRequests){
+    tPendingRequests.forEach((ob) async {
+      _trainingPendingRequests.add(TrainingPendingRequestsModel.fromJson(ob));
       notifyListeners();
     });
   }

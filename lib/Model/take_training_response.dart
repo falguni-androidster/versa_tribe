@@ -1,4 +1,4 @@
-class TrainingResponse {
+class TakeTrainingResponse {
   int? trainingId;
   int? orgId;
   String? orgName;
@@ -9,18 +9,18 @@ class TrainingResponse {
   String? endDate;
   int? personLimit;
 
-  TrainingResponse(
+  TakeTrainingResponse(
       {this.trainingId,
-      this.orgId,
-      this.orgName,
-      this.trainerId,
-      this.trainingName,
-      this.description,
-      this.startDate,
-      this.endDate,
-      this.personLimit});
+        this.orgId,
+        this.orgName,
+        this.trainerId,
+        this.trainingName,
+        this.description,
+        this.startDate,
+        this.endDate,
+        this.personLimit});
 
-  TrainingResponse.fromJson(Map<String, dynamic> json) {
+  TakeTrainingResponse.fromJson(Map<String, dynamic> json) {
     trainingId = json['Training_Id'];
     orgId = json['Org_Id'];
     orgName = json['Org_Name'];
