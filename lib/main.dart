@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           focusedBorder: OutlineInputBorder (
               borderSide: BorderSide (color: CustomColors.kBlueColor,width: 1),
           ),
-        )
+        ),
       ),
       home: const SplashScreen(),
       routes: {

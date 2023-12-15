@@ -10,5 +10,5 @@
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   ConnectivityPlusWindowsPluginRegisterWithRegistrar(
-          registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
+      registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
 }

@@ -19,6 +19,76 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		13673B462B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3FD1B4C1246D643E9476438C28048FA8;
+			remoteInfo = AppAuth;
+		};
+		13673B482B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D72C5F5A14064A2B1D52300F7D9BF85D;
+			remoteInfo = flutter_facebook_auth;
+		};
+		13673B4A2B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B0B9B9F9A300B05C115A98B19C78F963;
+			remoteInfo = google_sign_in_ios;
+		};
+		13673B4C2B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FD56AB51475BC5F592781EE2692D1412;
+			remoteInfo = GoogleSignIn;
+		};
+		13673B4E2B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E5BA41B7F2E1FE47F9ABCAC27C9E4281;
+			remoteInfo = "GoogleSignIn-GoogleSignIn";
+		};
+		13673B502B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6FD122EA0AB9AB2A8FFA5F676C795DF0;
+			remoteInfo = GTMAppAuth;
+		};
+		13673B522B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C1998E0D8085221AD87F89B614C10E52;
+			remoteInfo = GTMSessionFetcher;
+		};
+		13673B542B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 669E8F25E1897672BDB80B7EB784DA24;
+			remoteInfo = "Pods-Runner";
+		};
+		13673B562B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6C3345B1B3CAEDF5B03B1F731FDC492E;
+			remoteInfo = "Pods-RunnerTests";
+		};
+		13673B582B2ADC3E0013AA3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 93C6A45C6E4792269BE9BE0073839BF0;
+			remoteInfo = shared_preferences_foundation;
+		};
 		331C8085294A63A400263BE5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -42,6 +112,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = ../../../../.Trash/Pods.xcodeproj; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		19F5153BFFEA2F679DE3111A /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +158,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		13673B352B2ADC3E0013AA3E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13673B472B2ADC3E0013AA3E /* AppAuth */,
+				13673B492B2ADC3E0013AA3E /* flutter_facebook_auth */,
+				13673B4B2B2ADC3E0013AA3E /* google_sign_in_ios */,
+				13673B4D2B2ADC3E0013AA3E /* GoogleSignIn */,
+				13673B4F2B2ADC3E0013AA3E /* GoogleSignIn-GoogleSignIn */,
+				13673B512B2ADC3E0013AA3E /* GTMAppAuth */,
+				13673B532B2ADC3E0013AA3E /* GTMSessionFetcher */,
+				13673B552B2ADC3E0013AA3E /* Pods-Runner */,
+				13673B572B2ADC3E0013AA3E /* Pods-RunnerTests */,
+				13673B592B2ADC3E0013AA3E /* shared_preferences_foundation */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +225,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				43C0EC6A6C527EED7EAFBBFF /* Pods */,
 				8F59A3774C5F66AA304A0E1C /* Frameworks */,
+				13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,6 +328,12 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 13673B352B2ADC3E0013AA3E /* Products */;
+					ProjectRef = 13673B342B2ADC3E0013AA3E /* Pods.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
@@ -246,6 +341,89 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		13673B472B2ADC3E0013AA3E /* AppAuth */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = AppAuth;
+			path = AppAuth.framework;
+			remoteRef = 13673B462B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B492B2ADC3E0013AA3E /* flutter_facebook_auth */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = flutter_facebook_auth;
+			path = flutter_facebook_auth.framework;
+			remoteRef = 13673B482B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B4B2B2ADC3E0013AA3E /* google_sign_in_ios */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = google_sign_in_ios;
+			path = google_sign_in_ios.framework;
+			remoteRef = 13673B4A2B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B4D2B2ADC3E0013AA3E /* GoogleSignIn */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = GoogleSignIn;
+			path = GoogleSignIn.framework;
+			remoteRef = 13673B4C2B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B4F2B2ADC3E0013AA3E /* GoogleSignIn-GoogleSignIn */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			name = "GoogleSignIn-GoogleSignIn";
+			path = GoogleSignIn.bundle;
+			remoteRef = 13673B4E2B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B512B2ADC3E0013AA3E /* GTMAppAuth */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = GTMAppAuth;
+			path = GTMAppAuth.framework;
+			remoteRef = 13673B502B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B532B2ADC3E0013AA3E /* GTMSessionFetcher */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = GTMSessionFetcher;
+			path = GTMSessionFetcher.framework;
+			remoteRef = 13673B522B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B552B2ADC3E0013AA3E /* Pods-Runner */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = "Pods-Runner";
+			path = Pods_Runner.framework;
+			remoteRef = 13673B542B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B572B2ADC3E0013AA3E /* Pods-RunnerTests */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = "Pods-RunnerTests";
+			path = Pods_RunnerTests.framework;
+			remoteRef = 13673B562B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		13673B592B2ADC3E0013AA3E /* shared_preferences_foundation */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = shared_preferences_foundation;
+			path = shared_preferences_foundation.framework;
+			remoteRef = 13673B582B2ADC3E0013AA3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		331C807F294A63A400263BE5 /* Resources */ = {
