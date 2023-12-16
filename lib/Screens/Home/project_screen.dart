@@ -63,7 +63,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
+              children: const [
                 ProjectDisplay(),Center(child: Text("two")),Center(child: Text("three"))
               ],
             ),
@@ -99,9 +99,9 @@ class _ProjectDisplayState extends State<ProjectDisplay> {
                  child: Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
-                     Text("Flood Forcasting System",style: TextStyle(color: CustomColors.kBlueColor),),
-                     Text("Project Manager: data"),
-                     Text("Duration: data"),
+                     const Text("Flood Forcasting System",style: TextStyle(color: CustomColors.kBlueColor),),
+                     const Text("Project Manager: data"),
+                     const Text("Duration: data"),
                      Row(
                        mainAxisAlignment: MainAxisAlignment.start,
                        children: [
@@ -112,16 +112,19 @@ class _ProjectDisplayState extends State<ProjectDisplay> {
                                backgroundColor: Colors.green
                              ),
                              onPressed: (){},
-                             child: const Text("You Are Aligible",style: TextStyle(color: CustomColors.kWhiteColor,backgroundColor: Colors.green),)),
-                         SizedBox(width: size.width*0.03,),
-                         ElevatedButton(
-                             style: ElevatedButton.styleFrom(
-                                 shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(15)),
-                                 backgroundColor: CustomColors.kLightGrayColor
-                             ),
-                             onPressed: (){},
-                             child: const Text("Alredy Applayed!",style: TextStyle(color: CustomColors.kWhiteColor,backgroundColor: CustomColors.kLightGrayColor)))
+                             child: const Text("You Are Eligible",style: TextStyle(color: CustomColors.kWhiteColor),)),
+                         SizedBox(width: size.width*0.01,),
+                         Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: ElevatedButton(
+                               style: ElevatedButton.styleFrom(
+                                   shape: RoundedRectangleBorder(
+                                       borderRadius: BorderRadius.circular(15)),
+                                   backgroundColor: CustomColors.kLightGrayColor
+                               ),
+                               onPressed: (){},
+                               child: const Text("Already Applied!",style: TextStyle(color: CustomColors.kWhiteColor))),
+                         )
                        ],
                      )
                    ],
