@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
@@ -24,11 +25,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   Widget _indicator(bool isActive) {
+    final size = MediaQuery.of(context).size;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      height: 8,
-      width: isActive ? 32 : 8,
+      margin: EdgeInsets.symmetric(horizontal: size.width*0.01),
+      height: size.height*0.015,
+      width: isActive ? size.width*0.1 : size.width*0.03,
       decoration: BoxDecoration(
         color: isActive ? CustomColors.kBlueColor : CustomColors.kBlackColor,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -37,30 +39,31 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   Widget _onBoardingPages({required img, required onBoardingTitle, required onBoardingDis}) {
+    final size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        const Spacer(),
+        SizedBox(height: size.height*0.08,),
         Image(
           image: AssetImage(img),
-          height: 300,
+          height: size.height*0.45,
         ),
         const Spacer(),
         Text(onBoardingTitle, style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins', fontSize: 30)),
-        const SizedBox(height: 20),
+        SizedBox(height: size.height*0.02),
         SizedBox(
-          width: 300,
+          height: size.height*0.3,
           child: Text(onBoardingDis,
               style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 20,
                 fontFamily: 'Poppins'), textAlign: TextAlign.center),
         ),
-        const Spacer(),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -84,7 +87,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           /// Manage Indicator
           Container(
             alignment: Alignment.bottomCenter,
-            margin: const EdgeInsets.only(bottom: 100),
+            margin: EdgeInsets.only(bottom: size.height*0.15),
             child: Consumer<OnBoardingProvider>(builder: (context, val, child) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,6 +128,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
           /// Button
           Consumer<OnBoardingProvider>(builder: (context, val, child) {
+            final size = MediaQuery.of(context).size;
             return val.currentPage != _numPages - 1 ? Align(
               alignment: FractionalOffset.bottomCenter,
               child: TextButton(
@@ -135,9 +139,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   );
                 },
                 child: Container(
-                  height: 60,
-                  width: 60,
-                  margin: const EdgeInsets.all(10),
+                  height: size.height*0.08,
+                  width: defaultTargetPlatform==TargetPlatform.iOS?size.width*0.17: size.width*0.16,
+                  margin: EdgeInsets.all(size.height*0.02+size.width*0.02/2),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       color: CustomColors.kBlueColor),
@@ -147,12 +151,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                 ),
               ),
-            ) : Align(
+            ) :
+            Align(
               alignment: FractionalOffset.bottomCenter,
               child: Container(
-                width: 200,
-                height: 50,
-                margin: const EdgeInsets.all(20),
+                width: size.width*0.4,
+                height: defaultTargetPlatform==TargetPlatform.iOS?size.height*0.05: size.height*0.06,
+                margin: EdgeInsets.all(size.height*0.02+size.width*0.02/2),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: CustomColors.kBlueColor),
