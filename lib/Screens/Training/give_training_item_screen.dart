@@ -57,31 +57,37 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
                 top: size.height * 0.02,
                 left: size.width * 0.02,
                 right: size.height * 0.02),
-            child: TabBar(
-              isScrollable: true,
-              labelPadding: const EdgeInsets.symmetric(horizontal: 5),
-              controller: _tabController,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: CustomColors.kBlueColor, // Change the color of the selected tab here
-              ),
-              indicatorSize: TabBarIndicatorSize.label,
-              unselectedLabelStyle: const TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-              tabAlignment: TabAlignment.start,
-              labelStyle: const TextStyle(fontSize: 14, color : CustomColors.kWhiteColor,fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-              tabs: <Widget>[
-                Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(CustomString.trainingDetails)
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: TabBar(
+                    isScrollable: false,
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 5),
+                    controller: _tabController,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: CustomColors.kBlueColor, // Change the color of the selected tab here
+                    ),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    unselectedLabelStyle: const TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
+                    labelStyle: const TextStyle(fontSize: 14, color : CustomColors.kWhiteColor,fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
+                    tabs: <Widget>[
+                      Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Text(CustomString.trainingDetails)
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Text(CustomString.joinedMembers)
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Text(CustomString.pendingRequest)
+                      )
+                    ],
+                  ),
                 ),
-                Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(CustomString.joinedMembers)
-                ),
-                Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: const Text(CustomString.pendingRequest)
-                )
               ],
             ),
           ),

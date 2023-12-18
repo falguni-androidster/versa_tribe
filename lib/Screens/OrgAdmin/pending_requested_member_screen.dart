@@ -50,7 +50,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                                 horizontal: size.width * 0.03,
                                 vertical: size.height * 0.005),
                             child: SizedBox(
-                              width: size.width * 0.7,
+                              width: size.width * 0.6,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,8 +69,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                                       style: const TextStyle(fontSize: 12, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
                                   Row(
                                     children: [
-                                      SizedBox(
-                                        width: size.width / 2,
+                                      Expanded(
                                         child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 backgroundColor: CustomColors.kGrayColor,
@@ -81,11 +80,10 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                                             child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                       ),
                                       SizedBox(width: size.width * 0.02),
-                                      SizedBox(
-                                        width: size.width / 2,
+                                      Expanded(
                                         child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor: CustomColors.kGrayColor,
+                                                backgroundColor: CustomColors.kBlueColor,
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                             onPressed: () {
                                               _showDialog(reqDepName:val.requestPendingOrgDataList[index].deptName,context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId,depID: val.requestPendingOrgDataList[index].deptId);
@@ -125,11 +123,12 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
       builder: (BuildContext context) {
         final size = MediaQuery.of(context).size;
         return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: size.height * 0.075,
+                height: size.height * 0.07,
                 child: Scaffold(
                   appBar: AppBar(
                     iconTheme: const IconThemeData(color: CustomColors.kBlackColor),
@@ -148,13 +147,17 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                     InkWell(
                       child: Container(
                           padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                          height: size.height * 0.05,
-                          child: const Card(
+                          color: CustomColors.kWhiteColor,
+                          child: Card(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                               color: CustomColors.kGrayColor,
-                              child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(" Create New Department +",
-                                      style: TextStyle(fontFamily: 'Poppins', color: CustomColors.kBlueColor))))),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(" Create New Department +",
+                                        style: TextStyle(fontFamily: 'Poppins', color: CustomColors.kBlueColor))),
+                              ))),
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => AddNewDepartment(orgId: widget.orgID)));
                       },
@@ -169,6 +172,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                               padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
                               height: size.height * 0.05,
                               child: Card(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                                   color: val.department[index].deptName == reqDepName ? CustomColors.kBlueColor : CustomColors.kGrayColor,
                                   child: Align(
                                       alignment: Alignment.centerLeft,

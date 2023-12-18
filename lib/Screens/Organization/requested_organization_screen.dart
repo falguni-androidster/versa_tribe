@@ -41,7 +41,7 @@ class _RequestedOrganizationScreenState extends State<RequestedOrganizationScree
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
-                                    width: size.width * 0.7,
+                                    width: size.width * 0.6,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment: MainAxisAlignment.center,
