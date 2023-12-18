@@ -53,7 +53,7 @@ class DateUtil {
   }
 }
 
-showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
+showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -70,7 +70,7 @@ showRemoveConfirmation({context,indexedOrgId,personId, orgName, orgId}) {
           TextButton(
             onPressed: () async {
               // Add your delete logic here
-              ApiConfig.deleteOrgFromAdminSide(context:context, indexedOrgID:indexedOrgId, personID:personId, orgName: orgName,orgID: orgId);
+              ApiConfig.deleteOrgFromAdminSide(context: context, indexedOrgID: indexedOrgId, personID: personId, orgName: orgName, orgID: orgId, screen: screen);
             },
             child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
           )

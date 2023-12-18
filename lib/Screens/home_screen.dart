@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         final size = MediaQuery.of(context).size;
         return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -97,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
                             height: size.height * 0.05,
                             child: Card(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                                 color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
                                 child: Align(
                                     alignment: Alignment.centerLeft,

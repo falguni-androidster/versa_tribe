@@ -145,6 +145,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                           debugPrint("cheque---parent department Id------>$pDepId");
                           ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
                           },
+                        style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))
                     )
                 )

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/manage_training.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
-import 'package:versa_tribe/Screens/Training/give_training_item_screen.dart';
 
 import 'manage_department.dart';
 import 'manage_org_members.dart';

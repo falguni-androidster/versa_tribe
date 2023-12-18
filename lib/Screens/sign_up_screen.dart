@@ -200,7 +200,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       fontFamily: 'Poppins', fontSize: 12)),
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.all(12),
-                                foregroundColor: Colors.black, backgroundColor: CustomColors.kGrayColor,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                foregroundColor: CustomColors.kBlackColor,
+                                backgroundColor: CustomColors.kGrayColor,
                               ),
                             ),
                           ),
@@ -217,7 +219,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   style: TextStyle(
                                       fontFamily: 'Poppins', fontSize: 12)),
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black, backgroundColor: CustomColors.kGrayColor,
+                                  foregroundColor: CustomColors.kBlackColor,
+                                  backgroundColor: CustomColors.kGrayColor,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                                   padding: const EdgeInsets.all(12)
                               ),
                             ),

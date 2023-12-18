@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/Training/take_training_item_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
-import '../../Utils/svg_btn.dart';
-
 class TakeTrainingScreen extends StatefulWidget {
 
   final int? orgId;
@@ -76,40 +74,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                                     child: Text(
                                         'PersonLimit - ${val.getTakeTrainingList[index].personLimit}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
-                                  ),
-                                  Row(
-                                    children: [
-                                      MaterialButton(
-                                          onPressed: () {},
-                                          color: Colors.green,
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text('You are Eligible',
-                                                  style: TextStyle(color: CustomColors.kBlackColor, fontSize: 10, fontFamily: 'Poppins')),
-                                              SizedBox(width: size.width * 0.01),
-                                              SVGIconButton(svgPath: ImagePath.informIcon, onPressed: () {}, size: 16, color: CustomColors.kBlackColor)
-                                            ],
-                                          )
-                                      ),
-                                      SizedBox(width: size.width * 0.01),
-                                      MaterialButton(
-                                          onPressed: () {},
-                                          color: Colors.black26,
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text('Already Applied',
-                                                  style: TextStyle(color: CustomColors.kBlackColor, fontSize: 10, fontFamily: 'Poppins')),
-                                              SizedBox(width: size.width * 0.01),
-                                              SVGIconButton(svgPath: ImagePath.informIcon, onPressed: () {}, size: 16, color: CustomColors.kBlackColor)
-                                            ],
-                                          )
-                                      ),
-                                    ],
-                                  ),
+                                  )
                                 ],
                               )),
                         ),

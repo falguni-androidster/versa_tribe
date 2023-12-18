@@ -7,9 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:versa_tribe/extension.dart';
 
 class UpdateAdminProfile extends StatefulWidget {
+
   final String orgName;
   final int orgId;
+
   const UpdateAdminProfile({super.key, required this.orgName, required this.orgId});
+
   @override
   State<UpdateAdminProfile> createState() => _UpdateAdminProfileState();
 }
@@ -147,21 +150,15 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.orgName,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontSize: 14,
-                                    fontFamily: 'Poppins')),
-                            style: const TextStyle(
-                                color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                            style: const TextStyle(color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
                           ),
 
                           SizedBox(height: size.height * 0.01),
 
                           /// About Organization Field
                           const Text(CustomString.aboutOrgName,
-                              style: TextStyle(
-                                  color: CustomColors.kBlueColor,
-                                  fontSize: 16)),
+                              style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16)),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
                             maxLines: 3,
@@ -176,22 +173,15 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.aboutOrgName,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14)),
-                            style: const TextStyle(
-                                color: CustomColors.kBlackColor,
-                                fontFamily: 'Poppins'),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins', fontSize: 14)),
+                            style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                           ),
 
                           SizedBox(height: size.height * 0.01),
 
                           /// mobile number Field
                           const Text(CustomString.contactInfo,
-                              style: TextStyle(
-                                  color: CustomColors.kBlueColor,
-                                  fontSize: 16)),
+                              style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16)),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
                             controller: mobileController,
@@ -205,13 +195,8 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.mobileLabel,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14)),
-                            style: const TextStyle(
-                                color: CustomColors.kBlackColor,
-                                fontFamily: 'Poppins'),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins', fontSize: 14)),
+                            style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                           ),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
@@ -226,22 +211,15 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.emailLabel,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14)),
-                            style: const TextStyle(
-                                color: CustomColors.kBlackColor,
-                                fontFamily: 'Poppins'),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins', fontSize: 14)),
+                            style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                           ),
 
                           SizedBox(height: size.height * 0.01),
 
                           /// Contact Fields
                           const Text(CustomString.addressInfo,
-                              style: TextStyle(
-                                  color: CustomColors.kBlueColor,
-                                  fontSize: 16)),
+                              style: TextStyle(color: CustomColors.kBlueColor, fontSize: 16)),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
                             controller: cityController,
@@ -255,13 +233,8 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.city,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontFamily: 'Poppins',
-                                    fontSize: 14)),
-                            style: const TextStyle(
-                                color: CustomColors.kBlackColor,
-                                fontFamily: 'Poppins'),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins', fontSize: 14)),
+                            style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                           ),
                           SizedBox(height: size.height * 0.02),
                           TextFormField(
@@ -276,9 +249,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                             },
                             decoration: const InputDecoration(
                                 labelText: CustomString.country,
-                                labelStyle: TextStyle(
-                                    color: CustomColors.kLightGrayColor,
-                                    fontSize: 14,fontFamily: 'Poppins')),
+                                labelStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins')),
                             style: const TextStyle(
                                 color: CustomColors.kBlackColor,fontFamily: 'Poppins'),
                           ),
@@ -297,20 +268,12 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                                     }:(){},
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: CustomColors.kBlueColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6),),
                                         padding: const EdgeInsets.all(14)),
-                                    child: val.updateBtnVisible==true?const Text(CustomString.updateOrgDetail, style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600),
-                                    ):const Text(CustomString.createOrgDetail, style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.white,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600),
+                                    child: val.updateBtnVisible==true?const Text(CustomString.updateOrgDetail,
+                                      style: TextStyle(fontSize: 14, color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600),
+                                    ):const Text(CustomString.createOrgDetail,
+                                      style: TextStyle(fontSize: 14, color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.w600),
                                     ),
                                   );
                                 }

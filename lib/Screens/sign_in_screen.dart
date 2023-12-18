@@ -386,6 +386,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: CustomColors.kLightGrayColor,
                                   backgroundColor: CustomColors.kGrayColor,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                                   padding: const EdgeInsets.all(12)),
                             ),
                           ),
@@ -402,6 +403,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               style: ElevatedButton.styleFrom(
                                   foregroundColor: CustomColors.kLightGrayColor,
                                   backgroundColor: CustomColors.kGrayColor,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                                   padding: const EdgeInsets.all(12)),
                             ),
                           ),

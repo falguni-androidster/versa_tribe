@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 
 import '../Screens/OrgAdmin/manage_org_members.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
-import '../Screens/manage_organization_screen.dart';
 import '../extension.dart';
 
 
@@ -1053,12 +1052,9 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-       tabIndex==0? debugPrint("requested data------->${response.body}"):
-        debugPrint("approved data------->${response.body}");
+        tabIndex==0 ? debugPrint("requested data------->${response.body}") : debugPrint("approved data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-       tabIndex==0?
-       provider.setRequestOrgData(data):
-       provider.setApproveOrgData(data);
+        tabIndex==0 ? provider.setRequestOrgData(data) : provider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
@@ -1114,10 +1110,8 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 0);
       debugPrint("Department Assign Success--------->${response.body}");
-      ///When is use above navigator then replacement not work
-      Navigator.of(context).pop();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageOrgMembers(orgID: orgID,orgNAME: orgName,)));
     } else {
       debugPrint("Department Assign failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -1193,7 +1187,7 @@ class ApiConfig {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data will not added..")));
     }
   }
-  static deleteOrgRequest({context, orgID, personID}) async {
+  static deleteOrgRequest({context, orgID, personID, screen}) async {
     String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -1203,14 +1197,18 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
     if (response.statusCode == 200) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      if(screen == CustomString.approved){
+        getManageOrgData(context: context, tabIndex: 1);
+      }else if (screen == CustomString.requested){
+        getManageOrgData(context: context, tabIndex: 0);
+      }
       debugPrint("Delete ORG Request Success-------------yes-->${response.body}");
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
       debugPrint("Data not Delete Try again----------No-->${response.body}");
     }
   }
-  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID}) async {
+  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
     String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -1220,12 +1218,15 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
     if (response.statusCode == 200) {
-      Navigator.pop(context);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ManageOrgMembers(orgID: orgID,orgNAME: orgName,)));
-      debugPrint("Delete ORG Success-------------yes-->${response.body}");
+      if(screen == CustomString.approved){
+        ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 1);
+      }else if(screen == CustomString.pendingRequested){
+        ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 0);
+      }
+      debugPrint("Delete Organization Success-------------yes-->${response.body}");
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
-      debugPrint("----not Delete Try again----------No-->${response.body}");
+      debugPrint("Not Delete Try again----------No-->${response.body}");
     }
   }
   static deleteDepartment({context, departmentID,orgId}) async {
