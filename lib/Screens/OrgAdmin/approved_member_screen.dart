@@ -31,7 +31,7 @@ class _ApprovedMemberScreenState extends State<ApprovedMemberScreen> {
                 ),
               );
             }else if(snapshot.connectionState==ConnectionState.done){
-              return Consumer<DisplayOrgMemberProvider>(
+              return Consumer<ApprovedMemberProvider>(
                   builder: (context, val, child) {
                     return val.approveOrgDataList.isNotEmpty ? ListView.builder(
                         shrinkWrap: true,

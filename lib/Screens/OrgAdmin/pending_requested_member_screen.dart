@@ -32,7 +32,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                 ),
               );
             }else if(snapshot.connectionState == ConnectionState.done){
-              return Consumer<DisplayOrgMemberProvider>(
+              return Consumer<RequestMemberProvider>(
                   builder: (context, val, child) {
                     return val.requestPendingOrgDataList.isNotEmpty ?
                     ListView.builder(

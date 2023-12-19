@@ -21,11 +21,10 @@ class IndexProvider with ChangeNotifier{
   }
 }
 
-class DisplayManageOrgProvider with ChangeNotifier{
+///User side
+class RequestManageOrgProvider with ChangeNotifier{
   final List<RequestOrgModel> _requestOrgDataList =[];
   List<RequestOrgModel> get requestOrgDataList => _requestOrgDataList;
-  final List<ApproveOrgModel> _approveOrgDataList =[];
-  List<ApproveOrgModel> get approveOrgDataList => _approveOrgDataList;
 
   setRequestOrgData(requestOrgData){
    requestOrgData.forEach((ob){
@@ -33,19 +32,24 @@ class DisplayManageOrgProvider with ChangeNotifier{
       notifyListeners();
     });
   }
+}
+class ApprovedManageOrgProvider with ChangeNotifier{
+  final List<ApproveOrgModel> _approveOrgDataList =[];
+  List<ApproveOrgModel> get approveOrgDataList => _approveOrgDataList;
+
   setApproveOrgData(approveOrgData){
-   approveOrgData.forEach((ob){
+    approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveOrgModel.fromJson(ob));
       notifyListeners();
     });
   }
 }
 
-class DisplayOrgMemberProvider with ChangeNotifier{
+
+///Admin side
+class RequestMemberProvider with ChangeNotifier{
   final List<PendingRequestMemberModel> _requestPendingOrgDataList =[];
   List<PendingRequestMemberModel> get requestPendingOrgDataList => _requestPendingOrgDataList;
-  final List<ApproveMemberModel> _approveOrgDataList =[];
-  List<ApproveMemberModel> get approveOrgDataList => _approveOrgDataList;
 
   setPendingRequestOrgData(requestOrgData){
     requestOrgData.forEach((ob){
@@ -56,11 +60,18 @@ class DisplayOrgMemberProvider with ChangeNotifier{
   notify(){
     notifyListeners();
   }
+}
+class ApprovedMemberProvider with ChangeNotifier{
+  final List<ApproveMemberModel> _approveOrgDataList =[];
+  List<ApproveMemberModel> get approveOrgDataList => _approveOrgDataList;
   setApproveOrgData(approveOrgData){
     approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveMemberModel.fromJson(ob));
       notifyListeners();
     });
+  }
+  notify(){
+    notifyListeners();
   }
 }
 
