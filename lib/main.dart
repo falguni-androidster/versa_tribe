@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
-import 'Providers/project_provider.dart';
 import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -54,13 +53,13 @@ void main() {
       ChangeNotifierProvider<TrainingPendingRequestProvider>(create: (_) => TrainingPendingRequestProvider()),
       ChangeNotifierProvider<RequestTrainingListProvider>(create: (_) => RequestTrainingListProvider()),
       ChangeNotifierProvider<AcceptTrainingListProvider>(create: (_) => AcceptTrainingListProvider()),
-      ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider()),
       ChangeNotifierProvider<ProjectListProvider>(create: (_) => ProjectListProvider()),
       ChangeNotifierProvider<ProjectExperienceProvider>(create: (_) => ProjectExperienceProvider()),
       ChangeNotifierProvider<ProjectQualificationProvider>(create: (_) => ProjectQualificationProvider()),
       ChangeNotifierProvider<ProjectSkillProvider>(create: (_) => ProjectSkillProvider()),
       ChangeNotifierProvider<ProjectHobbyProvider>(create: (_) => ProjectHobbyProvider()),
-      ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet())
+      ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet()),
+      ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider())
     ],
     child: const MyApp()
   ));
