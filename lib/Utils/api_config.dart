@@ -997,6 +997,7 @@ class ApiConfig {
     }
   }
   static editOrgAdminProfile({context, orgId, aboutOrg, city, country, number,email,}) async {
+    final boolProvider = Provider.of<CirculerIndicationProvider>(context,listen:false);
     debugPrint("OrgAdminProfile----->$orgId");
     Map<String, dynamic> requestData =
     {
@@ -1016,6 +1017,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      boolProvider.setLoading(true);
       debugPrint("edit OrgAdminProfile Success--------->${response.body}");
       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
       Navigator.pop(context);
