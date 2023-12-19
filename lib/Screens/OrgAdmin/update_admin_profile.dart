@@ -326,5 +326,4 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
         )
     );
   }
-
 }

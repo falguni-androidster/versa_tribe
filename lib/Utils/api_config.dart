@@ -516,7 +516,6 @@ class ApiConfig {
 
   static getUserExperience(context) async {
     final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
-    provider.personEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -528,6 +527,7 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
+        provider.personEx.clear();
         debugPrint("experience-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.setPersonEx(data);
@@ -541,7 +541,6 @@ class ApiConfig {
   }
   static getUserQualification(context) async {
     final provider = Provider.of<PersonQualificationProvider>(context, listen: false);
-    provider.personQl.clear();
     String url = "$baseUrl/api/GetUserPerQual";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -550,6 +549,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      provider.personQl.clear();
       debugPrint("qualification-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonQl(data);
@@ -562,7 +562,6 @@ class ApiConfig {
   }
   static getUserSkills(context) async {
     final provider = Provider.of<PersonSkillProvider>(context, listen: false);
-    provider.personSkill.clear();
     String url = "$baseUrl/api/PersonSkills/GetSkillsByUser";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -571,6 +570,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      provider.personSkill.clear();
       debugPrint("skill-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonSkill(data);
@@ -583,7 +583,6 @@ class ApiConfig {
   }
   static getUserHobby(context) async {
     final provider = Provider.of<PersonHobbyProvider>(context, listen: false);
-    provider.personHobby.clear();
     String url = "$baseUrl/api/PersonHobbies/MyHobbies";
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -592,6 +591,7 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      provider.personHobby.clear();
       debugPrint("hobby-response----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setPersonHobby(data);
