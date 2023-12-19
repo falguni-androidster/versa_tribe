@@ -10,3 +10,13 @@ class OrgProfileBtnVisibility with ChangeNotifier{
   }
 }
 
+
+
+class CirculerIndicationProvider with ChangeNotifier{
+  bool _loading = true;
+  bool get loading=>_loading;
+  setLoading(value) {
+    _loading = value;
+    notifyListeners();
+  }
+}

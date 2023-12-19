@@ -53,7 +53,8 @@ void main() {
       ChangeNotifierProvider<TrainingPendingRequestProvider>(create: (_) => TrainingPendingRequestProvider()),
       ChangeNotifierProvider<RequestTrainingListProvider>(create: (_) => RequestTrainingListProvider()),
       ChangeNotifierProvider<AcceptTrainingListProvider>(create: (_) => AcceptTrainingListProvider()),
-      ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet())
+      ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet()),
+      ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider())
     ],
     child: const MyApp()
   ));
