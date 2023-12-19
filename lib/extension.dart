@@ -48,3 +48,4 @@ export 'Providers/profile_provider.dart';
 export 'Providers/switch_provider.dart';
 export 'Providers/training_provider.dart';
 export 'Providers/check_connection_provider.dart';
+export 'Providers/project_provider.dart';

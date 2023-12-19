@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../Screens/OrgAdmin/manage_org_members.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../extension.dart';
 
@@ -193,6 +192,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint("experience-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
+        provider.trainingEx.clear();
         provider.setTrainingEx(data);
       } else {
         debugPrint("Experience Data not found...");
@@ -218,6 +218,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint("qualification-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
+        provider.trainingQua.clear();
         provider.setTrainingQua(data);
       } else {
         debugPrint("Qualification Data not found...");
@@ -243,6 +244,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint("skill-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
+        provider.trainingSkill.clear();
         provider.setTrainingSkill(data);
       } else {
         debugPrint("Skill Data not found...");
@@ -268,6 +270,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint("hobby-response----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
+        provider.trainingHobby.clear();
         provider.setTrainingHobby(data);
       } else {
         debugPrint("Hobby Data not found...");
@@ -369,6 +372,145 @@ class ApiConfig {
       showToast(context, 'Try Again.....');
     }
   }
+
+  /*------------------------------------------   Project Screen   ---------------------------------------------*/
+  static getProjectData(context) async {
+
+    final provider = Provider.of<ProjectListProvider>(context, listen: false);
+    provider.getProjectList.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String trainingUrl = '$baseUrl/api/Projects/List';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      debugPrint('data -----------> ${response.body}');
+      if (response.statusCode == 200) {
+        // If server returns a 200 OK response, parse the JSON
+        debugPrint('Project data -----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getProjectList.clear();
+        provider.setListProject(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Project Data not found...");
+      }
+    }catch(e){
+      debugPrint("Project ------>$e");
+    }
+  }
+
+  static getProjectExperience(context, int? projectId) async {
+    final provider = Provider.of<ProjectExperienceProvider>(context, listen: false);
+    provider.projectEx.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Project_Criteria/Get_Proj_ExpCriteria?projectId=$projectId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      debugPrint("response----->${response.body}");
+      if (response.statusCode == 200) {
+        debugPrint("experience-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectEx.clear();
+        provider.setProjectEx(data);
+      } else {
+        debugPrint("Experience Data not found...");
+      }
+    }catch(e){
+      debugPrint("experience------>$e");
+    }
+  }
+
+  static getProjectQualification(context, int? projectId) async {
+    final provider = Provider.of<ProjectQualificationProvider>(context, listen: false);
+    provider.projectQua.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      debugPrint("response----->${response.body}");
+      if (response.statusCode == 200) {
+        debugPrint("qualification-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectQua.clear();
+        provider.setProjectQua(data);
+      } else {
+        debugPrint("Qualification Data not found...");
+      }
+    }catch(e){
+      debugPrint("qualification------>$e");
+    }
+  }
+
+  static getProjectSkill(context, int? projectId) async {
+    final provider = Provider.of<ProjectSkillProvider>(context, listen: false);
+    provider.projectSkill.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("skill-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectSkill.clear();
+        provider.setProjectSkill(data);
+      } else {
+        debugPrint("Skill Data not found...");
+      }
+    }catch(e){
+      debugPrint("skill------>$e");
+    }
+  }
+
+  static getProjectHobby(context, int? projectId) async {
+    final provider = Provider.of<ProjectHobbyProvider>(context, listen: false);
+    provider.projectHobby.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try{
+      String url = "$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId";
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("hobby-response----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectHobby.clear();
+        provider.setProjectHobby(data);
+      } else {
+        debugPrint("Hobby Data not found...");
+      }
+    }catch(e){
+      debugPrint("hobby------>$e");
+    }
+  }
+
+
 
   /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
 

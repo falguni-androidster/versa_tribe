@@ -53,6 +53,11 @@ void main() {
       ChangeNotifierProvider<TrainingPendingRequestProvider>(create: (_) => TrainingPendingRequestProvider()),
       ChangeNotifierProvider<RequestTrainingListProvider>(create: (_) => RequestTrainingListProvider()),
       ChangeNotifierProvider<AcceptTrainingListProvider>(create: (_) => AcceptTrainingListProvider()),
+      ChangeNotifierProvider<ProjectListProvider>(create: (_) => ProjectListProvider()),
+      ChangeNotifierProvider<ProjectExperienceProvider>(create: (_) => ProjectExperienceProvider()),
+      ChangeNotifierProvider<ProjectQualificationProvider>(create: (_) => ProjectQualificationProvider()),
+      ChangeNotifierProvider<ProjectSkillProvider>(create: (_) => ProjectSkillProvider()),
+      ChangeNotifierProvider<ProjectHobbyProvider>(create: (_) => ProjectHobbyProvider()),
       ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet()),
       ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider())
     ],

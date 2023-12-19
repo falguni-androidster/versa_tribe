@@ -177,6 +177,14 @@ class CustomString {
   static const String noHobbyCriteriaFound = 'No Hobby Criteria Found...';
 
 
+/*--------------------------------------- Project Screen ----------------------------------*/
+
+  static const String onGoingProject = 'OnGoing Project';
+  static const String manageProject = "Manage Project";
+
+  static const String noProjectFound = 'No Project Found';
+
+
 /*---------------------------- Organization Screen --------------------------*/
   static const String joinOrganization = 'Join Organization';
   static const String organizationNameRequired = '* Organization Name is required...';
