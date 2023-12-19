@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 import 'Screens/person_details_screen.dart';
@@ -7,7 +8,12 @@ import 'Screens/splash_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<OnBoardingProvider>(create: (_) => OnBoardingProvider()),
