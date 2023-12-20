@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Model/project_experience.dart';
-import 'package:versa_tribe/Model/project_hobby.dart';
-import 'package:versa_tribe/Model/project_qualification.dart';
-import 'package:versa_tribe/Model/project_response.dart';
-import 'package:versa_tribe/extension.dart';
 
-import '../../Model/project_skill.dart';
+import 'package:versa_tribe/extension.dart';
 
 class ManageProjectScreen extends StatefulWidget {
 
@@ -34,8 +29,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
           },
         ),
         title: const Text(CustomString.manageProject,
-            style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       backgroundColor: CustomColors.kWhiteColor,

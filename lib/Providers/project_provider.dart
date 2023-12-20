@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Model/project_experience.dart';
-import 'package:versa_tribe/Model/project_qualification.dart';
-import 'package:versa_tribe/Model/project_response.dart';
+import 'package:versa_tribe/extension.dart';
 
-import '../Model/project_hobby.dart';
-import '../Model/project_skill.dart';
-
-/// GiveTrainingListProvider class
+/// ProjectListProvider class
 class ProjectListProvider with ChangeNotifier{
   final List<ProjectResponseModel> _getProjectList = [];
   List<ProjectResponseModel> get getProjectList => _getProjectList;
