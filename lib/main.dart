@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/PersonDetails/add_experience_screen.dart';
 import 'Screens/person_details_screen.dart';
@@ -7,7 +8,12 @@ import 'Screens/splash_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<OnBoardingProvider>(create: (_) => OnBoardingProvider()),
@@ -31,7 +37,7 @@ void main() {
       ChangeNotifierProvider<SearchExCompanyProvider>(create: (_) => SearchExCompanyProvider()),
       ChangeNotifierProvider<SearchExIndustryProvider>(create: (_) => SearchExIndustryProvider()),
       ChangeNotifierProvider<IndexProvider>(create: (_) => IndexProvider()),
-      ChangeNotifierProvider<DisplayManageOrgProvider>(create: (_) => DisplayManageOrgProvider()),
+      ChangeNotifierProvider<RequestManageOrgProvider>(create: (_) => RequestManageOrgProvider()),
       ChangeNotifierProvider<OrganizationProvider>(create: (_) => OrganizationProvider()),
       ChangeNotifierProvider<SearchOrgProvider>(create: (_) => SearchOrgProvider()),
       ChangeNotifierProvider<SearchDepartmentProvider>(create: (_) => SearchDepartmentProvider()),
@@ -41,7 +47,7 @@ void main() {
       ChangeNotifierProvider<SwitchProvider>(create: (_) => SwitchProvider()),
       ChangeNotifierProvider<OrgProfileBtnVisibility>(create: (_) => OrgProfileBtnVisibility()),
       ChangeNotifierProvider<DepartmentProvider>(create: (_) => DepartmentProvider()),
-      ChangeNotifierProvider<DisplayOrgMemberProvider>(create: (_) => DisplayOrgMemberProvider()),
+      ChangeNotifierProvider<RequestMemberProvider>(create: (_) => RequestMemberProvider()),
       ChangeNotifierProvider<TrainingDobProvider>(create: (_) => TrainingDobProvider()),
       ChangeNotifierProvider<GiveTrainingListProvider>(create: (_) => GiveTrainingListProvider()),
       ChangeNotifierProvider<TakeTrainingListProvider>(create: (_) => TakeTrainingListProvider()),
@@ -59,7 +65,9 @@ void main() {
       ChangeNotifierProvider<ProjectSkillProvider>(create: (_) => ProjectSkillProvider()),
       ChangeNotifierProvider<ProjectHobbyProvider>(create: (_) => ProjectHobbyProvider()),
       ChangeNotifierProvider<CheckInternet>(create: (_) => CheckInternet()),
-      ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider())
+      ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider()),
+      ChangeNotifierProvider<ApprovedMemberProvider>(create: (_) => ApprovedMemberProvider()),
+      ChangeNotifierProvider<ApprovedManageOrgProvider>(create: (_) => ApprovedManageOrgProvider()),
     ],
     child: const MyApp()
   ));

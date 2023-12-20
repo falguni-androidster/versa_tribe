@@ -25,7 +25,7 @@ class _RequestedOrganizationScreenState extends State<RequestedOrganizationScree
                 ),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              return Consumer<DisplayManageOrgProvider>(
+              return Consumer<RequestManageOrgProvider>(
                   builder: (context, val, child) {
                     return val.requestOrgDataList.isNotEmpty ?
                     ListView.builder(

@@ -1184,9 +1184,10 @@ class ApiConfig {
     }
   }
   static getManageOrgData({context, tabIndex}) async {
-    final provider = Provider.of<DisplayManageOrgProvider>(context, listen: false);
-    provider.requestOrgDataList.clear();
-    provider.approveOrgDataList.clear();
+    final requestProvider = Provider.of<RequestManageOrgProvider>(context, listen: false);
+    final approvedProvider = Provider.of<ApprovedManageOrgProvider>(context, listen: false);
+    requestProvider.requestOrgDataList.clear();
+    approvedProvider.approveOrgDataList.clear();
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     try{
@@ -1198,7 +1199,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         tabIndex==0 ? debugPrint("requested data------->${response.body}") : debugPrint("approved data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-        tabIndex==0 ? provider.setRequestOrgData(data) : provider.setApproveOrgData(data);
+        tabIndex==0 ? requestProvider.setRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
@@ -1209,9 +1210,10 @@ class ApiConfig {
     }
   }
   static getOrgMemberData({context,orgName, tabIndex}) async {
-    final provider = Provider.of<DisplayOrgMemberProvider>(context, listen: false);
-    provider.requestPendingOrgDataList.clear();
-    provider.approveOrgDataList.clear();
+    final requestProvider = Provider.of<RequestMemberProvider>(context, listen: false);
+    final approvedProvider = Provider.of<ApprovedMemberProvider>(context, listen: false);
+    requestProvider.requestPendingOrgDataList.clear();
+    approvedProvider.approveOrgDataList.clear();
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     try{
@@ -1225,8 +1227,8 @@ class ApiConfig {
         debugPrint("approved data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
        tabIndex==0?
-       provider.setPendingRequestOrgData(data):
-       provider.setApproveOrgData(data);
+       requestProvider.setPendingRequestOrgData(data):
+       approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),

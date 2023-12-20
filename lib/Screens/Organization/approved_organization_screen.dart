@@ -26,7 +26,7 @@ class _ApprovedOrganizationScreenState
                 ),
               );
             } else if (snapshot.connectionState == ConnectionState.done) {
-              return Consumer<DisplayManageOrgProvider>(
+              return Consumer<ApprovedManageOrgProvider>(
                   builder: (context, val, child) {
                 return val.approveOrgDataList.isNotEmpty
                     ? ListView.builder(
