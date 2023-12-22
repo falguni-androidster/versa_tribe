@@ -4,56 +4,76 @@ import 'package:versa_tribe/extension.dart';
 
 ///PersonExperienceProvider class
 class PersonExperienceProvider with ChangeNotifier{
-  final List<PersonExperienceModel> _personEx =[];
+  List<PersonExperienceModel> _personEx =[];
   List<PersonExperienceModel> get personEx => _personEx;
 
   setPersonEx(pEx){
-    pEx.forEach((ob) async {
-      _personEx.add(PersonExperienceModel.fromJson(ob));
+    if(pEx.length==0){
+      _personEx = [];
       notifyListeners();
-    });
+    }else {
+      pEx.forEach((ob) async {
+        _personEx.add(PersonExperienceModel.fromJson(ob));
+        notifyListeners();
+      });
+    }
   }
 }
 
 
 ///PersonQualificationProvider class
 class PersonQualificationProvider with ChangeNotifier{
-  final List<PersonQualificationModel> _personQl =[];
+  List<PersonQualificationModel> _personQl =[];
   List<PersonQualificationModel> get personQl => _personQl;
 
   setPersonQl(pQualification){
-    pQualification.forEach((ob){
-      _personQl.add(PersonQualificationModel.fromJson(ob));
+    if(pQualification.length==0){
+      _personQl=[];
       notifyListeners();
-    });
+    }else {
+      pQualification.forEach((ob) {
+        _personQl.add(PersonQualificationModel.fromJson(ob));
+        notifyListeners();
+      });
+    }
   }
 }
 
 
 ///PersonSkillProvider class
 class PersonSkillProvider with ChangeNotifier{
-  final List<PersonSkillModel> _personSkill =[];
+  List<PersonSkillModel> _personSkill=[];
   List<PersonSkillModel> get personSkill => _personSkill;
 
-  setPersonSkill(pHobby){
-    pHobby.forEach((ob){
-      _personSkill.add(PersonSkillModel.fromJson(ob));
+  setPersonSkill(pSkill){
+    if(pSkill.length==0){
+      _personSkill =[];
       notifyListeners();
-    });
+    }else {
+      pSkill.forEach((ob) {
+        _personSkill.add(PersonSkillModel.fromJson(ob));
+        notifyListeners();
+      });
+    }
   }
 }
 
 
 ///PersonHobbyProvider class
 class PersonHobbyProvider with ChangeNotifier{
-  final List<PersonHobbyModel> _personHobby =[];
+  List<PersonHobbyModel> _personHobby =[];
   List<PersonHobbyModel> get personHobby => _personHobby;
 
   setPersonHobby(pHobby){
-    pHobby.forEach((ob){
-      _personHobby.add(PersonHobbyModel.fromJson(ob));
+    if(pHobby.length==0){
+      _personHobby=[];
       notifyListeners();
-    });
+    }else {
+      pHobby.forEach((ob) {
+        _personHobby.add(PersonHobbyModel.fromJson(ob));
+        notifyListeners();
+      });
+    }
   }
 }
 
