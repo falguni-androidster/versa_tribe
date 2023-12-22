@@ -34,8 +34,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
           } else if (snapshot.connectionState == ConnectionState.done) {
             return Consumer<TakeTrainingListProvider>(
                 builder: (context, val, child) {
-                  return val.getTakeTrainingList.isNotEmpty
-                      ? ListView.builder(
+                  return val.getTakeTrainingList.isNotEmpty ? ListView.builder(
                     shrinkWrap: true,
                     itemCount: val.getTakeTrainingList.length,
                     itemBuilder: (context, index) {

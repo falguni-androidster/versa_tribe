@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 
@@ -311,7 +312,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
   }
 
   Future<void> updateProfileClick(context) async {

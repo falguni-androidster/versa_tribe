@@ -14,6 +14,16 @@ String connection(context){
   return provider.status;
 }
 
+/// Months Between Two Dates
+int monthsBetweenDates(DateTime startDate, DateTime endDate) {
+  int months = 0;
+  while (startDate.isBefore(endDate)) {
+    months++;
+    startDate = DateTime(startDate.year, startDate.month + 1, startDate.day);
+  }
+  return months;
+}
+
 /// return days,hours,seconds ago from timeStamp
 String timeAgo(String timestamp) {
   final now = DateTime.now();

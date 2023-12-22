@@ -99,7 +99,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig().deleteRequestTraining(context: context, trainingId: trainingJoinedMembersModel.trainingId);
+                  ApiConfig.deleteRequestTraining(context: context, trainingId: trainingJoinedMembersModel.trainingId);
                   },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,

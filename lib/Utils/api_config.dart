@@ -7,15 +7,15 @@ import 'package:http/http.dart' as http;
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../extension.dart';
 
-
 class ApiConfig {
 
   // static const String baseUrl = 'https://srv1.ksgs.local:9443';
   static const String baseUrl = 'https://api.gigpro.in';
 
-  /*------------ Profile Screen --------------*/
+  /*------------------------------------------ Profile Screen ---------------------------------------*/
   Future<ProfileResponse> getProfileData() async {
-    const String profileUrl = '$baseUrl/api/Person/MyProfile';
+
+    String profileUrl = '$baseUrl/api/Person/MyProfile';
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -25,20 +25,18 @@ class ApiConfig {
     });
 
     if (response.statusCode == 200) {
-      // If server returns a 200 OK response, parse the JSON
       debugPrint('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
       ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
       pref.setString('PersonId', yourModel.personId.toString());
       return yourModel;
     } else {
-      // If the server did not return a 200 OK response, throw an exception.
       throw Exception('Failed to load data');
     }
   }
 
+  /*------------------------------------------ Training Screen  ---------------------------------------------*/
 
-  /*------------------------------------------   Training Screen   ---------------------------------------------*/
   static getGiveTrainingData(context) async {
 
     final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
@@ -47,14 +45,13 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
+    try {
       String trainingUrl = '$baseUrl/api/Training/User/GetList';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        // If server returns a 200 OK response, parse the JSON
         debugPrint('Give Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getGiveTrainingList.clear();
@@ -63,7 +60,7 @@ class ApiConfig {
         showToast(context, CustomString.noDataFound);
         debugPrint("Give Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Training------>$e");
     }
   }
@@ -76,14 +73,13 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
+    try {
       String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        // If server returns a 200 OK response, parse the JSON
         debugPrint('Take Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getTakeTrainingList.clear();
@@ -92,7 +88,7 @@ class ApiConfig {
         showToast(context, CustomString.noDataFound);
         debugPrint("Take Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Training------>$e");
     }
   }
@@ -105,14 +101,14 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+    try {
+      String trainingUrl =
+          '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        // If server returns a 200 OK response, parse the JSON
         debugPrint('Requested Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getRequestedTrainingList.clear();
@@ -121,7 +117,7 @@ class ApiConfig {
         showToast(context, CustomString.noDataFound);
         debugPrint("Requested Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Training------>$e");
     }
   }
@@ -134,14 +130,14 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+    try {
+      String trainingUrl =
+          '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        // If server returns a 200 OK response, parse the JSON
         debugPrint('Accepted Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getAcceptedTrainingList.clear();
@@ -150,13 +146,14 @@ class ApiConfig {
         showToast(context, CustomString.noDataFound);
         debugPrint("Accepted Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Training------>$e");
     }
   }
 
   static deleteTraining(context, int? trainingId) async {
-    String url = "$baseUrl/api/Training/Delete?id=$trainingId";
+
+    String url = '$baseUrl/api/Training/Delete?id=$trainingId';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.delete(Uri.parse(url), headers: {
@@ -164,11 +161,11 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("if--------->${response.body}");
+      debugPrint("Delete training--------->${response.body}");
       getGiveTrainingData(context);
       Navigator.pop(context);
     } else {
-      debugPrint("else--------->${response.body}");
+      debugPrint("Not Delete training--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Try again Data not delete..."),
       ));
@@ -177,181 +174,196 @@ class ApiConfig {
   }
 
   static getTrainingExperience(context, int? trainingId) async {
+
     final provider = Provider.of<TrainingExperienceProvider>(context, listen: false);
     provider.trainingEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Training_Criteria/GetExpCriteria?trainingId=$trainingId";
+    try {
+      String url =
+          '$baseUrl/api/Training_Criteria/GetExpCriteria?trainingId=$trainingId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("experience-response----->${response.body}");
+        debugPrint("Experience Training Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.trainingEx.clear();
         provider.setTrainingEx(data);
       } else {
-        debugPrint("Experience Data not found...");
+        debugPrint("Experience Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("experience------>$e");
     }
   }
 
   static getTrainingQualification(context, int? trainingId) async {
+
     final provider = Provider.of<TrainingQualificationProvider>(context, listen: false);
     provider.trainingQua.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Training_Criteria/GetQualifications?trainingId=$trainingId";
+    try {
+      String url =
+          '$baseUrl/api/Training_Criteria/GetQualifications?trainingId=$trainingId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("qualification-response----->${response.body}");
+        debugPrint("Qualification Training Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.trainingQua.clear();
         provider.setTrainingQua(data);
       } else {
-        debugPrint("Qualification Data not found...");
+        debugPrint("Qualification Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("qualification------>$e");
     }
   }
 
   static getTrainingSkill(context, int? trainingId) async {
+
     final provider = Provider.of<TrainingSkillProvider>(context, listen: false);
     provider.trainingSkill.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Training_Criteria/GetSkillsByTrainingId?trainingId=$trainingId";
+    try {
+      String url =
+          '$baseUrl/api/Training_Criteria/GetSkillsByTrainingId?trainingId=$trainingId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("skill-response----->${response.body}");
+        debugPrint("Skill Training Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.trainingSkill.clear();
         provider.setTrainingSkill(data);
       } else {
-        debugPrint("Skill Data not found...");
+        debugPrint("Skill Training Data not found...");
       }
-    }catch(e){
-      debugPrint("skill------>$e");
+    } catch (e) {
+      debugPrint("Skill------>$e");
     }
   }
 
   static getTrainingHobby(context, int? trainingId) async {
+
     final provider = Provider.of<TrainingHobbyProvider>(context, listen: false);
     provider.trainingHobby.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Training_Criteria/Hobby/GetByTrainingId?trainingId=$trainingId";
+    try {
+      String url =
+          '$baseUrl/api/Training_Criteria/Hobby/GetByTrainingId?trainingId=$trainingId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("hobby-response----->${response.body}");
+        debugPrint("Hobby Training Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.trainingHobby.clear();
         provider.setTrainingHobby(data);
       } else {
-        debugPrint("Hobby Data not found...");
+        debugPrint("Hobby Training Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("hobby------>$e");
     }
   }
 
   static getTrainingJoinedMembers(context, trainingId, isJoin) async {
+
     final provider = Provider.of<TrainingJoinedMembersProvider>(context, listen: false);
     provider.trainingJoinedMembers.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin";
+    try {
+      String url =
+          '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
+        debugPrint("Get Training Joined Member Data----->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
+        provider.trainingJoinedMembers.clear();
         provider.setTrainingJoinedMembers(data);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Something went wrong..."),
-        ));
+        debugPrint("Get Training Joined Member Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Joined Members------>$e");
     }
   }
 
   static getTrainingPendingRequests(context, trainingId, isJoin) async {
+
     final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
     provider.trainingPendingRequests.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin";
+    try {
+      String url =
+          '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
+        debugPrint("Get Training Pending Requests Data----->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
         provider.setTrainingPendingRequests(data);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Something went wrong..."),
-        ));
+        debugPrint('Get Training Pending Requests Data Not Found...');
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Pending Requests------>$e");
     }
   }
 
   /// Cancel Request Training
-  deleteRequestTraining({context, trainingId, screen}) async {
+  static deleteRequestTraining({context, trainingId, screen}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     String? personId = pref.getString('PersonId');
-    String apiUrl = "${ApiConfig.baseUrl}/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId";
-    final response = await http.delete(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    String apiUrl =
+        '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
+    final response = await http.delete(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
     if (response.statusCode == 200) {
+      debugPrint("Delete Request----->${response.body}");
       showToast(context, CustomString.delete);
       getAcceptedTraining(context: context, isJoin: true);
       getRequestedTraining(context: context, isJoin: false);
     } else {
-      showToast(context, 'Try Again.....');
+      debugPrint("Not Delete Request----->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again not delete request..."),
+      ));
     }
   }
 
   /// Approve Request Training
-  approveRequestTraining({context, trainingId, isJoin}) async {
+  static approveRequestTraining({context, trainingId, isJoin}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     String? personId = pref.getString('PersonId');
@@ -360,20 +372,26 @@ class ApiConfig {
       "Person_Id": personId,
       "Is_Join": isJoin,
     };
-    String url = "${ApiConfig.baseUrl}/api/Training_Join/Update";
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    String url = '$baseUrl/api/Training_Join/Update';
+    final response =
+        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      debugPrint("Approve Request----->${response.body}");
       showToast(context, CustomString.approved);
-      ApiConfig.getTrainingPendingRequests(context, trainingId, false);
+      getTrainingPendingRequests(context, trainingId, false);
     } else {
-      showToast(context, 'Try Again.....');
+      debugPrint("Not Approve Request----->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again not approved..."),
+      ));
     }
   }
 
   /*------------------------------------------   Project Screen   ---------------------------------------------*/
+
   static getProjectData(context) async {
 
     final provider = Provider.of<ProjectListProvider>(context, listen: false);
@@ -382,166 +400,291 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
+    try {
       String trainingUrl = '$baseUrl/api/Projects/List';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint('Project data-------------${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getProjectList.clear();
+        provider.setListProject(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Project Data Not Found");
+      }
+    } catch (e) {
+      debugPrint("Project ------>$e");
+    }
+  }
+
+  static getProjectDataByOrgID(context, int? orgId) async {
+
+    final provider =
+        Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
+    provider.getProjectListByOrgId.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try {
+      String trainingUrl = '$baseUrl/api/Projects/OrgProjectsList?OrgId=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       debugPrint('data -----------> ${response.body}');
       if (response.statusCode == 200) {
-        // If server returns a 200 OK response, parse the JSON
-        debugPrint('Project data -----------> ${response.body}');
+        debugPrint('Project Data By orgID-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.getProjectList.clear();
-        provider.setListProject(data);
+        provider.getProjectListByOrgId.clear();
+        provider.setListProjectByOrgId(data);
       } else {
         showToast(context, CustomString.noDataFound);
-        debugPrint("Project Data not found...");
+        debugPrint("Project Data By OrgID Not Found...");
       }
-    }catch(e){
+    } catch (e) {
+      debugPrint("Project ------>$e");
+    }
+  }
+
+  static getProjectManageUserData(context, int? projectId) async {
+
+    final provider =
+        Provider.of<ProjectListManageUserProvider>(context, listen: false);
+    provider.getProjectListManageUser.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try {
+      String trainingUrl =
+          '$baseUrl/api/ProjectUsers/GetUsersByProject?Project_Id=$projectId';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      debugPrint('data -----------> ${response.body}');
+      if (response.statusCode == 200) {
+        debugPrint('Project Manage User Data -----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.getProjectListManageUser.clear();
+        provider.setListProjectManageUser(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Project Manage User Data not found...");
+      }
+    } catch (e) {
       debugPrint("Project ------>$e");
     }
   }
 
   static getProjectExperience(context, int? projectId) async {
-    final provider = Provider.of<ProjectExperienceProvider>(context, listen: false);
+
+    final provider =
+        Provider.of<ProjectExperienceProvider>(context, listen: false);
     provider.projectEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Project_Criteria/Get_Proj_ExpCriteria?projectId=$projectId";
+    try {
+      String url =
+          '$baseUrl/api/Project_Criteria/Get_Proj_ExpCriteria?projectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      debugPrint("response----->${response.body}");
       if (response.statusCode == 200) {
-        debugPrint("experience-response----->${response.body}");
+        debugPrint("Experience Project Data ----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.projectEx.clear();
         provider.setProjectEx(data);
       } else {
-        debugPrint("Experience Data not found...");
+        debugPrint("Experience Project Data Not Found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("experience------>$e");
     }
   }
 
   static getProjectQualification(context, int? projectId) async {
-    final provider = Provider.of<ProjectQualificationProvider>(context, listen: false);
+
+    final provider =
+        Provider.of<ProjectQualificationProvider>(context, listen: false);
     provider.projectQua.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId";
+    try {
+      String url =
+          '$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
-      debugPrint("response----->${response.body}");
       if (response.statusCode == 200) {
-        debugPrint("qualification-response----->${response.body}");
+        debugPrint("Qualification Project Data ------->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.projectQua.clear();
         provider.setProjectQua(data);
       } else {
-        debugPrint("Qualification Data not found...");
+        debugPrint("Qualification Project Data Not Found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("qualification------>$e");
     }
   }
 
   static getProjectSkill(context, int? projectId) async {
+
     final provider = Provider.of<ProjectSkillProvider>(context, listen: false);
     provider.projectSkill.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId";
+    try {
+      String url =
+          '$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("skill-response----->${response.body}");
+        debugPrint("Skill Project Data ----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.projectSkill.clear();
         provider.setProjectSkill(data);
       } else {
-        debugPrint("Skill Data not found...");
+        debugPrint("Skill Project Data Not Found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("skill------>$e");
     }
   }
 
   static getProjectHobby(context, int? projectId) async {
+
     final provider = Provider.of<ProjectHobbyProvider>(context, listen: false);
     provider.projectHobby.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-    try{
-      String url = "$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId";
+    try {
+      String url =
+          '$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("hobby-response----->${response.body}");
+        debugPrint("Hobby Project Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
         provider.projectHobby.clear();
         provider.setProjectHobby(data);
       } else {
-        debugPrint("Hobby Data not found...");
+        debugPrint("Hobby Project Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("hobby------>$e");
     }
   }
 
+  static rejectProjectManageUser(context, int? id, int? projectId) async {
 
+    String url =
+        '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Reject Project Manage User--------->${response.body}");
+      showToast(context, 'Rejected SuccessFully..');
+      getProjectManageUserData(context, projectId);
+    } else {
+      debugPrint("Not Reject Project Manage User--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again Data not reject..."),
+      ));
+    }
+    return response.body;
+  }
 
-  /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
-
-  static getUserExperience(context) async {
-    final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
+  static approveProjectManageUser(context, int? id, int? projectId) async {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     String? personId = pref.getString('PersonId');
-    try{
-      String url = "$baseUrl/api/PersonExperiences/MyList?id=$personId";
+
+    Map<String, dynamic> requestData = {
+      "Id": id,
+      "Person_Id": personId,
+      "Project_Id": projectId,
+      "IsApproved": true
+    };
+    String url = '$baseUrl/api/ProjectUsers/Update';
+    final response =
+        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Approve Project Manage User--------->${response.body}");
+      showToast(context, 'Accepted Successfully..');
+      getProjectManageUserData(context, projectId);
+    } else {
+      debugPrint("Not Approve Project Manage User--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again Data not accept..."),
+      ));
+    }
+  }
+
+  /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
+
+  static getPersonExperience(context) async {
+
+    final provider =
+        Provider.of<PersonExperienceProvider>(context, listen: false);
+    provider.personEx.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    String? personId = pref.getString('PersonId');
+    try {
+      String url = '$baseUrl/api/PersonExperiences/MyList?id=$personId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        provider.personEx.clear();
-        debugPrint("experience-response----->${response.body}");
+        debugPrint("Experience Profile Data----->${response.body}");
         List<dynamic> data = jsonDecode(response.body);
+        provider.personEx.clear();
         provider.setPersonEx(data);
       } else {
-        //ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Experience Data not found...")));
-        debugPrint("Experience Data not found...");
+        debugPrint("Experience Profile Data not found...");
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("experience------>$e");
     }
   }
-  static getUserQualification(context) async {
-    final provider = Provider.of<PersonQualificationProvider>(context, listen: false);
-    String url = "$baseUrl/api/GetUserPerQual";
+
+  static getPersonQualification(context) async {
+
+    final provider =
+        Provider.of<PersonQualificationProvider>(context, listen: false);
+    provider.personQl.clear();
+
+    String url = '$baseUrl/api/GetUserPerQual';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.get(Uri.parse(url), headers: {
@@ -549,20 +692,21 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      provider.personQl.clear();
-      debugPrint("qualification-response----->${response.body}");
+      debugPrint("Qualification Profile Data----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.personQl.clear();
       provider.setPersonQl(data);
     } else {
-      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //   content: Text("Data not found..."),
-      // ));
-      debugPrint("Qualification Data not found...");
+      debugPrint("Qualification Profile Data not found...");
     }
   }
-  static getUserSkills(context) async {
+
+  static getPersonSkill(context) async {
+
     final provider = Provider.of<PersonSkillProvider>(context, listen: false);
-    String url = "$baseUrl/api/PersonSkills/GetSkillsByUser";
+    provider.personSkill.clear();
+
+    String url = '$baseUrl/api/PersonSkills/GetSkillsByUser';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.get(Uri.parse(url), headers: {
@@ -570,20 +714,21 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      provider.personSkill.clear();
-      debugPrint("skill-response----->${response.body}");
+      debugPrint("Skill Profile Data----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.personSkill.clear();
       provider.setPersonSkill(data);
     } else {
-      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //   content: Text("Data not found..."),
-      // ));
-      debugPrint("Skill Data not found...");
+      debugPrint("Skill Profile Data Not Found...");
     }
   }
-  static getUserHobby(context) async {
+
+  static getPersonHobby(context) async {
+
     final provider = Provider.of<PersonHobbyProvider>(context, listen: false);
-    String url = "$baseUrl/api/PersonHobbies/MyHobbies";
+    provider.personHobby.clear();
+
+    String url = '$baseUrl/api/PersonHobbies/MyHobbies';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
     final response = await http.get(Uri.parse(url), headers: {
@@ -591,45 +736,41 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      provider.personHobby.clear();
-      debugPrint("hobby-response----->${response.body}");
+      debugPrint("Hobby Profile Data----->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.personHobby.clear();
       provider.setPersonHobby(data);
     } else {
-      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //   content: Text("Data not found..."),
-      // ));
-      debugPrint("Hobby Data not found...");
+      debugPrint("Hobby Profile Data Not Found...");
     }
   }
+
   static getDepartment({context, orgId}) async {
-    debugPrint("DepartmentID------>$orgId");
-    debugPrint("DepartmentID2------>$orgId");
-    //List<DepartmentModel>dpM =[];
-    String url = "$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId";
+
+    final provider = Provider.of<DepartmentProvider>(context, listen: false);
+    provider.department.clear();
+
+    String url = '$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+    final response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
     if (response.statusCode == 200) {
-        debugPrint("Department***------->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        // data.forEach((singleObject){
-        //   dpM.add(DepartmentModel.fromJson(singleObject));
-        // });
-        final provider = Provider.of<DepartmentProvider>(context, listen: false);
-        provider.department.clear();
-        provider.setDepartment(data);
-      } else {
-        debugPrint("--Error to get department--->${response.body}");
-      }
+      debugPrint("Department Data ------->${response.body}");
+      List<dynamic> data = jsonDecode(response.body);
+      provider.department.clear();
+      provider.setDepartment(data);
+    } else {
+      debugPrint("Department Data Not Found--->${response.body}");
     }
+  }
 
+  static deletePersonExperience(context, int? perExpId) async {
 
-  static deletePersonEx(context, int? perExpId) async {
-      String url = "$baseUrl/api/PersonExperiences/Delete?id=$perExpId";
+    try {
+      String url = '$baseUrl/api/PersonExperiences/Delete?id=$perExpId';
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
       final response = await http.delete(Uri.parse(url), headers: {
@@ -637,44 +778,25 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("if--------->${response.body}");
-        getUserExperience(context);
+        debugPrint("Delete Person Experience--------->${response.body}");
+        getPersonExperience(context);
         Navigator.pop(context);
       } else {
-        debugPrint("else--------->${response.body}");
+        debugPrint("Not Delete Person Experience--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again Data not delete..."),
+          content: Text("Try again person experience not delete..."),
         ));
       }
       return response.body;
-  }
-
-  static deletePersonQL(context, int? perQLId) async {
-    try{
-      String url = "$baseUrl/api/PersonQualifications/5?id=$perQLId";
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
-      final response = await http.delete(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("if--------->${response.body}");
-        getUserQualification(context);
-        Navigator.pop(context);
-      } else {
-        debugPrint("else--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again Data not delete..."),
-        ));
-      }
-    }catch(e){
+    } catch (e) {
       debugPrint("Exception------->$e");
     }
   }
-  static deletePersonSkill(context, int? perSkillId) async {
-    try{
-      String url = "$baseUrl/api/PersonSkills/Delete?id=$perSkillId";
+
+  static deletePersonQualification(context, int? perQLId) async {
+
+    try {
+      String url = "$baseUrl/api/PersonQualifications?id=$perQLId";
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
       final response = await http.delete(Uri.parse(url), headers: {
@@ -682,26 +804,49 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("skill delete success--------->${response.body}");
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-        //Navigator.pushReplacementNamed(context, "/personDetailScreen");
-        ///When is use above navigator then replacement not work
-        getUserSkills(context);
+        debugPrint("Delete Person Qualification--------->${response.body}");
+        getPersonQualification(context);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Not Delete Person Qualification--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person qualification not delete..."),
+        ));
+      }
+    } catch (e) {
+      debugPrint("Exception------->$e");
+    }
+  }
+
+  static deletePersonSkill(context, int? perSkillId) async {
+
+    try {
+      String url = '$baseUrl/api/PersonSkills/Delete?id=$perSkillId';
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
+      final response = await http.delete(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Delete Person Skill--------->${response.body}");
+        getPersonSkill(context);
         Navigator.of(context).pop();
       } else {
-        debugPrint("skill delete failed--status-code--->${response.statusCode}-->${response.body}");
+        debugPrint("Not Delete Person Skill--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again Data not delete..."),
+          content: Text("Try again person skill not delete..."),
         ));
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Exception------->$e");
     }
   }
+
   static deletePersonHobby(context, personId, int? perHobbyId) async {
-    try{
-      debugPrint("-=-=-=->$personId and $perHobbyId");
-      String url = "$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId";
+
+    try {
+      String url = '$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId';
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
       final response = await http.delete(Uri.parse(url), headers: {
@@ -709,33 +854,25 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("hobby delete success--------->${response.body}");
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-        //Navigator.pushReplacementNamed(context, "/personDetailScreen");
-        ///When is use above navigator then replacement not work
-        ApiConfig.getUserHobby(context);
+        debugPrint("Delete Person Hobby--------->${response.body}");
+        ApiConfig.getPersonHobby(context);
         Navigator.pop(context);
       } else {
-        debugPrint("hobby delete failed---status-code--->${response.statusCode} and error-->${response.body}");
+        debugPrint("Not Delete Person Hobby--------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again Data not delete..."),
+          content: Text("Try again person hobby not delete..."),
         ));
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Exception------->$e");
     }
   }
 
-  static addExData({context, jobTitle, comName, indName, sDate, eDate}) async {
+  static addExperienceData({context, jobTitle, comName, indName, sDate, eDate}) async {
+
     DateTime startDate = DateTime.parse(sDate);
     DateTime endDate = DateTime.parse(eDate);
     int result = monthsBetweenDates(startDate, endDate);
-    debugPrint('Com name----------->> $comName');
-    debugPrint('Ind name----------->> $indName');
-    debugPrint('Number of months----------->> $result');
-    debugPrint('job title----------->> $jobTitle');
-    debugPrint('start date----------->> $sDate');
-    debugPrint('end date----------->> $eDate');
 
     Map<String, dynamic> requestData = {
       "Company_Name": comName,
@@ -745,51 +882,27 @@ class ApiConfig {
       "Start_date": sDate,
       "End_Date": eDate
     };
-    String url = "$baseUrl/api/PersonExperiences/Create";
+    String url = '$baseUrl/api/PersonExperiences/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      getUserExperience(context);
+      debugPrint("Add Person Experience Data ------>${response.body}");
+      getPersonExperience(context);
       Navigator.pop(context);
     } else {
-      debugPrint("error: response----->>${response.body}");
+      debugPrint("Person Add Experience Data Failed ------>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again..."),
+        content: Text("Try again person experience not added..."),
       ));
     }
   }
-  static addHobbyData({context, hobbyName}) async {
-    String hobby = hobbyName;
-    Map<String, dynamic> requestData = {
-      "Hobby":{"name": hobby}
-    };
-    String url = "$baseUrl/api/PersonHobbies/PerHobCreate";
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add hobby success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
-      ///When is use above navigator then replacement not work
-      ApiConfig.getUserHobby(context);
-      Navigator.pop(context);
-    } else {
-      debugPrint("hobby adding failed--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("hobby adding failed try again..."),
-      ));
-    }
-  }
+
   static addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
-    debugPrint("---->}>--> $courseName ---> $instituteName---> $grade---> $city ---> $yop");
+
     Map<String, dynamic> requestData = {
       "Cou_Name": courseName,
       "Inst_Name": instituteName,
@@ -798,56 +911,78 @@ class ApiConfig {
       "Grade": grade,
     };
 
-    String url = "$baseUrl/api/PersonQualifications/Create";
+    String url = '$baseUrl/api/PersonQualifications/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Qualification added--------->${response.body}");
-      getUserQualification(context);
+      debugPrint("Add Person Qualification Data ------>${response.body}");
+      getPersonQualification(context);
       Navigator.pop(context);
     } else {
-
-      debugPrint("Qualification added failed----}----->${response.body}");
+      debugPrint("Add Person Qualification Data Failed ------>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Qualification not add please try again..."),
+        content: Text("Try again person qualification not added..."),
       ));
     }
   }
-  static addSkillData({context, skill, month}) async {
-    Map<String, dynamic> requestData =
-    {
-      "Experience": month,
-      "Skill_Name":skill
-    };
 
-    String url = "$baseUrl/api/PersonSkills/Create";
+  static addHobbyData({context, hobbyName}) async {
+
+    Map<String, dynamic> requestData = {
+      "Hobby": {"name": hobbyName}
+    };
+    String url = '$baseUrl/api/PersonHobbies/PerHobCreate';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Add Skills Success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
-      ///When is use above navigator then replacement not work
-      getUserSkills(context);
-      Navigator.of(context).pop();
+      debugPrint("Add Person Hobby Data ------>${response.body}");
+      ApiConfig.getPersonHobby(context);
+      Navigator.pop(context);
     } else {
-      debugPrint("Skill adding failed--------->${response.body}");
+      debugPrint("Add Person Hobby Data Failed ------>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Skill add failed try again..."),
+        content: Text("Try again person hobby not added..."),
       ));
     }
   }
-  static addOrgPersonData({context,orgId, aboutORG, city, country, email, mobileNo, orgName}) async {
-    Map<String, dynamic> requestData =
-    {
+
+  static addSkillData({context, skill, month}) async {
+
+    Map<String, dynamic> requestData = {
+      "Experience": month,
+      "Skill_Name": skill
+    };
+
+    String url = '$baseUrl/api/PersonSkills/Create';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Add Person Skill Data ------>${response.body}");
+      getPersonSkill(context);
+      Navigator.of(context).pop();
+    } else {
+      debugPrint("Add Person Skill Data Failed ------>${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again person skill not added..."),
+      ));
+    }
+  }
+
+  static addOrgPersonData({context, orgId, aboutORG, city, country, email, mobileNo, orgName}) async {
+
+    Map<String, dynamic> requestData = {
       "Org_Id": orgId,
       "About_org": aboutORG,
       "City": city,
@@ -856,38 +991,29 @@ class ApiConfig {
       "Contact_number": mobileNo,
     };
 
-    String url = "$baseUrl/api/OrgInfo/Create";
+    String url = '$baseUrl/api/OrgInfo/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Add OrgPerson Data load Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> UpdateAdminProfile(orgId: orgId, orgName: orgName)));
-      // ApiConfig.getUserSkills(context);
-      // Navigator.pop(context);
+      debugPrint("Add OrgPerson Data Success--------->${response.body}");
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgId: orgId, orgName: orgName)));
     } else {
-      debugPrint("OrgPerson Data load failed--------->${response.body}");
+      debugPrint("Add OrgPerson Data failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("OrgPerson Data failed try again..."),
+        content: Text("Try again orgPerson data failed..."),
       ));
     }
   }
 
-  static updateExData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
+  static updateExperienceData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
+
     DateTime startDate = DateTime.parse(sDate);
     DateTime endDate = DateTime.parse(eDate);
-
     int result = monthsBetweenDates(startDate, endDate);
-    debugPrint('Number of months between the two dates:-----> $result');
-    debugPrint('person ex id-----> $peronExperienceId');
-    debugPrint('company-----> $comName');
-    debugPrint('industry-----> $indName');
-    debugPrint('job title-----> $jobTitle');
-    debugPrint('state date-----> $sDate');
-    debugPrint('end date-----> $eDate');
 
     Map<String, dynamic> requestData = {
       "PerExp_Id": peronExperienceId,
@@ -899,48 +1025,33 @@ class ApiConfig {
       "End_Date": eDate
     };
 
-    try{
-      String url = "$baseUrl/api/PersonExperiences/Update";
+    try {
+      String url = '$baseUrl/api/PersonExperiences/Update';
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getString(CustomString.accessToken);
-      final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        // debugPrint("if--------->${response.body}");
-        getUserExperience(context);
+        debugPrint("Update Person Experience Data ------>${response.body}");
+        getPersonExperience(context);
         Navigator.pop(context);
       } else {
-        //debugPrint("else--------->${response.body}");
+        debugPrint("Update Person Experience Data Failed ------>${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again details not update..."),
+          content: Text("Try again person experience not update..."),
         ));
       }
-    }catch(e){
+    } catch (e) {
       debugPrint("Exception------->$e");
     }
   }
-  static int monthsBetweenDates(DateTime startDate, DateTime endDate) {
-    int months = 0;
 
-    while (startDate.isBefore(endDate)) {
-      months++;
-      startDate = DateTime(startDate.year, startDate.month + 1, startDate.day);
-    }
-
-    return months;
-  }
-  static editQualificationData({context, courseName, instituteName, grade,city, yop, personQualificationID}) async {
-    debugPrint("course--->$courseName");
-    debugPrint("instituteName--->$instituteName");
-    debugPrint("grade--->$grade");
-    debugPrint("city--->$city");
-    debugPrint("yop--->$yop");
-    debugPrint("PQ_Id--->$personQualificationID");
+  static updateQualificationData({context, courseName, instituteName, grade, city, yop, personQualificationID}) async {
 
     Map<String, dynamic> requestData = {
-      "PQ_Id":personQualificationID,
+      "PQ_Id": personQualificationID,
       "YOP": yop,
       "Grade": grade,
       "City": city,
@@ -948,59 +1059,58 @@ class ApiConfig {
       "Inst_Name": instituteName,
     };
 
-    String url = "$baseUrl/api/PersonQualifications/Update";
+    String url = '$baseUrl/api/PersonQualifications/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Qualification edit success--------->${response.body}");
-      getUserQualification(context);
+      debugPrint("Update Person Qualification Data ------>${response.body}");
+      getPersonQualification(context);
       Navigator.pop(context);
     } else {
-      debugPrint("Qualification edit failed--------->${response.body}");
+      debugPrint("Update Person Qualification Data Failed ------>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Qualification not add please try again..."),
+        content: Text("Try again person qualification not update ..."),
       ));
     }
   }
-  static editSkillData({context, skill, months, personSkillId}) async {
-    debugPrint("skill----->$skill");
-    Map<String, dynamic> requestData =
-    {
+
+  static updateSkillData({context, skill, months, personSkillId}) async {
+
+    Map<String, dynamic> requestData = {
       "PerSk_Id": personSkillId,
       "Experience": months,
-        "Skill_Name":skill,
+      "Skill_Name": skill,
     };
 
-    String url = "$baseUrl/api/PersonSkills/Update";
+    String url = '$baseUrl/api/PersonSkills/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response =
+        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("edit Skills Success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
-      //Navigator.pushReplacementNamed(context, "/personDetailScreen");
-      ///When is use above navigator then replacement not work
-      getUserSkills(context);
+      debugPrint("Update Person Skill Data ------>${response.body}");
+      getPersonSkill(context);
       Navigator.of(context).pop();
     } else {
-      debugPrint("Skill edit failed--------->${response.body}");
+      debugPrint("Update Person Skill Data Failed ------>${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Skill edit failed try again..."),
+        content: Text("Try again person skill not update..."),
       ));
     }
   }
-  static editOrgAdminProfile({context, orgId, aboutOrg, city, country, number,email,}) async {
-    final boolProvider = Provider.of<CirculerIndicationProvider>(context,listen:false);
-    debugPrint("OrgAdminProfile----->$orgId");
-    Map<String, dynamic> requestData =
-    {
+
+  static updateOrgAdminProfile({context, orgId, aboutOrg, city, country, number, email}) async {
+
+    final provider = Provider.of<CirculerIndicationProvider>(context, listen: false);
+
+    Map<String, dynamic> requestData = {
       "Org_Id": orgId,
       "About_org": aboutOrg,
       "City": city,
@@ -1009,238 +1119,261 @@ class ApiConfig {
       "Contact_number": number,
     };
 
-    String url = "$baseUrl/api/OrgInfo/Update";
+    String url = '$baseUrl/api/OrgInfo/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      boolProvider.setLoading(true);
-      debugPrint("edit OrgAdminProfile Success--------->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PersonDetailsScreen()));
+      debugPrint("Update OrgAdminProfile Success--------->${response.body}");
+      provider.setLoading(true);
       Navigator.pop(context);
     } else {
-      debugPrint("OrgAdminProfile edit failed--------->${response.body}");
+      debugPrint("Update OrgAdminProfile failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("OrgAdminProfile edit failed try again..."),
+        content: Text("Try again orgAdmin profile not update..."),
       ));
     }
   }
 
   static searchCourse({context, courseString}) async {
-    final provider = Provider.of<SearchCourseProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Courses/AutoCompleteCourse";
+
+    final provider = Provider.of<SearchCourseProvider>(context, listen: false);
+    provider.courseList.clear();
+
+    String apiUrl = '$baseUrl/api/Courses/AutoCompleteCourse?search_str=$courseString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$courseString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.courseList.clear();
-      debugPrint("---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Course Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
-
+      provider.courseList.clear();
       provider.setSearchedCourse(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Course Data ------>${response.body}");
     }
   }
+
   static searchInstitute({context, instituteString}) async {
-    final provider = Provider.of<SearchInstituteProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Institutes/AutoCompleteInstitute";
+
+    final provider = Provider.of<SearchInstituteProvider>(context, listen: false);
+    provider.instituteList.clear();
+
+    String apiUrl = '$baseUrl/api/Institutes/AutoCompleteInstitute?search_str=$instituteString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$instituteString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.instituteList.clear();
-      debugPrint("Institute---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Institute Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.instituteList.clear();
       provider.setSearchedInstitute(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Institute Data ------>${response.body}");
     }
   }
+
   static searchSkill({context, skillString}) async {
-    final provider = Provider.of<SearchSkillProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Skills/AutoCompleteSkills";
+
+    final provider = Provider.of<SearchSkillProvider>(context, listen: false);
+    provider.skillList.clear();
+
+    String apiUrl = '$baseUrl/api/Skills/AutoCompleteSkills?search_str=$skillString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$skillString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.skillList.clear();
-      debugPrint("skill---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Skill Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.skillList.clear();
       provider.setSearchedSkill(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Skill Data ------>${response.body}");
     }
   }
+
   static searchHobby({context, hobbyString}) async {
-    final provider = Provider.of<SearchHobbyProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Hobbies/AutoCompleteHobbies";
+
+    final provider = Provider.of<SearchHobbyProvider>(context, listen: false);
+    provider.hobbyList.clear();
+
+    String apiUrl = '$baseUrl/api/Hobbies/AutoCompleteHobbies?search_str=$hobbyString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$hobbyString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.hobbyList.clear();
-      debugPrint("hobby---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Hobby Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
       provider.setSearchedHobby(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Hobby Data ------>${response.body}");
     }
   }
-  static searchExCompany({context, companyString}) async {
-    final provider = Provider.of<SearchExCompanyProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Experience/AutoCompleteCompanyNames";
+
+  static searchExperienceCompany({context, companyString}) async {
+
+    final provider = Provider.of<SearchExCompanyProvider>(context, listen: false);
+    provider.cmpList.clear();
+
+    String apiUrl = '$baseUrl/api/Experience/AutoCompleteCompanyNames?search_str=$companyString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$companyString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.cmpList.clear();
-      debugPrint("ExCompany---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Experience company Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.cmpList.clear();
       provider.setSearchedCompany(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Experience company Data ------>${response.body}");
     }
   }
-  static searchExIndustry({context, industryString}) async {
-    final provider = Provider.of<SearchExIndustryProvider>(context,listen: false);
-    const String apiUrl = "$baseUrl/api/Experience/AutoCompleteIndustryNames";
+
+  static searchExperienceIndustry({context, industryString}) async {
+
+    final provider = Provider.of<SearchExIndustryProvider>(context, listen: false);
+    provider.indList.clear();
+
+    String apiUrl = '$baseUrl/api/Experience/AutoCompleteIndustryNames?search_str=$industryString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse('$apiUrl?search_str=$industryString'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.indList.clear();
-      debugPrint("ExIndustry---------------yes-->${response.body}");
-      // Data found in the API, update the display controller
+      debugPrint("Search Experience Industry Data ------>${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.indList.clear();
       provider.setSearchedIndustry(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Experience Industry Data ------>${response.body}");
     }
   }
 
   /*-----------------------------------------  Manage Organization Screen  -------------------------------------*/
 
   static getDataSwitching({context}) async {
-    final provider = Provider.of<SwitchProvider>(context,listen: false);
+
+    final provider = Provider.of<SwitchProvider>(context, listen: false);
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/Person/MySessionInfo";
+    try {
+      String url = '$baseUrl/api/Person/MySessionInfo';
       final response = await http.post(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("OrgPersonAdmin Data------->${response.body}");
-        Map<String,dynamic> data = jsonDecode(response.body);
+        debugPrint("Switching OrgPersonAdmin Data------->${response.body}");
+        Map<String, dynamic> data = jsonDecode(response.body);
         await provider.setSwitchData(SwitchDataModel.fromJson(data));
         provider.notify();
       } else {
+        debugPrint("Failed to Switching OrgPersonAdmin Data------->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("OrgPersonAdmin Something went wrong..."),
+          content: Text("Try again switching failed..."),
         ));
       }
-    }catch(e){
-      debugPrint("OrgPersonAdmin experience------>$e");
+    } catch (e) {
+      debugPrint("Switching OrgPersonAdmin------>$e");
     }
   }
+
   static getManageOrgData({context, tabIndex}) async {
+
     final requestProvider = Provider.of<RequestManageOrgProvider>(context, listen: false);
     final approvedProvider = Provider.of<ApprovedManageOrgProvider>(context, listen: false);
     requestProvider.requestOrgDataList.clear();
     approvedProvider.approveOrgDataList.clear();
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex";
+    try {
+      String url = '$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        tabIndex==0 ? debugPrint("requested data------->${response.body}") : debugPrint("approved data------->${response.body}");
+        tabIndex == 0
+            ? debugPrint("Requested Org Data------->${response.body}")
+            : debugPrint("Approved Org Data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-        tabIndex==0 ? requestProvider.setRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
+        tabIndex == 0
+            ? requestProvider.setRequestOrgData(data)
+            : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
         ));
       }
-    }catch(e){
-      debugPrint("experience------>$e");
+    } catch (e) {
+      debugPrint("manage org data------>$e");
     }
   }
-  static getOrgMemberData({context,orgName, tabIndex}) async {
+
+  static getOrgMemberData({context, orgName, tabIndex}) async {
+
     final requestProvider = Provider.of<RequestMemberProvider>(context, listen: false);
     final approvedProvider = Provider.of<ApprovedMemberProvider>(context, listen: false);
     requestProvider.requestPendingOrgDataList.clear();
     approvedProvider.approveOrgDataList.clear();
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    try{
-      String url = "$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex";
+    try {
+      String url = '$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-       tabIndex==0? debugPrint("pending requested data------->${response.body}"):
-        debugPrint("approved data------->${response.body}");
+        tabIndex == 0
+            ? debugPrint("Pending Requested Org Member Data ------->${response.body}")
+            : debugPrint("Approved Org Member Data ------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-       tabIndex==0?
-       requestProvider.setPendingRequestOrgData(data):
-       approvedProvider.setApproveOrgData(data);
+        tabIndex == 0
+            ? requestProvider.setPendingRequestOrgData(data)
+            : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
         ));
       }
-    }catch(e){
-      debugPrint("experience------>$e");
+    } catch (e) {
+      debugPrint("org member data------>$e");
     }
   }
-  static updateAssignOrgRequestStatus({context,orgID, personID, depID,orgName, reqStatus}) async {
-    Map<String, dynamic> requestData =
-    {
+
+  static updateAssignOrgRequestStatus({context, orgID, personID, depID, orgName, reqStatus}) async {
+
+    Map<String, dynamic> requestData = {
       "Org_Id": orgID,
       "Perosn_Id": personID,
       "Dept_Id": depID,
@@ -1248,197 +1381,210 @@ class ApiConfig {
       "Dept_Req": ""
     };
 
-    String url = "$baseUrl/api/OrgPersons/Request/Update";
+    String url = '$baseUrl/api/OrgPersons/Request/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 0);
-      debugPrint("Department Assign Success--------->${response.body}");
+      ApiConfig.getOrgMemberData(
+          context: context, orgName: orgName, tabIndex: 0);
+      debugPrint("Update Department Assign --------->${response.body}");
     } else {
-      debugPrint("Department Assign failed--------->${response.body}");
+      debugPrint("Update Department Assign failed--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Department Assign failed..."),
       ));
     }
   }
-  static searchOrg({context, orgString}) async {
-    final provider = Provider.of<SearchOrgProvider>(context,listen: false);
-    String apiUrl = "$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString";
+
+  static searchOrganization({context, orgString}) async {
+
+    final provider = Provider.of<SearchOrgProvider>(context, listen: false);
+    provider.orgList.clear();
+
+    String apiUrl = '$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.orgList.clear();
-      debugPrint("ORG---------------yes-->${response.body}");
+      debugPrint("Search Organization ------->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.orgList.clear();
       provider.setSearchedOrg(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Organization ------->${response.body}");
     }
   }
+
   static searchDepartment({context, orgId}) async {
-    final provider = Provider.of<SearchDepartmentProvider>(context,listen: false);
-    String apiUrl = "$baseUrl/api/Departments/ByOrgId?org_Id=$orgId";
+
+    final provider = Provider.of<SearchDepartmentProvider>(context, listen: false);
+    provider.departmentList.clear();
+
+    String apiUrl = '$baseUrl/api/Departments/ByOrgId?org_Id=$orgId';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.get(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http.get(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
     if (response.statusCode == 200) {
-      provider.departmentList.clear();
-      debugPrint("Department---------------yes-->${response.body}");
+      debugPrint("Search Department ------->${response.body}");
       List<dynamic> data = jsonDecode(response.body);
+      provider.departmentList.clear();
       provider.setSearchedDepartment(data);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Search Department ------->${response.body}");
     }
   }
 
-  static joinOrgRequest({context,orgID, dpID, dpName}) async {
-    debugPrint("organizationId---->$orgID");
-    debugPrint("departmentId---->$dpID");
-    debugPrint("departmentName---->$dpName");
+  static joinOrgRequest({context, orgID, dpID, dpName}) async {
+
     Map<String, dynamic> parameter = {
-      "Org_Id":orgID,
-      "Dept_Id":dpID,
-      "Dept_Req":dpName
+      "Org_Id": orgID,
+      "Dept_Id": dpID,
+      "Dept_Req": dpName
     };
-    const String apiUrl = "$baseUrl/api/OrgPersons/Create";
+    const String apiUrl = '$baseUrl/api/OrgPersons/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(apiUrl),body: jsonEncode(parameter),headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
+    final response = await http
+        .post(Uri.parse(apiUrl), body: jsonEncode(parameter), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
     if (response.statusCode == 200) {
-      debugPrint("CreateORG---------------yes-->${response.body}");
-      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ManageOrganization()));
+      debugPrint("Join Organization Request--------->${response.body}");
       ApiConfig.getManageOrgData(context: context, tabIndex: 0);
       Navigator.pop(context);
     } else {
-      debugPrint("---------------No-->${response.body}");
+      debugPrint("Failed to Join Organization Request--------->${response.body}");
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data will not added..")));
-    }
-  }
-  static deleteOrgRequest({context, orgID, personID, screen}) async {
-    String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID";
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    final response = await http.delete(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-    if (response.statusCode == 200) {
-      if(screen == CustomString.approved){
-        getManageOrgData(context: context, tabIndex: 1);
-      }else if (screen == CustomString.requested){
-        getManageOrgData(context: context, tabIndex: 0);
-      }
-      debugPrint("Delete ORG Request Success-------------yes-->${response.body}");
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
-      debugPrint("Data not Delete Try again----------No-->${response.body}");
-    }
-  }
-  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
-    String apiUrl = "$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID";
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    final response = await http.delete(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-    if (response.statusCode == 200) {
-      if(screen == CustomString.approved){
-        ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 1);
-      }else if(screen == CustomString.pendingRequested){
-        ApiConfig.getOrgMemberData(context: context,orgName: orgName, tabIndex: 0);
-      }
-      debugPrint("Delete Organization Success-------------yes-->${response.body}");
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again data not delete...")));
-      debugPrint("Not Delete Try again----------No-->${response.body}");
-    }
-  }
-  static deleteDepartment({context, departmentID,orgId}) async {
-    debugPrint("dept--->$departmentID ---$orgId");
-    String apiUrl = "$baseUrl/api/Departments/Delete?dept_Id=$departmentID";
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    final response = await http.delete(Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-    if (response.statusCode == 200) {
-      debugPrint("Delete Department Success-------------yes-->${response.body}");
-      await getDepartment(context: context,orgId: orgId);
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Try again Department not delete...")));
-      debugPrint("Department not Delete Try again----------No-->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Try again data will not added..")));
     }
   }
 
-  static addNewDepartment({context, departmentName,depId,orgID}) async {
+  static deleteOrgRequest({context, orgID, personID, screen}) async {
+
+    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Delete Organization Request--------->${response.body}");
+      if (screen == CustomString.approved) {
+        getManageOrgData(context: context, tabIndex: 1);
+      } else if (screen == CustomString.requested) {
+        getManageOrgData(context: context, tabIndex: 0);
+      }
+    } else {
+      debugPrint("Failed to Delete Organization Request--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Try again data not delete...")));
+    }
+  }
+
+  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
+
+    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Delete Organization From Admin Side --------->${response.body}");
+      if (screen == CustomString.approved) {
+        ApiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 1);
+      } else if (screen == CustomString.pendingRequested) {
+        ApiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 0);
+      }
+    } else {
+      debugPrint("Failed to Delete Organization From Admin Side --------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Try again data not delete...")));
+    }
+  }
+
+  static deleteDepartment({context, departmentID, orgId}) async {
+
+    String apiUrl = '$baseUrl/api/Departments/Delete?dept_Id=$departmentID';
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+    final response = await http.delete(Uri.parse(apiUrl), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Delete Department --------->${response.body}");
+      await getDepartment(context: context, orgId: orgId);
+      Navigator.pop(context);
+    } else {
+      debugPrint("Failed to Delete Department --------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Try again Department not delete...")));
+    }
+  }
+
+  static addNewDepartment({context, departmentName, depId, orgID}) async {
+
     Map<String, dynamic> requestData = {
       "Org_Id": orgID,
       "Dept_Name": departmentName,
       "Parent_dept_Id": depId
     };
-    String url = "$baseUrl/api/Departments/Create";
+    String url = '$baseUrl/api/Departments/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Add department success--------->${response.body}");
-      await getDepartment(context: context,orgId: orgID);
+      debugPrint("Add Department --------->${response.body}");
+      await getDepartment(context: context, orgId: orgID);
       Navigator.pop(context);
     } else {
-      debugPrint("department adding failed--------->${response.body}");
-      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+      debugPrint("Failed to Add Department --------->${response.body}");
+      Image.asset(ImagePath.noData, fit: BoxFit.cover);
     }
   }
-  static editDepartment({context, departmentName,depId,parentDepId, orgID}) async {
-    debugPrint("////********>>>>>>$parentDepId");
+
+  static updateDepartment({context, departmentName, depId, parentDepId, orgID}) async {
+
     Map<String, dynamic> requestData = {
       "Org_Id": orgID,
       "Dept_Id": depId,
       "Dept_Name": departmentName,
       "Parent_dept_Id": parentDepId
     };
-    String url = "$baseUrl/api/Departments/Update";
+    String url = '$baseUrl/api/Departments/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
-    final response = await http.put(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Edit department success--------->${response.body}");
-      await getDepartment(context: context,orgId: orgID);
+      debugPrint("Update department --------->${response.body}");
+      await getDepartment(context: context, orgId: orgID);
       Navigator.pop(context);
     } else {
-      debugPrint("department edit failed--------->${response.body}");
-      Image.asset(ImagePath.noData,fit: BoxFit.cover,);
+      debugPrint("Failed to Update Department-------->${response.body}");
+      Image.asset(ImagePath.noData, fit: BoxFit.cover);
     }
   }
 }

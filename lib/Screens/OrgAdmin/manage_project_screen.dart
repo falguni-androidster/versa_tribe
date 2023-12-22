@@ -1,25 +1,41 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/Project/project_details_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/project_list_item_screen.dart';
 
 import 'package:versa_tribe/extension.dart';
 
-class OnGoingProjectScreen extends StatefulWidget {
-  const OnGoingProjectScreen({super.key});
+class ManageProjectScreen extends StatefulWidget {
+
+  final int? orgId;
+
+  const ManageProjectScreen({super.key, required this.orgId});
 
   @override
-  State<OnGoingProjectScreen> createState() => _OnGoingProjectScreenState();
+  State<ManageProjectScreen> createState() => _ManageProjectScreenState();
 }
 
-class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
-
+class _ManageProjectScreenState extends State<ManageProjectScreen> {
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
+      backgroundColor: CustomColors.kWhiteColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: CustomColors.kGrayColor,
+        leading: IconButton(
+            onPressed: () {Navigator.pop(context);},
+            icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor) //replace with our own icon data.
+        ),
+        centerTitle: true,
+        title: const Text(CustomString.manageProject,
+            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+      ),
       body: FutureBuilder(
-        future: ApiConfig.getProjectData(context),
+        future: ApiConfig.getProjectDataByOrgID(context, widget.orgId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return SizedBox(
@@ -29,11 +45,11 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
               ),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            return Consumer<ProjectListProvider>(
+            return Consumer<ProjectListByOrgIdProvider>(
                 builder: (context, val, child) {
-                  return val.getProjectList.isNotEmpty ? ListView.builder(
+                  return val.getProjectListByOrgId.isNotEmpty ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: val.getProjectList.length,
+                    itemCount: val.getProjectListByOrgId.length,
                     itemBuilder: (context, index) {
                       return InkWell(
                         child: Card(
@@ -49,22 +65,22 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      '${val.getProjectList[index].projectName}',
+                                      '${val.getProjectListByOrgId[index].projectName}',
                                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
                                   SizedBox(height: size.height * 0.01 / 2),
                                   const Text(
                                       'Project Manager : Falguni Maheta',
                                       style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                   SizedBox(height: size.height * 0.01 / 2),
-                                  val.getProjectList[index].startDate != null && val.getProjectList[index].endDate != null ? Text(
-                                      'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectList[index].endDate!).toLocal())}',
-                                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) :
-                                  const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                                  val.getProjectListByOrgId[index].startDate != null && val.getProjectListByOrgId[index].endDate != null ? Text(
+                                      'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
+                                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
+                                      : const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                                 ],
                               )),
                         ),
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectList[index])));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectListItemScreen(projectResponseModel: val.getProjectListByOrgId[index])));
                         },
                       );
                     },
@@ -75,7 +91,7 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                         child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Image.asset(ImagePath.noData, fit: BoxFit.fill),
-                              const Text(CustomString.noProjectFound, style: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))
+                              const Text(CustomString.noTrainingFound, style: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))
                             ]),
                       ));
                 });

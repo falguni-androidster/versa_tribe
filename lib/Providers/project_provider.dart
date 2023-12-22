@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:versa_tribe/extension.dart';
 
+
 /// ProjectListProvider class
 class ProjectListProvider with ChangeNotifier{
   final List<ProjectResponseModel> _getProjectList = [];
@@ -9,6 +10,32 @@ class ProjectListProvider with ChangeNotifier{
   setListProject(listProject){
     listProject.forEach((ob){
       _getProjectList.add(ProjectResponseModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// ProjectListByOrgIDProvider class
+class ProjectListByOrgIdProvider with ChangeNotifier{
+  final List<ProjectListByOrgIDModel> _getProjectListByOrgId = [];
+  List<ProjectListByOrgIDModel> get getProjectListByOrgId => _getProjectListByOrgId;
+
+  setListProjectByOrgId(listProject){
+    listProject.forEach((ob){
+      _getProjectListByOrgId.add(ProjectListByOrgIDModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// ProjectListManageUserProvider class
+class ProjectListManageUserProvider with ChangeNotifier{
+  final List<ProjectManageUserModel> _getProjectListManageUser = [];
+  List<ProjectManageUserModel> get getProjectListManageUser => _getProjectListManageUser;
+
+  setListProjectManageUser(listProject){
+    listProject.forEach((ob){
+      _getProjectListManageUser.add(ProjectManageUserModel.fromJson(ob));
       notifyListeners();
     });
   }

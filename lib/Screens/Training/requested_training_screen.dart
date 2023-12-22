@@ -75,7 +75,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        ApiConfig().deleteRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                        ApiConfig.deleteRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
                                       },
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: CustomColors.kGrayColor,

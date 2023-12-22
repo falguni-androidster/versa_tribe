@@ -247,7 +247,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                                     return ElevatedButton(
                                       onPressed:orgID!=null? (){
                                         val.updateBtnVisible==true?
-                                        ApiConfig.editOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text):
+                                        ApiConfig.updateOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text):
                                         ApiConfig.addOrgPersonData(context: context,orgId: orgID,aboutORG: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,mobileNo: mobileController.text, orgName: widget.orgName);
                                       }:(){},
                                       style: ElevatedButton.styleFrom(

@@ -1,37 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
 import 'package:versa_tribe/extension.dart';
 
-class ManageProjectScreen extends StatefulWidget {
+class ProjectOrgIdListScreen extends StatefulWidget {
 
-  final ProjectResponseModel projectResponseModel;
+  final ProjectListByOrgIDModel projectResponseModel;
 
-  const ManageProjectScreen({super.key, required this.projectResponseModel});
+  const ProjectOrgIdListScreen({super.key, required this.projectResponseModel});
 
   @override
-  State<ManageProjectScreen> createState() => _ManageProjectScreenState();
+  State<ProjectOrgIdListScreen> createState() => _ProjectOrgIdListScreenState();
 }
 
-class _ManageProjectScreenState extends State<ManageProjectScreen> {
+class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
-        leading: InkWell(
-          child: const Icon(Icons.arrow_back_ios,
-              color: CustomColors.kBlackColor),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(CustomString.manageProject,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-        centerTitle: true,
-      ),
       backgroundColor: CustomColors.kWhiteColor,
       body: SingleChildScrollView(
         child: Padding(
@@ -318,3 +306,4 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
     );
   }
 }
+

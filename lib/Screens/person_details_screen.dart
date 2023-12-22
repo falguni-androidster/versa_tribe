@@ -113,7 +113,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ]),
 
                     FutureBuilder(
-                      future: ApiConfig.getUserExperience(context),
+                      future: ApiConfig.getPersonExperience(context),
                       builder: (context,snapshot) {
                          if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -214,7 +214,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ),
 
                     FutureBuilder(
-                      future: ApiConfig.getUserQualification(context),
+                      future: ApiConfig.getPersonQualification(context),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState==ConnectionState.waiting){
                           return SizedBox(
@@ -296,7 +296,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       ),
                     ]),
                     FutureBuilder(
-                      future: ApiConfig.getUserSkills(context),
+                      future: ApiConfig.getPersonSkill(context),
                       builder: (context, snapshot) {
                         if(snapshot.connectionState==ConnectionState.waiting){
                           return SizedBox(
@@ -422,7 +422,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         ),
                       ]),
                       FutureBuilder(
-                        future: ApiConfig.getUserHobby(context),
+                        future: ApiConfig.getPersonHobby(context),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState==ConnectionState.waiting){
                             return SizedBox(
@@ -531,10 +531,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   Future<void> refreshEventList() async {
     setState(() {
-      ApiConfig.getUserExperience(context);
-      ApiConfig.getUserQualification(context);
-      ApiConfig.getUserSkills(context);
-      ApiConfig.getUserHobby(context);
+      ApiConfig.getPersonExperience(context);
+      ApiConfig.getPersonQualification(context);
+      ApiConfig.getPersonSkill(context);
+      ApiConfig.getPersonHobby(context);
     });
     return;
   }
@@ -557,10 +557,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               onPressed: () async {
                 // Add your delete logic here
                 if (identityKey == "identityPED") {
-                  ApiConfig.deletePersonEx(context, iD);
+                  ApiConfig.deletePersonExperience(context, iD);
                 }
                 else if (identityKey == "identityPQD") {
-                  ApiConfig.deletePersonQL(context, iD);
+                  ApiConfig.deletePersonQualification(context, iD);
                 }
                 else if (identityKey == "identityPSD") {
                   ApiConfig.deletePersonSkill(context, iD);

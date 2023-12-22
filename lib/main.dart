@@ -68,6 +68,10 @@ void main() {
       ChangeNotifierProvider<CirculerIndicationProvider>(create: (_) => CirculerIndicationProvider()),
       ChangeNotifierProvider<ApprovedMemberProvider>(create: (_) => ApprovedMemberProvider()),
       ChangeNotifierProvider<ApprovedManageOrgProvider>(create: (_) => ApprovedManageOrgProvider()),
+      ChangeNotifierProvider<ProjectListByOrgIdProvider>(create: (_) => ProjectListByOrgIdProvider()),
+      ChangeNotifierProvider<ProjectListManageUserProvider>(create: (_) => ProjectListManageUserProvider()),
+
+
     ],
     child: const MyApp()
   ));
