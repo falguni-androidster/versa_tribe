@@ -35,6 +35,14 @@ export 'Model/training_hobby.dart';
 export 'Model/training_skill.dart';
 export 'Model/training_join_members.dart';
 export 'Model/training_pending_requests.dart';
+export 'Model/project_experience.dart';
+export 'Model/project_hobby.dart';
+export 'Model/project_qualification.dart';
+export 'Model/project_skill.dart';
+export 'Model/project_response.dart';
+export 'Model/project_list_by_org_id.dart';
+export 'Model/project_manage_user.dart';
+
 
 export 'Providers/bottom_tab_provider.dart';
 export 'Providers/password_provider.dart';

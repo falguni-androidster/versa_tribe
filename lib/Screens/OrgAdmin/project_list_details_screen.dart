@@ -1,43 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Model/project_experience.dart';
-import 'package:versa_tribe/Model/project_hobby.dart';
-import 'package:versa_tribe/Model/project_qualification.dart';
-import 'package:versa_tribe/Model/project_response.dart';
 import 'package:versa_tribe/extension.dart';
 
-import '../../Model/project_skill.dart';
+class ProjectOrgIdListScreen extends StatefulWidget {
 
-class ManageProjectScreen extends StatefulWidget {
+  final ProjectListByOrgIDModel projectResponseModel;
 
-  final ProjectResponseModel projectResponseModel;
-
-  const ManageProjectScreen({super.key, required this.projectResponseModel});
+  const ProjectOrgIdListScreen({super.key, required this.projectResponseModel});
 
   @override
-  State<ManageProjectScreen> createState() => _ManageProjectScreenState();
+  State<ProjectOrgIdListScreen> createState() => _ProjectOrgIdListScreenState();
 }
 
-class _ManageProjectScreenState extends State<ManageProjectScreen> {
+class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
-        leading: InkWell(
-          child: const Icon(Icons.arrow_back_ios,
-              color: CustomColors.kBlackColor),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(CustomString.manageProject,
-            style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-        centerTitle: true,
-      ),
       backgroundColor: CustomColors.kWhiteColor,
       body: SingleChildScrollView(
         child: Padding(
@@ -324,3 +306,4 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
     );
   }
 }
+

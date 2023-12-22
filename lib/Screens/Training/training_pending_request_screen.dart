@@ -102,7 +102,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig().deleteRequestTraining(context: context, trainingId: trainingPendingRequestsModel.trainingId);
+                        ApiConfig.deleteRequestTraining(context: context, trainingId: trainingPendingRequestsModel.trainingId);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,
@@ -121,7 +121,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig().approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, isJoin: true);
+                        ApiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, isJoin: true);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,

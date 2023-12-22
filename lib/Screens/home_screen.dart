@@ -8,6 +8,7 @@ import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
+import 'Home/messenger_screen.dart';
 import 'OrgAdmin/admin_manage.dart';
 import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -37,8 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   setInitialValue() async {
-    final selectedOrgProvider =
-        Provider.of<OrganizationProvider>(context, listen: false);
+    final selectedOrgProvider = Provider.of<OrganizationProvider>(context, listen: false);
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     await ApiConfig.getDataSwitching(context: context);
     List<OrgAdminPersonList> adminPersonList =
@@ -47,8 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
     finalPersonAdminList = adminPersonList;
-    await selectedOrgProvider.setSwitchOrganization(
-        selectedValue, orgId, orgAdmin);
+    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin);
     return adminPersonList;
   }
 
@@ -103,9 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(" ${finalPersonAdminList[index].orgName!}",
-                                        style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kWhiteColor : null))
+                                        style: TextStyle(fontFamily: 'Poppins', color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kWhiteColor : null))
                                 )
                             )
                         ),
@@ -113,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         selectedValue = finalPersonAdminList[index].orgName!;
                         orgId = finalPersonAdminList[index].orgId!;
                         orgAdmin = finalPersonAdminList[index].isAdmin!;
-                        val.setSwitchOrganization(
-                            selectedValue, orgId, orgAdmin);
+                        val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
                         Navigator.of(context).pop();
                       },
                     );
@@ -139,24 +135,21 @@ class _HomeScreenState extends State<HomeScreen> {
           context: context,
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
-              title: const Text(CustomString.dialogTitle,
-                  style: TextStyle(fontFamily: 'Poppins')),
+              title: const Text(CustomString.dialogTitle, style: TextStyle(fontFamily: 'Poppins')),
               actions: <CupertinoDialogAction>[
                 CupertinoDialogAction(
                   isDefaultAction: true,
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
-                  child: const Text(CustomString.dialogNo,
-                      style: TextStyle(fontFamily: 'Poppins')),
+                  child: const Text(CustomString.dialogNo, style: TextStyle(fontFamily: 'Poppins')),
                 ),
                 CupertinoDialogAction(
                     isDestructiveAction: true,
                     onPressed: () {
                       Navigator.pop(context, true);
                     },
-                    child: const Text(CustomString.dialogYes,
-                        style: TextStyle(fontFamily: 'Poppins'))),
+                    child: const Text(CustomString.dialogYes, style: TextStyle(fontFamily: 'Poppins'))),
               ],
             );
           },
@@ -180,18 +173,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             Consumer<OrganizationProvider>(
                                 builder: (context, val, child) {
                               return Text("${val.switchOrganization}  ",
-                                  style: const TextStyle(
-                                      color: CustomColors.kBlueColor,
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins'));
+                                  style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
                             }),
                             CircleAvatar(
                               radius: 10,
                               backgroundColor: Colors.transparent,
-                              child: SVGIconButton(
-                                  svgPath: ImagePath.dropdownIcon,
-                                  size: 6.0,
-                                  color: CustomColors.kLightGrayColor,
+                              child: SVGIconButton(svgPath: ImagePath.dropdownIcon, size: 6.0, color: CustomColors.kLightGrayColor,
                                   onPressed: () async {
                                     await ApiConfig.getDataSwitching(context: context);
                                     checkUser();
@@ -211,17 +198,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
                         },
                         child: const Text(CustomString.joinOrg,
-                            style: TextStyle(
-                                color: CustomColors.kBlueColor,
-                                fontFamily: 'Poppins')));
+                            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
               }),
               const Spacer(),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return val.isAdmin == true || orgAdmin == true
-                    ? SVGIconButton(
-                        svgPath: ImagePath.switchIcon,
-                        size: 24.0,
-                        color: CustomColors.kBlueColor,
+                    ? SVGIconButton(svgPath: ImagePath.switchIcon, size: 24.0, color: CustomColors.kBlueColor,
                         // Replace with the path to your SVG asset
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => ManageAdminScreen(orgNAME: val.switchOrganization ?? selectedValue!, orgID: val.switchOrgId ?? orgId!)));
@@ -237,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
             screenIndexProvider.manageBottomTab(index);
           },
           elevation: 10,
-          height: size.height*0.07,
+          height: size.height * 0.07,
           shadowColor: CustomColors.kLightGrayColor,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           backgroundColor: CustomColors.kWhiteColor,
@@ -270,14 +252,14 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 3,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.only(bottom: size.height*0.02,left: size.width*0.03,right: size.width*0.03),
+          margin: EdgeInsets.only(bottom: size.height * 0.02, left: size.width * 0.03, right: size.width * 0.03),
           child: NavigationBar(
             onDestinationSelected: (int index) {
               screenIndexProvider.manageBottomTab(index);
             },
             animationDuration: const Duration(seconds: 1),
             elevation: 3,
-            height: size.height*0.1,
+            height: size.height * 0.1,
             shadowColor: CustomColors.kLightGrayColor,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
             backgroundColor: CustomColors.kWhiteColor,
@@ -285,24 +267,24 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIndex: currentScreenIndex,
             destinations: <Widget>[
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  selectedIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.dashboard),
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  selectedIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.project),
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.training),
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.messenger),
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
+                  selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
+                  icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.account),
             ],
           ),
@@ -384,7 +366,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const DashboardScreen(),
           const ProjectScreen(),
           TrainingScreen(orgId: orgId),
-          const ProjectScreen(),
+          const MessengersScreen(),
           const AccountScreen()
         ][currentScreenIndex]
       ),

@@ -158,7 +158,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            ApiConfig.editSkillData(
+                            ApiConfig.updateSkillData(
                                 context: context,
                                 personSkillId: widget.perSkillId,
                                 skill: skillController.text,

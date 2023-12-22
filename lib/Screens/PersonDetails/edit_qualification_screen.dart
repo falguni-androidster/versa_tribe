@@ -294,7 +294,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.editQualificationData(
+                          ApiConfig.updateQualificationData(
                               context: context,
                               personQualificationID: widget.pqID,
                               courseName: courseController.text,

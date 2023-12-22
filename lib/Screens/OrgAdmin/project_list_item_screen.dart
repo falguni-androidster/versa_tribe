@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Screens/Training/training_details_screen.dart';
-import 'package:versa_tribe/Screens/Training/training_joined_member_screen.dart';
-import 'package:versa_tribe/Screens/Training/training_pending_request_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/manage_project_user_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/project_list_details_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
-class GiveTrainingItemScreen extends StatefulWidget {
+class ProjectListItemScreen extends StatefulWidget {
 
-  final GiveTrainingResponse trainingResponse;
+  final ProjectListByOrgIDModel projectResponseModel;
 
-  const GiveTrainingItemScreen({super.key, required this.trainingResponse});
+  const ProjectListItemScreen({super.key, required this.projectResponseModel});
 
   @override
-  State<GiveTrainingItemScreen> createState() => _GiveTrainingItemScreenState();
+  State<ProjectListItemScreen> createState() => _ProjectListItemScreenState();
 }
 
-class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with SingleTickerProviderStateMixin {
+class _ProjectListItemScreenState extends State<ProjectListItemScreen> with SingleTickerProviderStateMixin{
 
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -32,23 +31,21 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
 
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
-        leading: InkWell(
-          child: const Icon(Icons.arrow_back_ios,
-              color: CustomColors.kBlackColor),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(CustomString.manageTraining,
-            style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-        centerTitle: true,
-      ),
       backgroundColor: CustomColors.kWhiteColor,
+      appBar: AppBar(
+        backgroundColor: CustomColors.kGrayColor,
+        leading: IconButton(
+            onPressed: () {Navigator.pop(context);},
+            icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor) //replace with our own icon data.
+        ),
+        centerTitle: true,
+        title: const Text(CustomString.manageProject,
+            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -76,15 +73,11 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
                     tabs: <Widget>[
                       Container(
                           padding: const EdgeInsets.all(8.0),
-                          child: const Text(CustomString.trainingDetails)
+                          child: const Text(CustomString.projectDetails)
                       ),
                       Container(
                           padding: const EdgeInsets.all(8.0),
-                          child: const Text(CustomString.joinedMembers)
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: const Text(CustomString.pendingRequest)
+                          child: const Text(CustomString.manageUsers)
                       )
                     ],
                   ),
@@ -96,15 +89,8 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
-
-                /// Training Details
-                TrainingDetailScreen(trainingResponse: widget.trainingResponse),
-
-                /// Joined Members
-                TrainingJoinedMemberScreen(trainingResponse: widget.trainingResponse),
-
-                /// Pending Requests
-                TrainingPendingRequestScreen(trainingResponse: widget.trainingResponse)
+                ProjectOrgIdListScreen(projectResponseModel: widget.projectResponseModel),
+                ManageUserProjectScreen(projectResponseModel: widget.projectResponseModel)
               ],
             ),
           ),

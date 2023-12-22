@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/manage_training.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
 
+import 'manage_project_screen.dart';
 import 'manage_department.dart';
 import 'manage_org_members.dart';
 import 'package:versa_tribe/extension.dart';
@@ -11,7 +12,9 @@ class ManageAdminScreen extends StatefulWidget {
 
   final String orgNAME;
   final int orgID;
+
   const ManageAdminScreen({required this.orgNAME,required this.orgID, super.key});
+
   @override
   State<ManageAdminScreen> createState() => _ManageAdminScreenState();
 }
@@ -19,6 +22,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     debugPrint("orgID***--->${widget.orgID}");
     var size = MediaQuery.of(context).size;
 
@@ -42,14 +46,14 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             FutureBuilder<ProfileResponse>(
               future: ApiConfig().getProfileData(),
               builder: (context, snapshot) {
-                if(snapshot.connectionState==ConnectionState.waiting){
+                if(snapshot.connectionState == ConnectionState.waiting){
                   return SizedBox(
-                    height: size.height*0.21,
+                    height: size.height * 0.21,
                     child: const Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
-                }else if(snapshot.connectionState==ConnectionState.done){
+                }else if(snapshot.connectionState == ConnectionState.done){
                   return containerProfile(snapshot, size);
                 }else{
                   debugPrint("<-problem-------Admin data get------>");
@@ -70,6 +74,12 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
               },
             ),
             InkWell(
+              child: containerButton(height: size.height * 0.06, text: CustomString.manageProject),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageProjectScreen(orgId: widget.orgID)));
+              },
+            ),
+            InkWell(
               child: containerButton(height: size.height * 0.06, text: CustomString.manageRoles),
               onTap: (){
                 //_navigateToNextScreen(context,'ManageOrganization');
@@ -78,7 +88,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
             InkWell(
               child: containerButton(height: size.height * 0.06, text: CustomString.manageOrgMembers),
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID,)));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID)));
               },
             ),
             InkWell(

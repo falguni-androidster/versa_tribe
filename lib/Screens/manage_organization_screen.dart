@@ -199,7 +199,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchOrg(context: context, orgString: value);
+                          ApiConfig.searchOrganization(context: context, orgString: value);
                           orgProvider.orgList.clear();
                         }
                         orgProvider.orgList.clear();

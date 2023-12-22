@@ -172,9 +172,9 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                             if (value != "" && value.isNotEmpty) {
                               debugPrint("Selected--======---=-=-->${val.selectedValue}");
                               val.selectedValue == "Company"
-                                  ? ApiConfig.searchExCompany(
+                                  ? ApiConfig.searchExperienceCompany(
                                       context: context, companyString: value)
-                                  : ApiConfig.searchExIndustry(
+                                  : ApiConfig.searchExperienceIndustry(
                                       context: context, industryString: value);
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
@@ -361,7 +361,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.updateExData(
+                          ApiConfig.updateExperienceData(
                               context: context,
                               peronExperienceId: widget.pExId,
                               jobTitle: jobTitleController.text,
