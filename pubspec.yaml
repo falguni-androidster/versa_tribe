@@ -44,9 +44,7 @@ dependencies:
   expandable: ^5.0.1
   timeline_tile: ^2.0.0
   flutter_svg: ^2.0.9
-  google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^4.0.0
-  #easy_refresh: ^3.3.2+4
+  google_sign_in: ^5.2.3
 
 dev_dependencies:
   flutter_test:
