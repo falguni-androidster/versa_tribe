@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:versa_tribe/Model/project_request.dart';
 import 'package:versa_tribe/extension.dart';
 
 
@@ -88,6 +89,32 @@ class ProjectHobbyProvider with ChangeNotifier{
   setProjectHobby(pHobby){
     pHobby.forEach((ob) async {
       _projectHobby.add(ProjectHobbyModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// ProjectRequestedProvider class
+class ProjectRequestProvider with ChangeNotifier{
+  final List<ProjectRequestModel> _projectRequest =[];
+  List<ProjectRequestModel> get projectRequest => _projectRequest;
+
+  setProjectRequest(pRequest){
+    pRequest.forEach((ob) async {
+      _projectRequest.add(ProjectRequestModel.fromJson(ob));
+      notifyListeners();
+    });
+  }
+}
+
+/// ProjectApprovedProvider class
+class ProjectApprovedProvider with ChangeNotifier{
+  final List<ProjectRequestModel> _projectApproved =[];
+  List<ProjectRequestModel> get projectApproved => _projectApproved;
+
+  setProjectApproved(pApproved){
+    pApproved.forEach((ob) async {
+      _projectApproved.add(ProjectRequestModel.fromJson(ob));
       notifyListeners();
     });
   }

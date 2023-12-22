@@ -70,7 +70,8 @@ void main() {
       ChangeNotifierProvider<ApprovedManageOrgProvider>(create: (_) => ApprovedManageOrgProvider()),
       ChangeNotifierProvider<ProjectListByOrgIdProvider>(create: (_) => ProjectListByOrgIdProvider()),
       ChangeNotifierProvider<ProjectListManageUserProvider>(create: (_) => ProjectListManageUserProvider()),
-
+      ChangeNotifierProvider<ProjectRequestProvider>(create: (_) => ProjectRequestProvider()),
+      ChangeNotifierProvider<ProjectApprovedProvider>(create: (_) => ProjectApprovedProvider()),
 
     ],
     child: const MyApp()

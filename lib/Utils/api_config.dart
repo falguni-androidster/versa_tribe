@@ -481,6 +481,64 @@ class ApiConfig {
     }
   }
 
+  static getRequestedProject({context, isApproved}) async {
+
+    final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
+    provider.projectRequest.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try {
+      String trainingUrl =
+          '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint('Requested Project data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectRequest.clear();
+        provider.setProjectRequest(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Requested Project Data not found...");
+      }
+    } catch (e) {
+      debugPrint("requested project------>$e");
+    }
+  }
+
+  static getApprovedProject({context, isApproved}) async {
+
+    final provider = Provider.of<ProjectApprovedProvider>(context, listen: false);
+    provider.projectApproved.clear();
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    try {
+      String trainingUrl =
+          '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      final response = await http.get(Uri.parse(trainingUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint('Approved Project data-----------> ${response.body}');
+        List<dynamic> data = jsonDecode(response.body);
+        provider.projectApproved.clear();
+        provider.setProjectApproved(data);
+      } else {
+        showToast(context, CustomString.noDataFound);
+        debugPrint("Approved Project Data not found...");
+      }
+    } catch (e) {
+      debugPrint("approved project------>$e");
+    }
+  }
+
   static getProjectExperience(context, int? projectId) async {
 
     final provider =
