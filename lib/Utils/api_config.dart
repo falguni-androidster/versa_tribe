@@ -910,6 +910,7 @@ class ApiConfig {
       "YOP": yop,
       "Grade": grade,
     };
+    debugPrint("CiTy--->$city");
 
     String url = '$baseUrl/api/PersonQualifications/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
