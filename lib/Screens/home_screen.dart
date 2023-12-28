@@ -17,8 +17,8 @@ import 'package:versa_tribe/extension.dart';
 class HomeScreen extends StatefulWidget {
 
   final String? from;
-
-  const HomeScreen({super.key, this.from});
+  final bool? popUp;
+  const HomeScreen({super.key, this.from, this.popUp});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -53,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
     pref.getString("OrganizationName") == adminPersonList[0].orgName! || pref.getString("OrganizationName") ==null?
     await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin):
     await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), orgId, orgAdmin);
+    if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
+      _showDialog();
+    }
     return adminPersonList;
   }
 

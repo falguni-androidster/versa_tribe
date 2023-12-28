@@ -380,7 +380,8 @@ class _SignInScreenState extends State<SignInScreen> {
     } else if (screenName == 'profileScreen') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
     } else if (screenName == 'mainScreen') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      bool popUp = true;
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(popUp: popUp,)));
     }
   }
 
