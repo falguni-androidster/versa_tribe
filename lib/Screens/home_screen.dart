@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
@@ -29,15 +30,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String? selectedValue;
   int? orgId;
   bool? orgAdmin;
+  late SharedPreferences pref;
 
   @override
   initState() {
-    setInitialValue();
+    setInitialValue(context);
     ApiConfig().getProfileData();
     super.initState();
   }
 
-  setInitialValue() async {
+  setInitialValue(context) async {
+    pref = await SharedPreferences.getInstance();
     final selectedOrgProvider = Provider.of<OrganizationProvider>(context, listen: false);
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     await ApiConfig.getDataSwitching(context: context);
@@ -46,14 +49,17 @@ class _HomeScreenState extends State<HomeScreen> {
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
     finalPersonAdminList = adminPersonList;
-    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+    debugPrint("==ORG-N======>${pref.getString("OrganizationName")}");
+    pref.getString("OrganizationName") == adminPersonList[0].orgName! || pref.getString("OrganizationName") ==null?
+    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin):
+    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), orgId, orgAdmin);
     return adminPersonList;
   }
 
   checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
-    selectedValue = adminPersonList[0].orgName!;
+    //selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
     finalPersonAdminList = adminPersonList;
@@ -106,7 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             )
                         ),
                       onTap: () {
-                        selectedValue = finalPersonAdminList[index].orgName!;
+                        pref.setString("OrganizationName", finalPersonAdminList[index].orgName!);
+                        selectedValue = pref.getString("OrganizationName");
+                        //selectedValue = finalPersonAdminList[index].orgName!;
                         orgId = finalPersonAdminList[index].orgId!;
                         orgAdmin = finalPersonAdminList[index].isAdmin!;
                         val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
