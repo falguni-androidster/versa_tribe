@@ -166,7 +166,7 @@ class CustomString {
 
   static const String trainingDetails = 'Training Details';
   static const String joinedMembers = 'Joined Members';
-  static const String pendingRequest = 'Pending Request';
+  static const String pendingRequests = 'Pending Requests';
   static const String joinTraining = 'Join Training';
   static const String trainingJoined = 'Training Joined';
   static const String accepted = 'Accepted';

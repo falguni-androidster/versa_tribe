@@ -54,7 +54,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                                             style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
                                             children: [
                                               const TextSpan(
-                                                text: 'You requested to joined in ',
+                                                text: 'You joined in ',
                                               ),
                                               TextSpan(
                                                 text: val.getAcceptedTrainingList[index].trainingName,

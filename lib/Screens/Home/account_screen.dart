@@ -173,14 +173,11 @@ class _AccountScreenState extends State<AccountScreen> {
   // Navigate to next Screen
   void _navigateToNextScreen(BuildContext context, String screen) {
     if (screen == 'signInScreen') {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const SignInScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else if (screen == 'ManageOrganization') {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ManageOrganization()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ManageOrganization()));
     } else if (screen == 'PersonDetails') {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
     }
   }
 

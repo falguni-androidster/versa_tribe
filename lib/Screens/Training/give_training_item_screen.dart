@@ -84,7 +84,7 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
                       ),
                       Container(
                           padding: const EdgeInsets.all(8.0),
-                          child: const Text(CustomString.pendingRequest)
+                          child: const Text(CustomString.pendingRequests)
                       )
                     ],
                   ),

@@ -55,7 +55,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                             style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
                                             children: [
                                               const TextSpan(
-                                                text: 'You requested to joined in ',
+                                                text: 'You requested to join ',
                                               ),
                                               TextSpan(
                                                 text: val.getRequestedTrainingList[index].trainingName,
@@ -71,23 +71,48 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        ApiConfig.deleteRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: CustomColors.kGrayColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(6),
-                                          )),
-                                      child: const Text(
-                                        CustomString.cancel,
-                                        style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              ApiConfig.deleteRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: CustomColors.kGrayColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(6),
+                                                )),
+                                            child: const Text(
+                                              CustomString.reject,
+                                              style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              ApiConfig.approveRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: CustomColors.kBlueColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(6),
+                                                )),
+                                            child: const Text(
+                                              CustomString.approve,
+                                              style: TextStyle(fontSize: 12, color: CustomColors.kWhiteColor, fontFamily: 'Poppins'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 ],
                               )),
                         ),

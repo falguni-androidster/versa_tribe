@@ -158,17 +158,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 width: size.width*0.4,
                 height: defaultTargetPlatform==TargetPlatform.iOS?size.height*0.05: size.height*0.06,
                 margin: EdgeInsets.all(size.height*0.02+size.width*0.02/2),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: CustomColors.kBlueColor),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: CustomColors.kBlueColor),
                 child: InkWell(
-                  onTap: () => {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                          const SignInScreen()),
-                    )
+                  onTap: () => {Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const SignInScreen()))
                   },
                   child: const Center(
                     child: Text(

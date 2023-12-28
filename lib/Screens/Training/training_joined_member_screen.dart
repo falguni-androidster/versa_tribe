@@ -78,9 +78,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
                     text: TextSpan(
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
                       children: [
-                        TextSpan(
-                          text: '${trainingJoinedMembersModel.firstName} ${trainingJoinedMembersModel.lastName} is joined in ',
-                        ),
+                        const TextSpan(text: 'Your Request to join in '),
                         TextSpan(
                           text: trainingJoinedMembersModel.trainingName,
                           style: const TextStyle(
@@ -88,7 +86,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
                             // You can apply other styles specific to this part of the text if needed
                           ),
                         ),
-                        const TextSpan(text: ' Training'),
+                        const TextSpan(text: ' Training is Confirmed'),
                       ],
                     ),
                   ),

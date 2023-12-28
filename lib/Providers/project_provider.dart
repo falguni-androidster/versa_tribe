@@ -108,13 +108,13 @@ class ProjectRequestProvider with ChangeNotifier{
 }
 
 /// ProjectApprovedProvider class
-class ProjectApprovedProvider with ChangeNotifier{
-  final List<ProjectRequestModel> _projectApproved =[];
-  List<ProjectRequestModel> get projectApproved => _projectApproved;
+class ProjectAcceptedProvider with ChangeNotifier{
+  final List<ProjectRequestModel> _projectAccepted =[];
+  List<ProjectRequestModel> get projectAccepted => _projectAccepted;
 
-  setProjectApproved(pApproved){
-    pApproved.forEach((ob) async {
-      _projectApproved.add(ProjectRequestModel.fromJson(ob));
+  setProjectAccepted(pAccepted){
+    pAccepted.forEach((ob) async {
+      _projectAccepted.add(ProjectRequestModel.fromJson(ob));
       notifyListeners();
     });
   }

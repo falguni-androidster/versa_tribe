@@ -73,6 +73,7 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
+
     try {
       String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
@@ -510,10 +511,10 @@ class ApiConfig {
     }
   }
 
-  static getApprovedProject({context, isApproved}) async {
+  static getAcceptedProject({context, isApproved}) async {
 
-    final provider = Provider.of<ProjectApprovedProvider>(context, listen: false);
-    provider.projectApproved.clear();
+    final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
+    provider.projectAccepted.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
@@ -528,8 +529,8 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint('Approved Project data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.projectApproved.clear();
-        provider.setProjectApproved(data);
+        provider.projectAccepted.clear();
+        provider.setProjectAccepted(data);
       } else {
         showToast(context, CustomString.noDataFound);
         debugPrint("Approved Project Data not found...");

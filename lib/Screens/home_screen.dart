@@ -41,8 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final selectedOrgProvider = Provider.of<OrganizationProvider>(context, listen: false);
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     await ApiConfig.getDataSwitching(context: context);
-    List<OrgAdminPersonList> adminPersonList =
-        switchProvider.switchData.orgAdminPersonList!;
+    List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
     selectedValue = adminPersonList[0].orgName!;
     orgId = adminPersonList[0].orgId!;
     orgAdmin = adminPersonList[0].isAdmin!;
@@ -364,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),*/
         body: <Widget>[
           const DashboardScreen(),
-          const ProjectScreen(),
+          ProjectScreen(orgId: orgId),
           TrainingScreen(orgId: orgId),
           const MessengersScreen(),
           const AccountScreen()

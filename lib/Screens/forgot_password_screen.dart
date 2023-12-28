@@ -118,8 +118,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   // Navigate to next Screen
   void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignInScreen()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
   }
 
   Future<void> forgotClick(context) async {

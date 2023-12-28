@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
@@ -53,11 +52,11 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
                                 crossAxisAlignment:
                                 CrossAxisAlignment.start,
                                 children: [
-                                  Row(
+                                 /* Row(
                                     children: [
                                       Text(
                                           '${val.getGiveTrainingList[index].trainingName}',
-                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600, overflow: TextOverflow.fade)),
                                       const Spacer(),
                                       InkWell(
                                         child: SvgPicture.asset(ImagePath.deleteIcon, height: 20, width: 20, colorFilter: const ColorFilter.mode(CustomColors.kRedColor, BlendMode.srcIn)),
@@ -66,8 +65,10 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
                                         },
                                       ),
                                     ],
-                                  ),
-
+                                  ),*/
+                                  Text(
+                                      '${val.getGiveTrainingList[index].trainingName}',
+                                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600, overflow: TextOverflow.fade)),
                                   Text(
                                       'Organization : ${val.getGiveTrainingList[index].orgName}',
                                       style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
@@ -113,7 +114,7 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
     );
   }
 
-  void _showDeleteConfirmation(context, trainingId) {
+  /*void _showDeleteConfirmation(context, trainingId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -142,6 +143,6 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
         );
       },
     );
-  }
+  }*/
 
 }

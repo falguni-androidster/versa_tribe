@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Screens/Project/approved_project_screen.dart';
+import 'package:versa_tribe/Screens/Project/accepted_project_screen.dart';
 import 'package:versa_tribe/Screens/Project/ongoing_project_screen.dart';
 import 'package:versa_tribe/Screens/Project/requested_project_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ProjectScreen extends StatefulWidget {
-  const ProjectScreen({super.key});
+
+  final int? orgId;
+
+  const ProjectScreen({super.key, required this.orgId});
 
   @override
   State<ProjectScreen> createState() => _ProjectScreenState();
@@ -66,7 +69,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                       ),
                       Container(
                           padding: const EdgeInsets.all(8.0),
-                          child: const Text(CustomString.approved)
+                          child: const Text(CustomString.accepted)
                       )
                     ],
                   ),
@@ -80,7 +83,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
               children: const <Widget>[
                 OnGoingProjectScreen(),
                 RequestedProjectScreen(),
-                ApprovedProjectScreen()
+                AcceptedProjectScreen()
               ],
             ),
           ),

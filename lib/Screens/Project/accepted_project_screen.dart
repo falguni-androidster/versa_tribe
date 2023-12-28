@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
-class ApprovedProjectScreen extends StatefulWidget {
-  const ApprovedProjectScreen({super.key});
+class AcceptedProjectScreen extends StatefulWidget {
+  const AcceptedProjectScreen({super.key});
 
   @override
-  State<ApprovedProjectScreen> createState() => _ApprovedProjectScreenState();
+  State<AcceptedProjectScreen> createState() => _AcceptedProjectScreenState();
 }
 
-class _ApprovedProjectScreenState extends State<ApprovedProjectScreen> {
+class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       body: FutureBuilder(
-        future: ApiConfig.getApprovedProject(context: context, isApproved: true),
+        future: ApiConfig.getAcceptedProject(context: context, isApproved: true),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return SizedBox(
@@ -28,11 +28,11 @@ class _ApprovedProjectScreenState extends State<ApprovedProjectScreen> {
             );
 
           } else if (snapshot.connectionState == ConnectionState.done) {
-            return Consumer<ProjectApprovedProvider>(
+            return Consumer<ProjectAcceptedProvider>(
                 builder: (context, val, child) {
-                  return val.projectApproved.isNotEmpty ? ListView.builder(
+                  return val.projectAccepted.isNotEmpty ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: val.projectApproved.length,
+                    itemCount: val.projectAccepted.length,
                     itemBuilder: (context, index) {
                       return InkWell(
                         child: Card(
@@ -56,7 +56,7 @@ class _ApprovedProjectScreenState extends State<ApprovedProjectScreen> {
                                                 text: 'Your request is to join in ',
                                               ),
                                               TextSpan(
-                                                text: val.projectApproved[index].projectName,
+                                                text: val.projectAccepted[index].projectName,
                                                 style: const TextStyle(
                                                   color: Colors.blue, // Change this to the color you desire
                                                   // You can apply other styles specific to this part of the text if needed
@@ -73,7 +73,7 @@ class _ApprovedProjectScreenState extends State<ApprovedProjectScreen> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        ApiConfig.rejectProjectManageUser(context, val.projectApproved[index].id, val.projectApproved[index].projectId);
+                                        ApiConfig.rejectProjectManageUser(context, val.projectAccepted[index].id, val.projectAccepted[index].projectId);
                                       },
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: CustomColors.kGrayColor,
