@@ -77,6 +77,7 @@ class CustomString {
 
 /*------------------------  Profile Screen --------------------------*/
 
+  static const String profileReady = 'Getting Your Profile Ready…';
   static const String createProfile = 'Create Profile';
   static const String updateProfile = 'Update Profile';
   static const String fNameRequired = '* FirstName is required...';
