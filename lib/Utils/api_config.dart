@@ -5,12 +5,100 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
+import '../Screens/Profile/create_profile_screen.dart';
+import '../Screens/sign_in_screen.dart';
 import '../extension.dart';
+import '../Screens/Profile/profile_exist_screen.dart';
 
 class ApiConfig {
 
   // static const String baseUrl = 'https://srv1.ksgs.local:9443';
   static const String baseUrl = 'https://api.gigpro.in';
+
+
+  /*------------------------------------------- Authentication Application -------------------------*/
+
+  Future<void> signInClick({context, emailController, passwordController}) async {
+
+    final provider = Provider.of<CheckInternet>(context,listen:false);
+
+    LoginResponseModel loginResponseModel;
+    if (provider.status == "Connected") {
+      Map signInParameter = {
+        "username": emailController.text.toString(),
+        "password": passwordController.text.toString(),
+        "grant_type": "password"
+      };
+      String loginUrl = '${ApiConfig.baseUrl}/token';
+      var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
+      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
+      loginResponseModel = LoginResponseModel.fromJson(jsonData);
+      if (response.body.isNotEmpty) {
+        debugPrint("------->${loginResponseModel.accessToken}");
+        if (loginResponseModel.accessToken != null) {
+          final SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setString(CustomString.accessToken,
+              loginResponseModel.accessToken.toString());
+          pref.setBool(CustomString.isLoggedIn, true);
+          showToast(context, CustomString.accountLoginSuccess);
+          if (loginResponseModel.profileExist != "True") {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const ProfileExistScreen()));
+          }
+        } else {
+          showToast(context, CustomString.checkYourEmail);
+        }
+      } else {
+        const CircularProgressIndicator();
+        showToast(context, CustomString.loginFailed);
+      }
+    }
+    else{
+      showToast(context, CustomString.checkNetworkConnection);
+    }
+  }
+
+  Future<void> signUpClick({context, emailController, passwordController, confirmPasswordController}) async {
+    if (passwordController.text.toString() != confirmPasswordController.text.toString()) {
+      showToast(context, CustomString.passwordAndConfirmPasswordNotMatch);
+    }
+    Map data = {
+      'Email': emailController.text.toString(),
+      'Password': passwordController.text.toString(),
+      'ConfirmPassword': confirmPasswordController.text.toString()
+    };
+
+    String signupUrl = '${ApiConfig.baseUrl}/api/Account/Register';
+    var response = await http.post(Uri.parse(signupUrl), body: data);
+    const CircularProgressIndicator();
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.accountSuccessCreated);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+    } else if (response.statusCode == 400){
+      showToast(context, CustomString.accountAlreadyTaken);
+    } else {
+      showToast(context, CustomString.somethingWrongMessage);
+    }
+  }
+
+  Future<void> forgotPasswordClick({context, emailController}) async {
+    Map data = {
+      'Email': emailController.text.toString(),
+    };
+
+    const String forgotUrl =
+        '${ApiConfig.baseUrl}/api/Account/ForgotPassword';
+    final response = await http.post(Uri.parse(forgotUrl), body: data);
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.forgotPwdMessage);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+    } else if (response.statusCode == 400) {
+      showToast(context, response.body);
+    } else {
+      showToast(context, CustomString.wrongEmail);
+    }
+  }
 
   /*------------------------------------------ Profile Screen ---------------------------------------*/
   Future<ProfileResponse> getProfileData() async {
@@ -423,7 +511,8 @@ class ApiConfig {
 
   static getProjectDataByOrgID(context, int? orgId) async {
 
-    final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
+    final provider =
+        Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
     provider.getProjectListByOrgId.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();

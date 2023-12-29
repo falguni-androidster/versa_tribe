@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:versa_tribe/extension.dart';
 
@@ -133,8 +132,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        signUpClick(context);
-                        },
+                        if (_formKey.currentState!.validate()){
+                          ApiConfig().signUpClick(context: context, emailController: emailController, passwordController: passwordController, confirmPasswordController: confirmPasswordController);
+                        }},
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,
                           shape: RoundedRectangleBorder(
@@ -216,7 +216,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   /// SignIn Text
                   InkWell(
                     onTap: () {
-                      _navigateToNextScreen(context);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
                       },
                     highlightColor: CustomColors.kWhiteColor,
                     child: const Row(
@@ -240,37 +240,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
-  // Navigate to next Screen
-  void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
-  }
-
-  Future<void> signUpClick(context) async {
-    if (_formKey.currentState!.validate()) {
-        if (passwordController.text.toString() != confirmPasswordController.text.toString()) {
-          showToast(context, CustomString.passwordAndConfirmPasswordNotMatch);
-        }
-        Map data = {
-          'Email': emailController.text.toString(),
-          'Password': passwordController.text.toString(),
-          'ConfirmPassword': confirmPasswordController.text.toString()
-        };
-
-        const String signupUrl = '${ApiConfig.baseUrl}/api/Account/Register';
-        final response = await http.post(Uri.parse(signupUrl), body: data);
-        const CircularProgressIndicator();
-        if (response.statusCode == 200) {
-          showToast(context, CustomString.accountSuccessCreated);
-          if (!mounted) return;
-          _navigateToNextScreen(context);
-        } else if (response.statusCode == 400){
-          showToast(context, CustomString.accountAlreadyTaken);
-        } else {
-          showToast(context, CustomString.somethingWrongMessage);
-        }
-    }
-  }
 }
-
-

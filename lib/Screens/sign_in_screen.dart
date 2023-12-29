@@ -1,13 +1,8 @@
-import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
-import 'package:versa_tribe/Screens/Profile/create_profile_screen.dart';
 import 'package:versa_tribe/Screens/sign_up_screen.dart';
-import 'package:http/http.dart' as http;
 import 'forgot_password_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
@@ -251,7 +246,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          signInClick(context);
+                          ApiConfig().signInClick(context: context,emailController: emailController,passwordController: passwordController);
                         } else {
                           return;
                         }
@@ -372,59 +367,11 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // Navigate to Next Screen
-  Future<void> _navigateToNextScreen({context, screenName, loginData}) async {
+  Future<void> _navigateToNextScreen({context, screenName}) async {
     if (screenName == 'signupScreen') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignUpScreen()));
     } else if (screenName == 'forgotScreen') {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()));
-    } else if (screenName == 'profileScreen') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
-    } else if (screenName == 'mainScreen') {
-      bool popUp = true;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(popUp: popUp,)));
     }
-  }
-
-  Future<void> signInClick(context) async {
-    final provider = Provider.of<CheckInternet>(context,listen:false);
-    debugPrint("status-internet------>${provider.status}");
-    LoginResponseModel loginResponseModelData;
-    if (provider.status == "Connected") {
-      Map signInParameter = {
-        "username": emailController.text.toString(),
-        "password": passwordController.text.toString(),
-        "grant_type": "password"
-      };
-      const String loginUrl = '${ApiConfig.baseUrl}/token';
-      var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
-      Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
-      loginResponseModelData = LoginResponseModel.fromJson(jsonData);
-      if (response.body.isNotEmpty) {
-        debugPrint("------->${loginResponseModelData.accessToken}");
-        if (loginResponseModelData.accessToken != null) {
-          final SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setString(CustomString.accessToken,
-              loginResponseModelData.accessToken.toString());
-          showToast(context, CustomString.accountLoginSuccess);
-          pref.setBool(CustomString.isLoggedIn, true);
-          if (loginResponseModelData.profileExist != "True") {
-            if (!mounted) return;
-            _navigateToNextScreen(context: context, screenName: 'profileScreen');
-          } else {
-            if (!mounted) return;
-            _navigateToNextScreen(context: context, screenName: "mainScreen", loginData: loginResponseModelData);
-          }
-        } else {
-          showToast(context, CustomString.checkYourEmail);
-        }
-      } else {
-        const CircularProgressIndicator();
-        showToast(context, CustomString.loginFailed);
-      }
-    }
-    else{
-    showToast(context, CustomString.checkNetworkConnection);
-    }
-
   }
 }

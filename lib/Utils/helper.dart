@@ -6,10 +6,11 @@ import 'package:versa_tribe/extension.dart';
 
 ///check internet connectivity in our app
 String connection(context){
-  final provider = Provider.of<CheckInternet>(context,listen:false);
+  final provider = Provider.of<CheckInternet>(context, listen:false);
   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
     debugPrint("Network connection------->$result");
-      provider.checkConnectivity(result);
+    provider.checkConnectivity(result);
+    showToast(context, 'Network Connection = $result');
   });
   return provider.status;
 }

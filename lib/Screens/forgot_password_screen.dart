@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Screens/sign_in_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -91,7 +89,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    forgotClick(context);
+                    if (_formKey.currentState!.validate()) {
+                      ApiConfig().forgotPasswordClick(context: context, emailController: emailController);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: CustomColors.kBlueColor,
@@ -114,31 +114,5 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
     );
-  }
-
-  // Navigate to next Screen
-  void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
-  }
-
-  Future<void> forgotClick(context) async {
-    if (_formKey.currentState!.validate()) {
-        Map data = {
-          'Email': emailController.text.toString(),
-        };
-
-        const String forgotUrl =
-            '${ApiConfig.baseUrl}/api/Account/ForgotPassword';
-        final response = await http.post(Uri.parse(forgotUrl), body: data);
-        if (response.statusCode == 200) {
-          showToast(context, CustomString.forgotPwdMessage);
-          if (!mounted) return;
-          _navigateToNextScreen(context);
-        } else if (response.statusCode == 400) {
-          showToast(context, response.body);
-        } else {
-          showToast(context, CustomString.wrongEmail);
-        }
-    }
   }
 }
