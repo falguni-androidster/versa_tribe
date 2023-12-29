@@ -17,102 +17,115 @@ class PendingRequestedOrgMembersScreen extends StatefulWidget {
 }
 
 class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMembersScreen> {
+
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: FutureBuilder(
-          future: ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0),
-          builder: (context,snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return SizedBox(
-                height: size.height*0.21,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }else if(snapshot.connectionState == ConnectionState.done){
-              return Consumer<RequestMemberProvider>(
-                  builder: (context, val, child) {
-                    return val.requestPendingOrgDataList.isNotEmpty ?
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: val.requestPendingOrgDataList.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.1 : size.height * 0.13,
-                            decoration: const BoxDecoration(
-                                border: BorderDirectional(
-                                  bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),
-                                )
-                            ),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.03,
-                                vertical: size.height * 0.005),
-                            child: SizedBox(
-                              width: size.width * 0.6,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: RichText(
-                                      text: TextSpan(
-                                          text: "${val.requestPendingOrgDataList[index].firstName} ${val.requestPendingOrgDataList[index].lastName} ${CustomString.requestedToJoinAdmin}",style: DefaultTextStyle.of(context).style,
-                                          children: [
-                                            TextSpan(text: val.requestPendingOrgDataList[index].deptName??"", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-                                          ]
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: FutureBuilder(
+            future: ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0),
+            builder: (context,snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return SizedBox(
+                  height: size.height*0.21,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }else if(snapshot.connectionState == ConnectionState.done){
+                return Consumer<RequestMemberProvider>(
+                    builder: (context, val, child) {
+                      return val.requestPendingOrgDataList.isNotEmpty ?
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: val.requestPendingOrgDataList.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.1 : size.height * 0.13,
+                              decoration: const BoxDecoration(
+                                  border: BorderDirectional(
+                                    bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),
+                                  )
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: size.width * 0.03,
+                                  vertical: size.height * 0.005),
+                              child: SizedBox(
+                                width: size.width * 0.6,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      child: RichText(
+                                        text: TextSpan(
+                                            text: "${val.requestPendingOrgDataList[index].firstName} ${val.requestPendingOrgDataList[index].lastName} ${CustomString.requestedToJoinAdmin}",style: DefaultTextStyle.of(context).style,
+                                            children: [
+                                              TextSpan(text: val.requestPendingOrgDataList[index].deptName??"", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                            ]
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Text(timeAgo(val.requestPendingOrgDataList[index].tStamp.toString()),
-                                      style: const TextStyle(fontSize: 12, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: CustomColors.kGrayColor,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
-                                            onPressed: () async {
-                                              showRemoveConfirmation(context:context, indexedOrgId:val.requestPendingOrgDataList[index].orgId, personId:val.requestPendingOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID, screen: CustomString.pendingRequested);
-                                            },
-                                            child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
-                                      ),
-                                      SizedBox(width: size.width * 0.02),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: CustomColors.kBlueColor,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
-                                            onPressed: () {
-                                              _showDialog(reqDepName:val.requestPendingOrgDataList[index].deptName,context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId,depID: val.requestPendingOrgDataList[index].deptId);
-                                              debugPrint("------->${val.requestPendingOrgDataList[index].orgId}");
-                                            },
-                                            child: const Text(CustomString.assign, style: TextStyle(color: CustomColors.kWhiteColor, fontFamily: 'Poppins'))),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                    Text(timeAgo(val.requestPendingOrgDataList[index].tStamp.toString()),
+                                        style: const TextStyle(fontSize: 12, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: CustomColors.kGrayColor,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                                              onPressed: () async {
+                                                showRemoveConfirmation(context:context, indexedOrgId:val.requestPendingOrgDataList[index].orgId, personId:val.requestPendingOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID, screen: CustomString.pendingRequested);
+                                              },
+                                              child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
+                                        ),
+                                        SizedBox(width: size.width * 0.02),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: CustomColors.kBlueColor,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                                              onPressed: () {
+                                                _showDialog(reqDepName:val.requestPendingOrgDataList[index].deptName,context: context,orgID: val.requestPendingOrgDataList[index].orgId,personID:val.requestPendingOrgDataList[index].personId,depID: val.requestPendingOrgDataList[index].deptId);
+                                                debugPrint("------->${val.requestPendingOrgDataList[index].orgId}");
+                                              },
+                                              child: const Text(CustomString.assign, style: TextStyle(color: CustomColors.kWhiteColor, fontFamily: 'Poppins'))),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }) :
-                    Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: size.height * 0.02),
-                          SizedBox(height: size.height * 0.2, width: size.width/1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
-                          SizedBox(height: size.height * 0.2),
-                          const Text(CustomString.noDataFound, style: TextStyle(color: CustomColors.kLightGrayColor))
-                        ]),
-                    );
-                  }
-              );
+                            );
+                          }) :
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: size.height * 0.02),
+                            SizedBox(height: size.height * 0.2, width: size.width/1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
+                            SizedBox(height: size.height * 0.2),
+                            const Text(CustomString.noDataFound, style: TextStyle(color: CustomColors.kLightGrayColor))
+                          ]),
+                      );
+                    }
+                );
+              }
+              return Container();
             }
-            return Container();
-          }
+        ),
       ),
     );
   }

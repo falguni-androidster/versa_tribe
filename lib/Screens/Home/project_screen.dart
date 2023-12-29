@@ -80,6 +80,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
                 OnGoingProjectScreen(orgId: widget.orgId),
                 const RequestedProjectScreen(),

@@ -13,48 +13,60 @@ class ManageTrainingPendingRequestScreen extends StatefulWidget {
 }
 
 class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendingRequestScreen> {
+
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      body: FutureBuilder(
-          future: ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false),
-          builder: (context,snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return SizedBox(
-                height: size.height * 0.1,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-            else if(snapshot.connectionState == ConnectionState.done){
-              return Consumer<TrainingPendingRequestProvider>(
-                  builder: (context, val, child) {
-                    return val.trainingPendingRequests.isNotEmpty ? ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: val.trainingPendingRequests.length,
-                      itemBuilder: (context, index) {
-                        return containerPendingRequest(val.trainingPendingRequests[index]);
-                      },
-                    ) : Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: size.height * 0.02),
-                          SizedBox(height: size.height * 0.2, width: size.width / 1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
-                          SizedBox(height: size.height * 0.2),
-                          const Text(CustomString.noDataFound, style: TextStyle(color: CustomColors.kLightGrayColor))
-                        ],),
-                    );
-                  });
-            }
-            else{
-              debugPrint("-----Pending Requests print future builder else------");
-            }
-            return Container();
-          }),
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: FutureBuilder(
+            future: ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false),
+            builder: (context,snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return SizedBox(
+                  height: size.height * 0.1,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              else if(snapshot.connectionState == ConnectionState.done){
+                return Consumer<TrainingPendingRequestProvider>(
+                    builder: (context, val, child) {
+                      return val.trainingPendingRequests.isNotEmpty ? ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: val.trainingPendingRequests.length,
+                        itemBuilder: (context, index) {
+                          return containerPendingRequest(val.trainingPendingRequests[index]);
+                        },
+                      ) : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: size.height * 0.02),
+                            SizedBox(height: size.height * 0.2, width: size.width / 1.5, child: Image.asset(ImagePath.noData, fit: BoxFit.fill)),
+                            SizedBox(height: size.height * 0.2),
+                            const Text(CustomString.noDataFound, style: TextStyle(color: CustomColors.kLightGrayColor))
+                          ],),
+                      );
+                    });
+              }
+              else{
+                debugPrint("-----Pending Requests print future builder else------");
+              }
+              return Container();
+            }),
+      ),
     );
   }
 

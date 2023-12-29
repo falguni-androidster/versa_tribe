@@ -14,181 +14,196 @@ class ProjectOrgIdListScreen extends StatefulWidget {
 }
 
 class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
+
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId);
+      ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId);
+      ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId);
+      ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.all(size.width * 0.02),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.projectResponseModel.projectName!,
-                      style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
-                  SizedBox(height: size.height * 0.01),
-                  const Text('Project Manager : Falguni Maheta',
-                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  widget.projectResponseModel.startDate != null &&  widget.projectResponseModel.endDate != null ? Text(
-                      'Duration : ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.endDate!).toLocal())}',
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) :
-                  const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  const Text(CustomString.manageCriteria,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  const Text(CustomString.experience,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+              padding: EdgeInsets.all(size.width * 0.02),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.projectResponseModel.projectName!,
+                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
+                    SizedBox(height: size.height * 0.01),
+                    const Text('Project Manager : Falguni Maheta',
+                        style: TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    widget.projectResponseModel.startDate != null &&  widget.projectResponseModel.endDate != null ? Text(
+                        'Duration : ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.endDate!).toLocal())}',
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) :
+                    const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    const Text(CustomString.manageCriteria,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    const Text(CustomString.experience,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<ProjectExperienceProvider>(
+                                builder: (context, val, child) {
+                                  return val.projectEx.isNotEmpty ?
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: val.projectEx.length,
+                                    itemBuilder: (context, index) {
+                                      return containerExperienceProject(val.projectEx[index]);
+                                    },
+                                  ) :
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noExperienceCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Experience print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.qualification,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<ProjectQualificationProvider>(
+                                builder: (context, val, child) {
+                                  return val.projectQua.isNotEmpty ?
+                                  containerQualificationProject(val.projectQua,size) :
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noQualificationCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Qualification print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.skill,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<ProjectSkillProvider>(
+                                builder: (context, val, child) {
+                                  return val.projectSkill.isNotEmpty ?
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: val.projectSkill.length,
+                                    itemBuilder: (context, index) {
+                                      return containerSkillProject(val.projectSkill[index]);
+                                    },
+                                  ): Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noSkillCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Skill print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.hobby,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<ProjectHobbyProvider>(
+                                builder: (context, val, child) {
+                                  return val.projectHobby.isNotEmpty ?
+                                  containerHobbyProject(val.projectHobby,size) :
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noHobbyCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Hobby print future builder else------");
+                          }
+                          return Container();
                         }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectExperienceProvider>(
-                              builder: (context, val, child) {
-                                return val.projectEx.isNotEmpty ?
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.projectEx.length,
-                                  itemBuilder: (context, index) {
-                                    return containerExperienceProject(val.projectEx[index]);
-                                  },
-                                ) :
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noExperienceCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Experience print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.qualification,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectQualificationProvider>(
-                              builder: (context, val, child) {
-                                return val.projectQua.isNotEmpty ?
-                                containerQualificationProject(val.projectQua,size) :
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noQualificationCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Qualification print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.skill,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectSkillProvider>(
-                              builder: (context, val, child) {
-                                return val.projectSkill.isNotEmpty ?
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.projectSkill.length,
-                                  itemBuilder: (context, index) {
-                                    return containerSkillProject(val.projectSkill[index]);
-                                  },
-                                ): Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noSkillCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Skill print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.hobby,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectHobbyProvider>(
-                              builder: (context, val, child) {
-                                return val.projectHobby.isNotEmpty ?
-                                containerHobbyProject(val.projectHobby,size) :
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noHobbyCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Hobby print future builder else------");
-                        }
-                        return Container();
-                      }
-                  ),
-                ]
-            )
+                    ),
+                  ]
+              )
+          ),
         ),
       ),
     );

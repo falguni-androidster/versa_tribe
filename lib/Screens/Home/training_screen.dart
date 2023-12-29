@@ -72,6 +72,7 @@ class _TrainingScreenState extends State<TrainingScreen>{
             ),
             Expanded(
               child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 children: <Widget>[
 
                   /// Take Training
