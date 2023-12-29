@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/project_list_item_screen.dart';
 
 import 'package:versa_tribe/extension.dart';
+
+import 'ManageProject/project_list_item_screen.dart';
 
 class ManageProjectScreen extends StatefulWidget {
 
@@ -74,8 +76,18 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
                                   SizedBox(height: size.height * 0.01 / 2),
                                   val.getProjectListByOrgId[index].startDate != null && val.getProjectListByOrgId[index].endDate != null ? Text(
                                       'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
-                                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
-                                      : const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) : const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                                  SizedBox(height: size.height * 0.01),
+                                  LinearPercentIndicator(
+                                    animation: true,
+                                    lineHeight: size.height * 0.02,
+                                    animationDuration: 2000,
+                                    percent: val.getProjectListByOrgId[index].progress!.toDouble() / 100,
+                                    center: Text("${val.getProjectListByOrgId[index].progress} %",
+                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 10, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
+                                    barRadius: const Radius.circular(30),
+                                    progressColor: CustomColors.kBlueColor,
+                                  )
                                 ],
                               )),
                         ),
@@ -91,7 +103,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
                         child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Image.asset(ImagePath.noData, fit: BoxFit.fill),
-                              const Text(CustomString.noTrainingFound, style: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))
+                              const Text(CustomString.noProjectFound, style: TextStyle(color: CustomColors.kLightGrayColor, fontFamily: 'Poppins'))
                             ]),
                       ));
                 });

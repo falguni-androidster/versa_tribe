@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:versa_tribe/Screens/Training/accepted_training_screen.dart';
-import 'package:versa_tribe/Screens/Training/give_training_screen.dart';
 import 'package:versa_tribe/Screens/Training/requested_training_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
-import '../Training/take_training_screen.dart';
+import '../Training/GiveTraining/give_training_screen.dart';
+import '../Training/TakeTraining/take_training_screen.dart';
 
 class TrainingScreen extends StatefulWidget {
 

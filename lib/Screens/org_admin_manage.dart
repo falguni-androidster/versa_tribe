@@ -3,9 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/manage_training.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
 
-import 'manage_project_screen.dart';
-import 'manage_department.dart';
-import 'manage_org_members.dart';
+import 'OrgAdmin/manage_project.dart';
+import 'OrgAdmin/manage_department.dart';
+import 'OrgAdmin/manage_org_members.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageAdminScreen extends StatefulWidget {
