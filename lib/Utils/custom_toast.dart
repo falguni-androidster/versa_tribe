@@ -26,7 +26,7 @@ void showToast(BuildContext context,String message) {
                   Text(
                     message,
                     style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins'),
-                    overflow: TextOverflow.fade,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

@@ -92,7 +92,7 @@ class ApiConfig {
     final response = await http.post(Uri.parse(forgotUrl), body: data);
     if (response.statusCode == 200) {
       showToast(context, CustomString.forgotPwdMessage);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+      Navigator.of(context).pop();
     } else if (response.statusCode == 400) {
       showToast(context, response.body);
     } else {
