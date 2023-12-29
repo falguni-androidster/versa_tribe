@@ -88,6 +88,7 @@ class _ProjectListItemScreenState extends State<ProjectListItemScreen> with Sing
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
                 ProjectOrgIdListScreen(projectResponseModel: widget.projectResponseModel),
                 ManageUserProjectScreen(projectResponseModel: widget.projectResponseModel)

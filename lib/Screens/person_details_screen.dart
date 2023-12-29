@@ -25,6 +25,19 @@ class PersonDetailsScreen extends StatefulWidget {
 
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getProjectData(context);
+      ApiConfig.getPersonExperience(context);
+      ApiConfig.getPersonQualification(context);
+      ApiConfig.getPersonSkill(context);
+      ApiConfig.getPersonHobby(context);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -44,10 +57,9 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
           title: const Text(CustomString.profileDSHeaderText,
               style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
 
-      body: //RefreshIndicator(
-      //  onRefresh: refreshEventList,
-       // child:
-        SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
@@ -467,14 +479,15 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                   ),
                 ),
               ),
+
               SizedBox(height: size.height * 0.01),
             ],
           ),
         ),
-     // ),
+      ),
     );
-
   }
+
   Widget containerProfile(snapshot, size) {
     return Card(
       elevation: 5,
@@ -527,16 +540,6 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> refreshEventList() async {
-    setState(() {
-      ApiConfig.getPersonExperience(context);
-      ApiConfig.getPersonQualification(context);
-      ApiConfig.getPersonSkill(context);
-      ApiConfig.getPersonHobby(context);
-    });
-    return;
   }
 
   void _showDeleteConfirmation(context, identityKey, int? iD, personId) {

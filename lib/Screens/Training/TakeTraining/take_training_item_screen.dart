@@ -5,9 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Model/take_training_response.dart';
 import 'package:versa_tribe/extension.dart';
-
 
 class TakeTrainingItemScreen extends StatefulWidget {
 
@@ -20,6 +18,18 @@ class TakeTrainingItemScreen extends StatefulWidget {
 }
 
 class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
+
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
+      ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
+      ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
+      ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId);
+    } catch (err) {
+      rethrow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,194 +50,197 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
         centerTitle: true,
       ),
       backgroundColor: CustomColors.kWhiteColor,
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: EdgeInsets.all(size.width * 0.02),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.trainingResponse.trainingName!,
-                      style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
-                  SizedBox(height: size.height * 0.01),
-                  Text('Organization : ${widget.trainingResponse.orgName!}',
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  Text('Person Limit : ${widget.trainingResponse.personLimit!}',
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  const Text('Description',
-                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  Text(widget.trainingResponse.description!,
-                      style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
-                  SizedBox(height: size.height * 0.01),
-                  const Text(CustomString.manageCriteria,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01),
-                  const Text(CustomString.experience,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
+          child: Padding(
+              padding: EdgeInsets.all(size.width * 0.02),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.trainingResponse.trainingName!,
+                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
+                    SizedBox(height: size.height * 0.01),
+                    Text('Organization : ${widget.trainingResponse.orgName!}',
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    Text('Person Limit : ${widget.trainingResponse.personLimit!}',
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    const Text('Description',
+                        style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    Text(widget.trainingResponse.description!,
+                        style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
+                    SizedBox(height: size.height * 0.01),
+                    const Text(CustomString.manageCriteria,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01),
+                    const Text(CustomString.experience,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<TrainingExperienceProvider>(
+                                builder: (context, val, child) {
+                                  return val.trainingEx.isNotEmpty ? ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: val.trainingEx.length,
+                                    itemBuilder: (context, index) {
+                                      return containerExperienceTraining(val.trainingEx[index]);
+                                    },
+                                  ) : Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noExperienceCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Experience print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.qualification,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<TrainingQualificationProvider>(
+                                builder: (context, val, child) {
+                                  return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) : Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noQualificationCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Qualification print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.skill,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<TrainingSkillProvider>(
+                                builder: (context, val, child) {
+                                  return val.trainingSkill.isNotEmpty ?
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: val.trainingSkill.length,
+                                    itemBuilder: (context, index) {
+                                      return containerSkillTraining(val.trainingSkill[index]);
+                                    },
+                                  ): Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noSkillCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Skill print future builder else------");
+                          }
+                          return Container();
+                        }),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    const Text(CustomString.hobby,
+                        style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    FutureBuilder(
+                        future: ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
+                        builder: (context,snapshot) {
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return SizedBox(
+                              height: size.height * 0.1,
+                              child: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          else if(snapshot.connectionState == ConnectionState.done){
+                            return Consumer<TrainingHobbyProvider>(
+                                builder: (context, val, child) {
+                                  return val.trainingHobby.isNotEmpty ? containerHobbyTraining(val.trainingHobby,size) : Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8.0),
+                                    color: CustomColors.kGrayColor,
+                                    child: const Center(child: Text(CustomString.noHobbyCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
+                                  );
+                                });
+                          }
+                          else{
+                            debugPrint("-----Hobby print future builder else------");
+                          }
+                          return Container();
+                        }
+                    ),
+                    SizedBox(height: size.height * 0.01),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kBlueColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<TrainingExperienceProvider>(
-                              builder: (context, val, child) {
-                                return val.trainingEx.isNotEmpty ? ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.trainingEx.length,
-                                  itemBuilder: (context, index) {
-                                    return containerExperienceTraining(val.trainingEx[index]);
-                                  },
-                                ) : Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noExperienceCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Experience print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.qualification,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<TrainingQualificationProvider>(
-                              builder: (context, val, child) {
-                                return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) : Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noQualificationCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Qualification print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.skill,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<TrainingSkillProvider>(
-                              builder: (context, val, child) {
-                                return val.trainingSkill.isNotEmpty ?
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.trainingSkill.length,
-                                  itemBuilder: (context, index) {
-                                    return containerSkillTraining(val.trainingSkill[index]);
-                                  },
-                                ): Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noSkillCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Skill print future builder else------");
-                        }
-                        return Container();
-                      }),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  const Text(CustomString.hobby,
-                      style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
-                  SizedBox(height: size.height * 0.01 / 2),
-                  FutureBuilder(
-                      future: ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
-                      builder: (context,snapshot) {
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return SizedBox(
-                            height: size.height * 0.1,
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                        else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<TrainingHobbyProvider>(
-                              builder: (context, val, child) {
-                                return val.trainingHobby.isNotEmpty ? containerHobbyTraining(val.trainingHobby,size) : Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(8.0),
-                                  color: CustomColors.kGrayColor,
-                                  child: const Center(child: Text(CustomString.noHobbyCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
-                                );
-                              });
-                        }
-                        else{
-                          debugPrint("-----Hobby print future builder else------");
-                        }
-                        return Container();
-                      }
-                  ),
-                  SizedBox(height: size.height * 0.01),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColors.kBlueColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          padding: const EdgeInsets.all(16)),
-                      child: const Text(
-                        CustomString.joinTraining,
-                        style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+                            padding: const EdgeInsets.all(16)),
+                        child: const Text(
+                          CustomString.joinTraining,
+                          style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+                        ),
                       ),
                     ),
-                  ),
-                ]
-            )
+                  ]
+              )
+          ),
         ),
       ),
     );

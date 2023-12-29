@@ -16,117 +16,130 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
 
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig().getProfileData();
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
 
-            SizedBox(height: size.height * 0.01),
+              SizedBox(height: size.height * 0.01),
 
-            FutureBuilder<ProfileResponse>(
-              future: ApiConfig().getProfileData(),
-              builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return SizedBox(
-                    height: size.height*0.21,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                else if(snapshot.connectionState == ConnectionState.done){
-                  return containerProfile(snapshot);
-                }else{
-                  debugPrint("-----Profile print future builder in Account screen------");
-                }
-                return Container();
-              },
-            ),
-
-            SizedBox(height: size.height * 0.01),
-
-            InkWell(
-              child: containerButton(
-                  height: size.height * 0.06,
-                  text: CustomString.personDetails),
-              onTap: () {
-                _navigateToNextScreen(context, 'PersonDetails');
-              },
-            ),
-
-            InkWell(
-              child: containerButton(
-                  height: size.height * 0.06,
-                  text: CustomString.manageOrganization),
-              onTap: () {
-                _navigateToNextScreen(context, 'ManageOrganization');
-              },
-            ),
-
-            InkWell(
-              child: containerButton(
-                  height: size.height * 0.06,
-                  text: CustomString.settings),
-              onTap: () {
-                // logoutClick(context);
-              },
-            ),
-
-            InkWell(
-              child: containerButton(
-                  height: size.height * 0.06,
-                  text: CustomString.help),
-              onTap: () {
-                // logoutClick(context);
-              },
-            ),
-
-            InkWell(
-              child: containerButton(
-                  height: size.height * 0.06,
-                  text: CustomString.about),
-              onTap: () {
-                // logoutClick(context);
-              },
-            ),
-
-            Container(
-              height: size.height * 0.06,
-              margin: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.2, vertical: size.height * 0.02),
-              child: MaterialButton(
-                  onPressed: () {
-                    logoutClick(context);
-                  },
-                  color: CustomColors.kGrayColor,
-                  elevation: 6,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const SizedBox(),
-                      const Text(CustomString.logout,
-                          style: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontSize: 16,
-                              fontFamily: 'Poppins')),
-                      SVGIconButton(
-                          svgPath: ImagePath.logoutIcon,
-                          onPressed: () {},
-                          size: 18,
-                          color: CustomColors.kLightGrayColor)
-                    ],
-                  )
+              FutureBuilder<ProfileResponse>(
+                future: ApiConfig().getProfileData(),
+                builder: (context, snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return SizedBox(
+                      height: size.height*0.21,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  else if(snapshot.connectionState == ConnectionState.done){
+                    return containerProfile(snapshot);
+                  }else{
+                    debugPrint("-----Profile print future builder in Account screen------");
+                  }
+                  return Container();
+                },
               ),
-            ),
-            const Text(CustomString.version,
-                style: TextStyle(fontSize: 16, color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-          ],
+
+              SizedBox(height: size.height * 0.01),
+
+              InkWell(
+                child: containerButton(
+                    height: size.height * 0.06,
+                    text: CustomString.personDetails),
+                onTap: () {
+                  _navigateToNextScreen(context, 'PersonDetails');
+                },
+              ),
+
+              InkWell(
+                child: containerButton(
+                    height: size.height * 0.06,
+                    text: CustomString.manageOrganization),
+                onTap: () {
+                  _navigateToNextScreen(context, 'ManageOrganization');
+                },
+              ),
+
+              InkWell(
+                child: containerButton(
+                    height: size.height * 0.06,
+                    text: CustomString.settings),
+                onTap: () {
+                  // logoutClick(context);
+                },
+              ),
+
+              InkWell(
+                child: containerButton(
+                    height: size.height * 0.06,
+                    text: CustomString.help),
+                onTap: () {
+                  // logoutClick(context);
+                },
+              ),
+
+              InkWell(
+                child: containerButton(
+                    height: size.height * 0.06,
+                    text: CustomString.about),
+                onTap: () {
+                  // logoutClick(context);
+                },
+              ),
+
+              Container(
+                height: size.height * 0.06,
+                margin: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.2, vertical: size.height * 0.02),
+                child: MaterialButton(
+                    onPressed: () {
+                      logoutClick(context);
+                    },
+                    color: CustomColors.kGrayColor,
+                    elevation: 6,
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(),
+                        const Text(CustomString.logout,
+                            style: TextStyle(
+                                color: CustomColors.kLightGrayColor,
+                                fontSize: 16,
+                                fontFamily: 'Poppins')),
+                        SVGIconButton(
+                            svgPath: ImagePath.logoutIcon,
+                            onPressed: () {},
+                            size: 18,
+                            color: CustomColors.kLightGrayColor)
+                      ],
+                    )
+                ),
+              ),
+              const Text(CustomString.version,
+                  style: TextStyle(fontSize: 16, color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            ],
+          ),
         ),
       ),
     );

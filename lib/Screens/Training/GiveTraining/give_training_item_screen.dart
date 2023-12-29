@@ -95,6 +95,7 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
 
                 /// Training Details

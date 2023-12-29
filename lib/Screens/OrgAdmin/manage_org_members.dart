@@ -78,6 +78,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
 
                 ///Pending Requested

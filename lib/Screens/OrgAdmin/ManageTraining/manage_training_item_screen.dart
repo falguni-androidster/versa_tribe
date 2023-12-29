@@ -103,6 +103,7 @@ class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> wit
           Expanded(
             child: TabBarView(
               controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
 
                 /// Training Details

@@ -20,10 +20,18 @@ class ManageAdminScreen extends StatefulWidget {
 }
 class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
+  // Call this when the user pull down the screen
+  Future<void> _loadData() async {
+    try {
+      ApiConfig.getProjectData(context);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    debugPrint("orgID***--->${widget.orgID}");
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -39,65 +47,68 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         title: Text(widget.orgNAME,
             style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            FutureBuilder<ProfileResponse>(
-              future: ApiConfig().getProfileData(),
-              builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return SizedBox(
-                    height: size.height * 0.21,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }else if(snapshot.connectionState == ConnectionState.done){
-                  return containerProfile(snapshot, size);
-                }else{
-                  debugPrint("<-problem-------Admin data get------>");
-                }
-                return Container();
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageDepartment),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDepartment(orgId: widget.orgID)));
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageTraining),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageTrainingScreen(orgId: widget.orgID)));
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageProject),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageProjectScreen(orgId: widget.orgID)));
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageRoles),
-              onTap: (){
-                //_navigateToNextScreen(context,'ManageOrganization');
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.manageOrgMembers),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID)));
-              },
-            ),
-            InkWell(
-              child: containerButton(height: size.height * 0.06, text: CustomString.contactSuperAdmin),
-              onTap: (){
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FutureBuilder<ProfileResponse>(
+                future: ApiConfig().getProfileData(),
+                builder: (context, snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return SizedBox(
+                      height: size.height * 0.21,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }else if(snapshot.connectionState == ConnectionState.done){
+                    return containerProfile(snapshot, size);
+                  }else{
+                    debugPrint("<-problem-------Admin data get------>");
+                  }
+                  return Container();
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.manageDepartment),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDepartment(orgId: widget.orgID)));
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.manageTraining),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageTrainingScreen(orgId: widget.orgID)));
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.manageProject),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageProjectScreen(orgId: widget.orgID)));
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.manageRoles),
+                onTap: (){
+                  //_navigateToNextScreen(context,'ManageOrganization');
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.manageOrgMembers),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID)));
+                },
+              ),
+              InkWell(
+                child: containerButton(height: size.height * 0.06, text: CustomString.contactSuperAdmin),
+                onTap: (){
 
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
