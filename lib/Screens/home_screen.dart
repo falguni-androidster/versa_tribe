@@ -10,7 +10,7 @@ import 'package:versa_tribe/Screens/Home/training_screen.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
 import 'Home/messenger_screen.dart';
-import 'OrgAdmin/admin_manage.dart';
+import 'org_admin_manage.dart';
 import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
 

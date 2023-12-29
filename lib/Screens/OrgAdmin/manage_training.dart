@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/Training/give_training_item_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Screens/Training/GiveTraining/give_training_item_screen.dart';
 import 'package:versa_tribe/extension.dart';
+
+import 'ManageTraining/manage_training_item_screen.dart';
 
 
 class ManageTrainingScreen extends StatefulWidget {
@@ -36,7 +39,7 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
             style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
       ),
       body: FutureBuilder(
-        future: ApiConfig.getGiveTrainingData(context),
+        future: ApiConfig.getTakeTrainingData(context: context, orgId: widget.orgId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return SizedBox(
@@ -46,11 +49,11 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
               ),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            return Consumer<GiveTrainingListProvider>(
+            return Consumer<TakeTrainingListProvider>(
                 builder: (context, val, child) {
-                  return val.getGiveTrainingList.isNotEmpty ? ListView.builder(
+                  return val.getTakeTrainingList.isNotEmpty ? ListView.builder(
                     shrinkWrap: true,
-                    itemCount: val.getGiveTrainingList.length,
+                    itemCount: val.getTakeTrainingList.length,
                     itemBuilder: (context, index) {
                       return InkWell(
                         child: Card(
@@ -67,15 +70,15 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                                 CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      '${val.getGiveTrainingList[index].trainingName}',
+                                      '${val.getTakeTrainingList[index].trainingName}',
                                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
                                   SizedBox(height: size.height * 0.01 / 2),
                                   Text(
-                                      'Organization : ${val.getGiveTrainingList[index].orgName}',
+                                      'Organization : ${val.getTakeTrainingList[index].orgName}',
                                       style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                   SizedBox(height: size.height * 0.01 / 2),
                                   Text(
-                                      'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getGiveTrainingList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getGiveTrainingList[index].endDate!).toLocal())}',
+                                      'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].endDate!).toLocal())}',
                                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                                   SizedBox(height: size.height * 0.01 / 2),
                                   Container(
@@ -84,14 +87,14 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                                         borderRadius: const BorderRadius.all(Radius.circular(10))),
                                     padding: const EdgeInsets.all(6.0),
                                     child: Text(
-                                        'PersonLimit - ${val.getGiveTrainingList[index].personLimit}',
+                                        'PersonLimit - ${val.getTakeTrainingList[index].personLimit}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                                   ),
                                 ],
                               )),
                         ),
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GiveTrainingItemScreen(trainingResponse: val.getGiveTrainingList[index])));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ManageTrainingItemScreen(trainingResponse: val.getTakeTrainingList[index])));
                         },
                       );
                     },

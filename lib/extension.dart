@@ -29,6 +29,7 @@ export 'Model/search_organization.dart';
 export 'Model/search_skill.dart';
 export 'Model/switch_data.dart';
 export 'Model/give_training_response.dart';
+export 'Model/take_training_response.dart';
 export 'Model/training_experience.dart';
 export 'Model/training_qualification.dart';
 export 'Model/training_hobby.dart';

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/extension.dart';
 
@@ -18,6 +17,7 @@ class UpdateAdminProfile extends StatefulWidget {
 }
 
 class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController orgNameController = TextEditingController();
   TextEditingController aboutOrgController = TextEditingController();
@@ -25,6 +25,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   TextEditingController emailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+
   int? orgID;
   dynamic providerBtn;
   dynamic boolProvider;

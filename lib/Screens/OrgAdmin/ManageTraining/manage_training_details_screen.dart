@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
 import 'package:versa_tribe/extension.dart';
 
-class ProjectDetailsScreen extends StatefulWidget {
+class ManageTrainingDetailScreen extends StatefulWidget {
 
-  final ProjectListByOrgIDModel projectResponseModel;
+  final TakeTrainingResponse trainingResponse;
 
-  const ProjectDetailsScreen({super.key, required this.projectResponseModel});
+  const ManageTrainingDetailScreen({super.key, required this.trainingResponse});
 
   @override
-  State<ProjectDetailsScreen> createState() => _ProjectDetailsScreenState();
+  State<ManageTrainingDetailScreen> createState() => _ManageTrainingDetailScreenState();
 }
 
-class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
+class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
-        leading: InkWell(
-          child: const Icon(Icons.arrow_back_ios,
-              color: CustomColors.kBlackColor),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(CustomString.manageProject,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
-        centerTitle: true,
-      ),
-      backgroundColor: CustomColors.kWhiteColor,
       body: SingleChildScrollView(
         child: Padding(
             padding: EdgeInsets.all(size.width * 0.02),
@@ -40,16 +25,23 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.projectResponseModel.projectName!,
+                  Text(widget.trainingResponse.trainingName!,
                       style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
                   SizedBox(height: size.height * 0.01),
-                  const Text('Project Manager : Falguni Maheta',
-                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                  Text('Organization : ${widget.trainingResponse.orgName!}',
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                   SizedBox(height: size.height * 0.01),
-                  widget.projectResponseModel.startDate != null &&  widget.projectResponseModel.endDate != null ? Text(
-                      'Duration : ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.endDate!).toLocal())}',
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) :
-                  const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                  Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                  SizedBox(height: size.height * 0.01),
+                  Text('Person Limit : ${widget.trainingResponse.personLimit!}',
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                  SizedBox(height: size.height * 0.01),
+                  const Text('Description',
+                      style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
+                  SizedBox(height: size.height * 0.01 / 2),
+                  Text(widget.trainingResponse.description!,
+                      style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
                   SizedBox(height: size.height * 0.01),
                   const Text(CustomString.manageCriteria,
                       style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
@@ -58,7 +50,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                   SizedBox(height: size.height * 0.01 / 2),
                   FutureBuilder(
-                      future: ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
+                      future: ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -69,18 +61,16 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           );
                         }
                         else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectExperienceProvider>(
+                          return Consumer<TrainingExperienceProvider>(
                               builder: (context, val, child) {
-                                return val.projectEx.isNotEmpty ?
-                                ListView.builder(
+                                return val.trainingEx.isNotEmpty ? ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.projectEx.length,
+                                  itemCount: val.trainingEx.length,
                                   itemBuilder: (context, index) {
-                                    return containerExperienceProject(val.projectEx[index]);
+                                    return containerExperienceTraining(val.trainingEx[index]);
                                   },
-                                ) :
-                                Container(
+                                ) : Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(8.0),
                                   color: CustomColors.kGrayColor,
@@ -98,7 +88,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                   SizedBox(height: size.height * 0.01 / 2),
                   FutureBuilder(
-                      future: ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
+                      future: ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -109,11 +99,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           );
                         }
                         else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectQualificationProvider>(
+                          return Consumer<TrainingQualificationProvider>(
                               builder: (context, val, child) {
-                                return val.projectQua.isNotEmpty ?
-                                containerQualificationProject(val.projectQua,size) :
-                                Container(
+                                return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) : Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(8.0),
                                   color: CustomColors.kGrayColor,
@@ -131,7 +119,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                   SizedBox(height: size.height * 0.01 / 2),
                   FutureBuilder(
-                      future: ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
+                      future: ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -142,15 +130,15 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           );
                         }
                         else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectSkillProvider>(
+                          return Consumer<TrainingSkillProvider>(
                               builder: (context, val, child) {
-                                return val.projectSkill.isNotEmpty ?
+                                return val.trainingSkill.isNotEmpty ?
                                 ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: val.projectSkill.length,
+                                  itemCount: val.trainingSkill.length,
                                   itemBuilder: (context, index) {
-                                    return containerSkillProject(val.projectSkill[index]);
+                                    return containerSkillTraining(val.trainingSkill[index]);
                                   },
                                 ): Container(
                                   width: double.infinity,
@@ -170,7 +158,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                   SizedBox(height: size.height * 0.01 / 2),
                   FutureBuilder(
-                      future: ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
+                      future: ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -181,11 +169,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           );
                         }
                         else if(snapshot.connectionState == ConnectionState.done){
-                          return Consumer<ProjectHobbyProvider>(
+                          return Consumer<TrainingHobbyProvider>(
                               builder: (context, val, child) {
-                                return val.projectHobby.isNotEmpty ?
-                                containerHobbyProject(val.projectHobby,size) :
-                                Container(
+                                return val.trainingHobby.isNotEmpty ? containerHobbyTraining(val.trainingHobby,size) : Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(8.0),
                                   color: CustomColors.kGrayColor,
@@ -199,7 +185,6 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         return Container();
                       }
                   ),
-
                 ]
             )
         ),
@@ -207,8 +192,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     );
   }
 
-  /// Project Experience Container
-  Widget containerExperienceProject(ProjectExperienceModel projectEx) {
+  /// Training Experience Container
+  Widget containerExperienceTraining(TrainingExperienceModel trainingEx) {
     return Container(
       decoration: BoxDecoration(border: Border.all(width: 2.0,color: CustomColors.kBlueColor), borderRadius: const BorderRadius.all(Radius.circular(10.0))),
       padding: const EdgeInsets.all(6.0),
@@ -219,27 +204,50 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         children: [
           Row(
             children: [
-              Text(projectEx.jobTitle!,
+              Text(trainingEx.jobTitle!,
                   style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
               const Spacer(),
-              projectEx.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+              trainingEx.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
             ],
           ),
-          projectEx.companyName != null ? Text(projectEx.companyName!,
-              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')) :
-          Text(projectEx.industryFieldName!,
+          Text(trainingEx.companyName!,
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-          Text('Experience : ${projectEx.expMonths!}',
+          Text('Experience : ${trainingEx.expMonths!}',
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))
         ],
       ),
     );
   }
 
-  /// Project Qualification Container
-  Widget containerQualificationProject(List<ProjectQualificationModel> projectQua, Size size) {
+  /// Training Skill Container
+  Widget containerSkillTraining(TrainingSkillModel trainingSkill) {
+    return Container(
+      decoration: BoxDecoration(border: Border.all(width: 2.0,color: CustomColors.kBlueColor), borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+      padding: const EdgeInsets.all(6.0),
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(trainingSkill.skillName!,
+                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
+              const Spacer(),
+              trainingSkill.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+            ],
+          ),
+          Text('Experience : ${trainingSkill.experience}',
+              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))
+        ],
+      ),
+    );
+  }
+
+  /// Training Qualification Container
+  Widget containerQualificationTraining(List<TrainingQualificationModel> trainingQua, Size size) {
     List<Widget> containerWidgets = [];
-    for (ProjectQualificationModel qualification in projectQua) {
+    for (TrainingQualificationModel qualification in trainingQua) {
       containerWidgets.add(
         Padding(padding: EdgeInsets.only(right: size.width * 0.02, bottom: size.height * 0.01),
           child: Container(
@@ -265,35 +273,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     );
   }
 
-  /// Project Skill Container
-  Widget containerSkillProject(ProjectSkillModel projectSkill) {
-    return Container(
-      decoration: BoxDecoration(border: Border.all(width: 2.0,color: CustomColors.kBlueColor), borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-      padding: const EdgeInsets.all(6.0),
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(projectSkill.skillName!,
-                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
-              const Spacer(),
-              projectSkill.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
-            ],
-          ),
-          Text('Experience : ${projectSkill.experience}',
-              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))
-        ],
-      ),
-    );
-  }
-
-  /// Project Hobby Container
-  Widget containerHobbyProject(List<ProjectHobbyModel> projectHobby, Size size) {
+  /// Training Hobby Container
+  Widget containerHobbyTraining(List<TrainingHobbyModel> trainingHobby, Size size) {
     List<Widget> containerWidgets = [];
-    for (ProjectHobbyModel hobby in projectHobby) {
+    for (TrainingHobbyModel hobby in trainingHobby) {
       containerWidgets.add(
         Padding(padding: EdgeInsets.only(right: size.width * 0.02, bottom: size.height * 0.01),
           child: Container(

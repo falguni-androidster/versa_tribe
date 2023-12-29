@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/approved_member_screen.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/pending_requested_member_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/ManageOrgMember/approved_member_screen.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/ManageOrgMember/pending_requested_member_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageOrgMembers extends StatefulWidget {

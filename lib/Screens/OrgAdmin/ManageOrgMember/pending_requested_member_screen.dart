@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:versa_tribe/extension.dart';
-import 'add_new_department.dart';
+import '../ManageDepartment/add_new_department.dart';
 
 class PendingRequestedOrgMembersScreen extends StatefulWidget {
 

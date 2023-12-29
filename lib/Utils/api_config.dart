@@ -423,8 +423,7 @@ class ApiConfig {
 
   static getProjectDataByOrgID(context, int? orgId) async {
 
-    final provider =
-        Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
+    final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
     provider.getProjectListByOrgId.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();

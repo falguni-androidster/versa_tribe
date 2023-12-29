@@ -80,10 +80,10 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: const <Widget>[
-                OnGoingProjectScreen(),
-                RequestedProjectScreen(),
-                AcceptedProjectScreen()
+              children: <Widget>[
+                OnGoingProjectScreen(orgId: widget.orgId),
+                const RequestedProjectScreen(),
+                const AcceptedProjectScreen()
               ],
             ),
           ),

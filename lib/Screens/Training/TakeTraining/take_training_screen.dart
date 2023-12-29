@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/Training/take_training_item_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:versa_tribe/Screens/Training/TakeTraining/take_training_item_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class TakeTrainingScreen extends StatefulWidget {
@@ -15,6 +16,21 @@ class TakeTrainingScreen extends StatefulWidget {
 }
 
 class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
+
+  String? personId;
+
+  Future<void> isPersonId() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    personId = pref.getString('PersonId');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isPersonId();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +54,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                     shrinkWrap: true,
                     itemCount: val.getTakeTrainingList.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
+                      return val.getTakeTrainingList[index].trainerId != int.parse(personId!) ? InkWell(
                         child: Card(
                           color: CustomColors.kWhiteColor,
                           elevation: 3,
@@ -80,7 +96,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => TakeTrainingItemScreen(trainingResponse: val.getTakeTrainingList[index])));
                         },
-                      );
+                      ) : Container();
                     },
                   ) : SizedBox(
                       width: size.width,

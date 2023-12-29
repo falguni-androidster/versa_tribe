@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/add_new_department.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/edit_department.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/ManageDepartment/add_new_department.dart';
+import 'package:versa_tribe/Screens/OrgAdmin/ManageDepartment/edit_department.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageDepartment extends StatefulWidget {
