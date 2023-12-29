@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
     debugPrint("==ORG-N======>${pref.getString("OrganizationName")}");
     pref.getString("OrganizationName") == adminPersonList[0].orgName! || pref.getString("OrganizationName") ==null?
     await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin):
-    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), orgId, orgAdmin);
+    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), orgId, pref.getBool("orgAdmin"));
     if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
       _showDialog();
     }
@@ -114,12 +114,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                             )
                         ),
-                      onTap: () {
-                        pref.setString("OrganizationName", finalPersonAdminList[index].orgName!);
+                      onTap: () async {
+                       await pref.setString("OrganizationName", finalPersonAdminList[index].orgName!);
+                       await pref.setBool("orgAdmin", finalPersonAdminList[index].isAdmin!);
                         selectedValue = pref.getString("OrganizationName");
+                        orgAdmin = pref.getBool("orgAdmin");
+
                         //selectedValue = finalPersonAdminList[index].orgName!;
                         orgId = finalPersonAdminList[index].orgId!;
-                        orgAdmin = finalPersonAdminList[index].isAdmin!;
+                        //orgAdmin = finalPersonAdminList[index].isAdmin!;
                         val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
                         Navigator.of(context).pop();
                       },
@@ -212,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
               const Spacer(),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return val.isAdmin == true || orgAdmin == true
+                return val.isAdmin==true || orgAdmin== true
                     ? SVGIconButton(svgPath: ImagePath.switchIcon, size: 24.0, color: CustomColors.kBlueColor,
                         // Replace with the path to your SVG asset
                         onPressed: () {
