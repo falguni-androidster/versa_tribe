@@ -162,6 +162,7 @@ class _AccountScreenState extends State<AccountScreen> {
     if (response.statusCode == 200) {
       provider.manageBottomTab(0);
       clearSharedPreferences(CustomString.isLoggedIn);
+      clearSharedPreferences("OrganizationName");
       showToast(context, CustomString.logOutSuccess);
       if (!mounted) return;
       _navigateToNextScreen(context, 'signInScreen');
