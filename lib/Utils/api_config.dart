@@ -510,7 +510,6 @@ class ApiConfig {
   }
 
   static getProjectDataByOrgID(context, int? orgId) async {
-
     final provider =
         Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
     provider.getProjectListByOrgId.clear();
@@ -571,7 +570,6 @@ class ApiConfig {
   }
 
   static getRequestedProject({context, isApproved}) async {
-
     final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
     provider.projectRequest.clear();
 
@@ -590,17 +588,20 @@ class ApiConfig {
         List<dynamic> data = jsonDecode(response.body);
         provider.projectRequest.clear();
         provider.setProjectRequest(data);
-      } else {
+      }
+      else
+      {
         showToast(context, CustomString.noDataFound);
         debugPrint("Requested Project Data not found...");
       }
-    } catch (e) {
+    }
+    catch (e)
+    {
       debugPrint("requested project------>$e");
     }
   }
 
   static getAcceptedProject({context, isApproved}) async {
-
     final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
     provider.projectAccepted.clear();
 

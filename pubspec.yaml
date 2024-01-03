@@ -46,6 +46,7 @@ dependencies:
   flutter_svg: ^2.0.9
   google_sign_in: ^5.2.3
   percent_indicator: ^4.2.3
+  fbroadcast: 2.0.0
 
 dev_dependencies:
   flutter_test:

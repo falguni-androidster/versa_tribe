@@ -1,3 +1,4 @@
+import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     debugPrint("==ORG-N======>${pref.getString("OrganizationName")}");
     pref.getString("OrganizationName") == adminPersonList[0].orgName! || pref.getString("OrganizationName") ==null?
     await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin):
-    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), orgId, pref.getBool("orgAdmin"));
+    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), pref.getInt("OrganizationId"), pref.getBool("orgAdmin"));
     if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
       _showDialog();
     }
@@ -117,14 +118,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () async {
                        await pref.setString("OrganizationName", finalPersonAdminList[index].orgName!);
                        await pref.setBool("orgAdmin", finalPersonAdminList[index].isAdmin!);
+                       await pref.setInt("OrganizationId", finalPersonAdminList[index].orgId!);
                         selectedValue = pref.getString("OrganizationName");
                         orgAdmin = pref.getBool("orgAdmin");
+                        orgId = pref.getInt("OrganizationId");
 
                         //selectedValue = finalPersonAdminList[index].orgName!;
-                        orgId = finalPersonAdminList[index].orgId!;
+                        //orgId = finalPersonAdminList[index].orgId!;
                         //orgAdmin = finalPersonAdminList[index].isAdmin!;
                         val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
                         Navigator.of(context).pop();
+
+                       FBroadcast.instance().broadcast(
+                         "Key_Message",
+                         value: orgId,
+                       );
                       },
                     );
                   },
@@ -183,11 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? InkWell(
                         child: Row(
                           children: [
-                            Consumer<OrganizationProvider>(
-                                builder: (context, val, child) {
-                              return Text("${val.switchOrganization}  ",
-                                  style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins'));
-                            }),
+                            Text("${val.switchOrganization}  ",
+                                style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
                             CircleAvatar(
                               radius: 10,
                               backgroundColor: Colors.transparent,
@@ -377,8 +382,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),*/
         body: <Widget>[
           const DashboardScreen(),
-          ProjectScreen(orgId: orgId),
-          TrainingScreen(orgId: orgId),
+          Consumer<OrganizationProvider>(
+            builder: (context,val,child) {
+              return ProjectScreen(orgId: val.switchOrgId);
+            }
+          ),
+        Consumer<OrganizationProvider>(
+        builder: (context,val,child) {
+              return Text("${val.switchOrgId}");
+            }
+          ),
+          //TrainingScreen(orgId: orgId),
           const MessengersScreen(),
           const AccountScreen()
         ][currentScreenIndex]

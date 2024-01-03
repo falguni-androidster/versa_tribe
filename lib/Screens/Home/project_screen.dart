@@ -1,15 +1,14 @@
+import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/Project/accepted_project_screen.dart';
 import 'package:versa_tribe/Screens/Project/ongoing_project_screen.dart';
 import 'package:versa_tribe/Screens/Project/requested_project_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ProjectScreen extends StatefulWidget {
-
   final int? orgId;
-
   const ProjectScreen({super.key, required this.orgId});
-
   @override
   State<ProjectScreen> createState() => _ProjectScreenState();
 }
@@ -17,13 +16,24 @@ class ProjectScreen extends StatefulWidget {
 class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProviderStateMixin {
 
   late TabController _tabController;
+  late SharedPreferences pref;
+  int? oId;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    getPreferenceData();
   }
+  getPreferenceData() async {
+    FBroadcast.instance().register("Key_Message", (value, callback) {
+      var data = value;
+      print("data---Broadcast---->$data");
+    });
 
+    pref = await SharedPreferences.getInstance();
+    oId = pref.getInt("OrganizationId")??widget.orgId;
+  }
   @override
   void dispose() {
     _tabController.dispose();

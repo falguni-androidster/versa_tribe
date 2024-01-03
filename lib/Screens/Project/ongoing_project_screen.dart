@@ -1,3 +1,4 @@
+import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -31,7 +32,18 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
     // TODO: implement initState
     super.initState();
     isPersonId();
+    getPreferenceData();
   }
+  getPreferenceData() async {
+    FBroadcast.instance().register("Key_Message", (value, callback) {
+      var orgID = value;
+
+      print("data-1--Broadcast---->$orgID");
+      print("org id--Broadcast---->${widget.orgId}");
+      ApiConfig.getProjectDataByOrgID(context, orgID);
+    });
+  }
+
 
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
