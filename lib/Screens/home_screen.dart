@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return val.switchOrganization != null
+                return val.switchOrganization?.length != null
                     ? InkWell(
                         child: Row(
                           children: [
@@ -382,17 +382,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),*/
         body: <Widget>[
           const DashboardScreen(),
+          ///Project TAB
           Consumer<OrganizationProvider>(
             builder: (context,val,child) {
               return ProjectScreen(orgId: val.switchOrgId);
             }
           ),
-        Consumer<OrganizationProvider>(
-        builder: (context,val,child) {
-              return Text("${val.switchOrgId}");
+          ///Training TAB
+          Consumer<OrganizationProvider>(
+          builder: (context,val,child) {
+              return TrainingScreen(orgId: val.switchOrgId);
             }
           ),
-          //TrainingScreen(orgId: orgId),
           const MessengersScreen(),
           const AccountScreen()
         ][currentScreenIndex]

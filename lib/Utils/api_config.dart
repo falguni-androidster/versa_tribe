@@ -161,7 +161,6 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-
     try {
       String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
@@ -171,7 +170,6 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint('Take Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.getTakeTrainingList.clear();
         provider.setTakeListTraining(data);
       } else {
         showToast(context, CustomString.noDataFound);

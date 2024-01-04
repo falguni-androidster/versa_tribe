@@ -32,14 +32,11 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
     // TODO: implement initState
     super.initState();
     isPersonId();
-    getPreferenceData();
+    broadcastUpdate();
   }
-  getPreferenceData() async {
+  broadcastUpdate() async {
     FBroadcast.instance().register("Key_Message", (value, callback) {
       var orgID = value;
-
-      print("data-1--Broadcast---->$orgID");
-      print("org id--Broadcast---->${widget.orgId}");
       ApiConfig.getProjectDataByOrgID(context, orgID);
     });
   }

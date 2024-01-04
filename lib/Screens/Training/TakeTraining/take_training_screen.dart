@@ -1,3 +1,4 @@
+import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,13 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
     // TODO: implement initState
     super.initState();
     isPersonId();
+    //broadcastUpdate(); we are used sharedPreference + Provider for pass orgId so it can be neglect it.
+  }
+  broadcastUpdate() async {
+    FBroadcast.instance().register("Key_Message", (value, callback) {
+      var orgID = value;
+      ApiConfig.getProjectDataByOrgID(context, orgID);
+    });
   }
 
   // Call this when the user pull down the screen
@@ -42,6 +50,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
