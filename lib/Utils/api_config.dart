@@ -6,6 +6,9 @@ import 'package:http/http.dart' as http;
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/Profile/create_profile_screen.dart';
+import '../Screens/Training/TakeTraining/take_training_item_screen.dart';
+import '../Screens/home_screen.dart';
+import '../Screens/person_details_screen.dart';
 import '../Screens/sign_in_screen.dart';
 import '../extension.dart';
 import '../Screens/Profile/profile_exist_screen.dart';
@@ -37,9 +40,8 @@ class ApiConfig {
         debugPrint("------->${loginResponseModel.accessToken}");
         if (loginResponseModel.accessToken != null) {
           final SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setString(CustomString.accessToken,
-              loginResponseModel.accessToken.toString());
-          pref.setBool(CustomString.isLoggedIn, true);
+          pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+          pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
           showToast(context, CustomString.accountLoginSuccess);
           if (loginResponseModel.profileExist != "True") {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
@@ -100,13 +102,29 @@ class ApiConfig {
     }
   }
 
+  Future<void> logoutClick(context) async {
+    final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String logOutUrl = '${ApiConfig.baseUrl}/api/Account/Logout';
+    final response = await http.post(Uri.parse(logOutUrl));
+    if (response.statusCode == 200) {
+      provider.manageBottomTab(0);
+      prefs.clearSharedPrefAllData();
+      showToast(context, CustomString.logOutSuccess);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+    } else {
+      showToast(context, CustomString.somethingWrongMessage);
+    }
+  }
+
   /*------------------------------------------ Profile Screen ---------------------------------------*/
   Future<ProfileResponse> getProfileData() async {
 
     String profileUrl = '$baseUrl/api/Person/MyProfile';
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     final response = await http.get(Uri.parse(profileUrl), headers: {
       'Authorization': 'Bearer $token',
@@ -116,14 +134,94 @@ class ApiConfig {
       debugPrint('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
       ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
-      pref.setString('PersonId', yourModel.personId.toString());
+      pref.setSharedPrefStringValue(key: 'PersonId', yourModel.personId.toString());
       return yourModel;
     } else {
       throw Exception('Failed to load data');
     }
   }
 
+  Future<void> createProfile({context, popUp, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getString(CustomString.accessToken);
+
+    Map data = {
+      'FirstName': fNameController.text.toString(),
+      'LastName': lNameController.text.toString(),
+      'Gender': genderController.text.toString(),
+      'City': cityController.text.toString(),
+      'Country': countryController.text.toString(),
+      'DOB': dobController.text.toString()
+    };
+
+    const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Create';
+    final response = await http.post(Uri.parse(profileUrl), body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.profileSuccessCreated);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(popUp: popUp)));
+    } else {
+      showToast(context, CustomString.somethingWrongMessage);
+    }
+  }
+
+  Future<void> updateProfile({context, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    Map data = {
+      'FirstName': fNameController.text.toString(),
+      'LastName': lNameController.text.toString(),
+      'Gender': genderController.text.toString(),
+      'City': cityController.text.toString(),
+      'Country': countryController.text.toString(),
+      'DOB': dobController.text.toString()
+    };
+
+    const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Update';
+    final response = await http.put(Uri.parse(profileUrl), body: data, headers: {
+      'Authorization': 'Bearer $token',
+    });
+    const CircularProgressIndicator();
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.profileSuccessUpdated);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
+    } else {
+      showToast(context, CustomString.somethingWrongMessage);
+    }
+  }
+
   /*------------------------------------------ Training Screen  ---------------------------------------------*/
+
+  Future<void> createTrainingClick({context, orgId, trainingNameController, trainingDescriptionController, startDateController, endDateController, personLimitController}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    Map<String, dynamic> data = {
+      'Org_Id': orgId,
+      'Training_Name': trainingNameController.text.toString(),
+      'Description': trainingDescriptionController.text.toString(),
+      'Start_Date': startDateController.text.toString(),
+      'End_Date': endDateController.text.toString(),
+      'PersonLimit': personLimitController.text.toString(),
+    };
+    String trainingUrl = '${ApiConfig.baseUrl}/api/Training/Create';
+    final response = await http.post(Uri.parse(trainingUrl), body: jsonEncode(data), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint(response.body);
+      ApiConfig.getGiveTrainingData(context);
+      showToast(context, CustomString.trainingCreatedSuccess);
+      Navigator.pop(context);
+    } else {
+      debugPrint(response.body);
+      showToast(context, CustomString.somethingWrongMessage);
+    }
+  }
 
   static getGiveTrainingData(context) async {
 
@@ -131,7 +229,7 @@ class ApiConfig {
     provider.getGiveTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl = '$baseUrl/api/Training/User/GetList';
@@ -159,7 +257,7 @@ class ApiConfig {
     provider.getTakeTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
@@ -186,7 +284,7 @@ class ApiConfig {
     provider.getRequestedTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl =
@@ -215,11 +313,10 @@ class ApiConfig {
     provider.getAcceptedTrainingList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl =
-          '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -238,11 +335,37 @@ class ApiConfig {
     }
   }
 
+  joinTraining({context, trainingId, isJoin, trainingResponse}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+
+    Map<String, dynamic> requestData = {
+      "Training_Id": trainingId,
+      "Person_Id": personId,
+      "Is_Join": isJoin,
+    };
+    String url = "${ApiConfig.baseUrl}/api/Training_Join/Create";
+    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    debugPrint('Training Joined----------------->>>> ${response.body}');
+    if (response.statusCode == 200) {
+      showToast(context, CustomString.trainingJoined);
+      Navigator.pop(context); // Pop the current screen
+      Navigator.push(context, MaterialPageRoute(builder: (context) => TakeTrainingItemScreen(trainingResponse: trainingResponse)));// Push the screen again
+    } else {
+      showToast(context, 'Try Again.....');
+    }
+  }
+
   static deleteTraining(context, int? trainingId) async {
 
     String url = '$baseUrl/api/Training/Delete?id=$trainingId';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
     final response = await http.delete(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -266,7 +389,7 @@ class ApiConfig {
     provider.trainingEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String url =
@@ -294,7 +417,7 @@ class ApiConfig {
     provider.trainingQua.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String url =
@@ -322,7 +445,7 @@ class ApiConfig {
     provider.trainingSkill.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String url =
@@ -350,7 +473,7 @@ class ApiConfig {
     provider.trainingHobby.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String url =
@@ -378,7 +501,7 @@ class ApiConfig {
     provider.trainingJoinedMembers.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     try {
       String url =
           '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
@@ -405,7 +528,7 @@ class ApiConfig {
     provider.trainingPendingRequests.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     try {
       String url =
           '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
@@ -428,10 +551,10 @@ class ApiConfig {
   /// Cancel Request Training
   static deleteRequestTraining({context, trainingId, screen}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    String? personId = pref.getString('PersonId');
-    String apiUrl =
-        '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+
+    String apiUrl = '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -452,8 +575,9 @@ class ApiConfig {
   /// Approve Request Training
   static approveRequestTraining({context, trainingId, isJoin}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    String? personId = pref.getString('PersonId');
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+
     Map<String, dynamic> requestData = {
       "Training_Id": trainingId,
       "Person_Id": personId,
@@ -485,7 +609,7 @@ class ApiConfig {
     provider.getProjectList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl = '$baseUrl/api/Projects/List';
@@ -508,12 +632,11 @@ class ApiConfig {
   }
 
   static getProjectDataByOrgID(context, int? orgId) async {
-    final provider =
-        Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
+    final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
     provider.getProjectListByOrgId.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl = '$baseUrl/api/Projects/OrgProjectsList?OrgId=$orgId';
@@ -538,12 +661,11 @@ class ApiConfig {
 
   static getProjectManageUserData(context, int? projectId) async {
 
-    final provider =
-        Provider.of<ProjectListManageUserProvider>(context, listen: false);
+    final provider = Provider.of<ProjectListManageUserProvider>(context, listen: false);
     provider.getProjectListManageUser.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String trainingUrl =
@@ -572,11 +694,10 @@ class ApiConfig {
     provider.projectRequest.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl =
-          '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -586,9 +707,7 @@ class ApiConfig {
         List<dynamic> data = jsonDecode(response.body);
         provider.projectRequest.clear();
         provider.setProjectRequest(data);
-      }
-      else
-      {
+      } else {
         showToast(context, CustomString.noDataFound);
         debugPrint("Requested Project Data not found...");
       }
@@ -604,11 +723,10 @@ class ApiConfig {
     provider.projectAccepted.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl =
-          '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -629,12 +747,11 @@ class ApiConfig {
 
   static getProjectExperience(context, int? projectId) async {
 
-    final provider =
-        Provider.of<ProjectExperienceProvider>(context, listen: false);
+    final provider = Provider.of<ProjectExperienceProvider>(context, listen: false);
     provider.projectEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
       String url =
@@ -658,16 +775,14 @@ class ApiConfig {
 
   static getProjectQualification(context, int? projectId) async {
 
-    final provider =
-        Provider.of<ProjectQualificationProvider>(context, listen: false);
+    final provider = Provider.of<ProjectQualificationProvider>(context, listen: false);
     provider.projectQua.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String url =
-          '$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId';
+      String url = '$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -691,11 +806,10 @@ class ApiConfig {
     provider.projectSkill.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String url =
-          '$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId';
+      String url = '$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -719,11 +833,10 @@ class ApiConfig {
     provider.projectHobby.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String url =
-          '$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId';
+      String url = '$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId';
       final response = await http.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -743,10 +856,10 @@ class ApiConfig {
 
   static rejectProjectManageUser(context, int? id, int? projectId) async {
 
-    String url =
-        '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
     final response = await http.delete(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -767,8 +880,8 @@ class ApiConfig {
   static approveProjectManageUser(context, int? id, int? projectId) async {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    String? personId = pref.getString('PersonId');
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
 
     Map<String, dynamic> requestData = {
       "Id": id,
@@ -777,8 +890,7 @@ class ApiConfig {
       "IsApproved": true
     };
     String url = '$baseUrl/api/ProjectUsers/Update';
-    final response =
-        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
@@ -798,13 +910,13 @@ class ApiConfig {
 
   static getPersonExperience(context) async {
 
-    final provider =
-        Provider.of<PersonExperienceProvider>(context, listen: false);
+    final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
     provider.personEx.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    String? personId = pref.getString('PersonId');
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+
     try {
       String url = '$baseUrl/api/PersonExperiences/MyList?id=$personId';
       final response = await http.get(Uri.parse(url), headers: {
@@ -826,13 +938,13 @@ class ApiConfig {
 
   static getPersonQualification(context) async {
 
-    final provider =
-        Provider.of<PersonQualificationProvider>(context, listen: false);
+    final provider = Provider.of<PersonQualificationProvider>(context, listen: false);
     provider.personQl.clear();
 
-    String url = '$baseUrl/api/GetUserPerQual';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/GetUserPerQual';
     final response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -852,9 +964,10 @@ class ApiConfig {
     final provider = Provider.of<PersonSkillProvider>(context, listen: false);
     provider.personSkill.clear();
 
-    String url = '$baseUrl/api/PersonSkills/GetSkillsByUser';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonSkills/GetSkillsByUser';
     final response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -874,9 +987,10 @@ class ApiConfig {
     final provider = Provider.of<PersonHobbyProvider>(context, listen: false);
     provider.personHobby.clear();
 
-    String url = '$baseUrl/api/PersonHobbies/MyHobbies';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonHobbies/MyHobbies';
     final response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -896,9 +1010,10 @@ class ApiConfig {
     final provider = Provider.of<DepartmentProvider>(context, listen: false);
     provider.department.clear();
 
-    String url = '$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId';
     final response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -916,9 +1031,10 @@ class ApiConfig {
   static deletePersonExperience(context, int? perExpId) async {
 
     try {
-      String url = '$baseUrl/api/PersonExperiences/Delete?id=$perExpId';
       SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonExperiences/Delete?id=$perExpId';
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -942,9 +1058,10 @@ class ApiConfig {
   static deletePersonQualification(context, int? perQLId) async {
 
     try {
-      String url = "$baseUrl/api/PersonQualifications?id=$perQLId";
       SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = "$baseUrl/api/PersonQualifications?id=$perQLId";
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -967,9 +1084,10 @@ class ApiConfig {
   static deletePersonSkill(context, int? perSkillId) async {
 
     try {
-      String url = '$baseUrl/api/PersonSkills/Delete?id=$perSkillId';
       SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonSkills/Delete?id=$perSkillId';
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -992,9 +1110,10 @@ class ApiConfig {
   static deletePersonHobby(context, personId, int? perHobbyId) async {
 
     try {
-      String url = '$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId';
       SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId';
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -1028,9 +1147,10 @@ class ApiConfig {
       "Start_date": sDate,
       "End_Date": eDate
     };
-    String url = '$baseUrl/api/PersonExperiences/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonExperiences/Create';
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1056,11 +1176,11 @@ class ApiConfig {
       "YOP": yop,
       "Grade": grade,
     };
-    debugPrint("CiTy--->$city");
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     String url = '$baseUrl/api/PersonQualifications/Create';
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1082,9 +1202,10 @@ class ApiConfig {
     Map<String, dynamic> requestData = {
       "Hobby": {"name": hobbyName}
     };
-    String url = '$baseUrl/api/PersonHobbies/PerHobCreate';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonHobbies/PerHobCreate';
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1108,9 +1229,10 @@ class ApiConfig {
       "Skill_Name": skill
     };
 
-    String url = '$baseUrl/api/PersonSkills/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonSkills/Create';
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1138,9 +1260,10 @@ class ApiConfig {
       "Contact_number": mobileNo,
     };
 
-    String url = '$baseUrl/api/OrgInfo/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/OrgInfo/Create';
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1173,9 +1296,10 @@ class ApiConfig {
     };
 
     try {
-      String url = '$baseUrl/api/PersonExperiences/Update';
       SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getString(CustomString.accessToken);
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonExperiences/Update';
       final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -1206,9 +1330,10 @@ class ApiConfig {
       "Inst_Name": instituteName,
     };
 
-    String url = '$baseUrl/api/PersonQualifications/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonQualifications/Update';
     final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1233,9 +1358,10 @@ class ApiConfig {
       "Skill_Name": skill,
     };
 
-    String url = '$baseUrl/api/PersonSkills/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/PersonSkills/Update';
     final response =
         await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
@@ -1266,9 +1392,10 @@ class ApiConfig {
       "Contact_number": number,
     };
 
-    String url = '$baseUrl/api/OrgInfo/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/OrgInfo/Update';
     final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1290,9 +1417,10 @@ class ApiConfig {
     final provider = Provider.of<SearchCourseProvider>(context, listen: false);
     provider.courseList.clear();
 
-    String apiUrl = '$baseUrl/api/Courses/AutoCompleteCourse?search_str=$courseString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Courses/AutoCompleteCourse?search_str=$courseString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1313,9 +1441,10 @@ class ApiConfig {
     final provider = Provider.of<SearchInstituteProvider>(context, listen: false);
     provider.instituteList.clear();
 
-    String apiUrl = '$baseUrl/api/Institutes/AutoCompleteInstitute?search_str=$instituteString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Institutes/AutoCompleteInstitute?search_str=$instituteString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1336,9 +1465,10 @@ class ApiConfig {
     final provider = Provider.of<SearchSkillProvider>(context, listen: false);
     provider.skillList.clear();
 
-    String apiUrl = '$baseUrl/api/Skills/AutoCompleteSkills?search_str=$skillString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Skills/AutoCompleteSkills?search_str=$skillString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1359,9 +1489,10 @@ class ApiConfig {
     final provider = Provider.of<SearchHobbyProvider>(context, listen: false);
     provider.hobbyList.clear();
 
-    String apiUrl = '$baseUrl/api/Hobbies/AutoCompleteHobbies?search_str=$hobbyString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Hobbies/AutoCompleteHobbies?search_str=$hobbyString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1381,9 +1512,10 @@ class ApiConfig {
     final provider = Provider.of<SearchExCompanyProvider>(context, listen: false);
     provider.cmpList.clear();
 
-    String apiUrl = '$baseUrl/api/Experience/AutoCompleteCompanyNames?search_str=$companyString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Experience/AutoCompleteCompanyNames?search_str=$companyString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1404,9 +1536,10 @@ class ApiConfig {
     final provider = Provider.of<SearchExIndustryProvider>(context, listen: false);
     provider.indList.clear();
 
-    String apiUrl = '$baseUrl/api/Experience/AutoCompleteIndustryNames?search_str=$industryString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Experience/AutoCompleteIndustryNames?search_str=$industryString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1429,7 +1562,7 @@ class ApiConfig {
     final provider = Provider.of<SwitchProvider>(context, listen: false);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     try {
       String url = '$baseUrl/api/Person/MySessionInfo';
       final response = await http.post(Uri.parse(url), headers: {
@@ -1460,7 +1593,7 @@ class ApiConfig {
     approvedProvider.approveOrgDataList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     try {
       String url = '$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex';
       final response = await http.get(Uri.parse(url), headers: {
@@ -1468,13 +1601,9 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        tabIndex == 0
-            ? debugPrint("Requested Org Data------->${response.body}")
-            : debugPrint("Approved Org Data------->${response.body}");
+        tabIndex == 0 ? debugPrint("Requested Org Data------->${response.body}") : debugPrint("Approved Org Data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-        tabIndex == 0
-            ? requestProvider.setRequestOrgData(data)
-            : approvedProvider.setApproveOrgData(data);
+        tabIndex == 0 ? requestProvider.setRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
@@ -1493,7 +1622,7 @@ class ApiConfig {
     approvedProvider.approveOrgDataList.clear();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     try {
       String url = '$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex';
       final response = await http.get(Uri.parse(url), headers: {
@@ -1501,13 +1630,9 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        tabIndex == 0
-            ? debugPrint("Pending Requested Org Member Data ------->${response.body}")
-            : debugPrint("Approved Org Member Data ------->${response.body}");
+        tabIndex == 0 ? debugPrint("Pending Requested Org Member Data ------->${response.body}") : debugPrint("Approved Org Member Data ------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-        tabIndex == 0
-            ? requestProvider.setPendingRequestOrgData(data)
-            : approvedProvider.setApproveOrgData(data);
+        tabIndex == 0 ? requestProvider.setPendingRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
@@ -1528,9 +1653,10 @@ class ApiConfig {
       "Dept_Req": ""
     };
 
-    String url = '$baseUrl/api/OrgPersons/Request/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/OrgPersons/Request/Update';
     final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1552,9 +1678,10 @@ class ApiConfig {
     final provider = Provider.of<SearchOrgProvider>(context, listen: false);
     provider.orgList.clear();
 
-    String apiUrl = '$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1575,9 +1702,10 @@ class ApiConfig {
     final provider = Provider.of<SearchDepartmentProvider>(context, listen: false);
     provider.departmentList.clear();
 
-    String apiUrl = '$baseUrl/api/Departments/ByOrgId?org_Id=$orgId';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Departments/ByOrgId?org_Id=$orgId';
     final response = await http.get(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1600,11 +1728,11 @@ class ApiConfig {
       "Dept_Id": dpID,
       "Dept_Req": dpName
     };
-    const String apiUrl = '$baseUrl/api/OrgPersons/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    final response = await http
-        .post(Uri.parse(apiUrl), body: jsonEncode(parameter), headers: {
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    const String apiUrl = '$baseUrl/api/OrgPersons/Create';
+    final response = await http.post(Uri.parse(apiUrl), body: jsonEncode(parameter), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
@@ -1622,9 +1750,10 @@ class ApiConfig {
 
   static deleteOrgRequest({context, orgID, personID, screen}) async {
 
-    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1645,9 +1774,10 @@ class ApiConfig {
 
   static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
 
-    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1668,9 +1798,10 @@ class ApiConfig {
 
   static deleteDepartment({context, departmentID, orgId}) async {
 
-    String apiUrl = '$baseUrl/api/Departments/Delete?dept_Id=$departmentID';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String apiUrl = '$baseUrl/api/Departments/Delete?dept_Id=$departmentID';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1693,9 +1824,10 @@ class ApiConfig {
       "Dept_Name": departmentName,
       "Parent_dept_Id": depId
     };
-    String url = '$baseUrl/api/Departments/Create';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/Departments/Create';
     final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -1718,9 +1850,10 @@ class ApiConfig {
       "Dept_Name": departmentName,
       "Parent_dept_Id": parentDepId
     };
-    String url = '$baseUrl/api/Departments/Update';
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/Departments/Update';
     final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

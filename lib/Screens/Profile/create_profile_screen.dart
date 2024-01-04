@@ -1,10 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import '../home_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class CreateProfileScreen extends StatefulWidget {
@@ -185,7 +181,9 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      createProfileClick(context);
+                      if (_formKey.currentState!.validate()) {
+                        ApiConfig().createProfile(context: context, popUp: true, fNameController: fNameController, lNameController: lNameController, genderController: genderController, dobController: dobController, cityController: cityController, countryController: countryController);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: CustomColors.kBlueColor,
@@ -266,39 +264,5 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
         },
       );
     });
-  }
-
-  void _navigateToNextScreen(BuildContext context) {
-    bool popUp = true;
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(popUp: popUp)));
-  }
-
-  Future<void> createProfileClick(context) async {
-    if (_formKey.currentState!.validate()) {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        String? token = pref.getString(CustomString.accessToken);
-
-        Map data = {
-          'FirstName': fNameController.text.toString(),
-          'LastName': lNameController.text.toString(),
-          'Gender': genderController.text.toString(),
-          'City': cityController.text.toString(),
-          'Country': countryController.text.toString(),
-          'DOB': dobController.text.toString()
-        };
-
-        const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Create';
-        final response = await http.post(Uri.parse(profileUrl), body: jsonEncode(data), headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-        if (response.statusCode == 200) {
-          showToast(context, CustomString.profileSuccessCreated);
-          if (!mounted) return;
-          _navigateToNextScreen(context);
-        } else {
-          showToast(context, CustomString.somethingWrongMessage);
-        }
-    }
   }
 }

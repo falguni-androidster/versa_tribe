@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/extension.dart';
 
 class CreateTrainingScreen extends StatefulWidget {
@@ -218,7 +215,9 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      createTrainingClick(context);
+                      if (_formKey.currentState!.validate()) {
+                        ApiConfig().createTrainingClick(context: context, orgId: widget.orgId, trainingNameController: trainingNameController, trainingDescriptionController: trainingDescriptionController, startDateController: startDateController, endDateController: endDateController, personLimitController: personLimitController);
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: CustomColors.kBlueColor,
@@ -237,35 +236,4 @@ class _CreateTrainingScreenState extends State<CreateTrainingScreen> {
       ),
     );
   }
-
-  Future<void> createTrainingClick(context) async {
-    if (_formKey.currentState!.validate()) {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        String? token = pref.getString(CustomString.accessToken);
-
-        Map<String, dynamic> data = {
-          'Org_Id': widget.orgId,
-          'Training_Name': trainingNameController.text.toString(),
-          'Description': trainingDescriptionController.text.toString(),
-          'Start_Date': startDateController.text.toString(),
-          'End_Date': endDateController.text.toString(),
-          'PersonLimit': personLimitController.text.toString(),
-        };
-        String trainingUrl = '${ApiConfig.baseUrl}/api/Training/Create';
-        final response = await http.post(Uri.parse(trainingUrl), body: jsonEncode(data), headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        });
-        if (response.statusCode == 200) {
-          debugPrint(response.body);
-          ApiConfig.getGiveTrainingData(context);
-          showToast(context, CustomString.trainingCreatedSuccess);
-          Navigator.pop(context);
-        } else {
-          debugPrint(response.body);
-          showToast(context, CustomString.somethingWrongMessage);
-        }
-    }
-  }
-
 }

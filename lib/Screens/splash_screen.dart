@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkFirstTimeUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTimeUser = prefs.getBool(CustomString.firstTimeUser) ?? true;
-    bool isLoggedIn = prefs.getBool(CustomString.isLoggedIn) ?? false;
+    bool isLoggedIn = prefs.getSharedPrefBoolValue(key: CustomString.isLoggedIn) ?? false;
 
     if (isFirstTimeUser) {
       Future.delayed(const Duration(seconds: 3), () {

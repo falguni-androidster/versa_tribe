@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/Training/GiveTraining/give_training_item_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 import 'ManageTraining/manage_training_item_screen.dart';

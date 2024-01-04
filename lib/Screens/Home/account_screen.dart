@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/person_details_screen.dart';
 import '../../Utils/svg_btn.dart';
 import '../manage_organization_screen.dart';
-import '../sign_in_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -113,7 +109,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     horizontal: size.width * 0.2, vertical: size.height * 0.02),
                 child: MaterialButton(
                     onPressed: () {
-                      logoutClick(context);
+                      ApiConfig().logoutClick(context);
                     },
                     color: CustomColors.kGrayColor,
                     elevation: 6,
@@ -168,39 +164,13 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Future<void> logoutClick(context) async {
-    final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
-    String logOutUrl = '${ApiConfig.baseUrl}/api/Account/Logout';
-    final response = await http.post(Uri.parse(logOutUrl));
-    if (response.statusCode == 200) {
-      provider.manageBottomTab(0);
-      clearSharedPreferences(CustomString.isLoggedIn);
-      clearSharedPreferences("OrganizationName");
-      clearSharedPreferences("orgAdmin");
-      clearSharedPreferences("OrganizationId");
-      showToast(context, CustomString.logOutSuccess);
-      if (!mounted) return;
-      _navigateToNextScreen(context, 'signInScreen');
-    } else {
-      showToast(context, CustomString.somethingWrongMessage);
-    }
-  }
-
   // Navigate to next Screen
   void _navigateToNextScreen(BuildContext context, String screen) {
-    if (screen == 'signInScreen') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
-    } else if (screen == 'ManageOrganization') {
+    if (screen == 'ManageOrganization') {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ManageOrganization()));
     } else if (screen == 'PersonDetails') {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
     }
-  }
-
-  // Only Clear LoggedIn SharedPreference
-  void clearSharedPreferences(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove(key);
   }
 
   Widget containerProfile(snapshot) {

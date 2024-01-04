@@ -5,6 +5,7 @@ export 'Utils/custom_toast.dart';
 export 'Utils/image_path.dart';
 export 'Utils/validator.dart';
 export 'Utils/helper.dart';
+export 'Utils/shared_preference.dart';
 
 export 'Model/approve_member.dart';
 export 'Model/approve_organization.dart';
