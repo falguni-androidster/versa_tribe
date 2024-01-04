@@ -28,7 +28,6 @@ class _SignInScreenState extends State<SignInScreen> {
     connection(context);
    // checkSignInStatus();
   }
-
   // void checkSignInStatus() async {
   //   bool isSignedIn = await googleSignIn.isSignedIn();
   //   if (isSignedIn) {
@@ -38,62 +37,36 @@ class _SignInScreenState extends State<SignInScreen> {
   //   }
   // }
 
+  GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: ['email'],
+      clientId: "801650424679-rbqcvol3jgtg15t6chglol5ffo931fsf.apps.googleusercontent.com",
+      serverClientId: "801650424679-5b89u58qr88qp9b3bb9sf8dqss22dtun.apps.googleusercontent.com"
+  );
   void _googleSignIn(context) async {
     debugPrint("------------->GoogleLogin Method Call<------------");
-    //GoogleSignIn googleSignIn = defaultTargetPlatform==TargetPlatform.iOS?GoogleSignIn(clientId: "924555205284-iembjogplf12k21veub6b8a2uqjicbs9.apps.googleusercontent.com"):GoogleSignIn();
-    GoogleSignIn googleSignIn =GoogleSignIn();
-    // //Default definition
-    // GoogleSignIn googleSignIn = GoogleSignIn(
-    //   scopes: [
-    //     'email',
-    //   ],
-    // );
-    //
-    // //If current device is Web or Android, do not use any parameters except from scopes.
-    // if (kIsWeb || Platform.isAndroid ) {
-    //   googleSignIn = GoogleSignIn(
-    //     scopes: [
-    //       'email',
-    //     ],
-    //   );
-    // }
-    //
-    // //If current device IOS or MacOS, We have to declare clientID
-    // //Please, look STEP 2 for how to get Client ID for IOS
-    // if (Platform.isIOS || Platform.isMacOS) {
-    //   googleSignIn = GoogleSignIn(
-    //     clientId:
-    //     "924555205284-iembjogplf12k21veub6b8a2uqjicbs9.apps.googleusercontent.com",
-    //     scopes: [
-    //       'email',
-    //     ],
-    //   );
-    // }
-
     try {
       /// Marks current user as being in the signed out state.
       await googleSignIn.signOut();
       debugPrint("Status of Google LogOut------>${await googleSignIn.signOut()}");
-
       final GoogleSignInAccount? googleLoginAcResult = await googleSignIn.signIn();
       debugPrint("Status of Google Login------>$googleLoginAcResult");
       // Process the signed-in user if the sign-in was successful
       if (googleLoginAcResult == null) {
         // User abort the sign-in process
         showToast(context, "Google Login Cancel......");
-      }else{
+      }else
+      {
         debugPrint("---->id: ${googleLoginAcResult.id}");
         debugPrint("---->email: ${googleLoginAcResult.email}");
         debugPrint("---->serverAuthCode: ${googleLoginAcResult.serverAuthCode}");
-        debugPrint("---->profilePhoto: ${googleLoginAcResult.photoUrl}");
-        debugPrint("---->displayName: ${googleLoginAcResult.displayName}");
-
+        //debugPrint("---->profilePhoto: ${googleLoginAcResult.photoUrl}");
+        //debugPrint("---->displayName: ${googleLoginAcResult.displayName}");
 
         GoogleSignInAuthentication googleAuth = await googleLoginAcResult.authentication;
-        debugPrint("Status of Google Auth------->$googleAuth");
         debugPrint("------>Access Token: ${googleAuth.accessToken!}");
         debugPrint("------>id Token: ${googleAuth.idToken}");
-        debugPrint("------>runtimeType: ${googleAuth.runtimeType}");
+        //debugPrint("Status of Google Auth------->$googleAuth");
+        //debugPrint("------>runtimeType: ${googleAuth.runtimeType}");
         debugPrint("------>hashCode: ${googleAuth.hashCode}");
 
         showToast(context, "Google Login Success...");

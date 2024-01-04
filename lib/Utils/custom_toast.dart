@@ -25,8 +25,7 @@ void showToast(BuildContext context,String message) {
                   const SizedBox(width: 10),
                   Text(
                     message,
-                    style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins'),
-                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins',overflow: TextOverflow.ellipsis,),
                   ),
                 ],
               ),
