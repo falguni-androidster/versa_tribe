@@ -92,7 +92,7 @@ class ApiConfig {
     final response = await http.post(Uri.parse(forgotUrl), body: data);
     if (response.statusCode == 200) {
       showToast(context, CustomString.forgotPwdMessage);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
+      Navigator.of(context).pop();
     } else if (response.statusCode == 400) {
       showToast(context, response.body);
     } else {
@@ -161,7 +161,6 @@ class ApiConfig {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
-
     try {
       String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
@@ -171,7 +170,6 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint('Take Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.getTakeTrainingList.clear();
         provider.setTakeListTraining(data);
       } else {
         showToast(context, CustomString.noDataFound);
@@ -510,7 +508,6 @@ class ApiConfig {
   }
 
   static getProjectDataByOrgID(context, int? orgId) async {
-
     final provider =
         Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
     provider.getProjectListByOrgId.clear();
@@ -571,7 +568,6 @@ class ApiConfig {
   }
 
   static getRequestedProject({context, isApproved}) async {
-
     final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
     provider.projectRequest.clear();
 
@@ -590,17 +586,20 @@ class ApiConfig {
         List<dynamic> data = jsonDecode(response.body);
         provider.projectRequest.clear();
         provider.setProjectRequest(data);
-      } else {
+      }
+      else
+      {
         showToast(context, CustomString.noDataFound);
         debugPrint("Requested Project Data not found...");
       }
-    } catch (e) {
+    }
+    catch (e)
+    {
       debugPrint("requested project------>$e");
     }
   }
 
   static getAcceptedProject({context, isApproved}) async {
-
     final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
     provider.projectAccepted.clear();
 

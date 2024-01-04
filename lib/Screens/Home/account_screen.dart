@@ -177,6 +177,7 @@ class _AccountScreenState extends State<AccountScreen> {
       clearSharedPreferences(CustomString.isLoggedIn);
       clearSharedPreferences("OrganizationName");
       clearSharedPreferences("orgAdmin");
+      clearSharedPreferences("OrganizationId");
       showToast(context, CustomString.logOutSuccess);
       if (!mounted) return;
       _navigateToNextScreen(context, 'signInScreen');
