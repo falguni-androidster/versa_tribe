@@ -27,26 +27,28 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
-      body:  SizedBox(
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircularPercentIndicator(
-                lineWidth: 30.0,
-                radius: 150.0,
-                animation: true,
-                animationDuration: 1500,
-                percent: 1.0,
-                progressColor: CustomColors.kBlueColor
-            ),
-            const SizedBox(height: 20),
-            const Text(
-                CustomString.profileReady,
-                style: TextStyle(color: CustomColors.kBlackColor, fontSize: 30, fontFamily: 'Poppins', fontWeight: FontWeight.w600)
-            ),
-          ],
+      body:  Center(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircularPercentIndicator(
+                  lineWidth: 30.0,
+                  radius: 150.0,
+                  animation: true,
+                  animationDuration: 1500,
+                  percent: 1.0,
+                  progressColor: CustomColors.kBlueColor
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                  CustomString.profileReady, textAlign: TextAlign.center,
+                  style: TextStyle(color: CustomColors.kBlackColor, fontSize: 30, fontFamily: 'Poppins', fontWeight: FontWeight.w600)
+              ),
+            ],
+          ),
         ),
       )
     );

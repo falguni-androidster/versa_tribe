@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:versa_tribe/extension.dart';
 
 class AcceptedTrainingScreen extends StatefulWidget {

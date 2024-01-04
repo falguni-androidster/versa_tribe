@@ -48,7 +48,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
 
   getAdminProfileOldData({orgId}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     String profileUrl = '${ApiConfig.baseUrl}/api/OrgInfo/ById?id=$orgId';
     final response = await http.get(Uri.parse(profileUrl), headers: {
@@ -92,7 +92,8 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
         body:
         Consumer<CirculerIndicationProvider>(
           builder: (context, val, child) {
-            return val.loading==true?SizedBox(
+            return val.loading == true ?
+            SizedBox(
               height: size.height*0.21,
               child: const Center(
                 child: CircularProgressIndicator(),

@@ -27,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  List<OrgAdminPersonList> finalPersonAdminList = [];
+  List<OrgAdminPersonList> orgAdminPersonList = [];
   String? selectedValue;
   int? orgId;
   bool? orgAdmin;
@@ -46,16 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     await ApiConfig.getDataSwitching(context: context);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
-    selectedValue = adminPersonList[0].orgName!;
-    orgId = adminPersonList[0].orgId!;
-    orgAdmin = adminPersonList[0].isAdmin!;
-    finalPersonAdminList = adminPersonList;
-    debugPrint("==ORG-N======>${pref.getString("OrganizationName")}");
-    pref.getString("OrganizationName") == adminPersonList[0].orgName! || pref.getString("OrganizationName") ==null?
-    await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin):
-    await selectedOrgProvider.setSwitchOrganization(pref.get("OrganizationName"), pref.getInt("OrganizationId"), pref.getBool("orgAdmin"));
-    if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
-      _showDialog();
+    if(adminPersonList.isNotEmpty) {
+      selectedValue = adminPersonList[0].orgName!;
+      orgId = adminPersonList[0].orgId!;
+      orgAdmin = adminPersonList[0].isAdmin!;
+      orgAdminPersonList = adminPersonList;
+      pref.getSharedPrefStringValue(key: "OrganizationName") == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: "OrganizationName") == null ?
+      await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin) :
+      await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: "OrganizationName"), pref.getSharedPrefIntValue(key: "OrganizationId"), pref.getSharedPrefBoolValue(key: "OrgAdmin"));
+      if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
+        _showDialog();
+      }
     }
     return adminPersonList;
   }
@@ -63,11 +64,26 @@ class _HomeScreenState extends State<HomeScreen> {
   checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
-    //selectedValue = adminPersonList[0].orgName!;
-    orgId = adminPersonList[0].orgId!;
-    orgAdmin = adminPersonList[0].isAdmin!;
-    finalPersonAdminList = adminPersonList;
+    if(adminPersonList.isNotEmpty) {
+      //selectedValue = adminPersonList[0].orgName!;
+      orgId = adminPersonList[0].orgId!;
+      orgAdmin = adminPersonList[0].isAdmin!;
+      orgAdminPersonList = adminPersonList;
+    }
     return adminPersonList;
+  }
+
+  manageOrganization({context, val, finalPersonAdminList}) async{
+    await pref.setSharedPrefStringValue(key: "OrganizationName", finalPersonAdminList.orgName!);
+    await pref.setSharedPrefBoolValue(key: "OrgAdmin", finalPersonAdminList.isAdmin!);
+    await pref.setSharedPrefIntValue(key: "OrganizationId", finalPersonAdminList.orgId!);
+    selectedValue = pref.getSharedPrefStringValue(key: "OrganizationName");
+    orgAdmin = pref.getSharedPrefBoolValue(key: "OrgAdmin");
+    orgId = pref.getSharedPrefIntValue(key: "OrganizationId");
+    val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
+    Navigator.of(context).pop();
+
+    FBroadcast.instance().broadcast("Key_Message", value: orgId);
   }
 
   // Function to show the dialog
@@ -97,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return ListView.builder(
-                  itemCount: finalPersonAdminList.length,
+                  itemCount: orgAdminPersonList.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
@@ -107,33 +123,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: size.height * 0.05,
                             child: Card(
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                                color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
+                                color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
                                 child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text(" ${finalPersonAdminList[index].orgName!}",
-                                        style: TextStyle(fontFamily: 'Poppins', color: val.switchOrganization == finalPersonAdminList[index].orgName! ? CustomColors.kWhiteColor : null))
+                                    child: Text(" ${orgAdminPersonList[index].orgName!}",
+                                        style: TextStyle(fontFamily: 'Poppins', color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kWhiteColor : null))
                                 )
                             )
                         ),
-                      onTap: () async {
-                       await pref.setString("OrganizationName", finalPersonAdminList[index].orgName!);
-                       await pref.setBool("orgAdmin", finalPersonAdminList[index].isAdmin!);
-                       await pref.setInt("OrganizationId", finalPersonAdminList[index].orgId!);
-                        selectedValue = pref.getString("OrganizationName");
-                        orgAdmin = pref.getBool("orgAdmin");
-                        orgId = pref.getInt("OrganizationId");
-
-                        //selectedValue = finalPersonAdminList[index].orgName!;
-                        //orgId = finalPersonAdminList[index].orgId!;
-                        //orgAdmin = finalPersonAdminList[index].isAdmin!;
-                        val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
-                        Navigator.of(context).pop();
-
-                       FBroadcast.instance().broadcast(
-                         "Key_Message",
-                         value: orgId,
-                       );
-                      },
+                      onTap: () => manageOrganization(context: context, val: val, finalPersonAdminList: orgAdminPersonList[index])
                     );
                   },
                 );

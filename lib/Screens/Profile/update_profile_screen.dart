@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
-import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Screens/person_details_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 
@@ -229,7 +225,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        updateProfileClick(context);
+                        if (_formKey.currentState!.validate()) {
+                          ApiConfig().updateProfile(context: context, fNameController: fNameController, lNameController: lNameController, genderController: genderController, dobController: dobController, cityController: cityController, countryController: countryController);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,
@@ -309,38 +307,5 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         },
       );
     });
-  }
-
-  void _navigateToNextScreen(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
-  }
-
-  Future<void> updateProfileClick(context) async {
-    if (_formKey.currentState!.validate()) {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-        String? token = pref.getString(CustomString.accessToken);
-
-        Map data = {
-          'FirstName': fNameController.text.toString(),
-          'LastName': lNameController.text.toString(),
-          'Gender': genderController.text.toString(),
-          'City': cityController.text.toString(),
-          'Country': countryController.text.toString(),
-          'DOB': dobController.text.toString()
-        };
-
-        const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Update';
-        final response = await http.put(Uri.parse(profileUrl), body: data, headers: {
-          'Authorization': 'Bearer $token',
-        });
-        const CircularProgressIndicator();
-        if (response.statusCode == 200) {
-          showToast(context, CustomString.profileSuccessUpdated);
-          if (!mounted) return;
-          _navigateToNextScreen(context);
-        } else {
-          showToast(context, CustomString.somethingWrongMessage);
-        }
-    }
   }
 }

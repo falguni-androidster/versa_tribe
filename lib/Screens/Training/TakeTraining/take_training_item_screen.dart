@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/extension.dart';
 
 class TakeTrainingItemScreen extends StatefulWidget {
@@ -224,7 +220,7 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false);
+                          ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: CustomColors.kBlueColor,
@@ -354,30 +350,6 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
     return Wrap(
       children: containerWidgets,
     );
-  }
-
-  joinTraining({context, trainingId, isJoin}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    String? personId = pref.getString('PersonId');
-    Map<String, dynamic> requestData = {
-      "Training_Id": trainingId,
-      "Person_Id": personId,
-      "Is_Join": isJoin,
-    };
-    String url = "${ApiConfig.baseUrl}/api/Training_Join/Create";
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    debugPrint('Training Joined----------------->>>> ${response.body}');
-    if (response.statusCode == 200) {
-      showToast(context, CustomString.trainingJoined);
-      Navigator.pop(context); // Pop the current screen
-      Navigator.push(context, MaterialPageRoute(builder: (context) => TakeTrainingItemScreen(trainingResponse: widget.trainingResponse)));// Push the screen again
-    } else {
-      showToast(context, 'Try Again.....');
-    }
   }
 
 }

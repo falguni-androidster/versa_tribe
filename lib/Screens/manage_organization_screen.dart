@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/Organization/approved_organization_screen.dart';
 import 'package:versa_tribe/Screens/Organization/requested_organization_screen.dart';
-import 'package:versa_tribe/Utils/shared_preference.dart';
 import 'home_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
@@ -139,18 +135,6 @@ class _ManageOrganizationState extends State<ManageOrganization>
         ],
       ),
     );
-  }
-
-  data(context) async {
-    const String loginUrl = '${ApiConfig.baseUrl}/api/Person/MySessionInfo';
-    final SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
-    var response = await http.post(Uri.parse(loginUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    Map<String, dynamic> jsonData = jsonDecode(response.body);
-    pref.setJson("responseModel", jsonData);
   }
 
   Future<void> joinOrganizationDialog({context, mHeight, mWidth}) async {

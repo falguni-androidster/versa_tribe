@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/Project/project_details_screen.dart';
 
 import 'package:versa_tribe/extension.dart';
@@ -20,18 +19,10 @@ class OnGoingProjectScreen extends StatefulWidget {
 
 class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
 
-  String? personId;
-
-  Future<void> isPersonId() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    personId = pref.getString('PersonId');
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    isPersonId();
     broadcastUpdate();
   }
   broadcastUpdate() async {
@@ -45,7 +36,7 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectData(context);
+      ApiConfig.getProjectDataByOrgID(context, widget.orgId);
     } catch (err) {
       rethrow;
     }
