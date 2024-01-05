@@ -21,6 +21,51 @@ class ApiConfig {
 
   /*------------------------------------------- Authentication Application -------------------------*/
 
+  //google authentication
+  static externalAuthentication({context, authToken, provider}) async {
+    try {
+      Map<String, String> bodyParameters = {
+        'Token': authToken,
+        "Provider": provider,
+        "grant_type":"password"
+      };
+      String externalLoginUrl = '$baseUrl/token';
+      final response = await http.post(Uri.parse(externalLoginUrl),
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: bodyParameters);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
+         LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(jsonData);
+        if (loginResponseModel.accessToken != null) {
+          final SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+          pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
+          showToast(context, CustomString.accountLoginSuccess);
+          pref.setString("ProfileStatus", loginResponseModel.profileExist!);
+          debugPrint("--------------cheque profile status------>${loginResponseModel.profileExist}");
+
+          if (loginResponseModel.profileExist != "True") {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const ProfileExistScreen()));
+          }
+        } else {
+          showToast(context, CustomString.checkYourEmail);
+        }
+
+      debugPrint("<---Authenticated Successfully-->");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Authenticated Successfully..")));
+      } else
+      {
+        debugPrint("<---Authentication denied-->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Authentication denied..")));
+      }
+    }
+    catch (e) {
+      debugPrint("External login setup error: ${e.toString()}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Authentication denied..")));
+    }
+  }
+
   Future<void> signInClick({context, emailController, passwordController}) async {
 
     final provider = Provider.of<CheckInternet>(context,listen:false);
