@@ -69,11 +69,12 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
             } else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<TakeTrainingListProvider>(
                   builder: (context, val, child) {
-                    return val.getTakeTrainingList.isNotEmpty ? ListView.builder(
+                    final filteredList = val.getTakeTrainingList.where((item) => item.trainerId != int.parse(personId!)).toList();
+                    return filteredList.isNotEmpty ? ListView.builder(
                       shrinkWrap: true,
-                      itemCount: val.getTakeTrainingList.length,
+                      itemCount: filteredList.length,
                       itemBuilder: (context, index) {
-                        return val.getTakeTrainingList[index].trainerId != int.parse(personId!) ? InkWell(
+                        return InkWell(
                           child: Card(
                             color: CustomColors.kWhiteColor,
                             elevation: 3,
@@ -115,7 +116,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => TakeTrainingItemScreen(trainingResponse: val.getTakeTrainingList[index])));
                           },
-                        ) : Container();
+                        );
                       },
                     ) : SizedBox(
                         width: size.width,

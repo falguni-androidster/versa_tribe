@@ -28,7 +28,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
   getPreferenceData() async {
     FBroadcast.instance().register("Key_Message", (value, callback) {
       var data = value;
-      print("data---Broadcast---->$data");
+      debugPrint("data---Broadcast---->$data");
     });
 
     pref = await SharedPreferences.getInstance();
