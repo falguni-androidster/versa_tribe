@@ -22,7 +22,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
 
   Future<void> isPersonId() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    personId = pref.getSharedPrefStringValue(key: CustomString.personId);
   }
 
   @override

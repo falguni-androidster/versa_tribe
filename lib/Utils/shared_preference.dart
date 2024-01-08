@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 extension SharedPreferencesExtension on SharedPreferences {
-  static const String _defaultKey = 'exampleKey'; // Replace with your preferred key
+  static const String _defaultKey = 'sharedPreferenceKey'; // Replace with your preferred key
 
   Future<void> setSharedPrefStringValue(String value, {String key = _defaultKey}) async {
     await setString(key, value);
@@ -27,7 +27,8 @@ extension SharedPreferencesExtension on SharedPreferences {
     return getInt(key);
   }
 
-  Future<void> clearSharedPrefAllData() async {
-    await clear();
+  // Function to clear a specific key from SharedPreferences
+  Future<void> clearSharedPreferencesKey({String key = _defaultKey}) async {
+    await remove(key);
   }
 }

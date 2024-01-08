@@ -32,7 +32,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
     });
 
     pref = await SharedPreferences.getInstance();
-    oId = pref.getSharedPrefIntValue(key: "OrganizationId") ?? widget.orgId;
+    oId = pref.getSharedPrefIntValue(key: CustomString.organizationId) ?? widget.orgId;
   }
   @override
   void dispose() {

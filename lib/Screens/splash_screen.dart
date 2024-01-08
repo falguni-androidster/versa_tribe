@@ -22,26 +22,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkFirstTimeUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // bool isFirstTimeUser = prefs.getBool(CustomString.firstTimeUser) ?? true;
-    bool isLoggedIn = prefs.getSharedPrefBoolValue(
-        key: CustomString.isLoggedIn) ?? false;
+    bool isFirstTimeUser = prefs.getSharedPrefBoolValue(key: CustomString.firstTimeUser) ?? true;
+    bool isLoggedIn = prefs.getSharedPrefBoolValue(key: CustomString.isLoggedIn) ?? false;
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (isLoggedIn) {
-        // User is already logged in, navigate to home page
-        _navigateToNextScreen(context: context, screenName: 'homeScreen');
-      } else {
-        _navigateToNextScreen(context: context, screenName: 'signInScreen');
-      }
-    });
-
-
-    /*if (isFirstTimeUser) {
+    if (isFirstTimeUser) {
       Future.delayed(const Duration(seconds: 3), () {
         _navigateToNextScreen(context: context, screenName: 'onBoardingScreen');
       });
       // Set isFirstTimeUser to false
-      await prefs.setBool(CustomString.firstTimeUser, false);
+      await prefs.setSharedPrefBoolValue(key: CustomString.firstTimeUser, false);
     } else {
       Future.delayed(const Duration(seconds: 3), (){
         if (isLoggedIn) {
@@ -51,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
           _navigateToNextScreen(context: context, screenName: 'signInScreen');
         }
       });
-    }*/
+    }
   }
 
   @override
