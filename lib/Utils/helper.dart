@@ -10,7 +10,7 @@ String connection(context){
   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
     debugPrint("Network connection------->$result");
     provider.checkConnectivity(result);
-    showToast(context, 'Network Connection = $result');
+    showToast(context, '$result');
   });
   return provider.status;
 }
