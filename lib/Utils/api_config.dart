@@ -33,14 +33,15 @@ class ApiConfig {
       final response = await http.post(Uri.parse(externalLoginUrl),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: bodyParameters);
       if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
+        Map<String, dynamic> jsonData = await jsonDecode(response.body); // Return Single Object
          LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(jsonData);
         if (loginResponseModel.accessToken != null) {
           final SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
           pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
           showToast(context, CustomString.accountLoginSuccess);
-          pref.setString("ProfileStatus", loginResponseModel.profileExist!);
+
+          await pref.setString("ProfileStatus", loginResponseModel.profileExist!);
           debugPrint("--------------cheque profile status------>${loginResponseModel.profileExist}");
 
           if (loginResponseModel.profileExist != "True") {
@@ -52,10 +53,8 @@ class ApiConfig {
           showToast(context, CustomString.checkYourEmail);
         }
 
-      debugPrint("<---Authenticated Successfully-->");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Authenticated Successfully..")));
-      } else
-      {
+        debugPrint("<---Authenticated Successfully-->");
+      } else {
         debugPrint("<---Authentication denied-->${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Authentication denied..")));
       }
@@ -77,7 +76,7 @@ class ApiConfig {
         "password": passwordController.text.toString(),
         "grant_type": "password"
       };
-      String loginUrl = '${ApiConfig.baseUrl}/token';
+      String loginUrl = '$baseUrl/token';
       var response = await http.post(Uri.parse(loginUrl), body: signInParameter);
       Map<String, dynamic> jsonData = jsonDecode(response.body); // Return Single Object
       loginResponseModel = LoginResponseModel.fromJson(jsonData);
@@ -107,6 +106,7 @@ class ApiConfig {
   }
 
   Future<void> signUpClick({context, emailController, passwordController, confirmPasswordController}) async {
+
     if (passwordController.text.toString() != confirmPasswordController.text.toString()) {
       showToast(context, CustomString.passwordAndConfirmPasswordNotMatch);
     }
@@ -116,7 +116,7 @@ class ApiConfig {
       'ConfirmPassword': confirmPasswordController.text.toString()
     };
 
-    String signupUrl = '${ApiConfig.baseUrl}/api/Account/Register';
+    String signupUrl = '$baseUrl/api/Account/Register';
     var response = await http.post(Uri.parse(signupUrl), body: data);
     const CircularProgressIndicator();
     if (response.statusCode == 200) {
@@ -130,12 +130,13 @@ class ApiConfig {
   }
 
   Future<void> forgotPasswordClick({context, emailController}) async {
+
     Map data = {
       'Email': emailController.text.toString(),
     };
 
     const String forgotUrl =
-        '${ApiConfig.baseUrl}/api/Account/ForgotPassword';
+        '$baseUrl/api/Account/ForgotPassword';
     final response = await http.post(Uri.parse(forgotUrl), body: data);
     if (response.statusCode == 200) {
       showToast(context, CustomString.forgotPwdMessage);
@@ -148,10 +149,11 @@ class ApiConfig {
   }
 
   Future<void> logoutClick(context) async {
+
     final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String logOutUrl = '${ApiConfig.baseUrl}/api/Account/Logout';
+    String logOutUrl = '$baseUrl/api/Account/Logout';
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
       provider.manageBottomTab(0);
@@ -171,11 +173,10 @@ class ApiConfig {
   /*------------------------------------------ Profile Screen ---------------------------------------*/
   Future<ProfileResponse> getProfileData() async {
 
-    String profileUrl = '$baseUrl/api/Person/MyProfile';
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
+    String profileUrl = '$baseUrl/api/Person/MyProfile';
     final response = await http.get(Uri.parse(profileUrl), headers: {
       'Authorization': 'Bearer $token',
     });
@@ -192,6 +193,7 @@ class ApiConfig {
   }
 
   Future<void> createProfile({context, popUp, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getString(CustomString.accessToken);
 
@@ -204,7 +206,7 @@ class ApiConfig {
       'DOB': dobController.text.toString()
     };
 
-    const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Create';
+    const String profileUrl = '$baseUrl/api/Person/Create';
     final response = await http.post(Uri.parse(profileUrl), body: jsonEncode(data), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -218,6 +220,7 @@ class ApiConfig {
   }
 
   Future<void> updateProfile({context, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -230,7 +233,7 @@ class ApiConfig {
       'DOB': dobController.text.toString()
     };
 
-    const String profileUrl = '${ApiConfig.baseUrl}/api/Person/Update';
+    const String profileUrl = '$baseUrl/api/Person/Update';
     final response = await http.put(Uri.parse(profileUrl), body: data, headers: {
       'Authorization': 'Bearer $token',
     });
@@ -246,6 +249,7 @@ class ApiConfig {
   /*------------------------------------------ Training Screen  ---------------------------------------------*/
 
   Future<void> createTrainingClick({context, orgId, trainingNameController, trainingDescriptionController, startDateController, endDateController, personLimitController}) async {
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -257,7 +261,7 @@ class ApiConfig {
       'End_Date': endDateController.text.toString(),
       'PersonLimit': personLimitController.text.toString(),
     };
-    String trainingUrl = '${ApiConfig.baseUrl}/api/Training/Create';
+    String trainingUrl = '$baseUrl/api/Training/Create';
     final response = await http.post(Uri.parse(trainingUrl), body: jsonEncode(data), headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -337,8 +341,7 @@ class ApiConfig {
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl =
-          '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -386,6 +389,7 @@ class ApiConfig {
   }
 
   joinTraining({context, trainingId, isJoin, trainingResponse}) async {
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
@@ -395,7 +399,7 @@ class ApiConfig {
       "Person_Id": personId,
       "Is_Join": isJoin,
     };
-    String url = "${ApiConfig.baseUrl}/api/Training_Join/Create";
+    String url = "$baseUrl/api/Training_Join/Create";
     final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

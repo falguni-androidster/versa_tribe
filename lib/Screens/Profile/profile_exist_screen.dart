@@ -17,6 +17,7 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
   @override
   void initState() {
     super.initState();
+    ApiConfig().getProfileData();
     //Navigates to new screen after 3 seconds.
     Timer(const Duration(seconds: 1), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen(popUp: true)));

@@ -47,6 +47,7 @@ dependencies:
   google_sign_in: ^5.2.3
   percent_indicator: ^4.2.3
   fbroadcast: 2.0.0
+  flutter_facebook_auth: ^6.0.3
 
 dev_dependencies:
   flutter_test:
