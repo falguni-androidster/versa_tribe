@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/sign_up_screen.dart';
@@ -84,6 +85,54 @@ class _SignInScreenState extends State<SignInScreen> {
     }else{
       showToast(context, CustomString.checkNetworkConnection);
     }
+  }
+
+  facebookAuth({context}) async {
+        try{
+            FacebookAuth.i.logOut();
+            debugPrint("---LogOut FB------>${FacebookAuth.i.logOut().hashCode}");
+            final LoginResult result = await FacebookAuth.instance.login(permissions: [
+              'email',
+              'public_profile'
+            ]); // by default we request the email and the public profile
+            debugPrint("login Status --)--)--L: ${result.status}");
+            // or FacebookAuth.i.login()
+            // switch (result.status){
+            //   case LoginStatus.cancelled: return showToast(context, "login cancel by user...");
+            //   break;
+            //   case LoginStatus.failed: return showToast(context, "login failed try again...");
+            //   break;
+            //   case LoginStatus.operationInProgress: return const SizedBox(child: CircularProgressIndicator(color: Colors.green,));
+            //   break;
+            //   case LoginStatus.success: {
+            //     // you are logged
+            //     final String accessToken = result.accessToken!.token;
+            //
+            //   }
+            //   break;
+            // }
+            if (result.status == LoginStatus.success) {
+              // you are logged
+              final String accessToken = result.accessToken!.token;
+              debugPrint("fb accessToken------>$accessToken");
+              debugPrint("fb status-------------->${result.status}");
+              await ApiConfig.externalAuthentication(context: context, authToken: accessToken, provider: "Facebook");
+              return showToast(context, "fb login success...");
+            } else if (result.status == LoginStatus.operationInProgress) {
+              debugPrint("fb status inProgress-------------->${LoginStatus.operationInProgress}");
+              return const SizedBox(child: CircularProgressIndicator(color: Colors.green));
+            } else if (result.status == LoginStatus.failed) {
+              debugPrint("fb status failed-------------->${LoginStatus.failed}");
+              return showToast(context, "login failed try again...");
+            } else if (result.status == LoginStatus.cancelled) {
+              debugPrint("fb status cancelled-------------->${LoginStatus.cancelled}");
+              return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("login cancel by user...")));
+            } else {
+              debugPrint("----->Error-->${result.status}");
+            }
+      }catch(e){
+            debugPrint("exception error: ==-->$e");
+      }
   }
 
   @override
@@ -291,7 +340,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton.icon(
-                            onPressed: (){},//_loginWithFacebook,
+                            onPressed: (){
+                              facebookAuth(context: context);
+                            },//_loginWithFacebook,
                             icon: Image.asset(ImagePath.facebookPath),
                             label: const Text(CustomString.facebook,
                                 style: TextStyle(
