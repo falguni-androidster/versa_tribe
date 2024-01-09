@@ -157,7 +157,12 @@ class ApiConfig {
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
       provider.manageBottomTab(0);
-      prefs.clearSharedPrefAllData();
+      prefs.clearSharedPreferencesKey(key: CustomString.organizationName);
+      prefs.clearSharedPreferencesKey(key: CustomString.accessToken);
+      prefs.clearSharedPreferencesKey(key: CustomString.personId);
+      prefs.clearSharedPreferencesKey(key: CustomString.organizationAdmin);
+      prefs.clearSharedPreferencesKey(key: CustomString.isLoggedIn);
+      prefs.clearSharedPreferencesKey(key: CustomString.organizationId);
       showToast(context, CustomString.logOutSuccess);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else {
@@ -180,7 +185,7 @@ class ApiConfig {
       debugPrint('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
       ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
-      pref.setSharedPrefStringValue(key: 'PersonId', yourModel.personId.toString());
+      pref.setSharedPrefStringValue(key: CustomString.personId, yourModel.personId.toString());
       return yourModel;
     } else {
       throw Exception('Failed to load data');
@@ -387,7 +392,7 @@ class ApiConfig {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     Map<String, dynamic> requestData = {
       "Training_Id": trainingId,
@@ -601,7 +606,7 @@ class ApiConfig {
   static deleteRequestTraining({context, trainingId, screen}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     String apiUrl = '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
@@ -625,7 +630,7 @@ class ApiConfig {
   static approveRequestTraining({context, trainingId, isJoin}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     Map<String, dynamic> requestData = {
       "Training_Id": trainingId,
@@ -930,7 +935,7 @@ class ApiConfig {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     Map<String, dynamic> requestData = {
       "Id": id,
@@ -964,7 +969,7 @@ class ApiConfig {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: 'PersonId');
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     try {
       String url = '$baseUrl/api/PersonExperiences/MyList?id=$personId';

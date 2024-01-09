@@ -50,9 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
       orgId = adminPersonList[0].orgId!;
       orgAdmin = adminPersonList[0].isAdmin!;
       orgAdminPersonList = adminPersonList;
-      pref.getSharedPrefStringValue(key: "OrganizationName") == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: "OrganizationName") == null ?
+      pref.getSharedPrefStringValue(key: CustomString.organizationName) == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: CustomString.organizationName) == null ?
       await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin) :
-      await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: "OrganizationName"), pref.getSharedPrefIntValue(key: "OrganizationId"), pref.getSharedPrefBoolValue(key: "OrgAdmin"));
+      await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: CustomString.organizationName), pref.getSharedPrefIntValue(key: CustomString.organizationId), pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin));
       if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
         _showDialog();
       }
@@ -73,12 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   manageOrganization({context, val, finalPersonAdminList}) async{
-    await pref.setSharedPrefStringValue(key: "OrganizationName", finalPersonAdminList.orgName!);
-    await pref.setSharedPrefBoolValue(key: "OrgAdmin", finalPersonAdminList.isAdmin!);
-    await pref.setSharedPrefIntValue(key: "OrganizationId", finalPersonAdminList.orgId!);
-    selectedValue = pref.getSharedPrefStringValue(key: "OrganizationName");
-    orgAdmin = pref.getSharedPrefBoolValue(key: "OrgAdmin");
-    orgId = pref.getSharedPrefIntValue(key: "OrganizationId");
+    await pref.setSharedPrefStringValue(key: CustomString.organizationName, finalPersonAdminList.orgName!);
+    await pref.setSharedPrefBoolValue(key: CustomString.organizationAdmin, finalPersonAdminList.isAdmin!);
+    await pref.setSharedPrefIntValue(key: CustomString.organizationId, finalPersonAdminList.orgId!);
+    selectedValue = pref.getSharedPrefStringValue(key: CustomString.organizationName);
+    orgAdmin = pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin);
+    orgId = pref.getSharedPrefIntValue(key: CustomString.organizationId);
     val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
     Navigator.of(context).pop();
 

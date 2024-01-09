@@ -8,6 +8,7 @@ class CustomString {
   static const String firstTimeUser = 'isFirstTimeUser';
   static const String isLoggedIn = 'isLoggedIn';
   static const String accessToken = 'accessToken';
+  static const String personId = 'Person Id';
 
 /*------------------- Onboarding Screen ------------------*/
   static const String skip = 'Skip';
@@ -193,6 +194,8 @@ class CustomString {
   static const String joinOrganization = 'Join Organization';
   static const String organizationNameRequired = '* Organization Name is required...';
   static const String organizationName = 'Organization Name';
+  static const String organizationAdmin = 'Organization Admin';
+  static const String organizationId = 'Organization Id';
   static const String departmentNameRequired = '* Department Name is required...';
   static const String departmentName = 'Department Name';
   static const String requestNewDepartment = 'Request New Department';
