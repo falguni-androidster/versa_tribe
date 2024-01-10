@@ -5,14 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/extension.dart';
 
+/// Clear All Shared Preference
 Future<void> clearSharedPref() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.clearSharedPreferencesKey(key: CustomString.organizationName);
+  prefs.clearSharedPreferencesKey(key: CustomString.isLoggedIn);
   prefs.clearSharedPreferencesKey(key: CustomString.accessToken);
   prefs.clearSharedPreferencesKey(key: CustomString.personId);
-  prefs.clearSharedPreferencesKey(key: CustomString.organizationAdmin);
-  prefs.clearSharedPreferencesKey(key: CustomString.isLoggedIn);
   prefs.clearSharedPreferencesKey(key: CustomString.organizationId);
+  prefs.clearSharedPreferencesKey(key: CustomString.organizationName);
+  prefs.clearSharedPreferencesKey(key: CustomString.organizationAdmin);
 }
 
 ///check internet connectivity in our app

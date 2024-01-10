@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/extension.dart';
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/Profile/create_profile_screen.dart';
@@ -10,7 +11,6 @@ import '../Screens/Training/TakeTraining/take_training_item_screen.dart';
 import '../Screens/home_screen.dart';
 import '../Screens/person_details_screen.dart';
 import '../Screens/sign_in_screen.dart';
-import '../extension.dart';
 import '../Screens/Profile/profile_exist_screen.dart';
 
 class ApiConfig {
@@ -151,11 +151,14 @@ class ApiConfig {
   Future<void> logoutClick(context) async {
 
     final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
+    final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
 
     String logOutUrl = '$baseUrl/api/Account/Logout';
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
       provider.manageBottomTab(0);
+      switchProvider.switchData.orgAdminPersonList?.clear();
+      debugPrint('------Switch Provider Data------- ${switchProvider.switchData.orgAdminPersonList?.length}');
       clearSharedPref();
       showToast(context, CustomString.logOutSuccess);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
@@ -700,7 +703,6 @@ class ApiConfig {
         provider.getProjectListByOrgId.clear();
         provider.setListProjectByOrgId(data);
       } else {
-        showToast(context, CustomString.noDataFound);
         debugPrint("Project Data By OrgID Not Found...");
       }
     } catch (e) {
