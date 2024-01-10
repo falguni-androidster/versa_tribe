@@ -41,7 +41,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 builder: (context, snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){
                     return SizedBox(
-                      height: size.height*0.21,
+                      height: size.height * 0.21,
                       child: const Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -182,17 +182,18 @@ class _AccountScreenState extends State<AccountScreen> {
           borderRadius: BorderRadius.all(Radius.circular(10)),
           color: CustomColors.kBlueColor),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.02, vertical: size.height * 0.02),
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.04, vertical: size.height * 0.02),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
                 backgroundColor: CustomColors.kWhiteColor,
                 radius: 40,
                 child: Image.asset(ImagePath.profilePath)),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0,top: 20.0),
+              padding: EdgeInsets.only(left: size.width * 0.04),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(

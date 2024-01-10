@@ -151,18 +151,12 @@ class ApiConfig {
   Future<void> logoutClick(context) async {
 
     final provider = Provider.of<ManageBottomTabProvider>(context, listen: false);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String logOutUrl = '$baseUrl/api/Account/Logout';
     final response = await http.post(Uri.parse(logOutUrl));
     if (response.statusCode == 200) {
       provider.manageBottomTab(0);
-      prefs.clearSharedPreferencesKey(key: CustomString.organizationName);
-      prefs.clearSharedPreferencesKey(key: CustomString.accessToken);
-      prefs.clearSharedPreferencesKey(key: CustomString.personId);
-      prefs.clearSharedPreferencesKey(key: CustomString.organizationAdmin);
-      prefs.clearSharedPreferencesKey(key: CustomString.isLoggedIn);
-      prefs.clearSharedPreferencesKey(key: CustomString.organizationId);
+      clearSharedPref();
       showToast(context, CustomString.logOutSuccess);
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else {
@@ -171,6 +165,7 @@ class ApiConfig {
   }
 
   /*------------------------------------------ Profile Screen ---------------------------------------*/
+
   Future<ProfileResponse> getProfileData() async {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
