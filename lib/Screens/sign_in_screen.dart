@@ -114,21 +114,21 @@ class _SignInScreenState extends State<SignInScreen> {
             if (result.status == LoginStatus.success) {
               // you are logged
               final String accessToken = result.accessToken!.token;
-              debugPrint("fb accessToken------>$accessToken");
-              debugPrint("fb status-------------->${result.status}");
+              debugPrint("facebook accessToken------>$accessToken");
+              debugPrint("facebook status-------------->${result.status}");
               await ApiConfig.externalAuthentication(context: context, authToken: accessToken, provider: "Facebook");
-              return showToast(context, "fb login success...");
+              return showToast(context, "facebook login success...");
             } else if (result.status == LoginStatus.operationInProgress) {
-              debugPrint("fb status inProgress-------------->${LoginStatus.operationInProgress}");
+              debugPrint("facebook status inProgress-------------->${LoginStatus.operationInProgress}");
               return const SizedBox(child: CircularProgressIndicator(color: Colors.green));
             } else if (result.status == LoginStatus.failed) {
-              debugPrint("fb status failed-------------->${LoginStatus.failed}");
+              debugPrint("facebook status failed-------------->${LoginStatus.failed}");
               return showToast(context, "login failed try again...");
             } else if (result.status == LoginStatus.cancelled) {
-              debugPrint("fb status cancelled-------------->${LoginStatus.cancelled}");
+              debugPrint("facebook status cancelled-------------->${LoginStatus.cancelled}");
               return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("login cancel by user...")));
             } else {
-              debugPrint("----->Error-->${result.status}");
+              debugPrint("facebook----->Error-->${result.status}");
             }
       }catch(e){
             debugPrint("exception error: ==-->$e");
