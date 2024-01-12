@@ -111,28 +111,32 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return ListView.builder(
-                  itemCount: orgAdminPersonList.length,
+                return Container(
+                  color: CustomColors.kWhiteColor,
+                  padding: EdgeInsets.only(left: size.width * 0.01, right: size.width * 0.01, bottom: size.height * 0.01),
+                  child: ListView.builder(
+                    itemCount: orgAdminPersonList.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
-                        child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                            height: size.height * 0.05,
-                            child: Card(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                                color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
-                                child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(" ${orgAdminPersonList[index].orgName!}",
-                                        style: TextStyle(fontFamily: 'Poppins', color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kWhiteColor : null))
-                                )
-                            )
-                        ),
-                      onTap: () => manageOrganization(context: context, val: val, finalPersonAdminList: orgAdminPersonList[index])
-                    );
-                  },
+                          child: SizedBox(
+                              height: size.height * 0.05,
+                              child: Card(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                  color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kBlueColor : CustomColors.kGrayColor,
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(" ${orgAdminPersonList[index].orgName!}",
+                                          overflow: TextOverflow.fade,
+                                          style: TextStyle(fontFamily: 'Poppins', color: val.switchOrganization == orgAdminPersonList[index].orgName! ? CustomColors.kWhiteColor : null))
+                                  )
+                              )
+                          ),
+                        onTap: () => manageOrganization(context: context, val: val, finalPersonAdminList: orgAdminPersonList[index])
+                      );
+                    },
+                  ),
                 );
               }),
             ],
@@ -184,36 +188,39 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Consumer<OrganizationProvider>(builder: (context, val, child) {
-                return val.switchOrganization?.length != null
-                    ? InkWell(
-                        child: Row(
-                          children: [
-                            Text("${val.switchOrganization}  ",
-                                style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
-                            CircleAvatar(
-                              radius: 10,
-                              backgroundColor: Colors.transparent,
-                              child: SVGIconButton(svgPath: ImagePath.dropdownIcon, size: 6.0, color: CustomColors.kLightGrayColor,
-                                  onPressed: () async {
-                                    await ApiConfig.getDataSwitching(context: context);
-                                    checkUser();
-                                    _showDialog();
-                                  }),
-                            ),
-                          ],
-                        ),
-                        onTap: () async {
-                          await ApiConfig.getDataSwitching(context: context);
-                          checkUser();
-                          _showDialog();
-                        },
-                      )
-                    : TextButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
-                        },
-                        child: const Text(CustomString.joinOrg,
-                            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')));
+                return val.switchOrganization?.length != null ? InkWell(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: size.height * 0.01, bottom: size.height * 0.01, right: size.width * 0.01),
+                    child: Row(
+                      children: [
+                        Text("${val.switchOrganization}  ",
+                            style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins')),
+                        CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.transparent,
+                          child: SVGIconButton(
+                              svgPath: ImagePath.dropdownIcon, size: 6.0, color: CustomColors.kLightGrayColor,
+                              onPressed: () async {
+                                await ApiConfig.getDataSwitching(context: context);
+                                checkUser();
+                                _showDialog();
+                              }),
+                        )],
+                    ),
+                  ),
+                  onTap: () async {
+                    await ApiConfig.getDataSwitching(context: context);
+                    checkUser();
+                    _showDialog();
+                    }) :
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageOrganization()));
+                      },
+                    child: const Text(CustomString.joinOrg,
+                        style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')
+                    )
+                );
               }),
               const Spacer(),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
@@ -377,6 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),*/
+
         body: <Widget>[
           const DashboardScreen(),
           ///Project TAB
