@@ -2,19 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+  <key>GIDClientID</key>
+  <string>801650424679-160icd79e17cddngjjoecj69ged1sisf.apps.googleusercontent.com</string>
   <key>CFBundleURLTypes</key>
-  <array>
-      <dict>
-          <key>CFBundleTypeRole</key>
-          <string>Editor</string>
-          <key>CFBundleURLName</key>
-          <string></string>
-          <key>CFBundleURLSchemes</key>
-          <array>
-              <string>com.googleusercontent.apps.801650424679-5b89u58qr88qp9b3bb9sf8dqss22dtun</string>
-          </array>
-      </dict>
-  </array>
+  	<array>
+  		<dict>
+  			<key>CFBundleTypeRole</key>
+  			<string>Editor</string>
+  			<key>CFBundleURLName</key>
+  			<string>V</string>
+  			<key>CFBundleURLSchemes</key>
+  			<array>
+        <string>com.googleusercontent.apps.801650424679-160icd79e17cddngjjoecj69ged1sisf</string>
+  			</array>
+  		</dict>
+  	</array>
 
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
@@ -34,15 +37,7 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-	</array>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>INIntentsSupported</key>

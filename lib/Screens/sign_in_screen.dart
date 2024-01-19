@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -38,7 +40,8 @@ class _SignInScreenState extends State<SignInScreen> {
   //   }
   // }
 
-  GoogleSignIn googleSignIn = GoogleSignIn(serverClientId: "801650424679-d8c0r27qe22lgkdbv0hjk1g8vdgkqfil.apps.googleusercontent.com"); // Harshil Web ClientID
+  GoogleSignIn googleSignIn =
+  GoogleSignIn(serverClientId: "801650424679-d8c0r27qe22lgkdbv0hjk1g8vdgkqfil.apps.googleusercontent.com"); // Harshil Web ClientID
   void _googleSignIn(context) async {
     debugPrint("------------->GoogleLogin Method Call<------------");
     final provider = Provider.of<CheckInternet>(context,listen:false);
@@ -48,7 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await googleSignIn.signOut();
         debugPrint("Status of Google LogOut------>${await googleSignIn.signOut()}");
         final GoogleSignInAccount? googleLoginAcResult = await googleSignIn.signIn();
-        debugPrint("Status of Google Login------>$googleLoginAcResult");
+        debugPrint("Status of Google Login------>${googleLoginAcResult?.email}");
         // Process the signed-in user if the sign-in was successful
         if (googleLoginAcResult == null) {
           // User abort the sign-in process
@@ -74,6 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
             );
             // Perform further checks or error handling specific to this case
           } else {
+            debugPrint("Google Access Token------>${googleAuth.accessToken}");
             ApiConfig.externalAuthentication(context: context, authToken: googleAuth.idToken, provider: "Google");
             showToast(context, "Google Login Success...");
           }
