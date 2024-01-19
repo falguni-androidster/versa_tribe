@@ -532,7 +532,8 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               InkWell(
                 child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
+                  UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
                 },
               )
             ],
@@ -677,6 +678,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                                 String city = vaL.personQl[index].city;
                                 int pQID = vaL.personQl[index].pQId;
                                 debugPrint("-----=->${vaL.personQl[index].yOP}");
+                                debugPrint("--Q-id---=->$pQID");
                                 String yop = DateFormat("yyyy/MM/dd").format(DateTime.parse("${vaL.personQl[index].yOP}"));
                                 switch (item) {
                                   case 0:
