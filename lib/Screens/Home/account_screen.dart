@@ -191,7 +191,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 radius: 40,
                 child: Image.asset(ImagePath.profilePath)),
             Padding(
-              padding: EdgeInsets.only(left: size.width * 0.04),
+              padding: EdgeInsets.only(left: size.width * 0.02),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +203,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   const SizedBox(height: 2),
                   Text(snapshot.data?.tOwner ?? '',
                       style: const TextStyle(
-                          color: CustomColors.kWhiteColor, fontSize: 14,fontFamily: 'Poppins')),
+                          color: CustomColors.kWhiteColor, fontSize: 12,fontFamily: 'Poppins')),
                 ],
               ),
             ),

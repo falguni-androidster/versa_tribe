@@ -65,10 +65,10 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                       shrinkWrap: true,
                       itemCount: val.getProjectListByOrgId.length,
                       itemBuilder: (context, index) {
-                        debugPrint('Double value---------------------- ${val.getProjectListByOrgId[index].progress!.toDouble() / 100}');
                         return InkWell(
                           child: Card(
                             color: CustomColors.kWhiteColor,
+
                             elevation: 3,
                             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                             margin: EdgeInsets.all(size.width * 0.01),
