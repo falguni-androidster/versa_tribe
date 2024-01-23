@@ -33,12 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-      <meta-data
-        android:name="com.google.android.gms.vision.DEPENDENCIES"
-        android:value="ocr"/>
-      <meta-data
-        android:name="com.google.android.gms.vision.API_KEY"
-        android:value="@string/google_sign_in_client_id" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

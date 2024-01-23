@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/Screens/Home/account_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
@@ -238,7 +239,7 @@ class ApiConfig {
     const CircularProgressIndicator();
     if (response.statusCode == 200) {
       showToast(context, CustomString.profileSuccessUpdated);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const PersonDetailsScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
     } else {
       showToast(context, CustomString.somethingWrongMessage);
     }
@@ -1112,7 +1113,7 @@ class ApiConfig {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-      String url = "$baseUrl/api/PersonQualifications?id=$perQLId";
+      String url = "$baseUrl/api/PersonQualifications/Delete?id=$perQLId";
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
