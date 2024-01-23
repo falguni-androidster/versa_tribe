@@ -14,7 +14,8 @@
     <string>fbapi</string>
     <string>fb-messenger-share-api</string>
   </array>
-
+  <key>NSMicrophoneUsageDescription</key>
+  <string>We need access to your microphone for XYZ functionality</string>
   <key>GIDClientID</key>
   <string>801650424679-160icd79e17cddngjjoecj69ged1sisf.apps.googleusercontent.com</string>
   <key>CFBundleURLTypes</key>

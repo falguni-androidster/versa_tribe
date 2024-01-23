@@ -212,7 +212,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       showToast(context, CustomString.profileSuccessCreated);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen(popUp: popUp)));
+      Navigator.pushNamed(context, '/home', arguments: popUp);
     } else {
       showToast(context, CustomString.somethingWrongMessage);
     }
@@ -239,7 +239,7 @@ class ApiConfig {
     const CircularProgressIndicator();
     if (response.statusCode == 200) {
       showToast(context, CustomString.profileSuccessUpdated);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushNamed(context, '/home');
     } else {
       showToast(context, CustomString.somethingWrongMessage);
     }
