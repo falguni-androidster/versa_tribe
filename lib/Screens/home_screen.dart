@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sip_ua/sip_ua.dart';
@@ -275,9 +276,11 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               CupertinoSwitch(
                 value: _switchValue,
                 onChanged: (value) {
-                  setState(() {
+                  setState(() async {
                     _switchValue = value;
                     _handleSave(context);
+                    await Permission.microphone.request();
+                    await Permission.camera.request();
                   });
                 },
               ),
