@@ -1638,7 +1638,6 @@ class ApiConfig {
   }
 
   static getManageOrgData({context, tabIndex}) async {
-
     final requestProvider = Provider.of<RequestManageOrgProvider>(context, listen: false);
     final approvedProvider = Provider.of<ApprovedManageOrgProvider>(context, listen: false);
     requestProvider.requestOrgDataList.clear();
@@ -1653,16 +1652,21 @@ class ApiConfig {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        tabIndex == 0 ? debugPrint("Requested Org Data------->${response.body}") : debugPrint("Approved Org Data------->${response.body}");
         List<dynamic> data = await jsonDecode(response.body);
-        tabIndex == 0 ? requestProvider.setRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
+        if(tabIndex == 0){
+          debugPrint("Get Requested data------->$data");
+          requestProvider.setRequestOrgData(data);
+        }else{
+          debugPrint("Get Approved data------->$data");
+          approvedProvider.setApproveOrgData(data);
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Something went wrong..."),
         ));
       }
     } catch (e) {
-      debugPrint("manage org data------>$e");
+      debugPrint("Exception:------>$e");
     }
   }
 
@@ -1687,7 +1691,7 @@ class ApiConfig {
         tabIndex == 0 ? requestProvider.setPendingRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Something went wrong..."),
+          content: Text("Something data does not display..."),
         ));
       }
     } catch (e) {
@@ -1796,7 +1800,7 @@ class ApiConfig {
       debugPrint("Failed to Join Organization Request--------->${response.body}");
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Try again data will not added..")));
+           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
     }
   }
 
@@ -1811,16 +1815,17 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Delete Organization Request--------->${response.body}");
       if (screen == CustomString.approved) {
+        debugPrint("Leave Approved Organization --------->${response.body}");
         getManageOrgData(context: context, tabIndex: 1);
       } else if (screen == CustomString.requested) {
+        debugPrint("Cancel Organization Request--------->${response.body}");
         getManageOrgData(context: context, tabIndex: 0);
       }
     } else {
       debugPrint("Failed to Delete Organization Request--------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Try again data not delete...")));
+           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
     }
   }
 
@@ -1844,7 +1849,7 @@ class ApiConfig {
     } else {
       debugPrint("Failed to Delete Organization From Admin Side --------->${response.body}");
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Try again data not delete...")));
+           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
     }
   }
 

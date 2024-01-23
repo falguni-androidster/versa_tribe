@@ -29,8 +29,8 @@ class RequestManageOrgProvider with ChangeNotifier{
   setRequestOrgData(requestOrgData){
    requestOrgData.forEach((ob){
       _requestOrgDataList.add(RequestOrgModel.fromJson(ob));
-      notifyListeners();
     });
+   notifyListeners();
   }
 }
 class ApprovedManageOrgProvider with ChangeNotifier{
@@ -40,8 +40,8 @@ class ApprovedManageOrgProvider with ChangeNotifier{
   setApproveOrgData(approveOrgData){
     approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveOrgModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
