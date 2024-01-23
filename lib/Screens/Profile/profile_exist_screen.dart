@@ -20,7 +20,7 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
     ApiConfig().getProfileData();
     //Navigates to new screen after 3 seconds.
     Timer(const Duration(seconds: 1), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen(popUp: true)));
+      Navigator.pushNamed(context, '/home', arguments: true);
     });
   }
 

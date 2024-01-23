@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:versa_tribe/Screens/home_screen.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
+import 'Screens/call_screen.dart';
 import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
 import 'package:versa_tribe/extension.dart';
+import 'package:sip_ua/sip_ua.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,12 +77,44 @@ void main() {
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
 
     ],
-    child: const MyApp()
+    child: MyApp()
   ));
 }
 
+typedef PageContentBuilder = Widget Function(
+    [SIPUAHelper? helper, Object? arguments]);
+
+//ignore: must_be_immutable
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+  final SIPUAHelper _helper = SIPUAHelper();
+  Map<String, PageContentBuilder> routes = {
+    '/home': ([SIPUAHelper? helper, Object? arguments]) =>
+        HomeScreen(helper: helper),
+    '/callscreen': ([SIPUAHelper? helper, Object? arguments]) =>
+        CallScreenWidget(helper, arguments as Call?),
+    '/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
+  };
+
+  MyApp({super.key});
+
+  Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
+    final String? name = settings.name;
+    final PageContentBuilder? pageContentBuilder = routes[name!];
+    if (pageContentBuilder != null) {
+      if (settings.arguments != null) {
+        final Route route = MaterialPageRoute<Widget>(
+            builder: (context) =>
+                pageContentBuilder(_helper, settings.arguments));
+        return route;
+      } else {
+        final Route route = MaterialPageRoute<Widget>(
+            builder: (context) => pageContentBuilder(_helper));
+        return route;
+      }
+    }
+    return null;
+  }
 
   // This widget is the root of your application.
   @override
@@ -95,11 +130,12 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScreen(),
+      initialRoute: '/',
       routes: {
         '/addExScreen': (context) => const AddExperienceScreen(),
-        '/personDetailScreen': (context) => const PersonDetailsScreen()
+        '/personDetailScreen': (context) => const PersonDetailsScreen(),
       },
+      onGenerateRoute: _onGenerateRoute,
     );
   }
 }

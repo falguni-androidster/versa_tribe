@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sip_ua/sip_ua.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
@@ -19,13 +20,15 @@ class HomeScreen extends StatefulWidget {
 
   final String? from;
   final bool? popUp;
-  const HomeScreen({super.key, this.from, this.popUp});
+  final SIPUAHelper? helper;
+
+  const HomeScreen({super.key, this.from, this.popUp, this.helper});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
   List<OrgAdminPersonList> orgAdminPersonList = [];
   String? selectedValue;
@@ -33,10 +36,46 @@ class _HomeScreenState extends State<HomeScreen> {
   bool? orgAdmin;
   late SharedPreferences pref;
 
+  late RegistrationState registerState;
+  SIPUAHelper? get helper => widget.helper;
+  bool _switchValue = false;
+
   @override
   initState() {
     setInitialValue(context);
     super.initState();
+    registerState = helper!.registerState;
+    helper!.addSipUaHelperListener(this);
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    helper!.removeSipUaHelperListener(this);
+  }
+
+  @override
+  void registrationStateChanged(RegistrationState state) {
+    setState(() {
+      registerState = state;
+    });
+  }
+
+  void _handleSave(BuildContext context) {
+    UaSettings settings = UaSettings();
+
+    settings.webSocketUrl = 'wss://wazo.gigonomy.in:5040/ws';
+    settings.webSocketSettings.allowBadCertificate = true;
+    settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
+
+    settings.uri = 'os0i7i7y@wazo.gigonomy.in';
+    settings.authorizationUser = 'os0i7i7y';
+    settings.password = 'ejfcvo8y';
+    settings.displayName = 'Falguni';
+    settings.userAgent = 'Dart SIP Client v1.0.0';
+    settings.dtmfMode = DtmfMode.RFC2833;
+
+    helper!.start(settings);
   }
 
   setInitialValue(context) async {
@@ -231,7 +270,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => ManageAdminScreen(orgNAME: val.switchOrganization ?? selectedValue!, orgID: val.switchOrgId ?? orgId!)));
                         })
                     : Container();
-              })
+              }),
+              SizedBox(width: size.width * 0.02),
+              CupertinoSwitch(
+                value: _switchValue,
+                onChanged: (value) {
+                  setState(() {
+                    _switchValue = value;
+                    _handleSave(context);
+                  });
+                },
+              ),
             ],
           ),
         ),
@@ -404,5 +453,26 @@ class _HomeScreenState extends State<HomeScreen> {
         ][currentScreenIndex]
       ),
     );
+  }
+
+  @override
+  void callStateChanged(Call call, CallState callState) {
+    //NO OP
+    if(callState.state == CallStateEnum.CALL_INITIATION){
+      Navigator.pushNamed(context, '/callscreen', arguments: call);
+    }
+  }
+
+  @override
+  void transportStateChanged(TransportState state) {}
+
+  @override
+  void onNewMessage(SIPMessageRequest msg) {
+    // NO OP
+  }
+
+  @override
+  void onNewNotify(Notify ntf) {
+    // NO OP
   }
 }

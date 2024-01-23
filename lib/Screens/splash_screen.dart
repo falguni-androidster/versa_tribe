@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (screenName == 'signInScreen') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignInScreen()));
     } else if (screenName == 'homeScreen') {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushNamed(context, '/home');
     } else if (screenName == 'onBoardingScreen') {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const OnBoardingScreen()));
     }
