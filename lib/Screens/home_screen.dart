@@ -39,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
   late RegistrationState registerState;
   SIPUAHelper? get helper => widget.helper;
-  bool _switchValue = false;
 
   @override
   initState() {
@@ -143,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                     iconTheme: const IconThemeData(color: CustomColors.kBlackColor),
                     backgroundColor: CustomColors.kGrayColor,
                     elevation: 0,
+                    centerTitle: true,
                     title: const Text(
                       CustomString.switchOrganization,
                       style: TextStyle(color: CustomColors.kBlueColor),
@@ -263,6 +263,25 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                 );
               }),
               const Spacer(),
+              Consumer<CallSwitchProvider>(
+                builder: (context, switchProvider, _) {
+                  return Switch(
+                    value: switchProvider.isSwitched,
+                    activeColor: CustomColors.kBlueColor,
+                    onChanged: (value) async {
+                      if(value){
+                        _handleSave(context);
+                        await Permission.microphone.request();
+                        await Permission.camera.request();
+                      } else{
+                        helper!.stop();
+                      }
+                      switchProvider.toggleSwitch();
+                    },
+                  );
+                },
+              ),
+              SizedBox(width: size.width * 0.02),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return val.isAdmin==true || orgAdmin== true
                     ? SVGIconButton(svgPath: ImagePath.switchIcon, size: 24.0, color: CustomColors.kBlueColor,
@@ -272,18 +291,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                         })
                     : Container();
               }),
-              SizedBox(width: size.width * 0.02),
-              CupertinoSwitch(
-                value: _switchValue,
-                onChanged: (value) {
-                  setState(() async {
-                    _switchValue = value;
-                    _handleSave(context);
-                    await Permission.microphone.request();
-                    await Permission.camera.request();
-                  });
-                },
-              ),
+
             ],
           ),
         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/Organization/approved_organization_screen.dart';
 import 'package:versa_tribe/Screens/Organization/requested_organization_screen.dart';
-import 'home_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageOrganization extends StatefulWidget {

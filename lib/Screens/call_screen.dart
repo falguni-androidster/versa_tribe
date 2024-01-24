@@ -6,6 +6,8 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sip_ua/sip_ua.dart';
 
 import '../Utils/action_button.dart';
+import '../Utils/custom_colors.dart';
+import '../Utils/image_path.dart';
 
 
 class CallScreenWidget extends StatefulWidget {
@@ -35,7 +37,6 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   bool _speakerOn = false;
   bool _hold = false;
   bool _mirror = true;
-  String? _holdOriginator;
   CallStateEnum _state = CallStateEnum.NONE;
 
   late String _transferTarget;
@@ -47,7 +48,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       (_localStream == null || _localStream!.getVideoTracks().isEmpty) &&
       (_remoteStream == null || _remoteStream!.getVideoTracks().isEmpty);
 
-  String? get remoteIdentity => call!.remote_identity;
+  String? get remoteIdentity => call!.remote_display_name;
 
   String get direction => call!.direction;
 
@@ -108,7 +109,6 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     if (callState.state == CallStateEnum.HOLD ||
         callState.state == CallStateEnum.UNHOLD) {
       _hold = callState.state == CallStateEnum.HOLD;
-      _holdOriginator = callState.originator;
       setState(() {});
       return;
     }
@@ -376,14 +376,14 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   Widget _buildActionButtons() {
     final hangupBtn = ActionButton(
-      title: "hangup",
+      title: "HangUp",
       onPressed: () => _handleHangup(),
       icon: Icons.call_end,
       fillColor: Colors.red,
     );
 
     final hangupBtnInactive = ActionButton(
-      title: "hangup",
+      title: "HangUp",
       onPressed: () {},
       icon: Icons.call_end,
       fillColor: Colors.grey,
@@ -406,21 +406,21 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       case CallStateEnum.CONFIRMED:
         {
           advanceActions.add(ActionButton(
-            title: _audioMuted ? 'unmute' : 'mute',
+            title: _audioMuted ? 'UnMute' : 'Mute',
             icon: _audioMuted ? Icons.mic_off : Icons.mic,
             checked: _audioMuted,
             onPressed: () => _muteAudio(),
           ));
 
           if (voiceOnly) {
-            advanceActions.add(ActionButton(
+            /*advanceActions.add(ActionButton(
               title: "keypad",
               icon: Icons.dialpad,
               onPressed: () => _handleKeyPad(),
-            ));
+            ));*/
           } else {
             advanceActions.add(ActionButton(
-              title: "switch camera",
+              title: "Switch Camera",
               icon: Icons.switch_video,
               onPressed: () => _switchCamera(),
             ));
@@ -428,14 +428,14 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
           if (voiceOnly) {
             advanceActions.add(ActionButton(
-              title: _speakerOn ? 'speaker off' : 'speaker on',
+              title: _speakerOn ? 'Speaker Off' : 'Speaker On',
               icon: _speakerOn ? Icons.volume_off : Icons.volume_up,
               checked: _speakerOn,
               onPressed: () => _toggleSpeaker(),
             ));
           } else {
             advanceActions.add(ActionButton(
-              title: _videoMuted ? "camera on" : 'camera off',
+              title: _videoMuted ? "Camera On" : 'Camera Off',
               icon: _videoMuted ? Icons.videocam : Icons.videocam_off,
               checked: _videoMuted,
               onPressed: () => _muteVideo(),
@@ -443,7 +443,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
           }
 
           basicActions.add(ActionButton(
-            title: _hold ? 'unhold' : 'hold',
+            title: _hold ? 'UnHold' : 'Hold',
             icon: _hold ? Icons.play_arrow : Icons.pause,
             checked: _hold,
             onPressed: () => _handleHold(),
@@ -453,13 +453,13 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
           if (_showNumPad) {
             basicActions.add(ActionButton(
-              title: "back",
+              title: "Back",
               icon: Icons.keyboard_arrow_down,
               onPressed: () => _handleKeyPad(),
             ));
           } else {
             basicActions.add(ActionButton(
-              title: "transfer",
+              title: "Transfer",
               icon: Icons.phone_forwarded,
               onPressed: () => _handleTransfer(),
             ));
@@ -547,15 +547,23 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     stackWidgets.addAll(
       [
         Positioned(
-          top: voiceOnly ? 48 : 6,
-          left: 0,
-          right: 0,
+          top: voiceOnly ? 100 : 6,
           child: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Center(
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(6),
+                    child: CircleAvatar(
+                      radius: 70.0,
+                      backgroundImage:
+                      AssetImage(ImagePath.profilePath),
+                    ),
+                  ),
+                ),
+                /*Center(
                   child: Padding(
                     padding: const EdgeInsets.all(6),
                     child: Text(
@@ -563,25 +571,26 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
                           (_hold
                               ? ' PAUSED BY ${_holdOriginator!.toUpperCase()}'
                               : ''),
-                      style: const TextStyle(fontSize: 24, color: Colors.black54),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
                     ),
                   ),
-                ),
+                ),*/
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(6),
                     child: Text(
                       '$remoteIdentity',
-                      style: const TextStyle(fontSize: 18, color: Colors.black54),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 26, fontFamily: 'Poppins', fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(6),
                     child: Text(
                       _timeLabel,
-                      style: const TextStyle(fontSize: 14, color: Colors.black54),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 18, fontFamily: 'Poppins'),
                     ),
                   ),
                 )
@@ -600,10 +609,10 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('[$direction] ${EnumHelper.getName(_state)}'),
-      ),
+      ),*/
       body: _buildContent(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Container(

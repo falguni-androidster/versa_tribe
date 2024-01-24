@@ -13,11 +13,14 @@ class SwitchProvider with ChangeNotifier{
 }
 
 class CallSwitchProvider with ChangeNotifier{
-  bool visibleCall = true;
-  bool get _visibleCall => visibleCall;
+  bool _isSwitched = false;
+  final bool _canToggle = true;
 
-  setVisible() {
-    visibleCall = !_visibleCall;
+  bool get isSwitched => _isSwitched;
+  bool get canToggle => _canToggle;
+
+  void toggleSwitch() {
+    _isSwitched = !_isSwitched;
     notifyListeners();
   }
 }
