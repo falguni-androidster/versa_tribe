@@ -54,10 +54,7 @@ class RequestMemberProvider with ChangeNotifier{
   setPendingRequestOrgData(requestOrgData){
     requestOrgData.forEach((ob){
       _requestPendingOrgDataList.add(PendingRequestMemberModel.fromJson(ob));
-      notifyListeners();
     });
-  }
-  notify(){
     notifyListeners();
   }
 }
@@ -67,10 +64,7 @@ class ApprovedMemberProvider with ChangeNotifier{
   setApproveOrgData(approveOrgData){
     approveOrgData.forEach((ob){
       _approveOrgDataList.add(ApproveMemberModel.fromJson(ob));
-      notifyListeners();
     });
-  }
-  notify(){
     notifyListeners();
   }
 }

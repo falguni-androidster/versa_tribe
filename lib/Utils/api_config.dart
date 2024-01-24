@@ -1843,10 +1843,10 @@ class ApiConfig {
       } else if (screen == CustomString.pendingRequested) {
         ApiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 0);
       }
+      Navigator.of(context).pop();
     } else {
       debugPrint("Failed to Delete Organization From Admin Side --------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
     }
   }
 
