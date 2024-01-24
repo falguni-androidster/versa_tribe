@@ -1,6 +1,7 @@
 import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/Project/project_details_screen.dart';
@@ -73,7 +74,7 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                             margin: EdgeInsets.all(size.width * 0.01),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -81,13 +82,43 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                                         '${val.getProjectListByOrgId[index].projectName}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
                                     SizedBox(height: size.height * 0.01 / 2),
-                                    const Text(
-                                        'Project Manager : Falguni Maheta',
+                                    /*const Text('Project Manager : _________',
                                         style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                                    SizedBox(height: size.height * 0.01 / 2),
+                                    SizedBox(height: size.height * 0.01 / 2),*/
                                     val.getProjectListByOrgId[index].startDate != null && val.getProjectListByOrgId[index].endDate != null ? Text(
                                         'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) : const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                                    SizedBox(height: size.height * 0.01),
+                                    val.getProjectListByOrgId[index].isApproved==true?Card(
+                                      elevation: 1,
+                                      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                                      child:Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
+                                        child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                        const Text("Already Applied",style: TextStyle(fontFamily: 'Poppins'),),
+                                        SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
+                                        ],
+                                        ),
+                                      ),
+                                    ):val.getProjectListByOrgId[index].isApproved==false?
+                                    Card(
+                                      elevation: 1,
+                                      shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                                      child:Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text("Already Joined",style: TextStyle(fontFamily: 'Poppins'),),
+                                            SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
+                                          ],
+                                        ),
+                                      ),
+                                    ):const SizedBox.shrink(),
                                     SizedBox(height: size.height * 0.01),
                                     LinearPercentIndicator(
                                       animation: true,

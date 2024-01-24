@@ -77,7 +77,7 @@ class _SignInScreenState extends State<SignInScreen> {
           } else {
             debugPrint("Google Access Token------>${googleAuth.accessToken}");
             ApiConfig.externalAuthentication(context: context, authToken: googleAuth.idToken, provider: "Google");
-            showToast(context, "Google Login Success...");
+            //showToast(context, "Google Login Success...");
           }
         }
       } catch (error) {
@@ -119,7 +119,7 @@ class _SignInScreenState extends State<SignInScreen> {
               debugPrint("facebook accessToken------>$accessToken");
               debugPrint("facebook status-------------->${result.status}");
               await ApiConfig.externalAuthentication(context: context, authToken: accessToken, provider: "Facebook");
-              return showToast(context, "facebook login success...");
+              //return showToast(context, "facebook login success...");
             } else if (result.status == LoginStatus.operationInProgress) {
               debugPrint("facebook status inProgress-------------->${LoginStatus.operationInProgress}");
               return const SizedBox(child: CircularProgressIndicator(color: Colors.green));

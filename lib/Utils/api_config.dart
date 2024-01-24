@@ -3,14 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:versa_tribe/Screens/Home/account_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/Profile/create_profile_screen.dart';
 import '../Screens/Training/TakeTraining/take_training_item_screen.dart';
-import '../Screens/home_screen.dart';
-import '../Screens/person_details_screen.dart';
 import '../Screens/sign_in_screen.dart';
 import '../Screens/Profile/profile_exist_screen.dart';
 
