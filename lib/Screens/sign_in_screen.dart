@@ -4,6 +4,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/sign_up_screen.dart';
+import '../Utils/auth_options.dart';
 import 'forgot_password_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
@@ -37,105 +38,6 @@ class _SignInScreenState extends State<SignInScreen> {
   //     debugPrint("User Signed Out");
   //   }
   // }
-
-  GoogleSignIn googleSignIn =
-  GoogleSignIn(serverClientId: "801650424679-d8c0r27qe22lgkdbv0hjk1g8vdgkqfil.apps.googleusercontent.com"); // Harshil Web ClientID
-  void _googleSignIn(context) async {
-    debugPrint("------------->GoogleLogin Method Call<------------");
-    final provider = Provider.of<CheckInternet>(context,listen:false);
-    if(provider.status == "Connected"){
-      try {
-        /// Marks current user as being in the signed out state.
-        await googleSignIn.signOut();
-        debugPrint("Status of Google LogOut------>${await googleSignIn.signOut()}");
-        final GoogleSignInAccount? googleLoginAcResult = await googleSignIn.signIn();
-        debugPrint("Status of Google Login------>${googleLoginAcResult?.email}");
-        // Process the signed-in user if the sign-in was successful
-        if (googleLoginAcResult == null) {
-          // User abort the sign-in process
-          showToast(context, "Google Login Cancel......");
-        } else {
-          GoogleSignInAuthentication googleAuth = await googleLoginAcResult.authentication;
-          if (googleAuth.idToken!.isEmpty) {
-            debugPrint("ID Token is null or empty");
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('Sign-in Error'),
-                content: const Text('There was an issue signing in. Please try again later.'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Dismiss the dialog
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-            );
-            // Perform further checks or error handling specific to this case
-          } else {
-            debugPrint("Google Access Token------>${googleAuth.accessToken}");
-            ApiConfig.externalAuthentication(context: context, authToken: googleAuth.idToken, provider: "Google");
-            //showToast(context, "Google Login Success...");
-          }
-        }
-      } catch (error) {
-        // Handle the sign-in error
-        debugPrint("Google Login Error----------*>: $error");
-      }
-    }else{
-      showToast(context, CustomString.checkNetworkConnection);
-    }
-  }
-
-  facebookAuth({context}) async {
-        try{
-            FacebookAuth.i.logOut();
-            debugPrint("---LogOut FB------>${FacebookAuth.i.logOut().hashCode}");
-            final LoginResult result = await FacebookAuth.instance.login(permissions: [
-              'email',
-              'public_profile'
-            ]); // by default we request the email and the public profile
-            debugPrint("login Status --)--)--L: ${result.status}");
-            // or FacebookAuth.i.login()
-            // switch (result.status){
-            //   case LoginStatus.cancelled: return showToast(context, "login cancel by user...");
-            //   break;
-            //   case LoginStatus.failed: return showToast(context, "login failed try again...");
-            //   break;
-            //   case LoginStatus.operationInProgress: return const SizedBox(child: CircularProgressIndicator(color: Colors.green,));
-            //   break;
-            //   case LoginStatus.success: {
-            //     // you are logged
-            //     final String accessToken = result.accessToken!.token;
-            //
-            //   }
-            //   break;
-            // }
-            if (result.status == LoginStatus.success) {
-              // you are logged
-              final String accessToken = result.accessToken!.token;
-              debugPrint("facebook accessToken------>$accessToken");
-              debugPrint("facebook status-------------->${result.status}");
-              await ApiConfig.externalAuthentication(context: context, authToken: accessToken, provider: "Facebook");
-              //return showToast(context, "facebook login success...");
-            } else if (result.status == LoginStatus.operationInProgress) {
-              debugPrint("facebook status inProgress-------------->${LoginStatus.operationInProgress}");
-              return const SizedBox(child: CircularProgressIndicator(color: Colors.green));
-            } else if (result.status == LoginStatus.failed) {
-              debugPrint("facebook status failed-------------->${LoginStatus.failed}");
-              return showToast(context, "login failed try again...");
-            } else if (result.status == LoginStatus.cancelled) {
-              debugPrint("facebook status cancelled-------------->${LoginStatus.cancelled}");
-              return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("login cancel by user...")));
-            } else {
-              debugPrint("facebook----->Error-->${result.status}");
-            }
-      }catch(e){
-            debugPrint("exception error: ==-->$e");
-      }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +226,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              _googleSignIn(context);
+                              AuthOP().googleSignInMethod(context: context);
                             },
                             icon: Image.asset(ImagePath.googlePath),
                             label: const Text(CustomString.google,
@@ -343,7 +245,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton.icon(
                             onPressed: (){
-                              facebookAuth(context: context);
+                              AuthOP().facebookAuth(context: context);
                             },//_loginWithFacebook,
                             icon: Image.asset(ImagePath.facebookPath),
                             label: const Text(CustomString.facebook,
