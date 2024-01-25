@@ -12,7 +12,7 @@ import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
-import 'Home/messenger_screen.dart';
+// import 'Home/messenger_screen.dart';
 import 'org_admin_manage.dart';
 import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -360,10 +360,10 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                   selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.training),
-              NavigationDestination(
+              /*NavigationDestination(
                   selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
-                  label: CustomString.messenger),
+                  label: CustomString.messenger),*/
               NavigationDestination(
                   selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
@@ -459,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               return TrainingScreen(orgId: val.switchOrgId);
             }
           ),
-          const MessengersScreen(),
+          /*const MessengersScreen(),*/
           const AccountScreen()
         ][currentScreenIndex]
       ),
