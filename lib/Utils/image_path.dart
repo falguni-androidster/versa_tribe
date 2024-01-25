@@ -31,4 +31,6 @@ class ImagePath {
   static const String tickCircleIcon = 'assets/svg/ic_tickCircle.svg';
   static const String informIcon = 'assets/svg/ic_info.svg';
 
+  ///project screen svg icons
+  static const String danderIcon = 'assets/svg/Danger Circle.svg';
 }

@@ -61,7 +61,8 @@ class _ApprovedOrganizationScreenState extends State<ApprovedOrganizationScreen>
                                       children: [
                                         Flexible(
                                             child: RichText(
-                                              text: TextSpan(text: CustomString.requestApproved1,
+                                              text: TextSpan(
+                                                  text: CustomString.requestApproved1,
                                               style: DefaultTextStyle.of(context).style,
                                               children: [
                                                 TextSpan(

@@ -72,7 +72,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                                         text: TextSpan(
                                             text: "${val.requestPendingOrgDataList[index].firstName} ${val.requestPendingOrgDataList[index].lastName} ${CustomString.requestedToJoinAdmin}",style: DefaultTextStyle.of(context).style,
                                             children: [
-                                              TextSpan(text: val.requestPendingOrgDataList[index].deptName??"", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                              TextSpan(text: val.requestPendingOrgDataList[index].deptName??val.requestPendingOrgDataList[index].deptReq, style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                                             ]
                                         ),
                                       ),
@@ -199,6 +199,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                           ),
                           onTap: () {
                             ApiConfig.updateAssignOrgRequestStatus(context: context,orgID: orgID,personID: personID,depID: val.department[index].deptId,reqStatus: 1,orgName: widget.orgNAME);
+                         return Navigator.pop(context);
                           },
                         );
                       },

@@ -136,16 +136,17 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: size.height * 0.075,
+                height: size.height * 0.055,
                 child: Scaffold(
                   appBar: AppBar(
                     iconTheme: const IconThemeData(color: CustomColors.kBlackColor),
                     backgroundColor: CustomColors.kGrayColor,
                     elevation: 0,
+                    toolbarHeight: 40,
                     centerTitle: true,
                     title: const Text(
                       CustomString.switchOrganization,
-                      style: TextStyle(color: CustomColors.kBlueColor),
+                      style: TextStyle(color: CustomColors.kBlueColor,fontSize: 14,fontFamily: 'Poppins'),
                     ),
                   ),
                 ),

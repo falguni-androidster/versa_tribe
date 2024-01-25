@@ -86,7 +86,7 @@ showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close the confirmation dialog
+              return Navigator.of(context).pop(); // Close the confirmation dialog
             },
             child: const Text(CustomString.no, style: TextStyle(fontFamily: 'Poppins',color: CustomColors.kLightGrayColor)),
           ),
@@ -94,6 +94,7 @@ showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}
             onPressed: () async {
               // Add your delete logic here
               ApiConfig.deleteOrgFromAdminSide(context: context, indexedOrgID: indexedOrgId, personID: personId, orgName: orgName, orgID: orgId, screen: screen);
+              return;
             },
             child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
           )

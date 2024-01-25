@@ -9,6 +9,7 @@ class ProjectListByOrgIDModel {
   String? tOwner;
   int? orgId;
   int? progress;
+  bool? isApproved;
 
   ProjectListByOrgIDModel(
       {this.projectId,
@@ -20,7 +21,8 @@ class ProjectListByOrgIDModel {
         this.tStamp,
         this.tOwner,
         this.orgId,
-        this.progress});
+        this.progress,
+        this.isApproved});
 
   ProjectListByOrgIDModel.fromJson(Map<String, dynamic> json) {
     projectId = json['Project_Id'];
@@ -33,20 +35,22 @@ class ProjectListByOrgIDModel {
     tOwner = json['TOwner'];
     orgId = json['Org_Id'];
     progress = json['Progress'];
+    isApproved = json['IsApproved'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['Project_Id'] = projectId;
-    data['Project_Name'] = projectName;
-    data['Person_Id'] = personId;
-    data['Status'] = status;
-    data['Start_Date'] = startDate;
-    data['End_Date'] = endDate;
-    data['TStamp'] = tStamp;
-    data['TOwner'] = tOwner;
-    data['Org_Id'] = orgId;
-    data['Progress'] = progress;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Project_Id'] = this.projectId;
+    data['Project_Name'] = this.projectName;
+    data['Person_Id'] = this.personId;
+    data['Status'] = this.status;
+    data['Start_Date'] = this.startDate;
+    data['End_Date'] = this.endDate;
+    data['TStamp'] = this.tStamp;
+    data['TOwner'] = this.tOwner;
+    data['Org_Id'] = this.orgId;
+    data['Progress'] = this.progress;
+    data['IsApproved'] = this.isApproved;
     return data;
   }
 }

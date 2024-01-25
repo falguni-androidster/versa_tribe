@@ -22,8 +22,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
 
   TextEditingController organizationNameController = TextEditingController();
   TextEditingController departmentNameController = TextEditingController();
-  TextEditingController requestNewDepartmentController =
-      TextEditingController();
+  TextEditingController requestNewDepartmentController = TextEditingController();
 
   late TabController _tabController;
   late int orgID;
@@ -57,9 +56,9 @@ class _ManageOrganizationState extends State<ManageOrganization>
         actions: [
           IconButton(
               onPressed: () {
-                organizationNameController.text = "";
-                departmentNameController.text = "";
-                requestNewDepartmentController.text = "";
+                organizationNameController.clear();
+                departmentNameController.clear();
+                requestNewDepartmentController.clear();
                 joinOrganizationDialog(context: context, mHeight: size.height, mWidth: size.width);
               },
               icon: const Icon(
@@ -97,33 +96,30 @@ class _ManageOrganizationState extends State<ManageOrganization>
                 top: size.height * 0.02,
                 left: size.width * 0.02,
                 right: size.height * 0.02),
-            child: Consumer<IndexProvider>(builder: (context, val, child) {
-              return TabBar(
-                isScrollable: true,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 5),
-                controller: _tabController,
-                indicator: BoxDecoration(borderRadius: BorderRadius.circular(5), color: CustomColors.kBlueColor),
-                indicatorSize: TabBarIndicatorSize.label,
-                unselectedLabelStyle: const TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-                tabAlignment: TabAlignment.start,
-                labelStyle: const TextStyle(fontSize: 14, color: CustomColors.kWhiteColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
-                tabs: <Widget>[
-                  Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text(CustomString.requested)),
-                  Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text(CustomString.approved)),
-                ],
-              );
-            }),
+            child: TabBar(
+              isScrollable: true,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 5),
+              controller: _tabController,
+              indicator: BoxDecoration(borderRadius: BorderRadius.circular(5), color: CustomColors.kBlueColor),
+              indicatorSize: TabBarIndicatorSize.label,
+              unselectedLabelStyle: const TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
+              tabAlignment: TabAlignment.start,
+              labelStyle: const TextStyle(fontSize: 14, color: CustomColors.kWhiteColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
+              tabs: <Widget>[
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Text(CustomString.requested)),
+                Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Text(CustomString.approved)),
+              ],
+            ),
           ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: const <Widget>[
-
                 ///Requested
                 RequestedOrganizationScreen(),
 
@@ -236,10 +232,9 @@ class _ManageOrganizationState extends State<ManageOrganization>
                     child: TextFormField(
                       controller: departmentNameController,
                       onChanged: (value) {
-                        requestNewDepartmentController.text = "";
+                        requestNewDepartmentController.clear();
                         if (value != "") {
-                          ApiConfig.searchDepartment(
-                              context: context, orgId: orgID);
+                          ApiConfig.searchDepartment(context: context, orgId: orgID);
                           departmentProvider.departmentList.clear();
                         }
                         departmentProvider.departmentList.clear();
@@ -307,7 +302,8 @@ class _ManageOrganizationState extends State<ManageOrganization>
                     child: TextFormField(
                       controller: requestNewDepartmentController,
                       onTap: () {
-                        departmentNameController.text = "";
+                        dpID=null;
+                        departmentNameController.clear();
                       },
                       decoration: const InputDecoration(
                         fillColor: CustomColors.kWhiteColor,
