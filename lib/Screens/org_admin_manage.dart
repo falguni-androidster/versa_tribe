@@ -2,24 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/manage_training.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/update_admin_profile.dart';
-
 import 'OrgAdmin/manage_project.dart';
 import 'OrgAdmin/manage_department.dart';
 import 'OrgAdmin/manage_org_members.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageAdminScreen extends StatefulWidget {
-
   final String orgNAME;
   final int orgID;
-
   const ManageAdminScreen({required this.orgNAME,required this.orgID, super.key});
-
   @override
   State<ManageAdminScreen> createState() => _ManageAdminScreenState();
 }
 class _ManageAdminScreenState extends State<ManageAdminScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -31,9 +26,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.kWhiteColor,
@@ -45,7 +38,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
         ),
         centerTitle: true,
         title: Text(widget.orgNAME,
-            style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -65,8 +58,8 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                     );
                   }else if(snapshot.connectionState == ConnectionState.done){
                     return containerProfile(snapshot, size);
-                  }else{
-                    debugPrint("<-problem-------Admin data get------>");
+                  }else if(snapshot.hasError){
+                    debugPrint("error: --------> ${snapshot.hasError}");
                   }
                   return Container();
                 },
@@ -90,21 +83,9 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
                 },
               ),
               InkWell(
-                child: containerButton(height: size.height * 0.06, text: CustomString.manageRoles),
-                onTap: (){
-                  //_navigateToNextScreen(context,'ManageOrganization');
-                },
-              ),
-              InkWell(
                 child: containerButton(height: size.height * 0.06, text: CustomString.manageOrgMembers),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageOrgMembers(orgNAME: widget.orgNAME,orgID: widget.orgID)));
-                },
-              ),
-              InkWell(
-                child: containerButton(height: size.height * 0.06, text: CustomString.contactSuperAdmin),
-                onTap: (){
-
                 },
               ),
             ],
