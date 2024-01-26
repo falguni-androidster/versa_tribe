@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -23,7 +25,7 @@ class HomeScreen extends StatefulWidget {
   final bool? popUp;
   final SIPUAHelper? helper;
 
-  const HomeScreen({super.key, this.from, this.popUp, this.helper});
+  const HomeScreen( this.popUp, {super.key, this.from, this.helper});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -187,6 +189,11 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     );
   }
 
+  void closeAppUsingExit() {
+    exit(0);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final size= MediaQuery.of(context).size;
@@ -210,7 +217,8 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                 CupertinoDialogAction(
                     isDestructiveAction: true,
                     onPressed: () {
-                      Navigator.pop(context, true);
+                      // Navigator.pop(context, true);
+                      closeAppUsingExit();
                     },
                     child: const Text(CustomString.dialogYes, style: TextStyle(fontFamily: 'Poppins'))),
               ],
@@ -292,7 +300,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                         })
                     : Container();
               }),
-
             ],
           ),
         ),
