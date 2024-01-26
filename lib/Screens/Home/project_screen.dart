@@ -25,15 +25,16 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
     _tabController = TabController(length: 3, vsync: this);
     getPreferenceData();
   }
+
   getPreferenceData() async {
     FBroadcast.instance().register("Key_Message", (value, callback) {
       var data = value;
       debugPrint("data---Broadcast---->$data");
     });
-
     pref = await SharedPreferences.getInstance();
     oId = pref.getSharedPrefIntValue(key: CustomString.organizationId) ?? widget.orgId;
   }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -48,10 +49,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-                top: size.height * 0.02,
-                left: size.width * 0.02,
-                right: size.height * 0.02),
+            padding: EdgeInsets.all(size.height * 0.01),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -66,6 +64,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                       color: CustomColors.kBlueColor, // Change the color of the selected tab here
                     ),
                     indicatorSize: TabBarIndicatorSize.label,
+                    dividerColor: Colors.transparent,
                     unselectedLabelStyle: const TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
                     labelStyle: const TextStyle(fontSize: 14, color : CustomColors.kWhiteColor,fontWeight: FontWeight.w400, fontFamily: 'Poppins'),
                     tabs: <Widget>[
@@ -93,8 +92,8 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
               physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
                 OnGoingProjectScreen(orgId: widget.orgId),
-                const RequestedProjectScreen(),
-                const AcceptedProjectScreen()
+                RequestedProjectScreen(orgId: widget.orgId),
+                AcceptedProjectScreen(orgId: widget.orgId)
               ],
             ),
           ),

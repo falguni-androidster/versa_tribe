@@ -75,7 +75,7 @@ void main() {
       ChangeNotifierProvider<ProjectListManageUserProvider>(create: (_) => ProjectListManageUserProvider()),
       ChangeNotifierProvider<ProjectRequestProvider>(create: (_) => ProjectRequestProvider()),
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
-
+      ChangeNotifierProvider<ButtonVisibilityProvider>(create: (_) => ButtonVisibilityProvider())
     ],
     child: MyApp()
   ));

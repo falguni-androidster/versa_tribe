@@ -1,10 +1,14 @@
+import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class AcceptedProjectScreen extends StatefulWidget {
-  const AcceptedProjectScreen({super.key});
+
+  final int? orgId;
+
+  const AcceptedProjectScreen({super.key, required this.orgId});
 
   @override
   State<AcceptedProjectScreen> createState() => _AcceptedProjectScreenState();
@@ -12,10 +16,24 @@ class AcceptedProjectScreen extends StatefulWidget {
 
 class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    broadcastUpdate();
+  }
+
+  broadcastUpdate() async {
+    FBroadcast.instance().register("Key_Message", (value, callback) {
+      var orgID = value;
+      ApiConfig.getProjectDataByOrgID(context, orgID);
+    });
+  }
+
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getAcceptedProject(context: context, isApproved: true);
+      ApiConfig.getAcceptedProject(context: context, isApproved: true, orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -29,7 +47,7 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getAcceptedProject(context: context, isApproved: true),
+          future: ApiConfig.getAcceptedProject(context: context, isApproved: true, orgId: widget.orgId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(

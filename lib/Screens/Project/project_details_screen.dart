@@ -39,6 +39,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
               color: CustomColors.kBlackColor),
           onTap: () {
             Navigator.pop(context);
+            ApiConfig.getProjectDataByOrgID(context, widget.projectResponseModel.orgId);
           },
         ),
         title: const Text(CustomString.manageProject,
@@ -63,9 +64,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     widget.projectResponseModel.startDate != null &&  widget.projectResponseModel.endDate != null ? Text(
-                        'Duration : ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.endDate!).toLocal())}',
-                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')) :
-                    const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                        'Duration : ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.startDate!).toLocal())} '
+                            '- ${DateUtil().formattedDate(DateTime.parse(widget.projectResponseModel.endDate!).toLocal())}',
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'))
+                        : const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     const Text(CustomString.manageCriteria,
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
@@ -215,7 +217,95 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           return Container();
                         }
                     ),
-
+                    SizedBox(height: size.height * 0.01),
+                    widget.projectResponseModel.isApproved == null ? SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          ApiConfig.joinProjectManageUser(context, widget.projectResponseModel.projectId);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kBlueColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.all(12)
+                        ),
+                        child: const Text(
+                            CustomString.joinProject,
+                            style: TextStyle(fontSize: 14, fontFamily: 'Poppins', color: Colors.white)
+                        ),
+                      ),
+                    ) : const SizedBox(),
+                    widget.projectResponseModel.isApproved == false && widget.projectResponseModel.isApproved != null ? SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kBlueColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.all(12)
+                        ),
+                        child: const Text(
+                            CustomString.cancel,
+                            style: TextStyle(fontSize: 14, fontFamily: 'Poppins', color: Colors.white)
+                        ),
+                      ),
+                    ) : const SizedBox(),
+                    widget.projectResponseModel.isApproved == true && widget.projectResponseModel.isApproved != null ? SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kBlueColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.all(12)
+                        ),
+                        child: const Text(
+                            CustomString.leave,
+                            style: TextStyle(fontSize: 14, fontFamily: 'Poppins', color: Colors.white)
+                        ),
+                      ),
+                    ) : const SizedBox(),
+                    SizedBox(height: size.height * 0.01 / 2),
+                    widget.projectResponseModel.isApproved == false && widget.projectResponseModel.isApproved != null ? SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kLightGrayColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.all(12)
+                        ),
+                        child: const Text(
+                            CustomString.requested,
+                            style: TextStyle(fontSize: 14, fontFamily: 'Poppins', color: Colors.white)
+                        ),
+                      ),
+                    ) : const SizedBox(),
+                    widget.projectResponseModel.isApproved == true && widget.projectResponseModel.isApproved != null ? SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.kLightGrayColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            padding: const EdgeInsets.all(12)
+                        ),
+                        child: const Text(
+                            CustomString.alreadyJoined,
+                            style: TextStyle(fontSize: 14, fontFamily: 'Poppins', color: Colors.white)
+                        ),
+                      ),
+                    ) : const SizedBox(),
                   ]
               )
           ),

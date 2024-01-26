@@ -738,7 +738,7 @@ class ApiConfig {
     }
   }
 
-  static getRequestedProject({context, isApproved}) async {
+  static getRequestedProject({context, isApproved, orgId}) async {
     final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
     provider.projectRequest.clear();
 
@@ -746,7 +746,7 @@ class ApiConfig {
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved&Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -767,7 +767,7 @@ class ApiConfig {
     }
   }
 
-  static getAcceptedProject({context, isApproved}) async {
+  static getAcceptedProject({context, isApproved, orgId}) async {
     final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
     provider.projectAccepted.clear();
 
@@ -775,7 +775,7 @@ class ApiConfig {
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved&Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -915,7 +915,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Reject Project Manage User--------->${response.body}");
-      showToast(context, 'Rejected SuccessFully..');
+      showToast(context, 'SuccessFully Deleted..');
       getProjectManageUserData(context, projectId);
     } else {
       debugPrint("Not Reject Project Manage User--------->${response.body}");
@@ -924,6 +924,30 @@ class ApiConfig {
       ));
     }
     return response.body;
+  }
+
+  static joinProjectManageUser(context, int? projectId) async {
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    Map<String, dynamic> requestData = {
+      "Project_Id": projectId,
+    };
+    String url = '$baseUrl/api/ProjectUsers/Create';
+    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Join Project By User--------->${response.body}");
+      showToast(context, 'Join Successfully..');
+    } else {
+      debugPrint("Not Join Project By User--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again Data not accept..."),
+      ));
+    }
   }
 
   static approveProjectManageUser(context, int? id, int? projectId) async {

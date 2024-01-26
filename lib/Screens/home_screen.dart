@@ -342,13 +342,13 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
           elevation: 3,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.only(bottom: size.height * 0.02, left: size.width * 0.03, right: size.width * 0.03),
+          margin: EdgeInsets.all(size.height * 0.01),
           child: NavigationBar(
             onDestinationSelected: (int index) {
               screenIndexProvider.manageBottomTab(index);
             },
             animationDuration: const Duration(seconds: 1),
-            elevation: 3,
+            elevation: 6,
             height: size.height * 0.1,
             shadowColor: CustomColors.kLightGrayColor,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

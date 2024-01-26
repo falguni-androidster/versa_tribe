@@ -188,6 +188,8 @@ class CustomString {
 
   static const String projectDetails = 'Project Details';
   static const String manageUsers = 'Manage Users';
+  static const String joinProject = 'Join Project';
+  static const String alreadyJoined = 'Already Joined';
 
 
 /*---------------------------- Organization Screen --------------------------*/
@@ -203,7 +205,6 @@ class CustomString {
 
   static const String selectOrganization = 'Select Organization';
   static const String buttonContinue = 'Continue';
-
 
 /*---------------------------  Person details Screen ------------------------*/
   static const String profileDSHeaderText = 'Personal Details';

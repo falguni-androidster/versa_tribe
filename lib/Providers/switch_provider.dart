@@ -24,3 +24,13 @@ class CallSwitchProvider with ChangeNotifier{
     notifyListeners();
   }
 }
+
+class ButtonVisibilityProvider with ChangeNotifier {
+  bool _isButtonVisible = true;
+  bool get isButtonVisible => _isButtonVisible;
+
+  void toggleButtonVisibility() {
+    _isButtonVisible = !_isButtonVisible;
+    notifyListeners();
+  }
+}
