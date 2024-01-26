@@ -52,7 +52,7 @@ class _PendingRequestedOrgMembersScreenState extends State<PendingRequestedOrgMe
                           itemCount: val.requestPendingOrgDataList.length,
                           itemBuilder: (context, index) {
                             return Container(
-                              height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.1 : size.height * 0.13,
+                              height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.1 : size.height * 0.14,
                               decoration: const BoxDecoration(
                                   border: BorderDirectional(
                                     bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor),

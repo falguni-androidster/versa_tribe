@@ -20,7 +20,7 @@ class ApiConfig {
   /*------------------------------------------- Authentication Application -------------------------*/
 
   //google authentication
-  static externalAuthentication({context, authToken, provider}) async {
+  static externalAuthentication({context, authToken, provider,email}) async {
     try {
       Map<String, String> bodyParameters = {
         'Token': authToken,
@@ -37,7 +37,7 @@ class ApiConfig {
           final SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
           pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
-          showToast(context, CustomString.accountLoginSuccess);
+          showToast(context, CustomString.accountAuthSuccess+email);
 
           await pref.setString("ProfileStatus", loginResponseModel.profileExist!);
           debugPrint("--------------cheque profile status------>${loginResponseModel.profileExist}");
@@ -84,7 +84,7 @@ class ApiConfig {
           final SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
           pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
-          showToast(context, CustomString.accountLoginSuccess);
+          showToast(context, CustomString.accountAuthSuccess+emailController.text.toString());
           if (loginResponseModel.profileExist != "True") {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const CreateProfileScreen()));
           } else {

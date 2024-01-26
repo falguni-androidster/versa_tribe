@@ -4,6 +4,8 @@ import 'package:versa_tribe/Screens/sign_in_screen.dart';
 
 import 'package:versa_tribe/extension.dart';
 
+import '../Utils/auth_options.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -176,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              // Handle social button click
+                              AuthOP().googleSignInMethod(context: context);
                             },
                             icon: Image.asset(ImagePath.googlePath),
                             label: const Text(CustomString.google,
@@ -195,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton.icon(
                             onPressed: () {
-                              // Handle social button click
+                              AuthOP().facebookAuth(context: context);
                             },
                             icon: Image.asset(ImagePath.facebookPath),
                             label: const Text(CustomString.facebook, style: TextStyle(fontFamily: 'Poppins', fontSize: 12)),

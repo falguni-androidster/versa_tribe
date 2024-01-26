@@ -65,7 +65,7 @@ class CustomString {
 
   static const String alreadyHaveAccount = 'Already Have Account?  ';
   static const String accountSuccessCreated = ' Account Created Successfully!! ';
-  static const String accountLoginSuccess = ' Login Successfully!! ';
+  static const String accountAuthSuccess = ' Authenticated as ';
   static const String loginFailed = 'Login Failed!!';
   static const String forgotMessage = "Don't worry! It happens. Please Select the email or number associated with your account.";
   static const String wrongEmail = 'Wrong Email Address!!';

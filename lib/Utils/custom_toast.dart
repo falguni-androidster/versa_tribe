@@ -23,9 +23,11 @@ void showToast(BuildContext context,String message) {
                 children: [
                   Image.asset(ImagePath.androidPath,height: 30,width: 30),
                   const SizedBox(width: 10),
-                  Text(
-                    message,
-                    style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins',overflow: TextOverflow.ellipsis,),
+                  Expanded(
+                    child: Text(
+                      message,
+                      style: const TextStyle(color: CustomColors.kWhiteColor, fontSize: 12, fontFamily: 'Poppins'),
+                    ),
                   ),
                 ],
               ),

@@ -33,7 +33,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: InkWell(
           child:
           const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
@@ -41,7 +41,7 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
             Navigator.pop(context);
           },
         ),
-        title: const Text(CustomString.manageOrgMember, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+        title: const Text(CustomString.manageOrgMember, style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       body: Column(

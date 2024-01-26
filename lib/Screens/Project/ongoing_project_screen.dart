@@ -98,7 +98,7 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                        const Text("Already Applied",style: TextStyle(fontFamily: 'Poppins'),),
+                                        const Text("Already Joined",style: TextStyle(fontFamily: 'Poppins'),),
                                         SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
                                         ],
                                         ),
@@ -113,7 +113,7 @@ class _OnGoingProjectScreenState extends State<OnGoingProjectScreen> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Text("Already Joined",style: TextStyle(fontFamily: 'Poppins'),),
+                                            const Text("Already Applied",style: TextStyle(fontFamily: 'Poppins'),),
                                             SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
                                           ],
                                         ),

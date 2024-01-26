@@ -6,18 +6,13 @@ import 'package:versa_tribe/Screens/OrgAdmin/ManageDepartment/edit_department.da
 import 'package:versa_tribe/extension.dart';
 
 class ManageDepartment extends StatefulWidget {
-
   final int orgId;
-
   const ManageDepartment({super.key, required this.orgId});
-
   @override
   State<ManageDepartment> createState() => _ManageDepartmentState();
 }
 
-
 class _ManageDepartmentState extends State<ManageDepartment> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -98,33 +93,33 @@ class _ManageDepartmentState extends State<ManageDepartment> {
                                       ) : Container(),
                                     ],
                                   ),
-                                  const Spacer(),
-                                  PopupMenuButton(
-                                      child:
-                                      CircleAvatar(
-                                          radius:10,backgroundColor: Colors.transparent,
-                                          child: SvgPicture.asset(ImagePath.more,width: size.width*0.1,height: size.height*0.5,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
-                                      onSelected: (item) {
-                                        int? parentDepID = val.department[index].parentDeptId;
-                                        String? parentDepName = val.department[index].parentDeptName;
-                                        int? depID = val.department[index].deptId;
-                                        String? depName = val.department[index].deptName;
-                                        switch (item) {
-                                          case 0:
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => EditDepartment(orgId: widget.orgId,parentDepId: parentDepID, parentDepName: parentDepName, depId: depID, depName: depName,)));
-                                          case 1:
-                                            _showDeleteConfirmation(context,val.department[index].deptId);
-                                        }
-                                      },
-                                      itemBuilder: (_) => [
-                                        const PopupMenuItem(
-                                            value: 0,
-                                            child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
-                                        const PopupMenuItem(
-                                            value: 1,
-                                            child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
-                                      ]),
-                                  SizedBox(width: size.width * 0.03,)
+                                  // const Spacer(),
+                                  // PopupMenuButton(
+                                  //     child:
+                                  //     CircleAvatar(
+                                  //         radius:10,backgroundColor: Colors.transparent,
+                                  //         child: SvgPicture.asset(ImagePath.more,width: size.width*0.1,height: size.height*0.5,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
+                                  //     onSelected: (item) {
+                                  //       int? parentDepID = val.department[index].parentDeptId;
+                                  //       String? parentDepName = val.department[index].parentDeptName;
+                                  //       int? depID = val.department[index].deptId;
+                                  //       String? depName = val.department[index].deptName;
+                                  //       switch (item) {
+                                  //         case 0:
+                                  //           Navigator.push(context, MaterialPageRoute(builder: (context) => EditDepartment(orgId: widget.orgId,parentDepId: parentDepID, parentDepName: parentDepName, depId: depID, depName: depName,)));
+                                  //         case 1:
+                                  //           _showDeleteConfirmation(context,val.department[index].deptId);
+                                  //       }
+                                  //     },
+                                  //     itemBuilder: (_) => [
+                                  //       const PopupMenuItem(
+                                  //           value: 0,
+                                  //           child: Text(CustomString.edit, style: TextStyle(fontFamily: 'Poppins'))),
+                                  //       const PopupMenuItem(
+                                  //           value: 1,
+                                  //           child: Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')))
+                                  //     ]),
+                                  // SizedBox(width: size.width * 0.03,)
                                 ],
                               ),
                             );
