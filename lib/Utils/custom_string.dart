@@ -201,7 +201,7 @@ class CustomString {
   static const String departmentNameRequired = '* Department Name is required...';
   static const String departmentName = 'Department Name';
   static const String requestNewDepartment = 'Request New Department';
-  static const String requestToJoin = 'Request to join';
+  static const String sendRequest = 'Send Request';
 
   static const String selectOrganization = 'Select Organization';
   static const String buttonContinue = 'Continue';
