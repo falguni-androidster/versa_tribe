@@ -28,7 +28,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: Consumer<SearchParentDPProvider>(
             builder: (context, val, child) {
             return IconButton(
@@ -41,7 +41,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
           }
         ),
         centerTitle: true,
-        title: const Text(CustomString.addNewDP, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+        title: const Text(CustomString.addNewDP, style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body:  Form(
         key: _formKey,
@@ -51,15 +51,25 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
             child: Column(
               children: [
                 SizedBox(height: size.height * 0.05),
-                TextFormField(
-                  controller: newDController,
-                    decoration: const InputDecoration(
-                        labelText: CustomString.newDpLabel,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor,
-                            fontSize: 14, fontFamily: 'Poppins')),
-                    style:
-                    const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      // validator: (value) {
+                      //   if (value!.isEmpty) {
+                      //     return "Department is required..!";
+                      //   } else {
+                      //     return null;
+                      //   }
+                      // },
+                    controller: newDController,
+                      decoration: const InputDecoration(
+                          labelText: CustomString.newDpLabel,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor,
+                              fontSize: 14, fontFamily: 'Poppins')),
+                      style:
+                      const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
+                  ),
                 ),
                 SizedBox(height: size.height * 0.01),
 
@@ -78,31 +88,34 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                               //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                             }
                           }),
-                          const Text(CustomString.chooseParentDepartment, style: TextStyle(fontSize: 14, fontFamily: 'Poppins')),
+                          const Text(CustomString.selectParentDepartment, style: TextStyle(color:CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins')),
                         ],
                       );
                     }),
 
-                Consumer<DepartmentProvider>(builder: (context, val, child) {
-                    return searchParentDController.text != "" ? TextFormField(
-                      controller: searchParentDController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.parentDP;
-                        } else {
-                          return null;
-                        }
-                      },
-                        onTap: (){
-                          //val.setVisibilitySearchList(true);
-                          //val.notify();
-                          //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
+                    Consumer<DepartmentProvider>(builder: (context, val, child) {
+                    return searchParentDController.text != "" ? SizedBox(
+                      height: size.height*0.06,
+                      child: TextFormField(
+                        controller: searchParentDController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return CustomString.parentDP;
+                          } else {
+                            return null;
+                          }
                         },
-                        enabled: false,
-                      decoration: const InputDecoration(
-                          hintText: "Parent department",
-                          hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
+                          onTap: (){
+                            //val.setVisibilitySearchList(true);
+                            //val.notify();
+                            //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
+                          },
+                          enabled: false,
+                        decoration: const InputDecoration(
+                            hintText: "Parent department",
+                            hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                            style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')
+                      ),
                     ) : const SizedBox();
                   }
                   ),
@@ -134,19 +147,23 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                           val.setVisible(false);
                         },
                       );
-                    }): const SizedBox();
+                    }): SizedBox(height: size.height*0.01,);
                   }
                 ),
 
                 SizedBox(
-                  width: size.width,
+                    width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          debugPrint("cheque---parent department Id------>$pDepId");
-                          ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
+                         // if(_formKey.currentState!.validate()){
+                            debugPrint("cheque---parent department Id------>$pDepId");
+                            ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
+                          // }else{
+                          //   return;
+                          // }
                           },
-                        style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
-                        child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))
+                        style: ElevatedButton.styleFrom(backgroundColor: CustomColors.kBlueColor,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                        child: const Text(CustomString.buttonContinue, style: TextStyle(color: CustomColors.kWhiteColor,fontFamily: 'Poppins'))
                     )
                 )
               ],
