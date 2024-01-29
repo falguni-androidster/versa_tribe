@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Screens/onboarding_screen.dart';
 import 'package:versa_tribe/Screens/sign_in_screen.dart';
 import 'package:versa_tribe/extension.dart';
