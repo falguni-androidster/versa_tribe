@@ -38,7 +38,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
         ),
         centerTitle: true,
         title: const Text(CustomString.manageDepartment,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
         actions: [IconButton(onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context)=> AddNewDepartment(orgId: widget.orgId,)));
         }, icon: const Icon(Icons.add,color: CustomColors.kBlackColor,))],

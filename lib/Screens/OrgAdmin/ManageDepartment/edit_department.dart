@@ -83,7 +83,7 @@ class _EditDepartmentState extends State<EditDepartment> {
                                   //ApiConfig.searchPDepartment(context: context,orderId: widget.orgId);
                                 }
                               }),
-                          const Text(CustomString.chooseParentDepartment, style: TextStyle(fontSize: 14, fontFamily: 'Poppins')),
+                          const Text(CustomString.selectParentDepartment, style: TextStyle(fontSize: 14, fontFamily: 'Poppins')),
                         ],
                       );
                     }),

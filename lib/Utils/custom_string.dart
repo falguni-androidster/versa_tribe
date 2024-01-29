@@ -250,7 +250,7 @@ class CustomString {
   static const String experienceMonthRequired = '* Experience month is required....';
   static const String experienceMonth = 'Experience Month';
   static const String parentDepartment = 'Parent department';
-  static const String chooseParentDepartment = 'Choose parent department';
+  static const String selectParentDepartment = 'Select parent department';
 
   static const String view = 'View';
   static const String edit = 'Edit';
@@ -292,6 +292,6 @@ class CustomString {
   static const String updateDP = "Update Department";
   static const String parentDP = '* Select parent department is required....';
   static const String newDP = '* Enter new department....';
-  static const String newDpLabel= "New department";
+  static const String newDpLabel= "New Department Name";
   static const String parentDpLabel= "Parent department";
 }
