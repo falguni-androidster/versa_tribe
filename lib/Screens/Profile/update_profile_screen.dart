@@ -47,7 +47,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return Scaffold(
         backgroundColor: CustomColors.kWhiteColor,
         appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: InkWell(
             child: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
             onTap: () {
@@ -56,7 +56,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.updateProfile,style: TextStyle(
-              fontFamily: 'Poppins',
+              fontFamily: 'Poppins',fontSize: 16,
               color: CustomColors.kBlueColor)),
         ),
         body: Form(

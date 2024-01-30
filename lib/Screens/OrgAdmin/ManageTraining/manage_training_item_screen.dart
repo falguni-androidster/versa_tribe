@@ -36,7 +36,7 @@ class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> wit
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: InkWell(
           child: const Icon(Icons.arrow_back_ios,
               color: CustomColors.kBlackColor),
@@ -46,7 +46,7 @@ class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> wit
         ),
         title: const Text(CustomString.manageTraining,
             style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       backgroundColor: CustomColors.kWhiteColor,

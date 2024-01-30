@@ -29,7 +29,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -120,6 +120,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
 
   Widget containerProfile(snapshot, size) {
     return Card(
+      color: CustomColors.kWhiteColor,
       elevation: 5,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),

@@ -16,15 +16,12 @@ import 'Profile/update_profile_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class PersonDetailsScreen extends StatefulWidget {
-
   const PersonDetailsScreen({super.key});
-
   @override
   State<PersonDetailsScreen> createState() => _PersonDetailsScreenState();
 }
 
 class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -40,12 +37,10 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -55,7 +50,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               ),
           centerTitle: true,
           title: const Text(CustomString.profileDSHeaderText,
-              style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
+              style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins'))),
 
       body: RefreshIndicator(
         onRefresh: _loadData,
@@ -490,6 +485,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
   Widget containerProfile(snapshot, size) {
     return Card(
+      color: CustomColors.kWhiteColor,
       elevation: 5,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10),),
@@ -548,6 +544,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: CustomColors.kWhiteColor,
           title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
           content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
           actions: <Widget>[
@@ -613,6 +610,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                           Text("${vaL.personEx[index].jobTitle}", style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                           const Spacer(),
                           PopupMenuButton(
+                            color: CustomColors.kWhiteColor,
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
                                   child: SvgPicture.asset(ImagePath.moreIcon, width: 15, height: 4, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),
@@ -668,6 +666,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                               style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
                           const Spacer(),
                           PopupMenuButton(
+                            color: CustomColors.kWhiteColor,
                               child: CircleAvatar(
                                   radius:10,backgroundColor: Colors.transparent,
                                   child: SvgPicture.asset(ImagePath.moreIcon,width: 5,height: 4,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn))),

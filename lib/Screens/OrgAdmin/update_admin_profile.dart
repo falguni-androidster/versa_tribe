@@ -76,7 +76,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
     return Scaffold(
         backgroundColor: CustomColors.kWhiteColor,
         appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: InkWell(
             child: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
             onTap: () {
@@ -86,7 +86,7 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
           ),
           centerTitle: true,
           title: const Text(CustomString.orgDetail,style: TextStyle(
-              fontFamily: 'Poppins',
+              fontFamily: 'Poppins',fontSize: 16,
               color: CustomColors.kBlueColor)),
         ),
         body:

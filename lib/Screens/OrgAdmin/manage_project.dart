@@ -42,7 +42,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
         ),
         centerTitle: true,
         title: const Text(CustomString.manageProject,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,

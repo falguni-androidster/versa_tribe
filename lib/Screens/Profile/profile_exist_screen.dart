@@ -35,8 +35,8 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircularPercentIndicator(
-                  lineWidth: 30.0,
-                  radius: 150.0,
+                  lineWidth: 25.0,
+                  radius: 100.0,
                   animation: true,
                   animationDuration: 1500,
                   percent: 1.0,
@@ -45,7 +45,7 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
               const SizedBox(height: 20),
               const Text(
                   CustomString.profileReady, textAlign: TextAlign.center,
-                  style: TextStyle(color: CustomColors.kBlackColor, fontSize: 30, fontFamily: 'Poppins', fontWeight: FontWeight.w600)
+                  style: TextStyle(color: CustomColors.kBlackColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w600)
               ),
             ],
           ),

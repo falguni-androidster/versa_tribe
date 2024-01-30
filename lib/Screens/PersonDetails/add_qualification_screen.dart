@@ -30,7 +30,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -38,7 +38,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor), //replace with our own icon data.
         ),
         centerTitle: true,
-        title: const Text(CustomString.createQualification, style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
+        title: const Text(CustomString.createQualification, style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16,fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -49,31 +49,34 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Course name
-                TextFormField(
-                    controller: courseController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.courseNameRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value != "" && value.isNotEmpty) {
-                        ApiConfig.searchCourse(
-                            context: context, courseString: value);
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: courseController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.courseNameRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value != "" && value.isNotEmpty) {
+                          ApiConfig.searchCourse(
+                              context: context, courseString: value);
+                          provider.courseList.clear();
+                          provider.setVisible(true);
+                        }else{
+                          provider.setVisible(false);
+                        }
                         provider.courseList.clear();
-                        provider.setVisible(true);
-                      }else{
-                        provider.setVisible(false);
-                      }
-                      provider.courseList.clear();
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.courseName,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.courseName,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 Consumer<SearchCourseProvider>(builder: (context, val, child) {
                   return val.visible == true
@@ -110,31 +113,34 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                 SizedBox(height: size.height * 0.02),
 
                 /// Institute name
-                TextFormField(
-                    controller: instituteController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.instituteNameRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchInstitute(
-                            context: context, instituteString: value);
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: instituteController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.instituteNameRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value != "") {
+                          ApiConfig.searchInstitute(
+                              context: context, instituteString: value);
+                          providerInstitute.instituteList.clear();
+                        }else{
+                          providerInstitute.setVisible(false);
+                        }
                         providerInstitute.instituteList.clear();
-                      }else{
-                        providerInstitute.setVisible(false);
-                      }
-                      providerInstitute.instituteList.clear();
-                      providerInstitute.setVisible(true);
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.instituteName,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                        providerInstitute.setVisible(true);
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.instituteName,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 Consumer<SearchInstituteProvider>(
                     builder: (context, val, child) {
@@ -172,43 +178,50 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                 SizedBox(height: size.height * 0.02),
 
                 /// Grade
-                TextFormField(
-                    controller: gradeController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.gradeRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.grade,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: gradeController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.gradeRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.grade,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 SizedBox(height: size.height * 0.02),
 
                 /// City name
-                TextFormField(
-                    controller: cityController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.cityRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.city,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: cityController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.cityRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.city,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 SizedBox(height: size.height * 0.02),
 
                 /// Year Of Passing
                 SizedBox(
+                  height: size.height*0.06,
                   width: size.width/2.1,
                   child: TextFormField(
                     validator: (value) {

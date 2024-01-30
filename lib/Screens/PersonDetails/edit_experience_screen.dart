@@ -74,7 +74,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -85,7 +85,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.editExperience,
-              style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins'))),
+              style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16,fontFamily: 'Poppins'))),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -100,21 +100,24 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 ),
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
-                  return TextFormField(
-                      controller: jobTitleController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.jobTitleRequired;
-                        } else {
-                          return null;
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          labelText: CustomString.jobTitle,
-                          labelStyle: TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontSize: 14,fontFamily: 'Poppins')),
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'));
+                  return SizedBox(
+                    height: size.height*0.06,
+                    child: TextFormField(
+                        controller: jobTitleController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return CustomString.jobTitleRequired;
+                          } else {
+                            return null;
+                          }
+                        },
+                        decoration: const InputDecoration(
+                            labelText: CustomString.jobTitle,
+                            labelStyle: TextStyle(
+                                color: CustomColors.kLightGrayColor,
+                                fontSize: 14,fontFamily: 'Poppins')),
+                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                  );
                 }),
 
                 SizedBox(height: size.height * 0.02),
@@ -151,51 +154,54 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 Consumer<RadioComIndProvider>(
                     builder: (context, val, child) {
                       debugPrint("radio btn value--------->${val.selectedValue}");
-                      return TextFormField(
-                          controller: val.selectedValue!=""?val.selectedValue=="Company"?companyNController:industryNController:widget.industry!=""
-                              ? industryNController
-                              : widget.company!=""
-                                  ? companyNController
-                                  : val.selectedValue == "Company"
-                                      ? companyNController
-                                      : industryNController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return val.selectedValue == "Company"
-                                  ? CustomString.companyNameRequired
-                                  : CustomString.enterIndustryName;
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {
-                            if (value != "" && value.isNotEmpty) {
-                              debugPrint("Selected--======---=-=-->${val.selectedValue}");
-                              val.selectedValue == "Company"
-                                  ? ApiConfig.searchExperienceCompany(
-                                      context: context, companyString: value)
-                                  : ApiConfig.searchExperienceIndustry(
-                                      context: context, industryString: value);
+                      return SizedBox(
+                        height: size.height*0.06,
+                        child: TextFormField(
+                            controller: val.selectedValue!=""?val.selectedValue=="Company"?companyNController:industryNController:widget.industry!=""
+                                ? industryNController
+                                : widget.company!=""
+                                    ? companyNController
+                                    : val.selectedValue == "Company"
+                                        ? companyNController
+                                        : industryNController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return val.selectedValue == "Company"
+                                    ? CustomString.companyNameRequired
+                                    : CustomString.enterIndustryName;
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              if (value != "" && value.isNotEmpty) {
+                                debugPrint("Selected--======---=-=-->${val.selectedValue}");
+                                val.selectedValue == "Company"
+                                    ? ApiConfig.searchExperienceCompany(
+                                        context: context, companyString: value)
+                                    : ApiConfig.searchExperienceIndustry(
+                                        context: context, industryString: value);
+                                providerCompany.cmpList.clear();
+                                providerIndustry.indList.clear();
+                                val.selectedValue=="Company"?industryNController.clear():companyNController.clear();
+                                val.selectedValue=="Company"?providerCompany.setVisible(true):providerIndustry.setVisible(true);
+                              }else{
+                                val.selectedValue=="Company"?providerCompany.setVisible(false):providerIndustry.setVisible(false);
+                              }
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
-                              val.selectedValue=="Company"?industryNController.clear():companyNController.clear();
-                              val.selectedValue=="Company"?providerCompany.setVisible(true):providerIndustry.setVisible(true);
-                            }else{
-                              val.selectedValue=="Company"?providerCompany.setVisible(false):providerIndustry.setVisible(false);
-                            }
-                            providerCompany.cmpList.clear();
-                            providerIndustry.indList.clear();
-                          },
-                          decoration: InputDecoration(
-                              labelText: val.selectedValue == "Company"
-                                  ? CustomString.companyName
-                                  : CustomString.industryName,
-                              labelStyle: const TextStyle(
-                                  color: CustomColors.kLightGrayColor,
-                                  fontSize: 14,
-                                  fontFamily: 'Poppins')),
-                          style:
-                              const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'));
+                            },
+                            decoration: InputDecoration(
+                                labelText: val.selectedValue == "Company"
+                                    ? CustomString.companyName
+                                    : CustomString.industryName,
+                                labelStyle: const TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins')),
+                            style:
+                                const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                      );
                     }
                     ),
 
@@ -279,6 +285,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     children: [
                       ///Start dateTime
                       SizedBox(
+                        height: size.height*0.06,
                         width: size.width*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
@@ -313,6 +320,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
+                        height: size.height*0.06,
                         width: size.width*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {

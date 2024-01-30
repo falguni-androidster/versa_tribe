@@ -84,67 +84,73 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(height: size.height * 0.02),
 
                   /// Email Address Field
-                  TextFormField(
-                    controller: emailController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.emailRequired;
-                      } // using regular expression
-                      else if (!Validator().regEmail.hasMatch(value)) {
-                        return CustomString.validEmailAddress;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.emailAddress,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor,
-                            fontSize: 14,
-                            fontFamily: 'Poppins')),
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: CustomColors.kBlackColor,
-                        fontFamily: 'Poppins'),
+                  SizedBox(
+                    height: size.height*0.06,
+                    child: TextFormField(
+                      controller: emailController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.emailRequired;
+                        } // using regular expression
+                        else if (!Validator().regEmail.hasMatch(value)) {
+                          return CustomString.validEmailAddress;
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.emailAddress,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor,
+                              fontSize: 14,
+                              fontFamily: 'Poppins')),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          color: CustomColors.kBlackColor,
+                          fontFamily: 'Poppins'),
+                    ),
                   ),
 
                   SizedBox(height: size.height * 0.02),
 
                   /// Password Field
                   Consumer<SignInPwdProvider>(builder: (context, val, child) {
-                    return TextFormField(
-                      controller: passwordController,
-                      obscureText: val.visible,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return CustomString.passwordRequired;
-                        } // using regular expression
-                        else if (!Validator().regPassword.hasMatch(value)) {
-                          return CustomString.validPassword;
-                        } else {
-                          return null;
-                        }
-                      },
-                      style: const TextStyle(
-                          fontSize: 14,
-                          color: CustomColors.kBlackColor,
-                          fontFamily: 'Poppins'),
-                      decoration: InputDecoration(
-                          suffixIcon: InkWell(
-                            child: Icon(
-                                val.visible == true
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: CustomColors.kLightGrayColor),
-                            onTap: () {
-                              val.setVisible();
-                            },
-                          ),
-                          labelText: CustomString.password,
-                          labelStyle: const TextStyle(
-                              color: CustomColors.kLightGrayColor,
-                              fontSize: 14,
-                              fontFamily: 'Poppins')
+                    return SizedBox(
+                      height: size.height*0.06,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: val.visible,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return CustomString.passwordRequired;
+                          } // using regular expression
+                          else if (!Validator().regPassword.hasMatch(value)) {
+                            return CustomString.validPassword;
+                          } else {
+                            return null;
+                          }
+                        },
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: CustomColors.kBlackColor,
+                            fontFamily: 'Poppins'),
+                        decoration: InputDecoration(
+                            suffixIcon: InkWell(
+                              child: Icon(
+                                  val.visible == true
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: CustomColors.kLightGrayColor),
+                              onTap: () {
+                                val.setVisible();
+                              },
+                            ),
+                            labelText: CustomString.password,
+                            labelStyle: const TextStyle(
+                                color: CustomColors.kLightGrayColor,
+                                fontSize: 14,
+                                fontFamily: 'Poppins')
+                        ),
                       ),
                     );
                   }),

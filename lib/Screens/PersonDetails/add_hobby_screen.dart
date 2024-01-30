@@ -29,7 +29,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -38,7 +38,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
         ),
         centerTitle: true,
         title: const Text(CustomString.createHobby,
-            style: TextStyle(color: CustomColors.kBlueColor,fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor,fontSize:16,fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -50,31 +50,34 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Hobby name
-                TextFormField(
-                    controller: hobbyController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.hobbyRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchHobby(context: context, hobbyString: value);
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: hobbyController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.hobbyRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value != "") {
+                          ApiConfig.searchHobby(context: context, hobbyString: value);
+                          providerHobby.hobbyList.clear();
+                          providerHobby.setVisible(true);
+                        }else{
+                          providerHobby.setVisible(false);
+                        }
                         providerHobby.hobbyList.clear();
-                        providerHobby.setVisible(true);
-                      }else{
-                        providerHobby.setVisible(false);
-                      }
-                      providerHobby.hobbyList.clear();
-                    },
-                    cursorColor: CustomColors.kBlueColor,
-                    decoration: const InputDecoration(
-                        labelText: CustomString.searchHobby,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                      },
+                      cursorColor: CustomColors.kBlueColor,
+                      decoration: const InputDecoration(
+                          labelText: CustomString.searchHobby,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14,fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
                 Consumer<SearchHobbyProvider>(builder: (context, val, child) {
                   return val.visible == true ? ListView.builder(
                       shrinkWrap: true,
