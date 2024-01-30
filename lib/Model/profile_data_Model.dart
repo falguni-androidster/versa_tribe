@@ -1,4 +1,4 @@
-class ProfileResponse {
+class ProfileDataModel {
   int? personId;
   String? firstName;
   String? lastName;
@@ -11,7 +11,7 @@ class ProfileResponse {
   String? tOwner;
   int? status;
 
-  ProfileResponse(
+  ProfileDataModel(
       {this.personId,
         this.firstName,
         this.lastName,
@@ -24,7 +24,7 @@ class ProfileResponse {
         this.tOwner,
         this.status});
 
-  ProfileResponse.fromJson(Map<String, dynamic> json) {
+  ProfileDataModel.fromJson(Map<String, dynamic> json) {
     personId = json['Person_Id'];
     firstName = json['FirstName'];
     lastName = json['LastName'];

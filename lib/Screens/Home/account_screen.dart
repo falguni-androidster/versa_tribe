@@ -36,7 +36,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
               SizedBox(height: size.height * 0.01),
 
-              FutureBuilder<ProfileResponse>(
+              FutureBuilder<ProfileDataModel>(
                 future: ApiConfig().getProfileData(),
                 builder: (context, snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){
