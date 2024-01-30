@@ -61,7 +61,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
 
               SizedBox(height: size.height * 0.01),
 
-              FutureBuilder<ProfileResponse>(
+              FutureBuilder<ProfileDataModel>(
                 future: ApiConfig().getProfileData(),
                 builder: (context, snapshot) {
                   if(snapshot.connectionState==ConnectionState.waiting){
@@ -483,7 +483,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
     );
   }
 
-  Widget containerProfile(snapshot, size) {
+  Widget containerProfile(AsyncSnapshot<ProfileDataModel> snapshot, size) {
     return Card(
       color: CustomColors.kWhiteColor,
       elevation: 5,
@@ -529,7 +529,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                 child: SvgPicture.asset(ImagePath.editProfileIcon,height: 15,width: 15,colorFilter: const ColorFilter.mode(CustomColors.kBlackColor,BlendMode.srcIn)),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) =>
-                  UpdateProfileScreen(firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
+                  UpdateProfileScreen(personId: snapshot.data!.personId!,firstName: snapshot.data?.firstName ?? '',lastName: snapshot.data?.lastName ?? '',gender: snapshot.data?.gender ?? '',dob: snapshot.data?.dOB ?? '',city: snapshot.data?.city ?? '',country: snapshot.data?.country ?? '')));
                 },
               )
             ],

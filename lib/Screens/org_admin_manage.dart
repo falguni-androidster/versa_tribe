@@ -46,7 +46,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FutureBuilder<ProfileResponse>(
+              FutureBuilder<ProfileDataModel>(
                 future: ApiConfig().getProfileData(),
                 builder: (context, snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){

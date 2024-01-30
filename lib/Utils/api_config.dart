@@ -167,7 +167,7 @@ class ApiConfig {
 
   /*------------------------------------------ Profile Screen ---------------------------------------*/
 
-  Future<ProfileResponse> getProfileData() async {
+  Future<ProfileDataModel> getProfileData() async {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
@@ -180,7 +180,7 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint('OrgPerson Profile data-----------> ${response.body}');
       Map<String, dynamic> jsonMap = json.decode(response.body);
-      ProfileResponse yourModel = ProfileResponse.fromJson(jsonMap);
+      ProfileDataModel yourModel = ProfileDataModel.fromJson(jsonMap);
       pref.setSharedPrefStringValue(key: CustomString.personId, yourModel.personId.toString());
       return yourModel;
     } else {
@@ -215,12 +215,13 @@ class ApiConfig {
     }
   }
 
-  Future<void> updateProfile({context, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
-
+  Future<void> updateProfile({context, personId ,fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+    debugPrint("check personId--->$personId");
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     Map data = {
+      'Person_Id':personId.toString(),
       'FirstName': fNameController.text.toString(),
       'LastName': lNameController.text.toString(),
       'Gender': genderController.text.toString(),
@@ -238,6 +239,7 @@ class ApiConfig {
       showToast(context, CustomString.profileSuccessUpdated);
       Navigator.pushNamed(context, '/home');
     } else {
+      debugPrint("Backend Side-->: ${response.statusCode.toString()}");
       showToast(context, CustomString.somethingWrongMessage);
     }
   }

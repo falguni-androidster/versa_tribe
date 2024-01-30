@@ -6,6 +6,7 @@ import 'package:versa_tribe/extension.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
 
+  final int personId;
   final String firstName;
   final String lastName;
   final String gender;
@@ -13,7 +14,7 @@ class UpdateProfileScreen extends StatefulWidget {
   final String city;
   final String country;
 
-  const UpdateProfileScreen({super.key, required this.firstName, required this.lastName, required this.gender, required this.dob, required this.city, required this.country});
+  const UpdateProfileScreen({super.key, required this.personId,required this.firstName, required this.lastName, required this.gender, required this.dob, required this.city, required this.country});
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
@@ -226,7 +227,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig().updateProfile(context: context, fNameController: fNameController, lNameController: lNameController, genderController: genderController, dobController: dobController, cityController: cityController, countryController: countryController);
+                          ApiConfig().updateProfile(context: context,personId:widget.personId, fNameController: fNameController, lNameController: lNameController, genderController: genderController, dobController: dobController, cityController: cityController, countryController: countryController);
                         }
                       },
                       style: ElevatedButton.styleFrom(

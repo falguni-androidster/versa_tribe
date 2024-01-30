@@ -18,7 +18,7 @@ export 'Model/person_experience.dart';
 export 'Model/person_hobby.dart';
 export 'Model/person_qualification.dart';
 export 'Model/person_skill.dart';
-export 'Model/profile_response.dart';
+export 'Model/profile_data_Model.dart';
 export 'Model/request_organization.dart';
 export 'Model/search_company.dart';
 export 'Model/search_course.dart';
