@@ -44,7 +44,7 @@ class _ProjectListItemScreenState extends State<ProjectListItemScreen> with Sing
         ),
         centerTitle: true,
         title: const Text(CustomString.manageProject,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -41,7 +41,7 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
         ),
         centerTitle: true,
         title: const Text(CustomString.manageTraining,
-            style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+            style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,

@@ -40,7 +40,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
     var mWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -50,7 +50,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
           ),
           centerTitle: true,
           title: const Text(CustomString.createExperience,
-              style: TextStyle(color: CustomColors.kBlueColor))
+              style: TextStyle(color: CustomColors.kBlueColor,fontFamily: "Poppins",fontSize: 16))
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -66,21 +66,24 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 ),
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
-                      return TextFormField(
-                          controller: jobTitleController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return CustomString.jobTitleRequired;
-                            } else {
-                              return null;
-                            }
-                          },
-                          decoration: const InputDecoration(
-                              labelText: CustomString.jobTitle,
-                              labelStyle: TextStyle(
-                                  color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
-                          style: const TextStyle(color: CustomColors.kBlackColor));
+                      return SizedBox(
+                        height: mHeight*0.06,
+                        child: TextFormField(
+                            controller: jobTitleController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return CustomString.jobTitleRequired;
+                              } else {
+                                return null;
+                              }
+                            },
+                            decoration: const InputDecoration(
+                                labelText: CustomString.jobTitle,
+                                labelStyle: TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontSize: 14)),
+                            style: const TextStyle(color: CustomColors.kBlackColor)),
+                      );
                     }),
                 SizedBox(height: mHeight * 0.02),
 
@@ -117,43 +120,46 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 ///Company & Industry Name
                 Consumer<AddRadioComIndProvider>(
                     builder: (context, val, child) {
-                      return TextFormField(
-                          controller: val.selectedValue == "Company"
-                              ? companyNController
-                              : industryNController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return val.selectedValue == "Company"
-                                  ? CustomString.companyNameRequired
-                                  : CustomString.enterIndustryName;
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {
-                            if(value != "" && value.isNotEmpty) {
-                              debugPrint("selected radio val------>${val.selectedValue}");
-                              val.selectedValue == "Company" ? ApiConfig.searchExperienceCompany(
-                                  context: context, companyString: value) : ApiConfig.searchExperienceIndustry(context: context, industryString: value);
+                      return SizedBox(
+                        height: mHeight*0.06,
+                        child: TextFormField(
+                            controller: val.selectedValue == "Company"
+                                ? companyNController
+                                : industryNController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return val.selectedValue == "Company"
+                                    ? CustomString.companyNameRequired
+                                    : CustomString.enterIndustryName;
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              if(value != "" && value.isNotEmpty) {
+                                debugPrint("selected radio val------>${val.selectedValue}");
+                                val.selectedValue == "Company" ? ApiConfig.searchExperienceCompany(
+                                    context: context, companyString: value) : ApiConfig.searchExperienceIndustry(context: context, industryString: value);
+                                providerCompany.cmpList.clear();
+                                providerIndustry.indList.clear();
+                                val.selectedValue == "Company" ?providerCompany.setVisible(true): providerIndustry.setVisible(true);
+                              }else{
+                                debugPrint("else------>${val.selectedValue}");
+                                val.selectedValue == "Company"? providerCompany.setVisible(false):providerIndustry.setVisible(false);
+                              }
                               providerCompany.cmpList.clear();
                               providerIndustry.indList.clear();
-                              val.selectedValue == "Company" ?providerCompany.setVisible(true): providerIndustry.setVisible(true);
-                            }else{
-                              debugPrint("else------>${val.selectedValue}");
-                              val.selectedValue == "Company"? providerCompany.setVisible(false):providerIndustry.setVisible(false);
-                            }
-                            providerCompany.cmpList.clear();
-                            providerIndustry.indList.clear();
-                          },
-                          decoration: InputDecoration(
-                              labelText: val.selectedValue == "Company"
-                                  ? CustomString.companyName
-                                  : CustomString.industryName,
-                              labelStyle: const TextStyle(
-                                  color: CustomColors.kLightGrayColor,
-                                  fontSize: 14)),
-                          style:
-                          const TextStyle(color: CustomColors.kBlackColor));
+                            },
+                            decoration: InputDecoration(
+                                labelText: val.selectedValue == "Company"
+                                    ? CustomString.companyName
+                                    : CustomString.industryName,
+                                labelStyle: const TextStyle(
+                                    color: CustomColors.kLightGrayColor,
+                                    fontSize: 14)),
+                            style:
+                            const TextStyle(color: CustomColors.kBlackColor)),
+                      );
                     }),
 
                 ///This is for search company and industry
@@ -231,6 +237,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                     children: [
                       ///Start dateTime
                       SizedBox(
+                        height: mHeight*0.06,
                         width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
@@ -263,6 +270,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
+                        height: mHeight*0.06,
                         width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {

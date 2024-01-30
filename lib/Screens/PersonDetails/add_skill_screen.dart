@@ -4,27 +4,21 @@ import 'package:versa_tribe/extension.dart';
 
 class AddSkillScreen extends StatefulWidget {
   const AddSkillScreen({super.key});
-
   @override
   State<AddSkillScreen> createState() => _AddSkillScreenState();
 }
 
 class _AddSkillScreenState extends State<AddSkillScreen> {
-
   final _formKey = GlobalKey<FormState>();
   TextEditingController skillController = TextEditingController();
   TextEditingController monthController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-
     final providerSkill = Provider.of<SearchSkillProvider>(context, listen: false);
-
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -32,7 +26,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: CustomColors.kBlackColor),
         ),
         centerTitle: true,
-        title: const Text(CustomString.createSkill, style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+        title: const Text(CustomString.createSkill, style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -45,31 +39,34 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
               children: [
 
                 /// Skill name
-                TextFormField(
-                    controller: skillController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.skillNameRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchSkill(
-                            context: context, skillString: value);
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: skillController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.skillNameRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value != "") {
+                          ApiConfig.searchSkill(
+                              context: context, skillString: value);
+                          providerSkill.skillList.clear();
+                          providerSkill.setVisible(true);
+                        }else{
+                          providerSkill.setVisible(false);
+                        }
                         providerSkill.skillList.clear();
-                        providerSkill.setVisible(true);
-                      }else{
-                        providerSkill.setVisible(false);
-                      }
-                      providerSkill.skillList.clear();
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.skillName,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.skillName,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 Consumer<SearchSkillProvider>(builder: (context, val, child) {
                   return val.visible == true
@@ -108,21 +105,24 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                 SizedBox(height: size.height * 0.02),
 
                 /// Experience(months)
-                TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: monthController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.experienceMonthRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        labelText: CustomString.experienceMonth,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: monthController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.experienceMonthRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      decoration: const InputDecoration(
+                          labelText: CustomString.experienceMonth,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 SizedBox(height: size.height * 0.02),
 

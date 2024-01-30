@@ -47,7 +47,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: CustomColors.kWhiteColor,
+          backgroundColor: CustomColors.kGrayColor,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -58,7 +58,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
               ),
           centerTitle: true,
           title: const Text(CustomString.editSkill,
-              style: TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins'))),
+              style: TextStyle(color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins'))),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -69,33 +69,36 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Skill name
-                TextFormField(
-                  readOnly: true,
-                    controller: skillController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.skillNameRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    onChanged: (value) {
-                      if (value != "") {
-                        ApiConfig.searchSkill(
-                            context: context, skillString: value);
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                    readOnly: true,
+                      controller: skillController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.skillNameRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      onChanged: (value) {
+                        if (value != "") {
+                          ApiConfig.searchSkill(
+                              context: context, skillString: value);
+                          providerSkill.skillList.clear();
+                          providerSkill.setVisible(true);
+                        }else{
+                          providerSkill.setVisible(false);
+                        }
                         providerSkill.skillList.clear();
-                        providerSkill.setVisible(true);
-                      }else{
-                        providerSkill.setVisible(false);
-                      }
-                      providerSkill.skillList.clear();
-                    },
-                    cursorColor: CustomColors.kBlueColor,
-                    decoration: const InputDecoration(
-                        labelText: CustomString.skillName,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                      },
+                      cursorColor: CustomColors.kBlueColor,
+                      decoration: const InputDecoration(
+                          labelText: CustomString.skillName,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 Consumer<SearchSkillProvider>(builder: (context, val, child) {
                   return val.visible == true ? ListView.builder(
@@ -133,21 +136,24 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                 SizedBox(height: size.height * 0.02),
 
                 /// Experience(months)
-                TextFormField(
-                    controller: monthController,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return CustomString.experienceMonthRequired;
-                      } else {
-                        return null;
-                      }
-                    },
-                    cursorColor: CustomColors.kBlueColor,
-                    decoration: const InputDecoration(
-                        labelText: CustomString.experienceMonth,
-                        labelStyle: TextStyle(
-                            color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
-                    style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                SizedBox(
+                  height: size.height*0.06,
+                  child: TextFormField(
+                      controller: monthController,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return CustomString.experienceMonthRequired;
+                        } else {
+                          return null;
+                        }
+                      },
+                      cursorColor: CustomColors.kBlueColor,
+                      decoration: const InputDecoration(
+                          labelText: CustomString.experienceMonth,
+                          labelStyle: TextStyle(
+                              color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins')),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                ),
 
                 SizedBox(height: size.height * 0.02),
 
