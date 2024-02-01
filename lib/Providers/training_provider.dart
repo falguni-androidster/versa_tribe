@@ -28,10 +28,6 @@ class TakeTrainingListProvider with ChangeNotifier{
     });
     notifyListeners();
   }
-
-  notify(){
-    notifyListeners();
-  }
 }
 
 /// OutgoingRequestTrainingListProvider class

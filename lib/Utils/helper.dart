@@ -69,7 +69,7 @@ String timeAgo(String timestamp) {
 }
 
 class DateUtil {
-  static const dateFormat = 'dd/MM/yyyy';
+  static const dateFormat = 'yyyy/MM/dd';
   String formattedDate(DateTime dateTime) {
     debugPrint('dateTime ($dateTime)');
     return DateFormat(dateFormat).format(dateTime);

@@ -9,3 +9,14 @@ class VisibilityJoinTrainingBtnProvider with ChangeNotifier{
     notifyListeners();
   }
 }
+
+
+class VisibilityJoinProjectBtnProvider with ChangeNotifier{
+  bool _projectBtnVisibility = false;
+  bool get projectBtnVisibility=>_projectBtnVisibility;
+
+  setProjectBtnVisibility(val){
+    _projectBtnVisibility = val;
+    notifyListeners();
+  }
+}
