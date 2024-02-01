@@ -107,7 +107,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                                     physics: const NeverScrollableScrollPhysics(),
                                     itemCount: val.trainingEx.length,
                                     itemBuilder: (context, index) {
-                                      return containerExperienceTraining(val.trainingEx[index]);
+                                      return containerExperienceTraining(val.trainingEx[index],size);
                                     },
                                   ) : Container(
                                     width: double.infinity,
@@ -182,7 +182,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                                     physics: const NeverScrollableScrollPhysics(),
                                     itemCount: val.trainingSkill.length,
                                     itemBuilder: (context, index) {
-                                      return containerSkillTraining(val.trainingSkill[index]);
+                                      return containerSkillTraining(val.trainingSkill[index],size);
                                     },
                                   ): Container(
                                     width: double.infinity,
@@ -287,7 +287,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         )
                     ),
                     SizedBox(height: size.height*0.01,),
-                Consumer<VisibilityJoinTrainingBtnProvider>(
+                    Consumer<VisibilityJoinTrainingBtnProvider>(
                         builder: (context,val,child) {
                           return widget.trainingResponse.isJoin==true && val.trainingBtnVisibility==true?Container(
                             alignment: Alignment.center,
@@ -323,11 +323,11 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
   }
 
   /// Training Experience Container
-  Widget containerExperienceTraining(TrainingExperienceModel trainingEx) {
+  Widget containerExperienceTraining(TrainingExperienceModel trainingEx,size) {
     return Container(
       decoration: BoxDecoration(border: Border.all(width: 2.0,color: CustomColors.kBlueColor), borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-      padding: const EdgeInsets.all(6.0),
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
+      margin:  EdgeInsets.symmetric(vertical: size.height*0.005),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -352,11 +352,11 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
   }
 
   /// Training Skill Container
-  Widget containerSkillTraining(TrainingSkillModel trainingSkill) {
+  Widget containerSkillTraining(TrainingSkillModel trainingSkill,size) {
     return Container(
       decoration: BoxDecoration(border: Border.all(width: 2.0,color: CustomColors.kBlueColor), borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-      padding: const EdgeInsets.all(6.0),
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
+      margin:  EdgeInsets.symmetric(vertical: size.height*0.005),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -366,7 +366,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
               Text(trainingSkill.skillName!,
                   style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
               const Spacer(),
-              trainingSkill.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+              trainingSkill.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 10, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
             ],
           ),
           Text('Experience : ${trainingSkill.experience}',
@@ -393,7 +393,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                   Text(qualification.couName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 16,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),
@@ -422,7 +422,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                   Text(hobby.hobbyName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 18,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),

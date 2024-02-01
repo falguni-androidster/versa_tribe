@@ -667,6 +667,54 @@ class ApiConfig {
 
   /*------------------------------------------   Project Screen   ---------------------------------------------*/
 
+  deleteJoinedProject({context, int? projectId}) async {
+    final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    int id = pref.getInt("joinedID")!;
+    String url = '$baseUrl/api/ProjectUsers/Delete?Id=$id &Project_Id=$projectId';
+
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Delete joined project--------->${response.body}");
+      showToast(context, "Project cancel successfully...");
+      pro.setProjectBtnVisibility(false);
+    } else {
+      debugPrint("Not Delete project--------->${response.body}");
+      showToast(context, "Try again record not delete...");
+    }
+    return response.body;
+  }
+
+  joinProject({context, projectID}) async {
+    final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    Map<String, dynamic> requestData = {
+      "Project_Id": projectID,
+    };
+    String url = "$baseUrl/api/ProjectUsers/Create";
+    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    var data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      debugPrint('Project Joined----------------->>>> ${response.body}');
+      print("get id for remove joined project---->${data["Id"]}");
+      pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
+      showToast(context, "project joined successfully...");
+      pro.setProjectBtnVisibility(true);
+    } else {
+      debugPrint('Project Joined----------------->>>> ${response.body} & ${response.statusCode}');
+      showToast(context, 'Try After some time.....');
+    }
+  }
+
   static getProjectData(context) async {
 
     final provider = Provider.of<ProjectListProvider>(context, listen: false);

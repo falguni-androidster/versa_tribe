@@ -77,6 +77,7 @@ void main() {
       ChangeNotifierProvider<ProjectRequestProvider>(create: (_) => ProjectRequestProvider()),
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
       ChangeNotifierProvider<VisibilityJoinTrainingBtnProvider>(create: (_) => VisibilityJoinTrainingBtnProvider()),
+      ChangeNotifierProvider<VisibilityJoinProjectBtnProvider>(create: (_) => VisibilityJoinProjectBtnProvider()),
     ],
     child: MyApp()
   ));

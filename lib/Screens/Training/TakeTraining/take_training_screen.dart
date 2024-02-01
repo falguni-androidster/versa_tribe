@@ -82,7 +82,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                                 borderRadius: BorderRadius.all(Radius.circular(6))),
                             margin: EdgeInsets.symmetric(horizontal:size.width * 0.03,vertical: size.height*0.005),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
