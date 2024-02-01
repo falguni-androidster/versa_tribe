@@ -1,4 +1,4 @@
-class TakeTrainingResponse {
+class GiveTrainingDataModel {
   int? trainingId;
   int? orgId;
   String? orgName;
@@ -9,18 +9,18 @@ class TakeTrainingResponse {
   String? endDate;
   int? personLimit;
 
-  TakeTrainingResponse(
+  GiveTrainingDataModel(
       {this.trainingId,
-        this.orgId,
-        this.orgName,
-        this.trainerId,
-        this.trainingName,
-        this.description,
-        this.startDate,
-        this.endDate,
-        this.personLimit});
+      this.orgId,
+      this.orgName,
+      this.trainerId,
+      this.trainingName,
+      this.description,
+      this.startDate,
+      this.endDate,
+      this.personLimit});
 
-  TakeTrainingResponse.fromJson(Map<String, dynamic> json) {
+  GiveTrainingDataModel.fromJson(Map<String, dynamic> json) {
     trainingId = json['Training_Id'];
     orgId = json['Org_Id'];
     orgName = json['Org_Name'];

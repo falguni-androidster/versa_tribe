@@ -4,7 +4,7 @@ import 'package:versa_tribe/extension.dart';
 
 class ManageTrainingPendingRequestScreen extends StatefulWidget {
 
-  final TakeTrainingResponse trainingResponse;
+  final TakeTrainingDataModel trainingResponse;
 
   const ManageTrainingPendingRequestScreen({super.key, required this.trainingResponse});
 
@@ -113,7 +113,7 @@ class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendi
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.deleteRequestTraining(context: context, trainingId: trainingPendingRequestsModel.trainingId);
+                        ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,

@@ -4,22 +4,23 @@ import 'package:versa_tribe/Screens/Training/GiveTraining/training_joined_member
 import 'package:versa_tribe/Screens/Training/GiveTraining/training_pending_request_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
-class GiveTrainingItemScreen extends StatefulWidget {
+class GiveTrainingDetailScreen extends StatefulWidget {
 
-  final GiveTrainingResponse trainingResponse;
+  final GiveTrainingDataModel trainingResponse;
 
-  const GiveTrainingItemScreen({super.key, required this.trainingResponse});
+  const GiveTrainingDetailScreen({super.key, required this.trainingResponse});
 
   @override
-  State<GiveTrainingItemScreen> createState() => _GiveTrainingItemScreenState();
+  State<GiveTrainingDetailScreen> createState() => _GiveTrainingDetailScreenState();
 }
 
-class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with SingleTickerProviderStateMixin {
+class _GiveTrainingDetailScreenState extends State<GiveTrainingDetailScreen> with SingleTickerProviderStateMixin {
 
   late TabController _tabController;
 
   @override
   void initState() {
+    debugPrint("-->give training detail data --->${widget.trainingResponse.toJson()}");
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
   }
@@ -35,7 +36,7 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: InkWell(
           child: const Icon(Icons.arrow_back_ios,
               color: CustomColors.kBlackColor),
@@ -45,7 +46,7 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
         ),
         title: const Text(CustomString.manageTraining,
             style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       backgroundColor: CustomColors.kWhiteColor,
@@ -53,10 +54,9 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-                top: size.height * 0.02,
-                left: size.width * 0.02,
-                right: size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+                vertical: size.height * 0.005,
+                horizontal: size.width * 0.02,),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -98,7 +98,7 @@ class _GiveTrainingItemScreenState extends State<GiveTrainingItemScreen> with Si
               physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
 
-                /// Training Details
+                /// Manage Training
                 TrainingDetailScreen(trainingResponse: widget.trainingResponse),
 
                 /// Joined Members

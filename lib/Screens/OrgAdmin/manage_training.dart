@@ -80,9 +80,9 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                                         '${val.getTakeTrainingList[index].trainingName}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
                                     SizedBox(height: size.height * 0.01 / 2),
-                                    Text(
-                                        'Organization : ${val.getTakeTrainingList[index].orgName}',
-                                        style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                                    // Text(
+                                    //     'Organization : ${val.getTakeTrainingList[index].orgName}',
+                                    //     style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                     SizedBox(height: size.height * 0.01 / 2),
                                     Text(
                                         'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].endDate!).toLocal())}',

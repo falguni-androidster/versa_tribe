@@ -1,9 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
-import 'give_training_item_screen.dart';
+import 'give_training_detail_screen.dart';
 
 class GiveTrainingScreen extends StatefulWidget {
 
@@ -20,7 +22,7 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getGiveTrainingData(context);
+      ApiConfig.getGiveTrainingData(context,widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -33,7 +35,7 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getGiveTrainingData(context),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -45,7 +47,8 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
             } else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<GiveTrainingListProvider>(
                   builder: (context, val, child) {
-                    return val.getGiveTrainingList.isNotEmpty ? ListView.builder(
+                    return val.getGiveTrainingList.isNotEmpty ?
+                    ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.getGiveTrainingList.length,
                       itemBuilder: (context, index) {
@@ -54,11 +57,10 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
                             color: CustomColors.kWhiteColor,
                             elevation: 3,
                             shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                                borderRadius: BorderRadius.all(Radius.circular(6))),
+                            margin: EdgeInsets.symmetric(horizontal:size.width * 0.03,vertical: size.height*0.01),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment:
                                   CrossAxisAlignment.start,
@@ -79,7 +81,7 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
                                     ),*/
                                     Text(
                                         '${val.getGiveTrainingList[index].trainingName}',
-                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600, overflow: TextOverflow.fade)),
+                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.normal, overflow: TextOverflow.fade)),
                                     Text(
                                         'Organization : ${val.getGiveTrainingList[index].orgName}',
                                         style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
@@ -101,11 +103,12 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
                                 )),
                           ),
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => GiveTrainingItemScreen(trainingResponse: val.getGiveTrainingList[index])));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => GiveTrainingDetailScreen(trainingResponse: val.getGiveTrainingList[index])));
                           },
                         );
                       },
-                    ) : SizedBox(
+                    ) :
+                    SizedBox(
                         width: size.width,
                         height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.21 : size.height * 0.25,
                         child: Center(

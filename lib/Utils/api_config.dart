@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/extension.dart';
 
+import '../Providers/visiblity_join_training_btn_provider.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/Profile/create_profile_screen.dart';
-import '../Screens/Training/TakeTraining/take_training_item_screen.dart';
 import '../Screens/sign_in_screen.dart';
 import '../Screens/Profile/profile_exist_screen.dart';
 
@@ -266,7 +266,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint(response.body);
-      ApiConfig.getGiveTrainingData(context);
+      ApiConfig.getGiveTrainingData(context,orgId);
       showToast(context, CustomString.trainingCreatedSuccess);
       Navigator.pop(context);
     } else {
@@ -275,28 +275,26 @@ class ApiConfig {
     }
   }
 
-  static getGiveTrainingData(context) async {
-
+  static getGiveTrainingData(context, int? orgId) async {
     final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
     provider.getGiveTrainingList.clear();
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/Training/User/GetList';
+      String trainingUrl = '$baseUrl/api/Training/User/GetList?Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint('Give Training data-----------> ${response.body}');
+        debugPrint('get Give Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getGiveTrainingList.clear();
         provider.setGiveListTraining(data);
       } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Give Training Data not found...");
+        showToast(context, "please visit after some time..!");
+        debugPrint("----->Give Training Data not found...");
       }
     } catch (e) {
       debugPrint("Training------>$e");
@@ -304,10 +302,8 @@ class ApiConfig {
   }
 
   static getTakeTrainingData({context, orgId}) async {
-
     final provider = Provider.of<TakeTrainingListProvider>(context, listen: false);
     provider.getTakeTrainingList.clear();
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -320,7 +316,7 @@ class ApiConfig {
       if (response.statusCode == 200) {
         debugPrint('Take Training data-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
-        provider.setTakeListTraining(data);
+        provider.setTakeTrainingList(data);
       } else {
         showToast(context, CustomString.noDataFound);
         debugPrint("Take Training Data not found...");
@@ -331,10 +327,7 @@ class ApiConfig {
   }
 
   static getRequestedTraining({context, isJoin}) async {
-
     final provider = Provider.of<RequestTrainingListProvider>(context, listen: false);
-    provider.getRequestedTrainingList.clear();
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -387,7 +380,7 @@ class ApiConfig {
   }
 
   joinTraining({context, trainingId, isJoin, trainingResponse}) async {
-
+    final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
     String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
@@ -402,14 +395,37 @@ class ApiConfig {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
-    debugPrint('Training Joined----------------->>>> ${response.body}');
     if (response.statusCode == 200) {
-      showToast(context, CustomString.trainingJoined);
-      Navigator.pop(context); // Pop the current screen
-      Navigator.push(context, MaterialPageRoute(builder: (context) => TakeTrainingItemScreen(trainingResponse: trainingResponse)));// Push the screen again
+      debugPrint('Training Joined----------------->>>> ${response.body}');
+      showToast(context, "Training joined successfully...");
+      pro.setTrainingBtnVisibility(true);
     } else {
-      showToast(context, 'Try Again.....');
+      debugPrint('Training Joined----------------->>>> ${response.body} & ${response.statusCode}');
+      showToast(context, 'Try After some time.....');
     }
+  }
+
+   deleteJoinedTraining({context, int? trainingId}) async {
+    final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/Training_Join/Delete?Training_Id=$trainingId &Person_Id=$personId';
+
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Delete joined training--------->${response.body}");
+      showToast(context, "Training cancel successfully...");
+      pro.setTrainingBtnVisibility(false);
+    } else {
+      debugPrint("Not Delete training--------->${response.body}");
+      showToast(context, "Try again Data not delete...");
+    }
+    return response.body;
   }
 
   static deleteTraining(context, int? trainingId) async {
@@ -424,7 +440,7 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Delete training--------->${response.body}");
-      getGiveTrainingData(context);
+      //getGiveTrainingData(context);
       Navigator.pop(context);
     } else {
       debugPrint("Not Delete training--------->${response.body}");
@@ -600,11 +616,10 @@ class ApiConfig {
     }
   }
 
-  /// Cancel Request Training
-  static deleteRequestTraining({context, trainingId, screen}) async {
+  /// Remove Joined member Training
+  static deletePendingTrainingRequest({context, trainingId, personId, isJoin}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     String apiUrl = '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
     final response = await http.delete(Uri.parse(apiUrl), headers: {
@@ -612,28 +627,27 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
-      debugPrint("Delete Request----->${response.body}");
-      showToast(context, CustomString.delete);
-      getAcceptedTraining(context: context, isJoin: true);
-      getRequestedTraining(context: context, isJoin: false);
+      debugPrint("pending training cancel Request----->${response.body}");
+      showToast(context, "your request canceled...");
+
+      //Below both Api-functions use for display updated data in (joined member Tab) and (Pending Training Request Tab)
+      getTrainingJoinedMembers(context, trainingId, true);
+      getTrainingPendingRequests(context, trainingId, isJoin);
     } else {
-      debugPrint("Not Delete Request----->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again not delete request..."),
-      ));
+      debugPrint("have error to cancel pending training request----->${response.body}");
+      showToast(context, "your request not canceled try again..!");
     }
   }
 
   /// Approve Request Training
-  static approveRequestTraining({context, trainingId, isJoin}) async {
+  static approveRequestTraining({context, trainingId, personId, isJoin}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
     Map<String, dynamic> requestData = {
       "Training_Id": trainingId,
       "Person_Id": personId,
-      "Is_Join": isJoin,
+      "Is_Join": true,
     };
     String url = '$baseUrl/api/Training_Join/Update';
     final response =
@@ -643,13 +657,11 @@ class ApiConfig {
     });
     if (response.statusCode == 200) {
       debugPrint("Approve Request----->${response.body}");
-      showToast(context, CustomString.approved);
-      getTrainingPendingRequests(context, trainingId, false);
+      showToast(context, "Your pending training request is approved..");
+      getTrainingPendingRequests(context, trainingId, isJoin);
     } else {
-      debugPrint("Not Approve Request----->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again not approved..."),
-      ));
+      debugPrint("Not Approve pending training request----->${response.body}");
+      showToast(context, "Your pending training request is not approved try after some time..!");
     }
   }
 

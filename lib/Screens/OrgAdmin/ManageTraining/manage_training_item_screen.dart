@@ -7,7 +7,7 @@ import 'manage_training_pending_request_screen.dart';
 
 class ManageTrainingItemScreen extends StatefulWidget {
 
-  final TakeTrainingResponse trainingResponse;
+  final TakeTrainingDataModel trainingResponse;
 
   const ManageTrainingItemScreen({super.key, required this.trainingResponse});
 

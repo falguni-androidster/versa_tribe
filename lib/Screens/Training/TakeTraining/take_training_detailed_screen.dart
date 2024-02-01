@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:versa_tribe/Providers/visiblity_join_training_btn_provider.dart';
 import 'package:versa_tribe/extension.dart';
 
-class TakeTrainingItemScreen extends StatefulWidget {
+class TakeTrainingDetailScreen extends StatefulWidget {
 
-  final TakeTrainingResponse trainingResponse;
+  final TakeTrainingDataModel trainingResponse;
+  final int orgID;
 
-  const TakeTrainingItemScreen({super.key,required this.trainingResponse});
+  const TakeTrainingDetailScreen({super.key,required this.trainingResponse, required this.orgID});
 
   @override
-  State<TakeTrainingItemScreen> createState() => _TakeTrainingItemScreenState();
+  State<TakeTrainingDetailScreen> createState() => _TakeTrainingDetailScreenState();
 }
 
-class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
+class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
+  @override
+  initState(){
+    super.initState();
+    debugPrint("----->${widget.trainingResponse.toJson()}");
+  }
 
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
@@ -29,26 +36,29 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pro = Provider.of<TakeTrainingListProvider>(context,listen:false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: CustomColors.kWhiteColor,
+        backgroundColor: CustomColors.kGrayColor,
         leading: InkWell(
           child: const Icon(Icons.arrow_back_ios,
               color: CustomColors.kBlackColor),
           onTap: () {
+            ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
             Navigator.pop(context);
           },
         ),
         title: const Text(CustomString.trainingDetails,
             style: TextStyle(
-                color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                color: CustomColors.kBlueColor,fontSize: 16, fontFamily: 'Poppins')),
         centerTitle: true,
       ),
       backgroundColor: CustomColors.kWhiteColor,
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
               padding: EdgeInsets.all(size.width * 0.02),
               child: Column(
@@ -56,14 +66,11 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.trainingResponse.trainingName!,
-                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
-                    SizedBox(height: size.height * 0.01),
-                    Text('Organization : ${widget.trainingResponse.orgName!}',
-                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 18, fontFamily: 'Poppins', fontWeight: FontWeight.normal, overflow: TextOverflow.fade)),
                     SizedBox(height: size.height * 0.01),
                     Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                    SizedBox(height: size.height * 0.01),
+                    //SizedBox(height: size.height * 0.002),
                     Text('Person Limit : ${widget.trainingResponse.personLimit!}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
@@ -73,9 +80,11 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                     Text(widget.trainingResponse.description!,
                         style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
                     SizedBox(height: size.height * 0.01),
-                    const Text(CustomString.manageCriteria,
+                    const Text("Training Criteria",
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
+
+                    ///Criteria Experience
                     const Text(CustomString.experience,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -102,7 +111,7 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                                     },
                                   ) : Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
                                     color: CustomColors.kGrayColor,
                                     child: const Center(child: Text(CustomString.noExperienceCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
                                   );
@@ -114,6 +123,8 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Criteria Qualification
                     const Text(CustomString.qualification,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -131,9 +142,10 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                           else if(snapshot.connectionState == ConnectionState.done){
                             return Consumer<TrainingQualificationProvider>(
                                 builder: (context, val, child) {
-                                  return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) : Container(
+                                  return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) :
+                                  Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
                                     color: CustomColors.kGrayColor,
                                     child: const Center(child: Text(CustomString.noQualificationCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
                                   );
@@ -145,6 +157,8 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Criteria Skill
                     const Text(CustomString.skill,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -172,7 +186,7 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                                     },
                                   ): Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
                                     color: CustomColors.kGrayColor,
                                     child: const Center(child: Text(CustomString.noSkillCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
                                   );
@@ -184,6 +198,8 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Criteria hobby
                     const Text(CustomString.hobby,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -203,7 +219,7 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                                 builder: (context, val, child) {
                                   return val.trainingHobby.isNotEmpty ? containerHobbyTraining(val.trainingHobby,size) : Container(
                                     width: double.infinity,
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
                                     color: CustomColors.kGrayColor,
                                     child: const Center(child: Text(CustomString.noHobbyCriteriaFound,style: TextStyle(color: CustomColors.kLightGrayColor))),
                                   );
@@ -216,23 +232,87 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
                         }
                     ),
                     SizedBox(height: size.height * 0.01),
+                    ///Join Training Button
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
-                        },
-                        style: ElevatedButton.styleFrom(
+                      child: Consumer<VisibilityJoinTrainingBtnProvider>(
+                          builder: (context,val,child) {
+                            return widget.trainingResponse.isJoin==true &&val.trainingBtnVisibility==true?
+                            ElevatedButton(
+                              onPressed: () {
+                                ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: CustomColors.kBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                              ),
+                              child: const Text(
+                                "Leave",
+                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                              ),
+                            ):
+                            val.trainingBtnVisibility==false?
+                            ElevatedButton(
+                            onPressed: () {
+                              ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: CustomColors.kBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                                                  ),
+                            child: const Text(
+                              CustomString.joinTraining,
+                              style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                            ),
+                            ): ElevatedButton(
+                            onPressed: () {
+                            ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                            },
+                            style: ElevatedButton.styleFrom(
                             backgroundColor: CustomColors.kBlueColor,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(5),
+                            ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
                             ),
-                            padding: const EdgeInsets.all(16)),
-                        child: const Text(
-                          CustomString.joinTraining,
-                          style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
-                        ),
-                      ),
+                            child: const Text(
+                            "Cancel",
+                            style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                            ),
+                            );
+                          }
+                        )
+                    ),
+                    SizedBox(height: size.height*0.01,),
+                Consumer<VisibilityJoinTrainingBtnProvider>(
+                        builder: (context,val,child) {
+                          return widget.trainingResponse.isJoin==true && val.trainingBtnVisibility==true?Container(
+                            alignment: Alignment.center,
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: CustomColors.kLightGrayColor,
+                            ),
+                            child: const Text("Already Joined",
+                              style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                            ),
+                          ):val.trainingBtnVisibility==true? Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: CustomColors.kLightGrayColor,
+                          ),
+                          child: const Text("Requested",
+                            style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                          ),
+                        ):const SizedBox.shrink();
+                      }
                     ),
                   ]
               )
@@ -260,7 +340,9 @@ class _TakeTrainingItemScreenState extends State<TakeTrainingItemScreen> {
               trainingEx.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
             ],
           ),
-          Text(trainingEx.companyName!,
+          trainingEx.companyName!=null&&trainingEx.companyName!=""?Text(trainingEx.companyName!,
+              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')):
+          Text(trainingEx.industryFieldName!,
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
           Text('Experience : ${trainingEx.expMonths!}',
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))

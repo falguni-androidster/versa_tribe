@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
+import 'Providers/visiblity_join_training_btn_provider.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
 import 'Screens/call_screen.dart';
 import 'Screens/person_details_screen.dart';
@@ -75,7 +76,7 @@ void main() {
       ChangeNotifierProvider<ProjectListManageUserProvider>(create: (_) => ProjectListManageUserProvider()),
       ChangeNotifierProvider<ProjectRequestProvider>(create: (_) => ProjectRequestProvider()),
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
-      ChangeNotifierProvider<ButtonVisibilityProvider>(create: (_) => ButtonVisibilityProvider())
+      ChangeNotifierProvider<VisibilityJoinTrainingBtnProvider>(create: (_) => VisibilityJoinTrainingBtnProvider()),
     ],
     child: MyApp()
   ));
@@ -84,44 +85,36 @@ void main() {
 typedef PageContentBuilder = Widget Function(
     [SIPUAHelper? helper, Object? arguments]);
 
+//ignore: must_be_immutable
 class MyApp extends StatelessWidget {
 
   final SIPUAHelper _helper = SIPUAHelper();
+  Map<String, PageContentBuilder> routes = {
+    '/home': ([SIPUAHelper? helper, Object? arguments]) =>
+        HomeScreen(helper: helper, popUp: false),
+    '/callscreen': ([SIPUAHelper? helper, Object? arguments]) =>
+        CallScreenWidget(helper, arguments as Call?),
+    '/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
+  };
 
   MyApp({super.key});
 
   Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
     final String? name = settings.name;
-
-    switch (name) {
-      case '/home':
-        return MaterialPageRoute<Widget>(
-          builder: (context) => HomeScreen(
-            helper: _helper,
-            settings.arguments as bool?,
-          ),
-        );
-      case '/callscreen':
-        return MaterialPageRoute<Widget>(
-          builder: (context) => CallScreenWidget(
-            _helper,
-            settings.arguments as Call?,
-          ),
-        );
-      case '/addExScreen':
-        return MaterialPageRoute<Widget>(
-          builder: (context) => const AddExperienceScreen(),
-        );
-      case '/personDetailScreen':
-        return MaterialPageRoute<Widget>(
-          builder: (context) => const PersonDetailsScreen(),
-        );
-      default:
-      // Handle unknown routes or use a default route
-        return MaterialPageRoute<Widget>(
-          builder: (context) => const SplashScreen(),
-        );
+    final PageContentBuilder? pageContentBuilder = routes[name!];
+    if (pageContentBuilder != null) {
+      if (settings.arguments != null) {
+        final Route route = MaterialPageRoute<Widget>(
+            builder: (context) =>
+                pageContentBuilder(_helper, settings.arguments));
+        return route;
+      } else {
+        final Route route = MaterialPageRoute<Widget>(
+            builder: (context) => pageContentBuilder(_helper));
+        return route;
+      }
     }
+    return null;
   }
 
   // This widget is the root of your application.
@@ -139,6 +132,10 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initialRoute: '/',
+      routes: {
+        '/addExScreen': (context) => const AddExperienceScreen(),
+        '/personDetailScreen': (context) => const PersonDetailsScreen(),
+      },
       onGenerateRoute: _onGenerateRoute,
     );
   }

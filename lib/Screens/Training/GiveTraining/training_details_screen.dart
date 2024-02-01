@@ -6,7 +6,7 @@ import 'package:versa_tribe/extension.dart';
 
 class TrainingDetailScreen extends StatefulWidget {
 
-  final GiveTrainingResponse trainingResponse;
+  final GiveTrainingDataModel trainingResponse;
 
   const TrainingDetailScreen({super.key, required this.trainingResponse});
 
@@ -42,27 +42,32 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.trainingResponse.trainingName!,
-                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
+                    Row(
+                      children: [
+                        Text(widget.trainingResponse.trainingName!,
+                            style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins', fontWeight: FontWeight.normal, overflow: TextOverflow.fade)),
+                      ],
+                    ),
                     SizedBox(height: size.height * 0.01),
-                    Text('Organization : ${widget.trainingResponse.orgName!}',
-                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                    SizedBox(height: size.height * 0.01),
+                    // Text('Organization : ${widget.trainingResponse.orgName!}',
+                    //     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    //SizedBox(height: size.height * 0.01),
                     Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                    SizedBox(height: size.height * 0.01),
                     Text('Person Limit : ${widget.trainingResponse.personLimit!}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     const Text('Description',
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
-                    Text(widget.trainingResponse.description!,
+                    Text(widget.trainingResponse.description!,textAlign: TextAlign.justify,
                         style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
                     SizedBox(height: size.height * 0.01),
-                    const Text(CustomString.manageCriteria,
+                    const Text("Training Criteria",
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
+
+                    ///Experience Criteria
                     const Text(CustomString.experience,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -101,6 +106,8 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Qualification Criteria
                     const Text(CustomString.qualification,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -132,6 +139,8 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Skill Criteria
                     const Text(CustomString.skill,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -171,6 +180,8 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Hobby Criteria
                     const Text(CustomString.hobby,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
