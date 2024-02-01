@@ -5,7 +5,7 @@ import 'package:versa_tribe/extension.dart';
 
 class TrainingPendingRequestScreen extends StatefulWidget {
 
-  final GiveTrainingResponse trainingResponse;
+  final GiveTrainingDataModel trainingResponse;
 
   const TrainingPendingRequestScreen({super.key, required this.trainingResponse});
 
@@ -48,7 +48,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                         shrinkWrap: true,
                         itemCount: val.trainingPendingRequests.length,
                         itemBuilder: (context, index) {
-                          return containerPendingRequest(val.trainingPendingRequests[index]);
+                          return containerPendingRequest(val.trainingPendingRequests[index],size);
                         },
                       ) : Center(
                         child: Column(
@@ -71,14 +71,14 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
     );
   }
 
-  /// Training Joined Members Container
-  Widget containerPendingRequest(TrainingPendingRequestsModel trainingPendingRequestsModel) {
+  /// Training Pending Request display Container
+  Widget containerPendingRequest(TrainingPendingRequestsModel trainingPendingRequestsModel,size) {
     return Card(
       elevation: 3,
       color: CustomColors.kWhiteColor,
-      margin: const EdgeInsets.all(4),
+      margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -96,8 +96,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                         TextSpan(
                           text: trainingPendingRequestsModel.trainingName,
                           style: const TextStyle(
-                            color: Colors.blue, // Change this to the color you desire
-                            // You can apply other styles specific to this part of the text if needed
+                            color: CustomColors.kBlueColor,
                           ),
                         ),
                         const TextSpan(text: ' Training'),
@@ -108,13 +107,14 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
               ],
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.deleteRequestTraining(context: context, trainingId: trainingPendingRequestsModel.trainingId);
+                        ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,
@@ -133,7 +133,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, isJoin: true);
+                        ApiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin: trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,

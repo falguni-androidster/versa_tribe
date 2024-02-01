@@ -4,7 +4,7 @@ import 'package:versa_tribe/extension.dart';
 
 class ManageTrainingJoinedMemberScreen extends StatefulWidget {
 
-  final TakeTrainingResponse trainingResponse;
+  final TakeTrainingDataModel trainingResponse;
 
   const ManageTrainingJoinedMemberScreen({super.key, required this.trainingResponse});
 
@@ -108,7 +108,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig.deleteRequestTraining(context: context, trainingId: trainingJoinedMembersModel.trainingId);
+                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId);
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,

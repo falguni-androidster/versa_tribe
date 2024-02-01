@@ -90,7 +90,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                             padding: const EdgeInsets.all(4.0),
                                             child: ElevatedButton(
                                               onPressed: () {
-                                                ApiConfig.deleteRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                                ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: CustomColors.kGrayColor,

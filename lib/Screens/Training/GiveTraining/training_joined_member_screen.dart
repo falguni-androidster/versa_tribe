@@ -5,7 +5,7 @@ import 'package:versa_tribe/extension.dart';
 
 class TrainingJoinedMemberScreen extends StatefulWidget {
 
-  final GiveTrainingResponse trainingResponse;
+  final GiveTrainingDataModel trainingResponse;
 
   const TrainingJoinedMemberScreen({super.key, required this.trainingResponse});
 
@@ -48,7 +48,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
                         shrinkWrap: true,
                         itemCount: val.trainingJoinedMembers.length,
                         itemBuilder: (context, index) {
-                          return containerJoinedMembers(val.trainingJoinedMembers[index]);
+                          return containerJoinedMembers(val.trainingJoinedMembers[index],size);
                         }
                       ) : Center(
                         child: Column(
@@ -71,14 +71,14 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
     );
   }
 
-  /// Training Joined Members Container
-  Widget containerJoinedMembers(TrainingJoinedMembersModel trainingJoinedMembersModel) {
+  /// Training Joined Members display Container
+  Widget containerJoinedMembers(TrainingJoinedMembersModel trainingJoinedMembersModel, size) {
     return Card(
       elevation: 3,
       color: CustomColors.kWhiteColor,
-      margin: const EdgeInsets.all(4),
+      margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -88,17 +88,16 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                       children: [
-                        const TextSpan(text: 'Your Request to join in '),
+                        TextSpan(text: '${trainingJoinedMembersModel.firstName} ${trainingJoinedMembersModel.lastName} is joined in '),
                         TextSpan(
                           text: trainingJoinedMembersModel.trainingName,
                           style: const TextStyle(
-                            color: Colors.blue, // Change this to the color you desire
-                            // You can apply other styles specific to this part of the text if needed
+                            color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'
                           ),
                         ),
-                        const TextSpan(text: ' Training is Confirmed'),
+                        const TextSpan(text: ' Training',),
                       ],
                     ),
                   ),
@@ -109,7 +108,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig.deleteRequestTraining(context: context, trainingId: trainingJoinedMembersModel.trainingId);
+                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
                   },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,
@@ -117,8 +116,8 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
                       borderRadius: BorderRadius.circular(6),
                     )),
                 child: const Text(
-                  CustomString.leave,
-                  style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                  "Remove",
+                  style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                 ),
               ),
             ),

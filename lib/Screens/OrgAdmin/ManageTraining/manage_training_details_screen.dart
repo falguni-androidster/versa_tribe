@@ -5,7 +5,7 @@ import 'package:versa_tribe/extension.dart';
 
 class ManageTrainingDetailScreen extends StatefulWidget {
 
-  final TakeTrainingResponse trainingResponse;
+  final TakeTrainingDataModel trainingResponse;
 
   const ManageTrainingDetailScreen({super.key, required this.trainingResponse});
 
@@ -44,8 +44,8 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                     Text(widget.trainingResponse.trainingName!,
                         style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
                     SizedBox(height: size.height * 0.01),
-                    Text('Organization : ${widget.trainingResponse.orgName!}',
-                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
+                    // Text('Organization : ${widget.trainingResponse.orgName!}',
+                    //     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
