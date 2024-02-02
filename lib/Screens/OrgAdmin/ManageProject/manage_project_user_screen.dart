@@ -90,7 +90,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                               backgroundColor: CustomColors.kGrayColor,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                           onPressed: () async {
-                                            ApiConfig.rejectProjectManageUser(context, val.getProjectListManageUser[index].id, widget.projectResponseModel.projectId);
+                                            ApiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
                                           },
                                           child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                     ),
@@ -151,7 +151,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                           backgroundColor: CustomColors.kGrayColor,
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                       onPressed: () async {
-                                         ApiConfig.rejectProjectManageUser(context, val.getProjectListManageUser[index].id, widget.projectResponseModel.projectId);
+                                         ApiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
                                       },
                                       child: const Text(CustomString.remove, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                 ),

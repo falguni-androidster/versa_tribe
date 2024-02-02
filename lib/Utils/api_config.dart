@@ -679,9 +679,10 @@ class ApiConfig {
       'Authorization': 'Bearer $token',
     });
     if (response.statusCode == 200) {
+      pref.remove("joinedID");//after (delete request of project) or (leave project) the joinedId is clean.
       debugPrint("Delete joined project--------->${response.body}");
       showToast(context, "Project cancel successfully...");
-      pro.setProjectBtnVisibility(false);
+      pro.setProjectBtnVisibility(join: true,cancel: false);
     } else {
       debugPrint("Not Delete project--------->${response.body}");
       showToast(context, "Try again record not delete...");
@@ -708,7 +709,7 @@ class ApiConfig {
       print("get id for remove joined project---->${data["Id"]}");
       pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
       showToast(context, "project joined successfully...");
-      pro.setProjectBtnVisibility(true);
+      pro.setProjectBtnVisibility(join: false,cancel: true);
     } else {
       debugPrint('Project Joined----------------->>>> ${response.body} & ${response.statusCode}');
       showToast(context, 'Try After some time.....');
@@ -800,61 +801,128 @@ class ApiConfig {
     }
   }
 
-  static getRequestedProject({context, isApproved}) async {
+  static getRequestedProject({context, isApproved,orgId}) async {
     final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
-    provider.projectRequest.clear();
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint('Requested Project data-----------> ${response.body}');
+        debugPrint('Request Join Project success :-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.projectRequest.clear();
         provider.setProjectRequest(data);
       } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Requested Project Data not found...");
+        showToast(context, "request join project failed try again after some time..!");
+        debugPrint("---------Requested join Project failed...!");
       }
     }
     catch (e)
     {
-      debugPrint("requested project------>$e");
+      debugPrint("Exception:-----requested join project------>$e");
     }
   }
 
-  static getAcceptedProject({context, isApproved}) async {
+  static getAcceptedProject({context, isApproved, orgId}) async {
     final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
-    provider.projectAccepted.clear();
-
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?isApproved=$isApproved';
+      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint('Approved Project data-----------> ${response.body}');
+        debugPrint('get Approved Project data Success: -----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.projectAccepted.clear();
         provider.setProjectAccepted(data);
       } else {
         showToast(context, CustomString.noDataFound);
-        debugPrint("Approved Project Data not found...");
+        debugPrint("error to get Approved Project Data ...!");
       }
     } catch (e) {
-      debugPrint("approved project------>$e");
+      debugPrint("Exception, get approved project data: ------>$e");
     }
   }
+
+  static cancelProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Cancel Project joined Request Success: --------->${response.body}");
+      showToast(context, 'Cancel Joined Project Request SuccessFully..');
+      getRequestedProject(context: context, isApproved: false, orgId:orgId);
+    } else {
+      debugPrint("Cancel Project joined Request Failed--------->${response.body}");
+      showToast(context, 'Cancel Joined Project Request Failed try after some time..!');
+    }
+    return response.body;
+  }
+
+  static approvedProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
+    final response = await http.delete(Uri.parse(url), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Approved Project joined Request Success: --------->${response.body}");
+      showToast(context, 'Approved Joined Project Request SuccessFully..');
+      getAcceptedProject(context: context, isApproved: true, orgId:orgId);
+    } else {
+      debugPrint("Approved Project joined Request Failed--------->${response.body}");
+      showToast(context, 'Approved Joined Project Request Failed try after some time..!');
+    }
+    return response.body;
+  }
+
+  static approveProjectManageUser(context, int? id, int? projectId) async {
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
+
+    Map<String, dynamic> requestData = {
+      "Id": id,
+      "Person_Id": personId,
+      "Project_Id": projectId,
+      "IsApproved": true
+    };
+    String url = '$baseUrl/api/ProjectUsers/Update';
+    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == 200) {
+      debugPrint("Approve Project Manage User--------->${response.body}");
+      showToast(context, 'Accepted Successfully..');
+      getProjectManageUserData(context, projectId);
+    } else {
+      debugPrint("Not Approve Project Manage User--------->${response.body}");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Try again Data not accept..."),
+      ));
+    }
+  }
+
+
 
   static getProjectExperience(context, int? projectId) async {
 
@@ -962,58 +1030,6 @@ class ApiConfig {
       }
     } catch (e) {
       debugPrint("hobby------>$e");
-    }
-  }
-
-  static rejectProjectManageUser(context, int? id, int? projectId) async {
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Reject Project Manage User--------->${response.body}");
-      showToast(context, 'Rejected SuccessFully..');
-      getProjectManageUserData(context, projectId);
-    } else {
-      debugPrint("Not Reject Project Manage User--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again Data not reject..."),
-      ));
-    }
-    return response.body;
-  }
-
-  static approveProjectManageUser(context, int? id, int? projectId) async {
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
-
-    Map<String, dynamic> requestData = {
-      "Id": id,
-      "Person_Id": personId,
-      "Project_Id": projectId,
-      "IsApproved": true
-    };
-    String url = '$baseUrl/api/ProjectUsers/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Approve Project Manage User--------->${response.body}");
-      showToast(context, 'Accepted Successfully..');
-      getProjectManageUserData(context, projectId);
-    } else {
-      debugPrint("Not Approve Project Manage User--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again Data not accept..."),
-      ));
     }
   }
 

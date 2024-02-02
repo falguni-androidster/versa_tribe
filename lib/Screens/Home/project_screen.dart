@@ -93,8 +93,8 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
               physics: const NeverScrollableScrollPhysics(),
               children: <Widget>[
                 OnGoingProjectScreen(orgId: widget.orgId),
-                const RequestedProjectScreen(),
-                const AcceptedProjectScreen()
+                RequestedProjectScreen(orgID: widget.orgId),
+                AcceptedProjectScreen(orgID: widget.orgId)
               ],
             ),
           ),
