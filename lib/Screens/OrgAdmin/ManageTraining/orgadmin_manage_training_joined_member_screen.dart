@@ -3,17 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageTrainingJoinedMemberScreen extends StatefulWidget {
-
   final TakeTrainingDataModel trainingResponse;
-
   const ManageTrainingJoinedMemberScreen({super.key, required this.trainingResponse});
-
   @override
   State<ManageTrainingJoinedMemberScreen> createState() => _ManageTrainingJoinedMemberScreenState();
 }
 
 class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedMemberScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -30,7 +26,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-            future: ApiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true),
+            future: _loadData(),
             builder: (context,snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
                 return SizedBox(
@@ -47,7 +43,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
                           shrinkWrap: true,
                           itemCount: val.trainingJoinedMembers.length,
                           itemBuilder: (context, index) {
-                            return containerJoinedMembers(val.trainingJoinedMembers[index]);
+                            return containerJoinedMembers(val.trainingJoinedMembers[index],size);
                           }
                       ) : Center(
                         child: Column(
@@ -71,13 +67,13 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
   }
 
   /// Training Joined Members Container
-  Widget containerJoinedMembers(TrainingJoinedMembersModel trainingJoinedMembersModel) {
+  Widget containerJoinedMembers(TrainingJoinedMembersModel trainingJoinedMembersModel,size) {
     return Card(
       elevation: 3,
       color: CustomColors.kWhiteColor,
-      margin: const EdgeInsets.all(4),
+      margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -87,17 +83,13 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                       children: [
-                        const TextSpan(text: 'Your Request to join in '),
+                         TextSpan(text: '${trainingJoinedMembersModel.firstName} ${trainingJoinedMembersModel.lastName} is joined in '),
                         TextSpan(
-                          text: trainingJoinedMembersModel.trainingName,
-                          style: const TextStyle(
-                            color: Colors.blue, // Change this to the color you desire
-                            // You can apply other styles specific to this part of the text if needed
-                          ),
+                          text: trainingJoinedMembersModel.trainingName, style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'),
                         ),
-                        const TextSpan(text: ' Training is Confirmed'),
+                        const TextSpan(text: ' Training'),
                       ],
                     ),
                   ),
@@ -108,7 +100,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId);
+                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,
@@ -116,8 +108,8 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
                       borderRadius: BorderRadius.circular(6),
                     )),
                 child: const Text(
-                  CustomString.leave,
-                  style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                 "Remove",
+                  style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                 ),
               ),
             ),

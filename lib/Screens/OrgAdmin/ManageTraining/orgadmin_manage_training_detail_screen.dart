@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:versa_tribe/extension.dart';
-
 import 'manage_training_details_screen.dart';
-import 'manage_training_joined_member_screen.dart';
+import 'orgadmin_manage_training_joined_member_screen.dart';
 import 'manage_training_pending_request_screen.dart';
 
 class ManageTrainingItemScreen extends StatefulWidget {
-
   final TakeTrainingDataModel trainingResponse;
-
   const ManageTrainingItemScreen({super.key, required this.trainingResponse});
-
   @override
   State<ManageTrainingItemScreen> createState() => _ManageTrainingItemScreenState();
 }
-
 class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
@@ -54,10 +47,9 @@ class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> wit
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-                top: size.height * 0.02,
-                left: size.width * 0.02,
-                right: size.height * 0.02),
+      padding: EdgeInsets.symmetric(
+      vertical: size.height * 0.005,
+        horizontal: size.width * 0.02,),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
