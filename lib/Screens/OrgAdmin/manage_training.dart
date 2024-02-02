@@ -2,22 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
-
-import 'ManageTraining/manage_training_item_screen.dart';
-
+import 'ManageTraining/orgadmin_manage_training_detail_screen.dart';
 
 class ManageTrainingScreen extends StatefulWidget {
-
   final int? orgId;
-
   const ManageTrainingScreen({super.key, required this.orgId});
-
   @override
   State<ManageTrainingScreen> createState() => _ManageTrainingScreenState();
 }
 
 class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -46,7 +40,7 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getTakeTrainingData(context: context, orgId: widget.orgId),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -64,28 +58,31 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                       itemBuilder: (context, index) {
                         return InkWell(
                           child: Card(
-                            color: CustomColors.kWhiteColor,
-                            elevation: 3,
+                            color: CustomColors.kGrayColor,
+                            elevation: 0.5,
                             shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment:
                                   CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                        '${val.getTakeTrainingList[index].trainingName}',
-                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.w600)),
-                                    SizedBox(height: size.height * 0.01 / 2),
+                                    Text('${val.getTakeTrainingList[index].trainingName}',
+                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.normal)),
+                                    //SizedBox(height: size.height * 0.01 / 2),
                                     // Text(
                                     //     'Organization : ${val.getTakeTrainingList[index].orgName}',
                                     //     style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                     SizedBox(height: size.height * 0.01 / 2),
                                     Text(
                                         'Duration : ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getTakeTrainingList[index].endDate!).toLocal())}',
+                                        style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
+                                    SizedBox(height: size.height * 0.01 / 2),
+                                    Text(
+                                        'Trainer : ${val.getTakeTrainingList[index].firstName} ${val.getTakeTrainingList[index].lastName}',
                                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                                     SizedBox(height: size.height * 0.01 / 2),
                                     Container(

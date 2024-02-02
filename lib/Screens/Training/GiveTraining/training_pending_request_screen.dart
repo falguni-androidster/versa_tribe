@@ -88,7 +88,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                 Expanded(
                   child: RichText(
                     text: TextSpan(
-                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                      style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                       children: [
                         TextSpan(
                           text: '${trainingPendingRequestsModel.firstName} ${trainingPendingRequestsModel.lastName} is requested to join ',
@@ -96,7 +96,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                         TextSpan(
                           text: trainingPendingRequestsModel.trainingName,
                           style: const TextStyle(
-                            color: CustomColors.kBlueColor,
+                            color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'
                           ),
                         ),
                         const TextSpan(text: ' Training'),

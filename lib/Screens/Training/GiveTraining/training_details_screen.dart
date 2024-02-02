@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
 import 'package:versa_tribe/extension.dart';
 
 class TrainingDetailScreen extends StatefulWidget {
-
   final GiveTrainingDataModel trainingResponse;
-
   const TrainingDetailScreen({super.key, required this.trainingResponse});
-
   @override
   State<TrainingDetailScreen> createState() => _TrainingDetailScreenState();
 }
@@ -239,7 +235,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
               trainingEx.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
             ],
           ),
-          Text(trainingEx.companyName!,
+          Text(trainingEx.companyName??trainingEx.industryFieldName!,
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
           Text('Experience : ${trainingEx.expMonths!}',
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))
@@ -290,7 +286,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                   Text(qualification.couName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 18,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),
@@ -319,7 +315,7 @@ class _TrainingDetailScreenState extends State<TrainingDetailScreen> {
                   Text(hobby.hobbyName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 18,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),

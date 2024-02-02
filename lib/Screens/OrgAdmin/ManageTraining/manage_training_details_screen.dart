@@ -4,17 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageTrainingDetailScreen extends StatefulWidget {
-
   final TakeTrainingDataModel trainingResponse;
-
   const ManageTrainingDetailScreen({super.key, required this.trainingResponse});
-
   @override
   State<ManageTrainingDetailScreen> createState() => _ManageTrainingDetailScreenState();
 }
 
 class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -42,26 +38,27 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.trainingResponse.trainingName!,
-                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 20, fontFamily: 'Poppins', fontWeight: FontWeight.w500, overflow: TextOverflow.fade)),
-                    SizedBox(height: size.height * 0.01),
+                        style: const TextStyle(color: CustomColors.kBlueColor, fontSize: 16, fontFamily: 'Poppins', fontWeight: FontWeight.normal, overflow: TextOverflow.fade)),
+                    //SizedBox(height: size.height * 0.01),
                     // Text('Organization : ${widget.trainingResponse.orgName!}',
                     //     style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     Text('Duration : ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(widget.trainingResponse.endDate!).toLocal())}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
-                    SizedBox(height: size.height * 0.01),
                     Text('Person Limit : ${widget.trainingResponse.personLimit!}',
                         style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
                     const Text('Description',
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
-                    Text(widget.trainingResponse.description!,
-                        style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
+                    Text(widget.trainingResponse.description!,textAlign: TextAlign.justify,
+                        style: const TextStyle(color: CustomColors.kLightGrayColor,fontSize: 14, fontFamily: 'Poppins', overflow: TextOverflow.fade)),
                     SizedBox(height: size.height * 0.01),
-                    const Text(CustomString.manageCriteria,
+                    const Text("Training Criteria",
                         style: TextStyle(color: CustomColors.kBlackColor, fontSize: 16, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01),
+
+                    ///Experience Criteria
                     const Text(CustomString.experience,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -100,6 +97,8 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Qualification Criteria
                     const Text(CustomString.qualification,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -117,7 +116,9 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                           else if(snapshot.connectionState == ConnectionState.done){
                             return Consumer<TrainingQualificationProvider>(
                                 builder: (context, val, child) {
-                                  return val.trainingQua.isNotEmpty ? containerQualificationTraining(val.trainingQua,size) : Container(
+                                  return val.trainingQua.isNotEmpty ?
+                                  containerQualificationTraining(val.trainingQua,size) :
+                                  Container(
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(8.0),
                                     color: CustomColors.kGrayColor,
@@ -131,6 +132,8 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Skill Criteria
                     const Text(CustomString.skill,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -170,6 +173,8 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                           return Container();
                         }),
                     SizedBox(height: size.height * 0.01 / 2),
+
+                    ///Hobby Criteria
                     const Text(CustomString.hobby,
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
@@ -227,7 +232,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
               trainingEx.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
             ],
           ),
-          Text(trainingEx.companyName!,
+          Text(trainingEx.companyName??trainingEx.industryFieldName!,
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
           Text('Experience : ${trainingEx.expMonths!}',
               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'))
@@ -278,7 +283,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                   Text(qualification.couName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  qualification.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 18,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),
@@ -307,7 +312,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                   Text(hobby.hobbyName!,
                       style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins', fontWeight: FontWeight.w400)),
                   SizedBox(width: size.width * 0.01),
-                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 20,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
+                  hobby.mandatory == true ? SvgPicture.asset(ImagePath.tickCircleIcon, width: 20, height: 18,colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)) : Container(),
                 ],
               )),
         ),
