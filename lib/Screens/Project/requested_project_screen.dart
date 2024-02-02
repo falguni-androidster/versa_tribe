@@ -1,14 +1,11 @@
-import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class RequestedProjectScreen extends StatefulWidget {
-
-  final int? orgId;
-
-  const RequestedProjectScreen({super.key, required this.orgId});
+  final int? orgID;
+  const RequestedProjectScreen({super.key, required this.orgID});
 
   @override
   State<RequestedProjectScreen> createState() => _RequestedProjectScreenState();
@@ -16,24 +13,10 @@ class RequestedProjectScreen extends StatefulWidget {
 
 class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    broadcastUpdate();
-  }
-
-  broadcastUpdate() async {
-    FBroadcast.instance().register("Key_Message", (value, callback) {
-      var orgID = value;
-      ApiConfig.getProjectDataByOrgID(context, orgID);
-    });
-  }
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getRequestedProject(context: context, isApproved: false, orgId: widget.orgId);
+      ApiConfig.getRequestedProject(context: context, isApproved: false, orgId:widget.orgID);
     } catch (err) {
       rethrow;
     }
@@ -47,7 +30,7 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getRequestedProject(context: context, isApproved: false, orgId: widget.orgId),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -57,7 +40,8 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                 ),
               );
 
-            } else if (snapshot.connectionState == ConnectionState.done) {
+            }
+            else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<ProjectRequestProvider>(
                   builder: (context, val, child) {
                     return val.projectRequest.isNotEmpty ? ListView.builder(
@@ -68,9 +52,9 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                           child: Card(
                             color: CustomColors.kWhiteColor,
                             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -80,18 +64,10 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                                         Expanded(
                                           child: RichText(
                                             text: TextSpan(
-                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                               children: [
-                                                const TextSpan(
-                                                  text: 'You requested to join ',
-                                                ),
-                                                TextSpan(
-                                                  text: val.projectRequest[index].projectName,
-                                                  style: const TextStyle(
-                                                    color: Colors.blue, // Change this to the color you desire
-                                                    // You can apply other styles specific to this part of the text if needed
-                                                  ),
-                                                ),
+                                                const TextSpan(text: 'You requested to join ',),
+                                                TextSpan(text: val.projectRequest[index].projectName, style: const TextStyle(color: Colors.blue,fontSize: 14, fontFamily: 'Poppins'),),
                                                 const TextSpan(text: ' Project'),
                                               ],
                                             ),
@@ -103,7 +79,7 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                                       width: double.infinity,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ApiConfig.rejectProjectManageUser(context, val.projectRequest[index].id, val.projectRequest[index].projectId);
+                                          ApiConfig.cancelProjectJoinedRequest(context: context, id: val.projectRequest[index].id, projectId: val.projectRequest[index].projectId, orgId: widget.orgID);
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: CustomColors.kGrayColor,
@@ -112,7 +88,7 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                                             )),
                                         child: const Text(
                                           CustomString.cancel,
-                                          style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                          style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                                         ),
                                       ),
                                     ),
@@ -121,7 +97,8 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                           ),
                         );
                       },
-                    ) : SizedBox(
+                    ) :
+                    SizedBox(
                         width: size.width,
                         height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.21 : size.height * 0.25,
                         child: Center(
@@ -132,7 +109,8 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                               ]),
                         ));
                   });
-            } else {
+            }
+            else {
               debugPrint("-----Requested Training print future builder------");
             }
             return Container();

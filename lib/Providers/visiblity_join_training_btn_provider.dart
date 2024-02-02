@@ -12,11 +12,14 @@ class VisibilityJoinTrainingBtnProvider with ChangeNotifier{
 
 
 class VisibilityJoinProjectBtnProvider with ChangeNotifier{
-  bool _projectBtnVisibility = false;
-  bool get projectBtnVisibility=>_projectBtnVisibility;
+  bool _projectJoinBtnVisibility = true;
+  bool get projectJoinBtnVisibility=>_projectJoinBtnVisibility;
+  bool _projectCancelBtnVisibility = true;
+  bool get projectCancelBtnVisibility=>_projectCancelBtnVisibility;
 
-  setProjectBtnVisibility(val){
-    _projectBtnVisibility = val;
+  setProjectBtnVisibility({join,cancel}){
+    _projectJoinBtnVisibility = join;
+    _projectCancelBtnVisibility = cancel;
     notifyListeners();
   }
 }

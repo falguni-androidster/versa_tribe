@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
-
 import '../../Providers/visiblity_join_training_btn_provider.dart';
 
 class ProjectDetailsScreen extends StatefulWidget {
@@ -13,7 +12,6 @@ class ProjectDetailsScreen extends StatefulWidget {
   State<ProjectDetailsScreen> createState() => _ProjectDetailsScreenState();
 }
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -25,11 +23,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       rethrow;
     }
   }
-@override
-  void initState() {
-    super.initState();
-    print("====>${widget.projectResponseModel.toJson()}");
-  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -229,38 +223,42 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         width: double.infinity,
                         child: Consumer<VisibilityJoinProjectBtnProvider>(
                             builder: (context,val,child) {
-                              return widget.projectResponseModel.isApproved==true &&val.projectBtnVisibility==true?
+                              debugPrint("is-approved--->${widget.projectResponseModel.isApproved}");
+                              debugPrint("is---->${val.projectJoinBtnVisibility}");
+                            return widget.projectResponseModel.isApproved==true?
                               ElevatedButton(
-                                onPressed: () {
-                                  ApiConfig().deleteJoinedProject(context: context, projectId: widget.projectResponseModel.projectId);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: CustomColors.kBlueColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                                ),
-                                child: const Text(
-                                  "Leave",
-                                  style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                                ),
-                              ):val.projectBtnVisibility==false?
+                              onPressed: () {
+                                ApiConfig().deleteJoinedProject(context: context, projectId: widget.projectResponseModel.projectId);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: CustomColors.kBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                              ),
+                              child: const Text(
+                                "Leave",
+                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                              ),
+                            ):
+                              //widget.projectResponseModel.isApproved==null?
+                              val.projectJoinBtnVisibility==true?
                               ElevatedButton(
-                                onPressed: () {
-                                  ApiConfig().joinProject(context: context, projectID: widget.projectResponseModel.projectId);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: CustomColors.kBlueColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                                ),
-                                child: const Text(
-                                  CustomString.joinTraining,
-                                  style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                                ),
-                              )
-                                 : ElevatedButton(
+                              onPressed: () {
+                                ApiConfig().joinProject(context: context, projectID: widget.projectResponseModel.projectId);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: CustomColors.kBlueColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                              ),
+                              child: const Text(
+                                CustomString.joinTraining,
+                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                              ),
+                            ) :
+                              ElevatedButton(
                                 onPressed: () {
                                   ApiConfig().deleteJoinedProject(context: context, projectId: widget.projectResponseModel.projectId);
                                 },
@@ -281,7 +279,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                     SizedBox(height: size.height*0.01,),
                     Consumer<VisibilityJoinProjectBtnProvider>(
                         builder: (context,val,child) {
-                          return widget.projectResponseModel.isApproved==true && val.projectBtnVisibility==true?Container(
+                          return widget.projectResponseModel.isApproved==true?
+                          Container(
                             alignment: Alignment.center,
                             width: double.infinity,
                             padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
@@ -292,7 +291,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                             child: const Text("Already Joined",
                               style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
                             ),
-                          ):val.projectBtnVisibility==true? Container(
+                          ):val.projectCancelBtnVisibility==true?
+                          Container(
                             alignment: Alignment.center,
                             width: double.infinity,
                             padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),

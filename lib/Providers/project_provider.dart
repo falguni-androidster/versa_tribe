@@ -11,8 +11,8 @@ class ProjectListProvider with ChangeNotifier{
   setListProject(listProject){
     listProject.forEach((ob){
       _getProjectList.add(ProjectResponseModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -24,8 +24,8 @@ class ProjectListByOrgIdProvider with ChangeNotifier{
   setListProjectByOrgId(listProject){
     listProject.forEach((ob){
       _getProjectListByOrgId.add(ProjectListByOrgIDModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -37,8 +37,8 @@ class ProjectListManageUserProvider with ChangeNotifier{
   setListProjectManageUser(listProject){
     listProject.forEach((ob){
       _getProjectListManageUser.add(ProjectManageUserModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -50,8 +50,8 @@ class ProjectExperienceProvider with ChangeNotifier{
   setProjectEx(pEx){
     pEx.forEach((ob) async {
       _projectEx.add(ProjectExperienceModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -63,8 +63,8 @@ class ProjectQualificationProvider with ChangeNotifier{
   setProjectQua(pQua){
     pQua.forEach((ob) async {
       _projectQua.add(ProjectQualificationModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -76,8 +76,8 @@ class ProjectSkillProvider with ChangeNotifier{
   setProjectSkill(pSkill){
     pSkill.forEach((ob) async {
       _projectSkill.add(ProjectSkillModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -89,8 +89,8 @@ class ProjectHobbyProvider with ChangeNotifier{
   setProjectHobby(pHobby){
     pHobby.forEach((ob) async {
       _projectHobby.add(ProjectHobbyModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -102,8 +102,8 @@ class ProjectRequestProvider with ChangeNotifier{
   setProjectRequest(pRequest){
     pRequest.forEach((ob) async {
       _projectRequest.add(ProjectRequestModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }
 
@@ -115,7 +115,7 @@ class ProjectAcceptedProvider with ChangeNotifier{
   setProjectAccepted(pAccepted){
     pAccepted.forEach((ob) async {
       _projectAccepted.add(ProjectRequestModel.fromJson(ob));
-      notifyListeners();
     });
+    notifyListeners();
   }
 }

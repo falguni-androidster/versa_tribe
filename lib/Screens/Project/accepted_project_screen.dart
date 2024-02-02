@@ -1,14 +1,11 @@
-import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class AcceptedProjectScreen extends StatefulWidget {
-
-  final int? orgId;
-
-  const AcceptedProjectScreen({super.key, required this.orgId});
+  final int? orgID;
+  const AcceptedProjectScreen({super.key, required this.orgID});
 
   @override
   State<AcceptedProjectScreen> createState() => _AcceptedProjectScreenState();
@@ -16,24 +13,10 @@ class AcceptedProjectScreen extends StatefulWidget {
 
 class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    broadcastUpdate();
-  }
-
-  broadcastUpdate() async {
-    FBroadcast.instance().register("Key_Message", (value, callback) {
-      var orgID = value;
-      ApiConfig.getProjectDataByOrgID(context, orgID);
-    });
-  }
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getAcceptedProject(context: context, isApproved: true, orgId: widget.orgId);
+      ApiConfig.getAcceptedProject(context: context, isApproved: true, orgId: widget.orgID);
     } catch (err) {
       rethrow;
     }
@@ -47,7 +30,7 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getAcceptedProject(context: context, isApproved: true, orgId: widget.orgId),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -68,9 +51,9 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
                           child: Card(
                             color: CustomColors.kWhiteColor,
                             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -80,18 +63,12 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
                                         Expanded(
                                           child: RichText(
                                             text: TextSpan(
-                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                               children: [
                                                 const TextSpan(
                                                   text: 'Your request is to join in ',
                                                 ),
-                                                TextSpan(
-                                                  text: val.projectAccepted[index].projectName,
-                                                  style: const TextStyle(
-                                                    color: Colors.blue, // Change this to the color you desire
-                                                    // You can apply other styles specific to this part of the text if needed
-                                                  ),
-                                                ),
+                                                TextSpan(text: val.projectAccepted[index].projectName, style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'),),
                                                 const TextSpan(text: ' Project is confirmed'),
                                               ],
                                             ),
@@ -103,7 +80,7 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
                                       width: double.infinity,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ApiConfig.rejectProjectManageUser(context, val.projectAccepted[index].id, val.projectAccepted[index].projectId);
+                                          ApiConfig.approvedProjectJoinedRequest(context: context, id: val.projectAccepted[index].id, projectId: val.projectAccepted[index].projectId, orgId: widget.orgID);
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: CustomColors.kGrayColor,
@@ -112,7 +89,7 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
                                             )),
                                         child: const Text(
                                           CustomString.leave,
-                                          style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                          style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                                         ),
                                       ),
                                     ),
