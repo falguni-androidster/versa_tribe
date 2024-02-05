@@ -4,13 +4,13 @@ import 'manage_training_details_screen.dart';
 import 'orgadmin_manage_training_joined_member_screen.dart';
 import 'manage_training_pending_request_screen.dart';
 
-class ManageTrainingItemScreen extends StatefulWidget {
+class OrgManageTrainingDetailScreen extends StatefulWidget {
   final TakeTrainingDataModel trainingResponse;
-  const ManageTrainingItemScreen({super.key, required this.trainingResponse});
+  const OrgManageTrainingDetailScreen({super.key, required this.trainingResponse});
   @override
-  State<ManageTrainingItemScreen> createState() => _ManageTrainingItemScreenState();
+  State<OrgManageTrainingDetailScreen> createState() => _OrgManageTrainingDetailScreenState();
 }
-class _ManageTrainingItemScreenState extends State<ManageTrainingItemScreen> with SingleTickerProviderStateMixin {
+class _OrgManageTrainingDetailScreenState extends State<OrgManageTrainingDetailScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   @override
   void initState() {

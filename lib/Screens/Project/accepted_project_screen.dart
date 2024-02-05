@@ -65,9 +65,7 @@ class _AcceptedProjectScreenState extends State<AcceptedProjectScreen> {
                                             text: TextSpan(
                                               style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                               children: [
-                                                const TextSpan(
-                                                  text: 'Your request is to join in ',
-                                                ),
+                                                const TextSpan(text: 'Your request is to join in ',),
                                                 TextSpan(text: val.projectAccepted[index].projectName, style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'),),
                                                 const TextSpan(text: ' Project is confirmed'),
                                               ],

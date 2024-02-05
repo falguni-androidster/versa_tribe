@@ -98,7 +98,7 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                                 )),
                           ),
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ManageTrainingItemScreen(trainingResponse: val.getTakeTrainingList[index])));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrgManageTrainingDetailScreen(trainingResponse: val.getTakeTrainingList[index])));
                           },
                         );
                       },
