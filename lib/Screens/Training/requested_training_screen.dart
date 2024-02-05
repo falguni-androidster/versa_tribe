@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/extension.dart';
 
 class RequestedTrainingScreen extends StatefulWidget {
-  const RequestedTrainingScreen({super.key});
-
+  final int? orgId;
+  const RequestedTrainingScreen({super.key, required this.orgId});
   @override
   State<RequestedTrainingScreen> createState() => _RequestedTrainingScreenState();
 }
 
 class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getRequestedTraining(context: context, isJoin: false);
+      ApiConfig.getRequestedTraining(context: context, isJoin: false,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -29,7 +29,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getRequestedTraining(context: context, isJoin: false),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -38,11 +38,12 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                   child: CircularProgressIndicator(),
                 ),
               );
-
-            } else if (snapshot.connectionState == ConnectionState.done) {
+            }
+            else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<RequestTrainingListProvider>(
                   builder: (context, val, child) {
-                    return val.getRequestedTrainingList.isNotEmpty ? ListView.builder(
+                    return val.getRequestedTrainingList.isNotEmpty ?
+                    ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.getRequestedTrainingList.length,
                       itemBuilder: (context, index) {
@@ -50,11 +51,10 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                           child: Card(
                             color: CustomColors.kWhiteColor,
                             shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                            borderRadius: BorderRadius.all(Radius.circular(6))),
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -64,17 +64,13 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                         Expanded(
                                           child: RichText(
                                             text: TextSpan(
-                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                               children: [
                                                 const TextSpan(
                                                   text: 'You requested to join ',
                                                 ),
                                                 TextSpan(
-                                                  text: val.getRequestedTrainingList[index].trainingName,
-                                                  style: const TextStyle(
-                                                    color: Colors.blue, // Change this to the color you desire
-                                                    // You can apply other styles specific to this part of the text if needed
-                                                  ),
+                                                  text: val.getRequestedTrainingList[index].trainingName,style: const TextStyle(color: CustomColors.kBlueColor,),
                                                 ),
                                                 const TextSpan(text: ' Training'),
                                               ],
@@ -89,8 +85,10 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: ElevatedButton(
-                                              onPressed: () {
-                                                ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                              onPressed: () async {
+                                                SharedPreferences pref = await SharedPreferences.getInstance();
+                                                String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
+                                                ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID,orgId: widget.orgId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: CustomColors.kGrayColor,
@@ -99,7 +97,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                                   )),
                                               child: const Text(
                                                 CustomString.reject,
-                                                style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                                style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                                               ),
                                             ),
                                           ),
@@ -108,8 +106,10 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: ElevatedButton(
-                                              onPressed: () {
-                                                ApiConfig.approveRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId);
+                                              onPressed: () async {
+                                                SharedPreferences pref = await SharedPreferences.getInstance();
+                                                String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
+                                                ApiConfig.approveRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID, orgId: widget.orgId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: CustomColors.kBlueColor,
@@ -118,7 +118,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                                   )),
                                               child: const Text(
                                                 CustomString.approve,
-                                                style: TextStyle(fontSize: 12, color: CustomColors.kWhiteColor, fontFamily: 'Poppins'),
+                                                style: TextStyle(fontSize: 14, color: CustomColors.kWhiteColor, fontFamily: 'Poppins'),
                                               ),
                                             ),
                                           ),

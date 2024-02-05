@@ -82,10 +82,10 @@ class _TrainingScreenState extends State<TrainingScreen>{
                   GiveTrainingScreen(orgId: widget.orgId),
 
                   /// Requested
-                  const RequestedTrainingScreen(),
+                  RequestedTrainingScreen(orgId: widget.orgId),
 
                   /// Accepted
-                  const AcceptedTrainingScreen()
+                  AcceptedTrainingScreen(orgId: widget.orgId)
 
                 ],
               ),

@@ -326,32 +326,32 @@ class ApiConfig {
     }
   }
 
-  static getRequestedTraining({context, isJoin}) async {
+  static getRequestedTraining({context, isJoin,orgId}) async {
     final provider = Provider.of<RequestTrainingListProvider>(context, listen: false);
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint('Requested Training data-----------> ${response.body}');
+        debugPrint('Get Request training success-----------> ${response.body}');
         List<dynamic> data = jsonDecode(response.body);
         provider.getRequestedTrainingList.clear();
         provider.setRequestedTrainingList(data);
       } else {
         showToast(context, CustomString.noDataFound);
-        debugPrint("Requested Training Data not found...");
+        debugPrint("------->Requested Training Data not found...");
       }
     } catch (e) {
       debugPrint("Training------>$e");
     }
   }
 
-  static getAcceptedTraining({context, isJoin}) async {
+  static getAcceptedTraining({context, isJoin,orgId}) async {
 
     final provider = Provider.of<AcceptTrainingListProvider>(context, listen: false);
     provider.getAcceptedTrainingList.clear();
@@ -360,7 +360,7 @@ class ApiConfig {
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
     try {
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?is_Join=$isJoin';
+      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
       final response = await http.get(Uri.parse(trainingUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -617,7 +617,7 @@ class ApiConfig {
   }
 
   /// Remove Joined member Training
-  static deletePendingTrainingRequest({context, trainingId, personId, isJoin}) async {
+  static deletePendingTrainingRequest({context, trainingId, personId, isJoin,orgId}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -630,7 +630,9 @@ class ApiConfig {
       debugPrint("pending training cancel Request----->${response.body}");
       showToast(context, "your request canceled...");
 
-      //Below both Api-functions use for display updated data in (joined member Tab) and (Pending Training Request Tab)
+      //Below Api-functions use for display updated data in (joined member Tab), (Pending Training Request Tab)and(Request Training)
+      getAcceptedTraining(context: context, isJoin: true,orgId: orgId);
+      getRequestedTraining(context: context, isJoin: false,orgId: orgId);
       getTrainingJoinedMembers(context, trainingId, true);
       getTrainingPendingRequests(context, trainingId, isJoin);
     } else {
@@ -640,7 +642,7 @@ class ApiConfig {
   }
 
   /// Approve Request Training
-  static approveRequestTraining({context, trainingId, personId, isJoin}) async {
+  static approveRequestTraining({context, trainingId, personId, isJoin,orgId}) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -658,6 +660,7 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint("Approve Request----->${response.body}");
       showToast(context, "Your pending training request is approved..");
+      getRequestedTraining(context: context, isJoin: false,orgId: orgId);
       getTrainingPendingRequests(context, trainingId, isJoin);
     } else {
       debugPrint("Not Approve pending training request----->${response.body}");
