@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/extension.dart';
 
 class AcceptedTrainingScreen extends StatefulWidget {
-  const AcceptedTrainingScreen({super.key});
-
+  final int? orgId;
+  const AcceptedTrainingScreen({super.key, required this.orgId});
   @override
   State<AcceptedTrainingScreen> createState() => _AcceptedTrainingScreenState();
 }
-
 class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
 
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getAcceptedTraining(context: context, isJoin: true);
+      ApiConfig.getAcceptedTraining(context: context, isJoin: true,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -28,7 +28,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getAcceptedTraining(context: context, isJoin: true),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -37,7 +37,8 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                   child: CircularProgressIndicator(),
                 ),
               );
-            } else if (snapshot.connectionState == ConnectionState.done) {
+            }
+            else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<AcceptTrainingListProvider>(
                   builder: (context, val, child) {
                     return val.getAcceptedTrainingList.isNotEmpty ? ListView.builder(
@@ -50,9 +51,9 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                             shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(6))),
-                            margin: EdgeInsets.all(size.width * 0.01),
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.01),
                             child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -62,7 +63,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                                         Expanded(
                                           child: RichText(
                                             text: TextSpan(
-                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                               children: [
                                                 const TextSpan(
                                                   text: 'You joined in ',
@@ -84,8 +85,10 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                                     SizedBox(
                                       width: double.infinity,
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getAcceptedTrainingList[index].trainingId);
+                                        onPressed: () async {
+                                          SharedPreferences pref = await SharedPreferences.getInstance();
+                                          String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
+                                          ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getAcceptedTrainingList[index].trainingId,personId: myPerID);
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: CustomColors.kGrayColor,
@@ -94,7 +97,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                                             )),
                                         child: const Text(
                                           CustomString.leave,
-                                          style: TextStyle(fontSize: 12, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
+                                          style: TextStyle(fontSize: 14, color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                                         ),
                                       ),
                                     ),
