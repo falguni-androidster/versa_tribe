@@ -218,6 +218,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         }
                     ),
                     SizedBox(height: size.height * 0.01),
+
                     ///Join Project Button
                     SizedBox(
                         width: double.infinity,

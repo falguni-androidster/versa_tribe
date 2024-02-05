@@ -3,20 +3,17 @@ import 'package:versa_tribe/Screens/OrgAdmin/ManageProject/manage_project_user_s
 import 'package:versa_tribe/Screens/OrgAdmin/ManageProject/project_list_details_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
-class ProjectListItemScreen extends StatefulWidget {
-
+class OrgManageProjectDetailScreen extends StatefulWidget {
+  final int orgID;
   final ProjectListByOrgIDModel projectResponseModel;
-
-  const ProjectListItemScreen({super.key, required this.projectResponseModel});
-
+  const OrgManageProjectDetailScreen({super.key, required this.projectResponseModel,required this.orgID});
   @override
-  State<ProjectListItemScreen> createState() => _ProjectListItemScreenState();
+  State<OrgManageProjectDetailScreen> createState() => _OrgManageProjectDetailScreenState();
 }
 
-class _ProjectListItemScreenState extends State<ProjectListItemScreen> with SingleTickerProviderStateMixin{
+class _OrgManageProjectDetailScreenState extends State<OrgManageProjectDetailScreen> with SingleTickerProviderStateMixin{
 
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
@@ -31,9 +28,7 @@ class _ProjectListItemScreenState extends State<ProjectListItemScreen> with Sing
 
   @override
   Widget build(BuildContext context) {
-
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: CustomColors.kWhiteColor,
       appBar: AppBar(
@@ -50,10 +45,9 @@ class _ProjectListItemScreenState extends State<ProjectListItemScreen> with Sing
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-                top: size.height * 0.02,
-                left: size.width * 0.02,
-                right: size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+              vertical: size.height * 0.005,
+              horizontal: size.width * 0.02,),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

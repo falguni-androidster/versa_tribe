@@ -4,17 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageUserProjectScreen extends StatefulWidget {
-
   final ProjectListByOrgIDModel projectResponseModel;
-
   const ManageUserProjectScreen({super.key, required this.projectResponseModel});
-
   @override
   State<ManageUserProjectScreen> createState() => _ManageUserProjectScreenState();
 }
-
 class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
-
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
@@ -31,7 +26,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future: ApiConfig.getProjectManageUserData(context, widget.projectResponseModel.projectId),
+          future: _loadData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox(
@@ -40,19 +35,21 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                   child: CircularProgressIndicator(),
                 ),
               );
-            } else if (snapshot.connectionState == ConnectionState.done) {
+            }
+            else if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<ProjectListManageUserProvider>(
                   builder: (context, val, child) {
                     return val.getProjectListManageUser.isNotEmpty ? ListView.builder(
                       shrinkWrap: true,
                       itemCount: val.getProjectListManageUser.length,
                       itemBuilder: (context, index) {
-                        return val.getProjectListManageUser[index].isApproved != true ? Card(
+                        return val.getProjectListManageUser[index].isApproved != true ?
+                        Card(
                           elevation: 3,
                           color: CustomColors.kWhiteColor,
-                          margin: const EdgeInsets.all(4),
+                          margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -62,18 +59,14 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                     Expanded(
                                       child: RichText(
                                         text: TextSpan(
-                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                           children: [
                                             TextSpan(
                                               text: '${val.getProjectListManageUser[index].firstName} is requested to join ',
                                             ),
                                             TextSpan(
                                               text: val.getProjectListManageUser[index].projectName,
-                                              style: const TextStyle(
-                                                color: Colors.blue,
-                                                // Change this to the color you desire
-                                                // You can apply other styles specific to this part of the text if needed
-                                              ),
+                                              style: const TextStyle(color: CustomColors.kBlueColor,fontSize: 14, fontFamily: 'Poppins'),
                                             ),
                                             const TextSpan(text: ' Project'),
                                           ],
@@ -110,12 +103,13 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                               ],
                             ),
                           ),
-                        ) : Card(
+                        ) :
+                        Card(
                           elevation: 3,
                           color: CustomColors.kWhiteColor,
-                          margin: const EdgeInsets.all(4),
+                          margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -125,16 +119,15 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                     Expanded(
                                       child: RichText(
                                         text: TextSpan(
-                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins'),
+                                          style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins'),
                                           children: [
                                             TextSpan(
-                                              text: '${val.getProjectListManageUser[index].firstName} request to join in ',
+                                              text: '${val.getProjectListManageUser[index].firstName} request is to join in ',
                                             ),
                                             TextSpan(
                                               text: val.getProjectListManageUser[index].projectName,
                                               style: const TextStyle(
-                                                color: Colors.blue, // Change this to the color you desire
-                                                // You can apply other styles specific to this part of the text if needed
+                                                color: CustomColors.kBlueColor,
                                               ),
                                             ),
                                             const TextSpan(text: ' Project is confirmed'),
@@ -160,7 +153,8 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                           ),
                         );
                       },
-                    ) : SizedBox(
+                    ) :
+                    SizedBox(
                         width: size.width,
                         height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.21 : size.height * 0.25,
                         child: Center(

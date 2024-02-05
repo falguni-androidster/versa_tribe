@@ -865,6 +865,7 @@ class ApiConfig {
     if (response.statusCode == 200) {
       debugPrint("Cancel Project joined Request Success: --------->${response.body}");
       showToast(context, 'Cancel Joined Project Request SuccessFully..');
+      getProjectManageUserData(context,projectId);
       getRequestedProject(context: context, isApproved: false, orgId:orgId);
     } else {
       debugPrint("Cancel Project joined Request Failed--------->${response.body}");
