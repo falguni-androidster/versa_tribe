@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
+import 'Providers/dropmenu_provider.dart';
 import 'Providers/visiblity_join_training_btn_provider.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
 import 'Screens/call_screen.dart';
@@ -78,6 +79,7 @@ void main() {
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
       ChangeNotifierProvider<VisibilityJoinTrainingBtnProvider>(create: (_) => VisibilityJoinTrainingBtnProvider()),
       ChangeNotifierProvider<VisibilityJoinProjectBtnProvider>(create: (_) => VisibilityJoinProjectBtnProvider()),
+      ChangeNotifierProvider<DropMenuProvider>(create: (_) => DropMenuProvider()),
     ],
     child: MyApp()
   ));
@@ -93,8 +95,7 @@ class MyApp extends StatelessWidget {
   Map<String, PageContentBuilder> routes = {
     '/home': ([SIPUAHelper? helper, Object? arguments]) =>
         HomeScreen(helper: helper, popUp: false),
-    '/callscreen': ([SIPUAHelper? helper, Object? arguments]) =>
-        CallScreenWidget(helper, arguments as Call?),
+    '/callscreen': ([SIPUAHelper? helper, Object? arguments]) => CallScreenWidget(helper, arguments as Call?),
     '/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
   };
 

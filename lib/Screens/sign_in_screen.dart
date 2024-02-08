@@ -268,7 +268,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                   SizedBox(height: size.height * 0.01),
 
-                  /// SignIn Text
+                  /// SignUP Text
                   InkWell(
                     onTap: () {
                       _navigateToNextScreen(

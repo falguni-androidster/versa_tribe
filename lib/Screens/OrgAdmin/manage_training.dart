@@ -87,11 +87,12 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
                                     SizedBox(height: size.height * 0.01 / 2),
                                     Container(
                                       decoration: BoxDecoration(
+                                        color: CustomColors.kWhiteColor,
                                           border: Border.all(width: 2, color: CustomColors.kBlueColor),
                                           borderRadius: const BorderRadius.all(Radius.circular(10))),
                                       padding: const EdgeInsets.all(6.0),
                                       child: Text(
-                                          'PersonLimit - ${val.getTakeTrainingList[index].personLimit}',
+                                          'PersonLimit: ${val.getTakeTrainingList[index].personLimit}',
                                           style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 12, fontFamily: 'Poppins')),
                                     ),
                                   ],

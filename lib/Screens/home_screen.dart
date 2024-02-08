@@ -45,14 +45,14 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
   initState() {
     setInitialValue(context);
     super.initState();
-    registerState = helper!.registerState;
-    helper!.addSipUaHelperListener(this);
+    //registerState = helper!.registerState;
+    //helper!.addSipUaHelperListener(this);
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    helper!.removeSipUaHelperListener(this);
+    //helper!.removeSipUaHelperListener(this);
   }
 
   @override
@@ -72,11 +72,12 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     settings.uri = 'os0i7i7y@wazo.gigonomy.in';
     settings.authorizationUser = 'os0i7i7y';
     settings.password = 'ejfcvo8y';
-    settings.displayName = 'Falguni';
+    settings.displayName = 'Test Caller';
     settings.userAgent = 'Dart SIP Client v1.0.0';
     settings.dtmfMode = DtmfMode.RFC2833;
 
     helper!.start(settings);
+    print("cheque-helper--->$helper");
   }
 
   setInitialValue(context) async {
@@ -276,13 +277,12 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               SizedBox(width: size.width * 0.02),
               CupertinoSwitch(
                 value: _switchValue,
-                onChanged: (value) {
-                  setState(() async {
+                onChanged: (value) async {
+                    debugPrint("Switch-value-->$value");
                     _switchValue = value;
                     _handleSave(context);
                     await Permission.microphone.request();
                     await Permission.camera.request();
-                  });
                 },
               ),
             ],
@@ -291,6 +291,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
         ///Bottom navigation bar 1
         bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
           onDestinationSelected: (int index) {
+            print("----->SEleCTE Home Tab Index==>$index");
             screenIndexProvider.manageBottomTab(index);
           },
           elevation: 10,

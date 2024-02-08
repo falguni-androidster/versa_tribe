@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:versa_tribe/Providers/dropmenu_provider.dart';
 import 'package:versa_tribe/Screens/Training/accepted_training_screen.dart';
 import 'package:versa_tribe/Screens/Training/requested_training_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -18,9 +20,24 @@ class TrainingScreen extends StatefulWidget {
 
 class _TrainingScreenState extends State<TrainingScreen>{
 
+  // List of items in our dropdown menu
+  var menuItems = [
+    'All',
+    'Requested',
+    'Joined',
+    'Not joined',
+  ];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    dynamic dropMenuPro = Provider.of<DropMenuProvider>(context,listen: false);
+    dropMenuPro.setDropMenu("All");
+  }
 
   @override
   Widget build(BuildContext context) {
+    final dropMenuPro = Provider.of<DropMenuProvider>(context,listen: false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       /*floatingActionButton: Padding(
@@ -34,7 +51,7 @@ class _TrainingScreenState extends State<TrainingScreen>{
         ),
       ),*/
       body: DefaultTabController(
-        length: 4,
+        length: 2,//4,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -61,14 +78,49 @@ class _TrainingScreenState extends State<TrainingScreen>{
                   Container(
                       padding: const EdgeInsets.all(8.0),
                       child: const Text(CustomString.giveTraining)),
-                  Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text(CustomString.requested)),
-                  Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: const Text(CustomString.accepted)),
-                ],
+                  // Container(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: const Text(CustomString.requested)),
+                  // Container(
+                  //     padding: const EdgeInsets.all(8.0),
+                  //     child: const Text(CustomString.accepted)),
+                ],onTap: (tabIndex){
+                  if(tabIndex==0){
+                    dropMenuPro.setDropMenuVisibility(0);
+                  }else if(tabIndex==1){
+                    dropMenuPro.setDropMenuVisibility(1);
+                  }
+              },
               ),
+            ),
+            Consumer<DropMenuProvider>(
+              builder: (context,val,child) {
+                return val.dropMenu ==0? Container(
+                  alignment: Alignment.centerRight,
+                  child: DropdownButton(
+                    dropdownColor: Colors.white,
+                    //padding: EdgeInsets.symmetric(vertical: size.height*0.02,horizontal: size.width*0.02),
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    alignment: Alignment.topRight,
+                    // Initial Value
+                    value: val.takeTrainingMenuItems,
+                    // Down Arrow Icon
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    // Array list of items
+                    items: menuItems.map((String items) {
+                      return DropdownMenuItem(
+                        value: items,
+                        child: Text(items),
+                      );
+                    }).toList(),
+                    // After selecting the desired option,it will change button value to selected value
+                    onChanged: (String? newValue) {
+                      val.setDropMenu(newValue);
+                      val.notify();
+                    },
+                  ),
+                ):const SizedBox.shrink();
+              }
             ),
             Expanded(
               child: TabBarView(
@@ -76,16 +128,17 @@ class _TrainingScreenState extends State<TrainingScreen>{
                 children: <Widget>[
 
                   /// Take Training
+                  /*TakeTrainingScreen(orgId: widget.orgId),*/
                   TakeTrainingScreen(orgId: widget.orgId),
 
                   /// Give Training
                   GiveTrainingScreen(orgId: widget.orgId),
 
-                  /// Requested
-                  RequestedTrainingScreen(orgId: widget.orgId),
-
-                  /// Accepted
-                  AcceptedTrainingScreen(orgId: widget.orgId)
+                  // /// Requested
+                  // RequestedTrainingScreen(orgId: widget.orgId),
+                  //
+                  // /// Accepted
+                  // AcceptedTrainingScreen(orgId: widget.orgId)
 
                 ],
               ),

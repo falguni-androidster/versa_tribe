@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/extension.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -20,6 +21,7 @@ class _ProfileExistScreenState extends State<ProfileExistScreen> {
     //Navigates to new screen after 3 seconds.
     Timer(const Duration(seconds: 1), () {
       Navigator.pushNamed(context, '/home', arguments: true);
+      //Navigator.push(context, MaterialPageRoute(builder: (context)=>const HomeScreen(popUp: true)));
     });
   }
 
