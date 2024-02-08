@@ -9,10 +9,10 @@ class DropMenuProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  String _takeTrainingMenuItems = "All";
-  String get takeTrainingMenuItems=>_takeTrainingMenuItems;
+  String _tpMenuItems = "All";
+  String get tpMenuItems=>_tpMenuItems;
   setDropMenu(menu){
-    _takeTrainingMenuItems=menu;
+    _tpMenuItems=menu;
   }
 
 
@@ -46,6 +46,20 @@ class DropMenuProvider with ChangeNotifier{
     _orgTrainTrainingMenuItems=menu;
   }
 
+
+  ///OrgAdmin Project
+  int _orgProjectDropMenu = 0;
+  int get orgProjectDropMenu => _orgProjectDropMenu;
+  setOrgProjectDropMenuVisibility(val){
+    _orgProjectDropMenu=val;
+    notifyListeners();
+  }
+
+  String _orgProjectMenuItems = "Pending Request";
+  String get orgProjectMenuItems=>_orgProjectMenuItems;
+  setOrgProjectTDropMenu(menu){
+    _orgProjectMenuItems=menu;
+  }
   ///For all Dropdown menu notify
   notify(){
     print("----NoTiFy------");

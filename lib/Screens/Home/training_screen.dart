@@ -101,7 +101,7 @@ class _TrainingScreenState extends State<TrainingScreen>{
                     borderRadius: const BorderRadius.all(Radius.circular(5)),
                     alignment: Alignment.topRight,
                     // Initial Value
-                    value: val.takeTrainingMenuItems,
+                    value: val.tpMenuItems,
                     // Down Arrow Icon
                     icon: const Icon(Icons.keyboard_arrow_down),
                     // Array list of items
