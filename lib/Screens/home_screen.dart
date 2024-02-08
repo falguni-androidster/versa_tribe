@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:fbroadcast/fbroadcast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +12,7 @@ import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
-// import 'Home/messenger_screen.dart';
+import 'Home/messenger_screen.dart';
 import 'org_admin_manage.dart';
 import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -25,7 +23,7 @@ class HomeScreen extends StatefulWidget {
   final bool? popUp;
   final SIPUAHelper? helper;
 
-  const HomeScreen( this.popUp, {super.key, this.from, this.helper});
+  const HomeScreen({super.key, this.from, this.popUp, this.helper});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -41,19 +39,20 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
   late RegistrationState registerState;
   SIPUAHelper? get helper => widget.helper;
+  bool _switchValue = false;
 
   @override
   initState() {
     setInitialValue(context);
     super.initState();
-    registerState = helper!.registerState;
-    helper!.addSipUaHelperListener(this);
+    //registerState = helper!.registerState;
+    //helper!.addSipUaHelperListener(this);
   }
 
   @override
   void deactivate() {
     super.deactivate();
-    helper!.removeSipUaHelperListener(this);
+    //helper!.removeSipUaHelperListener(this);
   }
 
   @override
@@ -73,11 +72,12 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     settings.uri = 'os0i7i7y@wazo.gigonomy.in';
     settings.authorizationUser = 'os0i7i7y';
     settings.password = 'ejfcvo8y';
-    settings.displayName = 'Falguni';
+    settings.displayName = 'Test Caller';
     settings.userAgent = 'Dart SIP Client v1.0.0';
     settings.dtmfMode = DtmfMode.RFC2833;
 
     helper!.start(settings);
+    print("cheque-helper--->$helper");
   }
 
   setInitialValue(context) async {
@@ -145,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                     backgroundColor: CustomColors.kGrayColor,
                     elevation: 0,
                     toolbarHeight: 40,
-                    centerTitle: true,
                     title: const Text(
                       CustomString.switchOrganization,
                       style: TextStyle(color: CustomColors.kBlueColor,fontSize: 14,fontFamily: 'Poppins'),
@@ -189,11 +188,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     );
   }
 
-  void closeAppUsingExit() {
-    exit(0);
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final size= MediaQuery.of(context).size;
@@ -217,8 +211,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                 CupertinoDialogAction(
                     isDestructiveAction: true,
                     onPressed: () {
-                      // Navigator.pop(context, true);
-                      closeAppUsingExit();
+                      Navigator.pop(context, true);
                     },
                     child: const Text(CustomString.dialogYes, style: TextStyle(fontFamily: 'Poppins'))),
               ],
@@ -272,25 +265,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                 );
               }),
               const Spacer(),
-              Consumer<CallSwitchProvider>(
-                builder: (context, switchProvider, _) {
-                  return Switch(
-                    value: switchProvider.isSwitched,
-                    activeColor: CustomColors.kBlueColor,
-                    onChanged: (value) async {
-                      if(value){
-                        _handleSave(context);
-                        await Permission.microphone.request();
-                        await Permission.camera.request();
-                      } else{
-                        helper!.stop();
-                      }
-                      switchProvider.toggleSwitch();
-                    },
-                  );
-                },
-              ),
-              SizedBox(width: size.width * 0.02),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return val.isAdmin==true || orgAdmin== true
                     ? SVGIconButton(svgPath: ImagePath.switchIcon, size: 24.0, color: CustomColors.kBlueColor,
@@ -300,12 +274,24 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                         })
                     : Container();
               }),
+              SizedBox(width: size.width * 0.02),
+              CupertinoSwitch(
+                value: _switchValue,
+                onChanged: (value) async {
+                    debugPrint("Switch-value-->$value");
+                    _switchValue = value;
+                    _handleSave(context);
+                    await Permission.microphone.request();
+                    await Permission.camera.request();
+                },
+              ),
             ],
           ),
         ),
         ///Bottom navigation bar 1
         bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
           onDestinationSelected: (int index) {
+            print("----->SEleCTE Home Tab Index==>$index");
             screenIndexProvider.manageBottomTab(index);
           },
           elevation: 10,
@@ -342,13 +328,13 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
           elevation: 3,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: EdgeInsets.all(size.height * 0.01),
+          margin: EdgeInsets.only(bottom: size.height * 0.02, left: size.width * 0.03, right: size.width * 0.03),
           child: NavigationBar(
             onDestinationSelected: (int index) {
               screenIndexProvider.manageBottomTab(index);
             },
             animationDuration: const Duration(seconds: 1),
-            elevation: 6,
+            elevation: 3,
             height: size.height * 0.1,
             shadowColor: CustomColors.kLightGrayColor,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
@@ -368,10 +354,10 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                   selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.training),
-              /*NavigationDestination(
+              NavigationDestination(
                   selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
-                  label: CustomString.messenger),*/
+                  label: CustomString.messenger),
               NavigationDestination(
                   selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
@@ -467,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               return TrainingScreen(orgId: val.switchOrgId);
             }
           ),
-          /*const MessengersScreen(),*/
+          const MessengersScreen(),
           const AccountScreen()
         ][currentScreenIndex]
       ),

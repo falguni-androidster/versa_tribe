@@ -6,7 +6,6 @@ import 'package:versa_tribe/extension.dart';
 
 class ManageOrganization extends StatefulWidget {
   const ManageOrganization({super.key});
-
   @override
   State<ManageOrganization> createState() => _ManageOrganizationState();
 }
@@ -367,5 +366,6 @@ class _ManageOrganizationState extends State<ManageOrganization>
   arrowBackPressed(context) async {
     await ApiConfig.getDataSwitching(context: context);
     Navigator.pushNamed(context, '/home');
+    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
   }
 }

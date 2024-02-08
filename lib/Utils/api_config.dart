@@ -66,7 +66,6 @@ class ApiConfig {
   Future<void> signInClick({context, emailController, passwordController}) async {
 
     final provider = Provider.of<CheckInternet>(context,listen:false);
-
     LoginResponseModel loginResponseModel;
     if (provider.status == "Connected") {
       Map signInParameter = {
@@ -401,7 +400,7 @@ class ApiConfig {
       pro.setTrainingBtnVisibility(true);
     } else {
       debugPrint('Training Joined----------------->>>> ${response.body} & ${response.statusCode}');
-      showToast(context, 'Try After some time.....');
+      showToast(context, '${jsonDecode(response.body)["Message"]}');
     }
   }
 

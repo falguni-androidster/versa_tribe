@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:versa_tribe/Providers/visiblity_join_training_btn_provider.dart';
 import 'package:versa_tribe/extension.dart';
+
+import '../../../Providers/visiblity_join_training_btn_provider.dart';
 
 class TakeTrainingDetailScreen extends StatefulWidget {
 
   final TakeTrainingDataModel trainingResponse;
   final int orgID;
+  final int index;
 
-  const TakeTrainingDetailScreen({super.key,required this.trainingResponse, required this.orgID});
+  const TakeTrainingDetailScreen({super.key,required this.trainingResponse, required this.orgID, required this.index});
 
   @override
   State<TakeTrainingDetailScreen> createState() => _TakeTrainingDetailScreenState();
@@ -25,6 +27,8 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
+      ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
+
       ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
       ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
       ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
@@ -36,7 +40,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pro = Provider.of<TakeTrainingListProvider>(context,listen:false);
+    debugPrint("index of model object--->${widget.index}");//this will use to manage join cancel btn manage with api call for get status(latest)
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -232,43 +236,47 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         }
                     ),
                     SizedBox(height: size.height * 0.01),
+
                     ///Join Training Button
                     SizedBox(
-                      width: double.infinity,
-                      child: Consumer<VisibilityJoinTrainingBtnProvider>(
-                          builder: (context,val,child) {
-                            return widget.trainingResponse.isJoin==true &&val.trainingBtnVisibility==true?
-                            ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                        width: double.infinity,
+                        child: Consumer<VisibilityJoinTrainingBtnProvider>(
+                            builder: (context,val,child) {
+                              print("isJoin====>${widget.trainingResponse.isJoin}");
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: CustomColors.kBlueColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                                    ),
+                                    child: const Text(
+                                      "Leave",
+                                      style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                  onPressed: () {
+                              ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                              backgroundColor: CustomColors.kBlueColor,
+                              shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
                               ),
-                              child: const Text(
-                                "Leave",
-                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                              child: const Text(CustomString.joinTraining, style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
                               ),
-                            ):
-                            val.trainingBtnVisibility==false?
-                            ElevatedButton(
-                            onPressed: () {
-                              ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                                                  ),
-                            child: const Text(
-                              CustomString.joinTraining,
-                              style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                            ),
-                            ): ElevatedButton(
+                                ],
+                              );
+
+                              /*    : ElevatedButton(
                             onPressed: () {
                             ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
                             },
@@ -278,16 +286,63 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                             borderRadius: BorderRadius.circular(5),
                             ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
                             ),
-                            child: const Text(
-                            "Cancel",
-                            style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                            ),
-                            );
-                          }
+                            child: const Text("Cancel", style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
+                            );*/
+                            }
                         )
                     ),
+
+                    // SizedBox(
+                    //   width: double.infinity,
+                    //   child: Consumer<VisibilityJoinTrainingBtnProvider>(
+                    //       builder: (context,val,child) {
+                    //         print("isJoin====>${widget.trainingResponse.isJoin}");
+                    //         //return widget.trainingResponse.isJoin==true || widget.trainingResponse.isJoin==false?
+                    //         return val.trainingBtnVisibility==true?
+                    //         ElevatedButton(
+                    //           onPressed: () {
+                    //             ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                    //           },
+                    //           style: ElevatedButton.styleFrom(
+                    //             backgroundColor: CustomColors.kBlueColor,
+                    //             shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(5),
+                    //             ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                    //           ),
+                    //           child: const Text(
+                    //             "Leave",
+                    //             style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
+                    //           ),
+                    //         ):
+                    //         ElevatedButton(
+                    //         onPressed: () {
+                    //           ApiConfig().joinTraining(context: context, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
+                    //         },
+                    //         style: ElevatedButton.styleFrom(
+                    //             backgroundColor: CustomColors.kBlueColor,
+                    //             shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(5),
+                    //             ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                    //                               ),
+                    //         child: const Text(CustomString.joinTraining, style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
+                    //         );
+                    //         /*    : ElevatedButton(
+                    //         onPressed: () {
+                    //         ApiConfig().deleteJoinedTraining(context: context, trainingId: widget.trainingResponse.trainingId);
+                    //         },
+                    //         style: ElevatedButton.styleFrom(
+                    //         backgroundColor: CustomColors.kBlueColor,
+                    //         shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(5),
+                    //         ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
+                    //         ),
+                    //         child: const Text("Cancel", style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
+                    //         );*/
+                    //       }
+                    //     )
+                    // ),
                     SizedBox(height: size.height*0.01,),
-                    Consumer<VisibilityJoinTrainingBtnProvider>(
+                   /* Consumer<VisibilityJoinTrainingBtnProvider>(
                         builder: (context,val,child) {
                           return widget.trainingResponse.isJoin==true && val.trainingBtnVisibility==true?Container(
                             alignment: Alignment.center,
@@ -313,7 +368,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                           ),
                         ):const SizedBox.shrink();
                       }
-                    ),
+                    ),*/
                   ]
               )
           ),
