@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/extension.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 

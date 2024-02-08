@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Providers/dropmenu_provider.dart';
-import 'package:versa_tribe/Screens/Training/accepted_training_screen.dart';
-import 'package:versa_tribe/Screens/Training/requested_training_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 import '../Training/GiveTraining/give_training_screen.dart';
