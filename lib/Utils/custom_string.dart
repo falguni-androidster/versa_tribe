@@ -187,7 +187,7 @@ class CustomString {
   static const String noProjectFound = 'No Project Found';
 
   static const String projectDetails = 'Project Details';
-  static const String manageUsers = 'Manage Users';
+  static const String manageUsers = 'Manage Request';
 
 
 /*---------------------------- Organization Screen --------------------------*/

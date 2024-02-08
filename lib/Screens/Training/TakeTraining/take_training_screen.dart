@@ -60,7 +60,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
         onRefresh: loadData,
         child: Consumer<DropMenuProvider>(
           builder: (context,val,child) {
-            return val.takeTrainingMenuItems=="All"?
+            return val.tpMenuItems=="All"?
             FutureBuilder(
               future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
@@ -174,7 +174,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                 return Container();
               },
             ):
-            val.takeTrainingMenuItems=="Requested"?
+            val.tpMenuItems=="Requested"?
             FutureBuilder(
               future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
@@ -288,7 +288,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
                 return Container();
               },
             ):
-            val.takeTrainingMenuItems=="Joined"?
+            val.tpMenuItems=="Joined"?
             FutureBuilder(
               future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
