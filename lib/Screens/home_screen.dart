@@ -18,13 +18,10 @@ import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
 class HomeScreen extends StatefulWidget {
-
   final String? from;
   final bool? popUp;
   final SIPUAHelper? helper;
-
   const HomeScreen({super.key, this.from, this.popUp, this.helper});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -41,22 +38,31 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
   SIPUAHelper? get helper => widget.helper;
   bool _switchValue = false;
 
+
   @override
   initState() {
+    print("----------registered-------initstate--->${helper!.registered}---------|");
+    print("----------connecting-------initstate--->${helper!.connecting}---------|");
+    print("----------registerState-------initstate--->${helper!.registerState.cause?.status_code}---|");
+    print("----------connected-------initstate--->${helper!.connected}-----------|");
+    print("----------runtimeType-------initstate--->${helper!.runtimeType}-------|");
     setInitialValue(context);
     super.initState();
-    //registerState = helper!.registerState;
-    //helper!.addSipUaHelperListener(this);
+    registerState = helper!.registerState;
+    helper!.addSipUaHelperListener(this);
   }
 
   @override
   void deactivate() {
+    print("-----------------deactivate-------------");
     super.deactivate();
-    //helper!.removeSipUaHelperListener(this);
+    helper!.removeSipUaHelperListener(this);
   }
 
   @override
   void registrationStateChanged(RegistrationState state) {
+    print("RegistrationState:------------)->${state.state.hashCode}");
+    print("RegistrationState:------------)->${state.cause?.status_code}");
     setState(() {
       registerState = state;
     });
@@ -65,19 +71,26 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
   void _handleSave(BuildContext context) {
     UaSettings settings = UaSettings();
 
-    settings.webSocketUrl = 'wss://wazo.gigonomy.in:5040/ws';
+    settings.webSocketUrl = 'wss://sip-140.gigonomy.in:4443/ws';
     settings.webSocketSettings.allowBadCertificate = true;
     settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
 
-    settings.uri = 'os0i7i7y@wazo.gigonomy.in';
-    settings.authorizationUser = 'os0i7i7y';
-    settings.password = 'ejfcvo8y';
+    settings.uri = '6666@sip-140.gigonomy.in';
+    settings.authorizationUser = '6666';
+    settings.password = '6666';
     settings.displayName = 'Test Caller';
     settings.userAgent = 'Dart SIP Client v1.0.0';
     settings.dtmfMode = DtmfMode.RFC2833;
 
     helper!.start(settings);
-    print("cheque-helper--->$helper");
+    print("Home Screen -------helper-connected:--->${helper!.connected}");
+    print("Home Screen -------helper-registerState:--->${helper!.registerState.state?.index}");
+    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.status_code}");
+    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.cause}");
+    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.reason_phrase}");
+    print("Home Screen -------helper-connecting:--->${helper!.connecting}");
+    print("Home Screen -------helper-registered:--->${helper!.registered}");
+    print("Home Screen -------helper-runtimeType:--->${helper!.runtimeType}");
   }
 
   setInitialValue(context) async {
@@ -100,7 +113,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     }
     return adminPersonList;
   }
-
   checkUser() async {
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
@@ -112,7 +124,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     }
     return adminPersonList;
   }
-
   manageOrganization({context, val, finalPersonAdminList}) async{
     await pref.setSharedPrefStringValue(key: CustomString.organizationName, finalPersonAdminList.orgName!);
     await pref.setSharedPrefBoolValue(key: CustomString.organizationAdmin, finalPersonAdminList.isAdmin!);
@@ -125,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
     FBroadcast.instance().broadcast("Key_Message", value: orgId);
   }
-
   // Function to show the dialog
   void _showDialog() {
     showDialog(
@@ -187,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -278,11 +289,19 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               CupertinoSwitch(
                 value: _switchValue,
                 onChanged: (value) async {
+                  print("--$value----");
+                  setState(() {});
+                  if(value==true){
                     debugPrint("Switch-value-->$value");
                     _switchValue = value;
                     _handleSave(context);
                     await Permission.microphone.request();
-                    await Permission.camera.request();
+                    await Permission.camera.request();}
+                  else{
+                    _switchValue = value;
+                    print("----Else Switch----$value");
+                    helper!.unregister(true);
+                  }
                 },
               ),
             ],
@@ -460,24 +479,31 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     );
   }
 
+
+
   @override
   void callStateChanged(Call call, CallState callState) {
-    //NO OP
+    print("---callOudioState-------------->${callState.audio}------------------");
+    print("---callVideoState-------------->${callState.video}------------------");
     if(callState.state == CallStateEnum.CALL_INITIATION){
+      print("-----------------Call------------------${CallStateEnum.CALL_INITIATION}");
       Navigator.pushNamed(context, '/callscreen', arguments: call);
-    }
+    }else if(callState.state == CallStateEnum.ENDED){
+      print("-----------------Call Disconnected------------------${CallStateEnum.ENDED}");    }
   }
-
   @override
-  void transportStateChanged(TransportState state) {}
-
+  void transportStateChanged(TransportState state) {
+    print("TransportStateChanged-name----)->${state.state.name}");
+    print("TransportStateChanged-----)->${state.state}");
+  }
   @override
   void onNewMessage(SIPMessageRequest msg) {
+    print("SIPMessageRequest-----)->${msg}");
     // NO OP
   }
-
   @override
-  void onNewNotify(Notify ntf) {
+  void onNewNotify(Notify notify) {
+    print("onNewNotify-----)->${notify.request!.call_id}");
     // NO OP
   }
 }

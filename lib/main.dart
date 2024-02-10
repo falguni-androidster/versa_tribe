@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
+import 'Providers/calling_providers.dart';
 import 'Providers/dropmenu_provider.dart';
 import 'Providers/visiblity_join_training_btn_provider.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
@@ -80,6 +81,7 @@ void main() {
       ChangeNotifierProvider<VisibilityJoinTrainingBtnProvider>(create: (_) => VisibilityJoinTrainingBtnProvider()),
       ChangeNotifierProvider<VisibilityJoinProjectBtnProvider>(create: (_) => VisibilityJoinProjectBtnProvider()),
       ChangeNotifierProvider<DropMenuProvider>(create: (_) => DropMenuProvider()),
+      ChangeNotifierProvider<CallTimerProvider>(create: (_) => CallTimerProvider()),
     ],
     child: MyApp()
   ));
@@ -93,10 +95,9 @@ class MyApp extends StatelessWidget {
 
   final SIPUAHelper _helper = SIPUAHelper();
   Map<String, PageContentBuilder> routes = {
-    '/home': ([SIPUAHelper? helper, Object? arguments]) =>
-        HomeScreen(helper: helper, popUp: false),
+    '/home': ([SIPUAHelper? helper, Object? arguments]) => HomeScreen(helper: helper, popUp: false),
     '/callscreen': ([SIPUAHelper? helper, Object? arguments]) => CallScreenWidget(helper, arguments as Call?),
-    '/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
+    //'/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
   };
 
   MyApp({super.key});
@@ -106,9 +107,7 @@ class MyApp extends StatelessWidget {
     final PageContentBuilder? pageContentBuilder = routes[name!];
     if (pageContentBuilder != null) {
       if (settings.arguments != null) {
-        final Route route = MaterialPageRoute<Widget>(
-            builder: (context) =>
-                pageContentBuilder(_helper, settings.arguments));
+        final Route route = MaterialPageRoute<Widget>(builder: (context) => pageContentBuilder(_helper, settings.arguments));
         return route;
       } else {
         final Route route = MaterialPageRoute<Widget>(
@@ -135,6 +134,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        '/': (context) => const SplashScreen(),
         '/addExScreen': (context) => const AddExperienceScreen(),
         '/personDetailScreen': (context) => const PersonDetailsScreen(),
       },

@@ -52,6 +52,7 @@ dependencies:
   permission_handler: ^11.1.0
   flutter_webrtc: ^0.9.40
   intl: ^0.18.1
+  flutter_ringtone_player: ^4.0.0+2
 
 dev_dependencies:
   flutter_test:
