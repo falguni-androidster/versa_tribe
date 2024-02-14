@@ -33,7 +33,6 @@ class ApiConfig {
       var response = await http.post(Uri.parse(loginUrl),
           headers: {'Content-Type': 'application/x-www-form-urlencoded'},
           body: parameters);
-
       if (response.statusCode == 200) {
         print("Success Refresh Token Response-->: ${response.body}");
         Map<String, dynamic> jsonData = jsonDecode(response.body);
