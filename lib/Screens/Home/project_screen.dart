@@ -123,84 +123,86 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                     else if (snapshot.connectionState == ConnectionState.done) {
                       return Consumer<ProjectListByOrgIdProvider>(
                           builder: (context, val, child) {
-                            return val.getProjectListByOrgId.isNotEmpty ? ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: val.getProjectListByOrgId.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  child: Card(
-                                    color: CustomColors.kWhiteColor,
-                                    elevation: 3,
-                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                                    margin: EdgeInsets.symmetric(horizontal:size.width * 0.03,vertical: size.height*0.005),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('${val.getProjectListByOrgId[index].projectName}',
-                                              style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.normal)),
-                                          SizedBox(height: size.height * 0.01 / 2),
-                                          /*const Text('Project Manager : _________',
-                                              style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                                          SizedBox(height: size.height * 0.01 / 2),*/
-                                          val.getProjectListByOrgId[index].startDate != null && val.getProjectListByOrgId[index].endDate != null ?
-                                          Text('Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
-                                              style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')) :
-                                          const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
-                                          //SizedBox(height: size.height * 0.005),
-                                          val.getProjectListByOrgId[index].isApproved==true?
-                                          Card(
-                                            elevation: 1,
-                                            shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
-                                            child:Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Text("Already Joined",style: TextStyle(fontFamily: 'Poppins'),),
-                                                  SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
-                                                ],
+                            return val.getProjectListByOrgId.isNotEmpty ? Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: val.getProjectListByOrgId.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    child: Card(
+                                      color: CustomColors.kWhiteColor,
+                                      elevation: 3,
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                      margin: EdgeInsets.symmetric(horizontal:size.width * 0.03,vertical: size.height*0.005),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.01),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('${val.getProjectListByOrgId[index].projectName}',
+                                                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 14, fontFamily: 'Poppins', fontWeight: FontWeight.normal)),
+                                            SizedBox(height: size.height * 0.01 / 2),
+                                            /*const Text('Project Manager : _________',
+                                                style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                                            SizedBox(height: size.height * 0.01 / 2),*/
+                                            val.getProjectListByOrgId[index].startDate != null && val.getProjectListByOrgId[index].endDate != null ?
+                                            Text('Duration : ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
+                                                style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')) :
+                                            const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
+                                            //SizedBox(height: size.height * 0.005),
+                                            val.getProjectListByOrgId[index].isApproved==true?
+                                            Card(
+                                              elevation: 1,
+                                              shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                                              child:Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const Text("Already Joined",style: TextStyle(fontFamily: 'Poppins'),),
+                                                    SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ):val.getProjectListByOrgId[index].isApproved==false?
-                                          Card(
-                                            elevation: 1,
-                                            shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
-                                            child:Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Text("Already Applied",style: TextStyle(fontFamily: 'Poppins'),),
-                                                  SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
-                                                ],
+                                            ):val.getProjectListByOrgId[index].isApproved==false?
+                                            Card(
+                                              elevation: 1,
+                                              shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10),borderSide: BorderSide.none),
+                                              child:Padding(
+                                                padding: EdgeInsets.symmetric(horizontal: size.width*0.01,vertical: size.height*0.005),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    const Text("Already Applied",style: TextStyle(fontFamily: 'Poppins'),),
+                                                    SvgPicture.asset(ImagePath.danderIcon,height: size.height*0.02,),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ):const SizedBox.shrink(),
-                                          SizedBox(height: size.height * 0.005),
-                                          LinearPercentIndicator(
-                                            animation: true,
-                                            lineHeight: size.height * 0.018,
-                                            animationDuration: 2000,
-                                            percent: val.getProjectListByOrgId[index].progress!.toDouble() / 100,
-                                            center: Text("Progress: ${val.getProjectListByOrgId[index].progress} %",textAlign: TextAlign.center,
-                                                style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 10, fontFamily: 'Poppins', fontWeight: FontWeight.normal)),
-                                            barRadius: const Radius.circular(5),
-                                            progressColor: CustomColors.kBlueColor,
-                                          )
-                                        ],
+                                            ):const SizedBox.shrink(),
+                                            SizedBox(height: size.height * 0.005),
+                                            LinearPercentIndicator(
+                                              animation: true,
+                                              lineHeight: size.height * 0.018,
+                                              animationDuration: 2000,
+                                              percent: val.getProjectListByOrgId[index].progress!.toDouble() / 100,
+                                              center: Text("Progress: ${val.getProjectListByOrgId[index].progress} %",textAlign: TextAlign.center,
+                                                  style: const TextStyle(color: CustomColors.kBlackColor, fontSize: 10, fontFamily: 'Poppins', fontWeight: FontWeight.normal)),
+                                              barRadius: const Radius.circular(5),
+                                              progressColor: CustomColors.kBlueColor,
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectListByOrgId[index],orgID: widget.orgId!,)));
-                                  },
-                                );
-                              },
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectListByOrgId[index],orgID: widget.orgId!,)));
+                                    },
+                                  );
+                                },
+                              ),
                             ) : SizedBox(
                                 width: size.width,
                                 height: defaultTargetPlatform == TargetPlatform.iOS ? size.height * 0.21 : size.height * 0.25,
