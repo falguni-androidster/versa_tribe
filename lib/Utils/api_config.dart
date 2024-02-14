@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,67 @@ class ApiConfig {
 
 
   /*------------------------------------------- Authentication Application -------------------------*/
+  Future<bool> refreshToken() async {
+    bool isTokenRefresh =false;
+    try {
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      String refreshTokenKey = pref.getString("RefreshTokenKey")!;
+      print("get refresh key-->$refreshTokenKey");
+      Map<String, String> parameters = {
+      "grant_type": "refresh_token",
+      "refresh_token": refreshTokenKey,
+      };
+      String loginUrl = '$baseUrl/token';
+      var response = await http.post(Uri.parse(loginUrl),
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: parameters);
+
+      if (response.statusCode == 200) {
+        print("Success Refresh Token Response-->: ${response.body}");
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(jsonData);
+        print("cheque refresh t--->${loginResponseModel.refreshToken}");
+        await pref.setString(CustomString.accessToken, loginResponseModel.accessToken.toString());
+        await pref.setString("RefreshTokenKey", loginResponseModel.refreshToken!);
+        await pref.setString("TokenExpireTime", loginResponseModel.expires!);
+        return isTokenRefresh = true;
+      } else {
+        print("Refresh Token Response Error:----> ${response.statusCode}, ${response.body}");
+      }
+     return isTokenRefresh = false;
+    } catch (e) {
+      debugPrint("Error: refreshToken() --------->>- $e");
+      isTokenRefresh = false;
+    }
+    return isTokenRefresh;
+  }
+  int getMinutes({required String expireTokenTime, required String currentTime}) {
+    final formatter = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
+    final expireDateTime = formatter.parse(expireTokenTime);
+    //final difference = DateTime.parse(currentTime).difference(expireDateTime);
+    final difference = expireDateTime.difference(DateTime.parse(currentTime));
+    return difference.inMinutes;
+  }
+  Future<bool> isTokenValid() async {
+    bool tokenValid = false;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String tokenExpireTime =  pref.getString("TokenExpireTime")!;
+    DateTime currentTime = DateTime.now();
+    /// Get the total minutes
+    int minutesTokenExpireTime = getMinutes(expireTokenTime: tokenExpireTime,currentTime: currentTime.toString());
+    debugPrint("token_expired-time  ---->$tokenExpireTime \ncurrent-time ---->$currentTime");
+    debugPrint("Total minutes:----> $minutesTokenExpireTime");
+
+    if (minutesTokenExpireTime <=5) {
+      print("-------Token has expired!------");
+      tokenValid= await refreshToken().then((value) => value);
+      print("tokenValid:--> $tokenValid");
+      return tokenValid;
+    } else {
+      print("-------Token is still valid-----.");
+      return tokenValid = true;
+    }
+  }
 
   //google authentication
   static externalAuthentication({context, authToken, provider,email}) async {
@@ -81,7 +143,9 @@ class ApiConfig {
         debugPrint("------->${loginResponseModel.accessToken}");
         if (loginResponseModel.accessToken != null) {
           final SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+         await pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+          await pref.setString("RefreshTokenKey", loginResponseModel.refreshToken.toString());
+         await pref.setSharedPrefStringValue(key: "TokenExpireTime", loginResponseModel.expires.toString());
           pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
           showToast(context, CustomString.accountAuthSuccess+emailController.text.toString());
           if (loginResponseModel.profileExist != "True") {
@@ -167,23 +231,27 @@ class ApiConfig {
   /*------------------------------------------ Profile Screen ---------------------------------------*/
 
   Future<ProfileDataModel> getProfileData() async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken); // Replace 'token' with your actual token key
+      String profileUrl = '$baseUrl/api/Person/MyProfile';
+      final response = await http.get(Uri.parse(profileUrl), headers: {
+        'Authorization': 'Bearer $token',
+      });
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String profileUrl = '$baseUrl/api/Person/MyProfile';
-    final response = await http.get(Uri.parse(profileUrl), headers: {
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint('OrgPerson Profile data-----------> ${response.body}');
-      Map<String, dynamic> jsonMap = json.decode(response.body);
-      ProfileDataModel yourModel = ProfileDataModel.fromJson(jsonMap);
-      pref.setSharedPrefStringValue(key: CustomString.personId, yourModel.personId.toString());
-      return yourModel;
+      if (response.statusCode == 200) {
+        debugPrint('OrgPerson Profile data-----------> ${response.body}');
+        Map<String, dynamic> jsonMap = json.decode(response.body);
+        ProfileDataModel yourModel = ProfileDataModel.fromJson(jsonMap);
+        pref.setString(CustomString.personId, yourModel.personId.toString());
+        return yourModel;
+      } else {
+        throw Exception('Failed to load data');
+      }
     } else {
-      throw Exception('Failed to load data');
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 

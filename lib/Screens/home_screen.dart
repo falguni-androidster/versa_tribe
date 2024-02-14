@@ -41,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
   @override
   initState() {
-    print("----------registered-------initstate--->${helper!.registered}---------|");
-    print("----------connecting-------initstate--->${helper!.connecting}---------|");
-    print("----------registerState-------initstate--->${helper!.registerState.cause?.status_code}---|");
-    print("----------connected-------initstate--->${helper!.connected}-----------|");
-    print("----------runtimeType-------initstate--->${helper!.runtimeType}-------|");
+    // print("----------registered-------initstate--->${helper!.registered}---------|");
+    // print("----------connecting-------initstate--->${helper!.connecting}---------|");
+    // print("----------registerState-------initstate--->${helper!.registerState.cause?.status_code}---|");
+    // print("----------connected-------initstate--->${helper!.connected}-----------|");
+    // print("----------runtimeType-------initstate--->${helper!.runtimeType}-------|");
     setInitialValue(context);
     super.initState();
     registerState = helper!.registerState;
