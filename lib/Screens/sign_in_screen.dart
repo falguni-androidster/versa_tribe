@@ -271,8 +271,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   /// SignUP Text
                   InkWell(
                     onTap: () {
-                      _navigateToNextScreen(
-                          context: context, screenName: 'signupScreen');
+                      _navigateToNextScreen(context: context, screenName: 'signupScreen');
                     },
                     highlightColor: CustomColors.kWhiteColor,
                     child: const Row(
