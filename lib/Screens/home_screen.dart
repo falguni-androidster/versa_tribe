@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     pref = await SharedPreferences.getInstance();
     final selectedOrgProvider = Provider.of<OrganizationProvider>(context, listen: false);
     final switchProvider = Provider.of<SwitchProvider>(context, listen: false);
-    await ApiConfig.getDataSwitching(context: context);
+    await apiConfig.getDataSwitching(context: context);
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
     if(adminPersonList.isNotEmpty) {
       selectedValue = adminPersonList[0].orgName!;
@@ -254,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                           child: SVGIconButton(
                               svgPath: ImagePath.dropdownIcon, size: 6.0, color: CustomColors.kLightGrayColor,
                               onPressed: () async {
-                                await ApiConfig.getDataSwitching(context: context);
+                                await apiConfig.getDataSwitching(context: context);
                                 checkUser();
                                 _showDialog();
                               }),
@@ -262,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                     ),
                   ),
                   onTap: () async {
-                    await ApiConfig.getDataSwitching(context: context);
+                    await apiConfig.getDataSwitching(context: context);
                     checkUser();
                     _showDialog();
                     }) :

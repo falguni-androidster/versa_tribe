@@ -15,7 +15,7 @@ class _RequestedOrganizationScreenState extends State<RequestedOrganizationScree
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getManageOrgData(context: context, tabIndex: 0);
+      apiConfig.getManageOrgData(context: context, tabIndex: 0);
     } catch (err) {
       rethrow;
     }
@@ -28,7 +28,7 @@ class _RequestedOrganizationScreenState extends State<RequestedOrganizationScree
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-            future: ApiConfig.getManageOrgData(context: context, tabIndex: 0),
+            future: apiConfig.getManageOrgData(context: context, tabIndex: 0),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SizedBox(
@@ -80,7 +80,7 @@ class _RequestedOrganizationScreenState extends State<RequestedOrganizationScree
                                             backgroundColor: CustomColors.kGrayColor,
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                         onPressed: () {
-                                          ApiConfig.deleteOrgRequest(context: context, orgID: val.requestOrgDataList[index].orgId, personID: val.requestOrgDataList[index].personId, screen: CustomString.requested);
+                                          apiConfig.deleteOrgRequest(context: context, orgID: val.requestOrgDataList[index].orgId, personID: val.requestOrgDataList[index].personId, screen: CustomString.requested);
                                         },
                                         child: const Text(
                                             CustomString.cancel,

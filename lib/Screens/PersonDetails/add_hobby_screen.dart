@@ -63,7 +63,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchHobby(context: context, hobbyString: value);
+                          apiConfig.searchHobby(context: context, hobbyString: value);
                           providerHobby.hobbyList.clear();
                           providerHobby.setVisible(true);
                         }else{
@@ -112,7 +112,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.addHobbyData(
+                          apiConfig.addHobbyData(
                               context: context,
                               hobbyName: hobbyController.text);
                         } else {

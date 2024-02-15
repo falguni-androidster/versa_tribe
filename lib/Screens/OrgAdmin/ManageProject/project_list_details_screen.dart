@@ -14,10 +14,10 @@ class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectExperience(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectQualification(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectSkill(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectHobby(context, widget.projectResponseModel.projectId);
     } catch (err) {
       rethrow;
     }
@@ -55,7 +55,7 @@ class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
 
                     ///Project Criteria Experience
                     FutureBuilder(
-                        future: ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -97,7 +97,7 @@ class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
 
                     ///Project Criteria Qualification
                     FutureBuilder(
-                        future: ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -132,7 +132,7 @@ class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
 
                     ///Project Criteria Skill
                     FutureBuilder(
-                        future: ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -173,7 +173,7 @@ class _ProjectOrgIdListScreenState extends State<ProjectOrgIdListScreen> {
 
                     ///Project Criteria Hobby
                     FutureBuilder(
-                        future: ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(

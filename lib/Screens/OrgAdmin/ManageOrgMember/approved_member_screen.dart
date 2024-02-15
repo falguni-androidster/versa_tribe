@@ -21,7 +21,7 @@ class _ApprovedMemberScreenState extends State<ApprovedMemberScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: FutureBuilder(
-          future: ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 1),
+          future: apiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 1),
           builder: (context,snapshot) {
             if(snapshot.connectionState==ConnectionState.waiting){
               return SizedBox(

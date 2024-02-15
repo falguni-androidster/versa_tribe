@@ -14,10 +14,10 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId);
     } catch (err) {
       rethrow;
     }
@@ -63,7 +63,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -103,7 +103,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
+                        future: ApiConfig().getTrainingQualification(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -138,7 +138,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -179,7 +179,7 @@ class _ManageTrainingDetailScreenState extends State<ManageTrainingDetailScreen>
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(

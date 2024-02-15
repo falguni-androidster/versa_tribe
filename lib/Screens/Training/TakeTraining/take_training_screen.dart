@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Providers/dropmenu_provider.dart';
 import 'package:versa_tribe/Screens/Training/TakeTraining/take_training_detailed_screen.dart';
 import 'package:versa_tribe/extension.dart';
 
@@ -43,9 +42,9 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
   // Call this when the user pull down the screen
   Future<void> loadData() async {
     try {
-      ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId);
+      apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId);
 
-      ApiConfig.getRequestedTraining(context: context, isJoin: false,orgId: widget.orgId);
+      apiConfig.getRequestedTraining(context: context, isJoin: false,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -62,7 +61,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
           builder: (context,val,child) {
             return val.tpMenuItems=="All"?
             FutureBuilder(
-              future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
+              future:apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
@@ -176,7 +175,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
             ):
             val.tpMenuItems=="Requested"?
             FutureBuilder(
-              future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
+              future:apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
@@ -290,7 +289,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
             ):
             val.tpMenuItems=="Joined"?
             FutureBuilder(
-              future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
+              future:apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
@@ -403,7 +402,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
               },
             ):
             FutureBuilder(
-              future:ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
+              future:apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(

@@ -147,7 +147,7 @@ class _EditDepartmentState extends State<EditDepartment> {
                     width: size.width,
                     child: ElevatedButton(
                         onPressed: () {
-                          ApiConfig.updateDepartment(context: context,departmentName: newDController.text, depId: widget.depId, parentDepId:pDepId==0?widget.parentDepId==0||widget.parentDepId==null?pDepId:widget.parentDepId:pDepId, orgID: widget.orgId );
+                          apiConfig.updateDepartment(context: context,departmentName: newDController.text, depId: widget.depId, parentDepId:pDepId==0?widget.parentDepId==0||widget.parentDepId==null?pDepId:widget.parentDepId:pDepId, orgID: widget.orgId );
                         },
                         style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                         child: const Text(CustomString.buttonContinue, style: TextStyle(fontFamily: 'Poppins'))

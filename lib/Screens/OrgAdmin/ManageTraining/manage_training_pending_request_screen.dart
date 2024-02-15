@@ -14,7 +14,7 @@ class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendi
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false);
+      apiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false);
     } catch (err) {
       rethrow;
     }
@@ -109,7 +109,7 @@ class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendi
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
+                        apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,
@@ -128,7 +128,7 @@ class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendi
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin: trainingPendingRequestsModel.isJoin);
+                        apiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin: trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,

@@ -15,7 +15,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getRequestedTraining(context: context, isJoin: false,orgId: widget.orgId);
+      apiConfig.getRequestedTraining(context: context, isJoin: false,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -88,7 +88,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                               onPressed: () async {
                                                 SharedPreferences pref = await SharedPreferences.getInstance();
                                                 String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
-                                                ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID,orgId: widget.orgId);
+                                                apiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID,orgId: widget.orgId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: CustomColors.kGrayColor,
@@ -109,7 +109,7 @@ class _RequestedTrainingScreenState extends State<RequestedTrainingScreen> {
                                               onPressed: () async {
                                                 SharedPreferences pref = await SharedPreferences.getInstance();
                                                 String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
-                                                ApiConfig.approveRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID, orgId: widget.orgId);
+                                                apiConfig.approveRequestTraining(context: context, trainingId: val.getRequestedTrainingList[index].trainingId,personId: myPerID, orgId: widget.orgId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                   backgroundColor: CustomColors.kBlueColor,

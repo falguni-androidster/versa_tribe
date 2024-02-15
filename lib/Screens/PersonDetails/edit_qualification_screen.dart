@@ -110,7 +110,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                             },
                             onChanged: (value) {
                               if (value != "") {
-                                ApiConfig.searchCourse(
+                                apiConfig.searchCourse(
                                     context: context, courseString: value);
                                 provider.courseList.clear();
                                 provider.setVisible(true);
@@ -174,7 +174,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchInstitute(
+                          apiConfig.searchInstitute(
                               context: context, instituteString: value);
                           providerInstitute.instituteList.clear();
                           providerInstitute.setVisible(true);
@@ -307,7 +307,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.updateQualificationData(
+                          apiConfig.updateQualificationData(
                               context: context,
                               personQualificationID: widget.pqID,
                               courseName: courseController.text,

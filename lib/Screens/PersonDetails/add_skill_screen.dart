@@ -52,7 +52,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchSkill(
+                          apiConfig.searchSkill(
                               context: context, skillString: value);
                           providerSkill.skillList.clear();
                           providerSkill.setVisible(true);
@@ -133,7 +133,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.addSkillData(
+                          apiConfig.addSkillData(
                               context: context,
                               skill: skillController.text,
                               month: monthController.text);

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'api_config.dart';
-import 'custom_colors.dart';
-import 'custom_string.dart';
-import 'image_path.dart';
+import 'package:versa_tribe/extension.dart';
 
 class TextContainerList extends StatelessWidget {
 
@@ -75,7 +72,7 @@ class TextContainerList extends StatelessWidget {
               onPressed: () {
                 // Add your delete logic here
                 if (identityKey == "identityPHD") {
-                  ApiConfig.deletePersonHobby(context, personId, iD);
+                  apiConfig.deletePersonHobby(context, personId, iD);
                 }
               },
               child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),

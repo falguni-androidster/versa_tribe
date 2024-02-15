@@ -93,7 +93,7 @@ showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}
           TextButton(
             onPressed: () async {
               // Add your delete logic here
-              ApiConfig.deleteOrgFromAdminSide(context: context, indexedOrgID: indexedOrgId, personID: personId, orgName: orgName, orgID: orgId, screen: screen);
+              apiConfig.deleteOrgFromAdminSide(context: context, indexedOrgID: indexedOrgId, personID: personId, orgName: orgName, orgID: orgId, screen: screen);
               return;
             },
             child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),

@@ -13,7 +13,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true);
+      apiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true);
     } catch (err) {
       rethrow;
     }
@@ -100,7 +100,7 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
+                  apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,

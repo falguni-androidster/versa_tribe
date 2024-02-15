@@ -15,7 +15,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getAcceptedTraining(context: context, isJoin: true,orgId: widget.orgId);
+      apiConfig.getAcceptedTraining(context: context, isJoin: true,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -88,7 +88,7 @@ class _AcceptedTrainingScreenState extends State<AcceptedTrainingScreen> {
                                         onPressed: () async {
                                           SharedPreferences pref = await SharedPreferences.getInstance();
                                           String? myPerID = pref.getSharedPrefStringValue(key: CustomString.personId);
-                                          ApiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getAcceptedTrainingList[index].trainingId,personId: myPerID);
+                                          apiConfig.deletePendingTrainingRequest(context: context, trainingId: val.getAcceptedTrainingList[index].trainingId,personId: myPerID);
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: CustomColors.kGrayColor,

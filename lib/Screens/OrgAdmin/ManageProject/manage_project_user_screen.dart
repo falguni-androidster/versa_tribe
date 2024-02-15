@@ -14,7 +14,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectManageUserData(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectManageUserData(context, widget.projectResponseModel.projectId);
     } catch (err) {
       rethrow;
     }
@@ -86,7 +86,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                                   backgroundColor: CustomColors.kGrayColor,
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                               onPressed: () async {
-                                                ApiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
+                                                apiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
                                               },
                                               child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                         ),
@@ -97,7 +97,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                                   backgroundColor: CustomColors.kBlueColor,
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                               onPressed: () {
-                                                ApiConfig.approveProjectManageUser(context, val.getProjectListManageUser[index].id, widget.projectResponseModel.projectId);
+                                                apiConfig.approveProjectManageUser(context, val.getProjectListManageUser[index].id, widget.projectResponseModel.projectId);
                                               },
                                               child: const Text(CustomString.approve, style: TextStyle(color: CustomColors.kWhiteColor, fontFamily: 'Poppins'))),
                                         ),
@@ -293,7 +293,7 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                               backgroundColor: CustomColors.kGrayColor,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                           onPressed: () async {
-                                            ApiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
+                                            apiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
                                           },
                                           child: const Text(CustomString.remove, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                     ),

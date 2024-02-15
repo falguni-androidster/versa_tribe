@@ -22,15 +22,15 @@ class _ManageOrgMembersState extends State<ManageOrgMembers> with SingleTickerPr
   void initState() {
     // initialise your tab controller here
     _tabController = TabController(length: 2, vsync: this);
-    ApiConfig.getDepartment(context: context,orgId: widget.orgID);
+    apiConfig.getDepartment(context: context,orgId: widget.orgID);
     super.initState();
   }
 
   // Call this when the user pull down the screen
     Future<void> _loadData() async {
       try {
-        ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0);
-        ApiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 1);
+        apiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 0);
+        apiConfig.getOrgMemberData(context: context,orgName: widget.orgNAME, tabIndex: 1);
       } catch (err) {
         rethrow;
       }

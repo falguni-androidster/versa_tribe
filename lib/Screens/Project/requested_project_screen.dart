@@ -16,7 +16,7 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getRequestedProject(context: context, isApproved: false, orgId:widget.orgID);
+      apiConfig.getRequestedProject(context: context, isApproved: false, orgId:widget.orgID);
     } catch (err) {
       rethrow;
     }
@@ -79,7 +79,7 @@ class _RequestedProjectScreenState extends State<RequestedProjectScreen> {
                                       width: double.infinity,
                                       child: ElevatedButton(
                                         onPressed: () {
-                                          ApiConfig.cancelProjectJoinedRequest(context: context, id: val.projectRequest[index].id, projectId: val.projectRequest[index].projectId, orgId: widget.orgID);
+                                          apiConfig.cancelProjectJoinedRequest(context: context, id: val.projectRequest[index].id, projectId: val.projectRequest[index].projectId, orgId: widget.orgID);
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: CustomColors.kGrayColor,

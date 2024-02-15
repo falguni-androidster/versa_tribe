@@ -18,7 +18,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true);
+      apiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true);
     } catch (err) {
       rethrow;
     }
@@ -31,7 +31,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-            future: ApiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true),
+            future: apiConfig.getTrainingJoinedMembers(context, widget.trainingResponse.trainingId, true),
             builder: (context,snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
                 return SizedBox(
@@ -108,7 +108,7 @@ class _TrainingJoinedMemberScreenState extends State<TrainingJoinedMemberScreen>
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
+                  apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
                   },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,

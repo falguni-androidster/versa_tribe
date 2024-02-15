@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:versa_tribe/extension.dart';
 
-import '../Providers/visiblity_join_training_btn_provider.dart';
 import '../Screens/OrgAdmin/update_admin_profile.dart';
 import '../Screens/Profile/create_profile_screen.dart';
 import '../Screens/sign_in_screen.dart';
@@ -16,7 +15,6 @@ class ApiConfig {
 
   // static const String baseUrl = 'https://srv1.ksgs.local:9443';
   static const String baseUrl = 'https://api.gigpro.in';
-
 
   /*------------------------------------------- Authentication Application -------------------------*/
   Future<bool> refreshToken() async {
@@ -96,7 +94,9 @@ class ApiConfig {
          LoginResponseModel loginResponseModel = LoginResponseModel.fromJson(jsonData);
         if (loginResponseModel.accessToken != null) {
           final SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+          await pref.setSharedPrefStringValue(key: CustomString.accessToken, loginResponseModel.accessToken.toString());
+          await pref.setString("RefreshTokenKey", loginResponseModel.refreshToken.toString());
+          await pref.setSharedPrefStringValue(key: "TokenExpireTime", loginResponseModel.expires.toString());
           pref.setSharedPrefBoolValue(key: CustomString.isLoggedIn, true);
           showToast(context, CustomString.accountAuthSuccess+email);
 
@@ -255,1818 +255,2176 @@ class ApiConfig {
   }
 
   Future<void> createProfile({context, popUp, fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getString(CustomString.accessToken);
+      Map data = {
+        'FirstName': fNameController.text.toString(),
+        'LastName': lNameController.text.toString(),
+        'Gender': genderController.text.toString(),
+        'City': cityController.text.toString(),
+        'Country': countryController.text.toString(),
+        'DOB': dobController.text.toString()
+      };
 
-    Map data = {
-      'FirstName': fNameController.text.toString(),
-      'LastName': lNameController.text.toString(),
-      'Gender': genderController.text.toString(),
-      'City': cityController.text.toString(),
-      'Country': countryController.text.toString(),
-      'DOB': dobController.text.toString()
-    };
-
-    const String profileUrl = '$baseUrl/api/Person/Create';
-    final response = await http.post(Uri.parse(profileUrl), body: jsonEncode(data), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      showToast(context, CustomString.profileSuccessCreated);
-      Navigator.pushNamed(context, '/home', arguments: popUp);
+      const String profileUrl = '$baseUrl/api/Person/Create';
+      final response = await http.post(Uri.parse(profileUrl), body: jsonEncode(data), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        showToast(context, CustomString.profileSuccessCreated);
+        Navigator.pushNamed(context, '/home', arguments: popUp);
+      } else {
+        showToast(context, CustomString.somethingWrongMessage);
+      }
     } else {
-      showToast(context, CustomString.somethingWrongMessage);
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  Future<void> updateProfile({context, personId ,fNameController, lNameController, genderController, cityController, countryController, dobController}) async {
-    debugPrint("check personId--->$personId");
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+  Future<void> updateProfile({context, personId ,fNameController, lNameController, genderController, cityController, countryController, dobController})
+  async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      debugPrint("check personId--->$personId");
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    Map data = {
-      'Person_Id':personId.toString(),
-      'FirstName': fNameController.text.toString(),
-      'LastName': lNameController.text.toString(),
-      'Gender': genderController.text.toString(),
-      'City': cityController.text.toString(),
-      'Country': countryController.text.toString(),
-      'DOB': dobController.text.toString()
-    };
+      Map data = {
+        'Person_Id':personId.toString(),
+        'FirstName': fNameController.text.toString(),
+        'LastName': lNameController.text.toString(),
+        'Gender': genderController.text.toString(),
+        'City': cityController.text.toString(),
+        'Country': countryController.text.toString(),
+        'DOB': dobController.text.toString()
+      };
 
-    const String profileUrl = '$baseUrl/api/Person/Update';
-    final response = await http.put(Uri.parse(profileUrl), body: data, headers: {
-      'Authorization': 'Bearer $token',
-    });
-    const CircularProgressIndicator();
-    if (response.statusCode == 200) {
-      showToast(context, CustomString.profileSuccessUpdated);
-      Navigator.pushNamed(context, '/home');
+      const String profileUrl = '$baseUrl/api/Person/Update';
+      final response = await http.put(Uri.parse(profileUrl), body: data, headers: {
+        'Authorization': 'Bearer $token',
+      });
+      const CircularProgressIndicator();
+      if (response.statusCode == 200) {
+        showToast(context, CustomString.profileSuccessUpdated);
+        Navigator.pushNamed(context, '/home');
+      } else {
+        debugPrint("Backend Side-->: ${response.statusCode.toString()}");
+        showToast(context, CustomString.somethingWrongMessage);
+      }
     } else {
-      debugPrint("Backend Side-->: ${response.statusCode.toString()}");
-      showToast(context, CustomString.somethingWrongMessage);
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
   /*------------------------------------------ Training Screen  ---------------------------------------------*/
 
-  Future<void> createTrainingClick({context, orgId, trainingNameController, trainingDescriptionController, startDateController, endDateController, personLimitController}) async {
+  Future<void> createTrainingClick({context, orgId, trainingNameController, trainingDescriptionController, startDateController, endDateController, personLimitController})
+  async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    Map<String, dynamic> data = {
-      'Org_Id': orgId,
-      'Training_Name': trainingNameController.text.toString(),
-      'Description': trainingDescriptionController.text.toString(),
-      'Start_Date': startDateController.text.toString(),
-      'End_Date': endDateController.text.toString(),
-      'PersonLimit': personLimitController.text.toString(),
-    };
-    String trainingUrl = '$baseUrl/api/Training/Create';
-    final response = await http.post(Uri.parse(trainingUrl), body: jsonEncode(data), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint(response.body);
-      ApiConfig.getGiveTrainingData(context,orgId);
-      showToast(context, CustomString.trainingCreatedSuccess);
-      Navigator.pop(context);
+      Map<String, dynamic> data = {
+        'Org_Id': orgId,
+        'Training_Name': trainingNameController.text.toString(),
+        'Description': trainingDescriptionController.text.toString(),
+        'Start_Date': startDateController.text.toString(),
+        'End_Date': endDateController.text.toString(),
+        'PersonLimit': personLimitController.text.toString(),
+      };
+      String trainingUrl = '$baseUrl/api/Training/Create';
+      final response = await http.post(Uri.parse(trainingUrl), body: jsonEncode(data), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint(response.body);
+        apiConfig.getGiveTrainingData(context,orgId);
+        showToast(context, CustomString.trainingCreatedSuccess);
+        Navigator.pop(context);
+      } else {
+        debugPrint(response.body);
+        showToast(context, CustomString.somethingWrongMessage);
+      }
     } else {
-      debugPrint(response.body);
-      showToast(context, CustomString.somethingWrongMessage);
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getGiveTrainingData(context, int? orgId) async {
-    final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
-    provider.getGiveTrainingList.clear();
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+   getGiveTrainingData(context, int? orgId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
+      provider.getGiveTrainingList.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    try {
-      String trainingUrl = '$baseUrl/api/Training/User/GetList?Org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('get Give Training data-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getGiveTrainingList.clear();
-        provider.setGiveListTraining(data);
-      } else {
-        showToast(context, "please visit after some time..!");
-        debugPrint("----->Give Training Data not found...");
+      try {
+        String trainingUrl = '$baseUrl/api/Training/User/GetList?Org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('get Give Training data-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getGiveTrainingList.clear();
+          provider.setGiveListTraining(data);
+        } else {
+          showToast(context, "please visit after some time..!");
+          debugPrint("----->Give Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Training------>$e");
       }
-    } catch (e) {
-      debugPrint("Training------>$e");
-    }
-  }
-
-  static getTakeTrainingData({context, orgId}) async {
-    final provider = Provider.of<TakeTrainingListProvider>(context, listen: false);
-    provider.getTakeTrainingList.clear();
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('Take Training data-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.setTakeTrainingList(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Take Training Data not found...");
-      }
-    } catch (e) {
-      debugPrint("Training------>$e");
-    }
-  }
-
-  static getRequestedTraining({context, isJoin,orgId}) async {
-    final provider = Provider.of<RequestTrainingListProvider>(context, listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('Get Request training success-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getRequestedTrainingList.clear();
-        provider.setRequestedTrainingList(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("------->Requested Training Data not found...");
-      }
-    } catch (e) {
-      debugPrint("Training------>$e");
-    }
-  }
-
-  static getAcceptedTraining({context, isJoin,orgId}) async {
-
-    final provider = Provider.of<AcceptTrainingListProvider>(context, listen: false);
-    provider.getAcceptedTrainingList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('Accepted Training data-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getAcceptedTrainingList.clear();
-        provider.setAcceptedTrainingList(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Accepted Training Data not found...");
-      }
-    } catch (e) {
-      debugPrint("Training------>$e");
-    }
-  }
-
-  joinTraining({context, trainingId, isJoin, trainingResponse}) async {
-    final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
-
-    Map<String, dynamic> requestData = {
-      "Training_Id": trainingId,
-      "Person_Id": personId,
-      "Is_Join": isJoin,
-    };
-    String url = "$baseUrl/api/Training_Join/Create";
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint('Training Joined----------------->>>> ${response.body}');
-      showToast(context, "Training joined successfully...");
-      pro.setTrainingBtnVisibility(true);
     } else {
-      debugPrint('Training Joined----------------->>>> ${response.body} & ${response.statusCode}');
-      showToast(context, '${jsonDecode(response.body)["Message"]}');
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+   getTakeTrainingData({context, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TakeTrainingListProvider>(context, listen: false);
+      provider.getTakeTrainingList.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/Training/Org/GetList?org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('Take Training data-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.setTakeTrainingList(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("Take Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Training------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+   getRequestedTraining({context, isJoin,orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<RequestTrainingListProvider>(context, listen: false);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('Get Request training success-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getRequestedTrainingList.clear();
+          provider.setRequestedTrainingList(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("------->Requested Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Training------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+   getAcceptedTraining({context, isJoin,orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<AcceptTrainingListProvider>(context, listen: false);
+      provider.getAcceptedTrainingList.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/Training_Join/User/Trainings?Is_Join=$isJoin &Org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('Accepted Training data-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getAcceptedTrainingList.clear();
+          provider.setAcceptedTrainingList(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("Accepted Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Training------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+   joinTraining({context, trainingId, isJoin, trainingResponse}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
+
+      Map<String, dynamic> requestData = {
+        "Training_Id": trainingId,
+        "Person_Id": personId,
+        "Is_Join": isJoin,
+      };
+      String url = "$baseUrl/api/Training_Join/Create";
+      final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint('Training Joined----------------->>>> ${response.body}');
+        showToast(context, "Training joined successfully...");
+        pro.setTrainingBtnVisibility(true);
+      } else {
+        debugPrint('Training Joined----------------->>>> ${response.body} & ${response.statusCode}');
+        showToast(context, '${jsonDecode(response.body)["Message"]}');
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
    deleteJoinedTraining({context, int? trainingId}) async {
-    final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+     bool isValidToken = await isTokenValid();
+     if (isValidToken) {
+       final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
+       SharedPreferences pref = await SharedPreferences.getInstance();
+       String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
+       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    String url = '$baseUrl/api/Training_Join/Delete?Training_Id=$trainingId &Person_Id=$personId';
+       String url = '$baseUrl/api/Training_Join/Delete?Training_Id=$trainingId &Person_Id=$personId';
 
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Delete joined training--------->${response.body}");
-      showToast(context, "Training cancel successfully...");
-      pro.setTrainingBtnVisibility(false);
+       final response = await http.delete(Uri.parse(url), headers: {
+         'Content-Type': 'application/json',
+         'Authorization': 'Bearer $token',
+       });
+       if (response.statusCode == 200) {
+         debugPrint("Delete joined training--------->${response.body}");
+         showToast(context, "Training cancel successfully...");
+         pro.setTrainingBtnVisibility(false);
+       } else {
+         debugPrint("Not Delete training--------->${response.body}");
+         showToast(context, "Try again Data not delete...");
+       }
+       return response.body;
+     } else {
+       print("refresh----isValidToken-------false-----");
+       throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+     }
+  }
+
+   deleteTraining(context, int? trainingId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      String url = '$baseUrl/api/Training/Delete?id=$trainingId';
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      final response = await http.delete(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Delete training--------->${response.body}");
+        //getGiveTrainingData(context);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Not Delete training--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again Data not delete..."),
+        ));
+      }
+      return response.body;
     } else {
-      debugPrint("Not Delete training--------->${response.body}");
-      showToast(context, "Try again Data not delete...");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
-    return response.body;
   }
 
-  static deleteTraining(context, int? trainingId) async {
+   getTrainingExperience(context, int? trainingId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingExperienceProvider>(context, listen: false);
+      provider.trainingEx.clear();
 
-    String url = '$baseUrl/api/Training/Delete?id=$trainingId';
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Delete training--------->${response.body}");
-      //getGiveTrainingData(context);
-      Navigator.pop(context);
+      try {
+        String url =
+            '$baseUrl/api/Training_Criteria/GetExpCriteria?trainingId=$trainingId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Experience Training Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.trainingEx.clear();
+          provider.setTrainingEx(data);
+        } else {
+          debugPrint("Experience Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("experience------>$e");
+      }
     } else {
-      debugPrint("Not Delete training--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again Data not delete..."),
-      ));
-    }
-    return response.body;
-  }
-
-  static getTrainingExperience(context, int? trainingId) async {
-
-    final provider = Provider.of<TrainingExperienceProvider>(context, listen: false);
-    provider.trainingEx.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url =
-          '$baseUrl/api/Training_Criteria/GetExpCriteria?trainingId=$trainingId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Experience Training Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.trainingEx.clear();
-        provider.setTrainingEx(data);
-      } else {
-        debugPrint("Experience Training Data not found...");
-      }
-    } catch (e) {
-      debugPrint("experience------>$e");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getTrainingQualification(context, int? trainingId) async {
+   getTrainingQualification(context, int? trainingId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingQualificationProvider>(context, listen: false);
+      provider.trainingQua.clear();
 
-    final provider = Provider.of<TrainingQualificationProvider>(context, listen: false);
-    provider.trainingQua.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url =
-          '$baseUrl/api/Training_Criteria/GetQualifications?trainingId=$trainingId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Qualification Training Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.trainingQua.clear();
-        provider.setTrainingQua(data);
-      } else {
-        debugPrint("Qualification Training Data not found...");
+      try {
+        String url =
+            '$baseUrl/api/Training_Criteria/GetQualifications?trainingId=$trainingId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Qualification Training Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.trainingQua.clear();
+          provider.setTrainingQua(data);
+        } else {
+          debugPrint("Qualification Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("qualification------>$e");
       }
-    } catch (e) {
-      debugPrint("qualification------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getTrainingSkill(context, int? trainingId) async {
+   getTrainingSkill(context, int? trainingId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingSkillProvider>(context, listen: false);
+      provider.trainingSkill.clear();
 
-    final provider = Provider.of<TrainingSkillProvider>(context, listen: false);
-    provider.trainingSkill.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url =
-          '$baseUrl/api/Training_Criteria/GetSkillsByTrainingId?trainingId=$trainingId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Skill Training Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.trainingSkill.clear();
-        provider.setTrainingSkill(data);
-      } else {
-        debugPrint("Skill Training Data not found...");
+      try {
+        String url =
+            '$baseUrl/api/Training_Criteria/GetSkillsByTrainingId?trainingId=$trainingId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Skill Training Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.trainingSkill.clear();
+          provider.setTrainingSkill(data);
+        } else {
+          debugPrint("Skill Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Skill------>$e");
       }
-    } catch (e) {
-      debugPrint("Skill------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getTrainingHobby(context, int? trainingId) async {
+   getTrainingHobby(context, int? trainingId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingHobbyProvider>(context, listen: false);
+      provider.trainingHobby.clear();
 
-    final provider = Provider.of<TrainingHobbyProvider>(context, listen: false);
-    provider.trainingHobby.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url =
-          '$baseUrl/api/Training_Criteria/Hobby/GetByTrainingId?trainingId=$trainingId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Hobby Training Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.trainingHobby.clear();
-        provider.setTrainingHobby(data);
-      } else {
-        debugPrint("Hobby Training Data not found...");
+      try {
+        String url =
+            '$baseUrl/api/Training_Criteria/Hobby/GetByTrainingId?trainingId=$trainingId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Hobby Training Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.trainingHobby.clear();
+          provider.setTrainingHobby(data);
+        } else {
+          debugPrint("Hobby Training Data not found...");
+        }
+      } catch (e) {
+        debugPrint("hobby------>$e");
       }
-    } catch (e) {
-      debugPrint("hobby------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getTrainingJoinedMembers(context, trainingId, isJoin) async {
+   getTrainingJoinedMembers(context, trainingId, isJoin) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingJoinedMembersProvider>(context, listen: false);
+      provider.trainingJoinedMembers.clear();
 
-    final provider = Provider.of<TrainingJoinedMembersProvider>(context, listen: false);
-    provider.trainingJoinedMembers.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    try {
-      String url =
-          '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Get Training Joined Member Data----->${response.body}");
-        List<dynamic> data = await jsonDecode(response.body);
-        provider.trainingJoinedMembers.clear();
-        provider.setTrainingJoinedMembers(data);
-      } else {
-        debugPrint("Get Training Joined Member Data not found...");
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      try {
+        String url =
+            '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Get Training Joined Member Data----->${response.body}");
+          List<dynamic> data = await jsonDecode(response.body);
+          provider.trainingJoinedMembers.clear();
+          provider.setTrainingJoinedMembers(data);
+        } else {
+          debugPrint("Get Training Joined Member Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Joined Members------>$e");
       }
-    } catch (e) {
-      debugPrint("Joined Members------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getTrainingPendingRequests(context, trainingId, isJoin) async {
+   getTrainingPendingRequests(context, trainingId, isJoin) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
+      provider.trainingPendingRequests.clear();
 
-    final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
-    provider.trainingPendingRequests.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    try {
-      String url =
-          '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Get Training Pending Requests Data----->${response.body}");
-        List<dynamic> data = await jsonDecode(response.body);
-        provider.setTrainingPendingRequests(data);
-      } else {
-        debugPrint('Get Training Pending Requests Data Not Found...');
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      try {
+        String url =
+            '$baseUrl/api/Training_Join/Training/Persons?training_Id=$trainingId&is_Join=$isJoin';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Get Training Pending Requests Data----->${response.body}");
+          List<dynamic> data = await jsonDecode(response.body);
+          provider.setTrainingPendingRequests(data);
+        } else {
+          debugPrint('Get Training Pending Requests Data Not Found...');
+        }
+      } catch (e) {
+        debugPrint("Pending Requests------>$e");
       }
-    } catch (e) {
-      debugPrint("Pending Requests------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
   /// Remove Joined member Training
-  static deletePendingTrainingRequest({context, trainingId, personId, isJoin,orgId}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+   deletePendingTrainingRequest({context, trainingId, personId, isJoin,orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    String apiUrl = '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
-    final response = await http.delete(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("pending training cancel Request----->${response.body}");
-      showToast(context, "your request canceled...");
+      String apiUrl = '$baseUrl/api/Training_Join/Delete?training_Id=$trainingId&person_Id=$personId';
+      final response = await http.delete(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("pending training cancel Request----->${response.body}");
+        showToast(context, "your request canceled...");
 
-      //Below Api-functions use for display updated data in (joined member Tab), (Pending Training Request Tab)and(Request Training)
-      getAcceptedTraining(context: context, isJoin: true,orgId: orgId);
-      getRequestedTraining(context: context, isJoin: false,orgId: orgId);
-      getTrainingJoinedMembers(context, trainingId, true);
-      getTrainingPendingRequests(context, trainingId, isJoin);
+        //Below Api-functions use for display updated data in (joined member Tab), (Pending Training Request Tab)and(Request Training)
+        apiConfig.getAcceptedTraining(context: context, isJoin: true,orgId: orgId);
+        apiConfig.getRequestedTraining(context: context, isJoin: false,orgId: orgId);
+        apiConfig.getTrainingJoinedMembers(context, trainingId, true);
+        apiConfig.getTrainingPendingRequests(context, trainingId, isJoin);
+      } else {
+        debugPrint("have error to cancel pending training request----->${response.body}");
+        showToast(context, "your request not canceled try again..!");
+      }
     } else {
-      debugPrint("have error to cancel pending training request----->${response.body}");
-      showToast(context, "your request not canceled try again..!");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
   /// Approve Request Training
-  static approveRequestTraining({context, trainingId, personId, isJoin,orgId}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+   approveRequestTraining({context, trainingId, personId, isJoin,orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    Map<String, dynamic> requestData = {
-      "Training_Id": trainingId,
-      "Person_Id": personId,
-      "Is_Join": true,
-    };
-    String url = '$baseUrl/api/Training_Join/Update';
-    final response =
-        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Approve Request----->${response.body}");
-      showToast(context, "Your pending training request is approved..");
-      getRequestedTraining(context: context, isJoin: false,orgId: orgId);
-      getTrainingPendingRequests(context, trainingId, isJoin);
+      Map<String, dynamic> requestData = {
+        "Training_Id": trainingId,
+        "Person_Id": personId,
+        "Is_Join": true,
+      };
+      String url = '$baseUrl/api/Training_Join/Update';
+      final response =
+      await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Approve Request----->${response.body}");
+        showToast(context, "Your pending training request is approved..");
+        apiConfig.getRequestedTraining(context: context, isJoin: false,orgId: orgId);
+        apiConfig.getTrainingPendingRequests(context, trainingId, isJoin);
+      } else {
+        debugPrint("Not Approve pending training request----->${response.body}");
+        showToast(context, "Your pending training request is not approved try after some time..!");
+      }
     } else {
-      debugPrint("Not Approve pending training request----->${response.body}");
-      showToast(context, "Your pending training request is not approved try after some time..!");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
   /*------------------------------------------   Project Screen   ---------------------------------------------*/
 
   deleteJoinedProject({context, int? projectId}) async {
-    final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    int id = pref.getInt("joinedID")!;
-    String url = '$baseUrl/api/ProjectUsers/Delete?Id=$id &Project_Id=$projectId';
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      int id = pref.getInt("joinedID")!;
+      String url = '$baseUrl/api/ProjectUsers/Delete?Id=$id &Project_Id=$projectId';
 
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      pref.remove("joinedID");//after (delete request of project) or (leave project) the joinedId is clean.
-      debugPrint("Delete joined project--------->${response.body}");
-      showToast(context, "Project cancel successfully...");
-      pro.setProjectBtnVisibility(join: true,cancel: false);
+      final response = await http.delete(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        pref.remove("joinedID");//after (delete request of project) or (leave project) the joinedId is clean.
+        debugPrint("Delete joined project--------->${response.body}");
+        showToast(context, "Project cancel successfully...");
+        pro.setProjectBtnVisibility(join: true,cancel: false);
+      } else {
+        debugPrint("Not Delete project--------->${response.body}");
+        showToast(context, "Try again record not delete...");
+      }
+      return response.body;
     } else {
-      debugPrint("Not Delete project--------->${response.body}");
-      showToast(context, "Try again record not delete...");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
-    return response.body;
   }
 
   joinProject({context, projectID}) async {
-    final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    Map<String, dynamic> requestData = {
-      "Project_Id": projectID,
-    };
-    String url = "$baseUrl/api/ProjectUsers/Create";
-    final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    var data = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      debugPrint('Project Joined----------------->>>> ${response.body}');
-      print("get id for remove joined project---->${data["Id"]}");
-      pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
-      showToast(context, "project joined successfully...");
-      pro.setProjectBtnVisibility(join: false,cancel: true);
-    } else {
-      debugPrint('Project Joined----------------->>>> ${response.body} & ${response.statusCode}');
-      showToast(context, 'Try After some time.....');
-    }
-  }
-
-  static getProjectData(context) async {
-
-    final provider = Provider.of<ProjectListProvider>(context, listen: false);
-    provider.getProjectList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/Projects/List';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('Project data-------------${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getProjectList.clear();
-        provider.setListProject(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Project Data Not Found");
-      }
-    } catch (e) {
-      debugPrint("Project ------>$e");
-    }
-  }
-
-  static getProjectDataByOrgID(context, int? orgId) async {
-    final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
-    provider.getProjectListByOrgId.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/Projects/OrgProjectsList?OrgId=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      debugPrint('data -----------> ${response.body}');
-      if (response.statusCode == 200) {
-        debugPrint('Project Data By orgID-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getProjectListByOrgId.clear();
-        provider.setListProjectByOrgId(data);
-      } else {
-        debugPrint("Project Data By OrgID Not Found...");
-      }
-    } catch (e) {
-      debugPrint("Project ------>$e");
-    }
-  }
-
-  static getProjectManageUserData(context, int? projectId) async {
-
-    final provider = Provider.of<ProjectListManageUserProvider>(context, listen: false);
-    provider.getProjectListManageUser.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl =
-          '$baseUrl/api/ProjectUsers/GetUsersByProject?Project_Id=$projectId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      debugPrint('data -----------> ${response.body}');
-      if (response.statusCode == 200) {
-        debugPrint('Project Manage User Data -----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.getProjectListManageUser.clear();
-        provider.setListProjectManageUser(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("Project Manage User Data not found...");
-      }
-    } catch (e) {
-      debugPrint("Project ------>$e");
-    }
-  }
-
-  static getRequestedProject({context, isApproved,orgId}) async {
-    final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('Request Join Project success :-----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectRequest.clear();
-        provider.setProjectRequest(data);
-      } else {
-        showToast(context, "request join project failed try again after some time..!");
-        debugPrint("---------Requested join Project failed...!");
-      }
-    }
-    catch (e)
-    {
-      debugPrint("Exception:-----requested join project------>$e");
-    }
-  }
-
-  static getAcceptedProject({context, isApproved, orgId}) async {
-    final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
-      final response = await http.get(Uri.parse(trainingUrl), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint('get Approved Project data Success: -----------> ${response.body}');
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectAccepted.clear();
-        provider.setProjectAccepted(data);
-      } else {
-        showToast(context, CustomString.noDataFound);
-        debugPrint("error to get Approved Project Data ...!");
-      }
-    } catch (e) {
-      debugPrint("Exception, get approved project data: ------>$e");
-    }
-  }
-
-  static cancelProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Cancel Project joined Request Success: --------->${response.body}");
-      showToast(context, 'Cancel Joined Project Request SuccessFully..');
-      getProjectManageUserData(context,projectId);
-      getRequestedProject(context: context, isApproved: false, orgId:orgId);
-    } else {
-      debugPrint("Cancel Project joined Request Failed--------->${response.body}");
-      showToast(context, 'Cancel Joined Project Request Failed try after some time..!');
-    }
-    return response.body;
-  }
-
-  static approvedProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
-    final response = await http.delete(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Approved Project joined Request Success: --------->${response.body}");
-      showToast(context, 'Approved Joined Project Request SuccessFully..');
-      getAcceptedProject(context: context, isApproved: true, orgId:orgId);
-    } else {
-      debugPrint("Approved Project joined Request Failed--------->${response.body}");
-      showToast(context, 'Approved Joined Project Request Failed try after some time..!');
-    }
-    return response.body;
-  }
-
-  static approveProjectManageUser(context, int? id, int? projectId) async {
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
-
-    Map<String, dynamic> requestData = {
-      "Id": id,
-      "Person_Id": personId,
-      "Project_Id": projectId,
-      "IsApproved": true
-    };
-    String url = '$baseUrl/api/ProjectUsers/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Approve Project Manage User--------->${response.body}");
-      showToast(context, 'Accepted Successfully..');
-      getProjectManageUserData(context, projectId);
-    } else {
-      debugPrint("Not Approve Project Manage User--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again Data not accept..."),
-      ));
-    }
-  }
-
-
-
-  static getProjectExperience(context, int? projectId) async {
-
-    final provider = Provider.of<ProjectExperienceProvider>(context, listen: false);
-    provider.projectEx.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url =
-          '$baseUrl/api/Project_Criteria/Get_Proj_ExpCriteria?projectId=$projectId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Experience Project Data ----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectEx.clear();
-        provider.setProjectEx(data);
-      } else {
-        debugPrint("Experience Project Data Not Found...");
-      }
-    } catch (e) {
-      debugPrint("experience------>$e");
-    }
-  }
-
-  static getProjectQualification(context, int? projectId) async {
-
-    final provider = Provider.of<ProjectQualificationProvider>(context, listen: false);
-    provider.projectQua.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url = '$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Qualification Project Data ------->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectQua.clear();
-        provider.setProjectQua(data);
-      } else {
-        debugPrint("Qualification Project Data Not Found...");
-      }
-    } catch (e) {
-      debugPrint("qualification------>$e");
-    }
-  }
-
-  static getProjectSkill(context, int? projectId) async {
-
-    final provider = Provider.of<ProjectSkillProvider>(context, listen: false);
-    provider.projectSkill.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url = '$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Skill Project Data ----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectSkill.clear();
-        provider.setProjectSkill(data);
-      } else {
-        debugPrint("Skill Project Data Not Found...");
-      }
-    } catch (e) {
-      debugPrint("skill------>$e");
-    }
-  }
-
-  static getProjectHobby(context, int? projectId) async {
-
-    final provider = Provider.of<ProjectHobbyProvider>(context, listen: false);
-    provider.projectHobby.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    try {
-      String url = '$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Hobby Project Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.projectHobby.clear();
-        provider.setProjectHobby(data);
-      } else {
-        debugPrint("Hobby Project Data not found...");
-      }
-    } catch (e) {
-      debugPrint("hobby------>$e");
-    }
-  }
-
-  /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
-
-  static getPersonExperience(context) async {
-
-    final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
-    provider.personEx.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
-
-    try {
-      String url = '$baseUrl/api/PersonExperiences/MyList?id=$personId';
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Experience Profile Data----->${response.body}");
-        List<dynamic> data = jsonDecode(response.body);
-        provider.personEx.clear();
-        provider.setPersonEx(data);
-      } else {
-        debugPrint("Experience Profile Data not found...");
-      }
-    } catch (e) {
-      debugPrint("experience------>$e");
-    }
-  }
-
-  static getPersonQualification(context) async {
-
-    final provider = Provider.of<PersonQualificationProvider>(context, listen: false);
-    provider.personQl.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/GetUserPerQual';
-    final response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Qualification Profile Data----->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.personQl.clear();
-      provider.setPersonQl(data);
-    } else {
-      debugPrint("Qualification Profile Data not found...");
-    }
-  }
-
-  static getPersonSkill(context) async {
-
-    final provider = Provider.of<PersonSkillProvider>(context, listen: false);
-    provider.personSkill.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonSkills/GetSkillsByUser';
-    final response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Skill Profile Data----->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.personSkill.clear();
-      provider.setPersonSkill(data);
-    } else {
-      debugPrint("Skill Profile Data Not Found...");
-    }
-  }
-
-  static getPersonHobby(context) async {
-
-    final provider = Provider.of<PersonHobbyProvider>(context, listen: false);
-    provider.personHobby.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonHobbies/MyHobbies';
-    final response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Hobby Profile Data----->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.personHobby.clear();
-      provider.setPersonHobby(data);
-    } else {
-      debugPrint("Hobby Profile Data Not Found...");
-    }
-  }
-
-  static getDepartment({context, orgId}) async {
-
-    final provider = Provider.of<DepartmentProvider>(context, listen: false);
-    provider.department.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId';
-    final response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Department Data ------->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.department.clear();
-      provider.setDepartment(data);
-    } else {
-      debugPrint("Department Data Not Found--->${response.body}");
-    }
-  }
-
-  static deletePersonExperience(context, int? perExpId) async {
-
-    try {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-      String url = '$baseUrl/api/PersonExperiences/Delete?id=$perExpId';
+      Map<String, dynamic> requestData = {
+        "Project_Id": projectID,
+      };
+      String url = "$baseUrl/api/ProjectUsers/Create";
+      final response = await http.post(Uri.parse(url),body: jsonEncode(requestData) , headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        debugPrint('Project Joined----------------->>>> ${response.body}');
+        print("get id for remove joined project---->${data["Id"]}");
+        pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
+        showToast(context, "project joined successfully...");
+        pro.setProjectBtnVisibility(join: false,cancel: true);
+      } else {
+        debugPrint('Project Joined----------------->>>> ${response.body} & ${response.statusCode}');
+        showToast(context, 'Try After some time.....');
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectData(context) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectListProvider>(context, listen: false);
+      provider.getProjectList.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/Projects/List';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('Project data-------------${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getProjectList.clear();
+          provider.setListProject(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("Project Data Not Found");
+        }
+      } catch (e) {
+        debugPrint("Project ------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectDataByOrgID(context, int? orgId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
+      provider.getProjectListByOrgId.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/Projects/OrgProjectsList?OrgId=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        debugPrint('data -----------> ${response.body}');
+        if (response.statusCode == 200) {
+          debugPrint('Project Data By orgID-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getProjectListByOrgId.clear();
+          provider.setListProjectByOrgId(data);
+        } else {
+          debugPrint("Project Data By OrgID Not Found...");
+        }
+      } catch (e) {
+        debugPrint("Project ------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectManageUserData(context, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectListManageUserProvider>(context, listen: false);
+      provider.getProjectListManageUser.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl =
+            '$baseUrl/api/ProjectUsers/GetUsersByProject?Project_Id=$projectId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        debugPrint('data -----------> ${response.body}');
+        if (response.statusCode == 200) {
+          debugPrint('Project Manage User Data -----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.getProjectListManageUser.clear();
+          provider.setListProjectManageUser(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("Project Manage User Data not found...");
+        }
+      } catch (e) {
+        debugPrint("Project ------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getRequestedProject({context, isApproved,orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectRequestProvider>(context, listen: false);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('Request Join Project success :-----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectRequest.clear();
+          provider.setProjectRequest(data);
+        } else {
+          showToast(context, "request join project failed try again after some time..!");
+          debugPrint("---------Requested join Project failed...!");
+        }
+      }
+      catch (e)
+      {
+        debugPrint("Exception:-----requested join project------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getAcceptedProject({context, isApproved, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectAcceptedProvider>(context, listen: false);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String trainingUrl = '$baseUrl/api/ProjectUsers/User/Projects?IsApproved=$isApproved&Org_Id=$orgId';
+        final response = await http.get(Uri.parse(trainingUrl), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint('get Approved Project data Success: -----------> ${response.body}');
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectAccepted.clear();
+          provider.setProjectAccepted(data);
+        } else {
+          showToast(context, CustomString.noDataFound);
+          debugPrint("error to get Approved Project Data ...!");
+        }
+      } catch (e) {
+        debugPrint("Exception, get approved project data: ------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  cancelProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("Delete Person Experience--------->${response.body}");
-        getPersonExperience(context);
-        Navigator.pop(context);
+        debugPrint("Cancel Project joined Request Success: --------->${response.body}");
+        showToast(context, 'Cancel Joined Project Request SuccessFully..');
+        getProjectManageUserData(context,projectId);
+        getRequestedProject(context: context, isApproved: false, orgId:orgId);
       } else {
-        debugPrint("Not Delete Person Experience--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again person experience not delete..."),
-        ));
+        debugPrint("Cancel Project joined Request Failed--------->${response.body}");
+        showToast(context, 'Cancel Joined Project Request Failed try after some time..!');
       }
       return response.body;
-    } catch (e) {
-      debugPrint("Exception------->$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static deletePersonQualification(context, int? perQLId) async {
-
-    try {
+  approvedProjectJoinedRequest({context, int? id, int? projectId, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-      String url = "$baseUrl/api/PersonQualifications/Delete?id=$perQLId";
+      String url = '$baseUrl/api/ProjectUsers/Delete?id=$id&project_Id=$projectId';
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("Delete Person Qualification--------->${response.body}");
-        getPersonQualification(context);
-        Navigator.pop(context);
+        debugPrint("Approved Project joined Request Success: --------->${response.body}");
+        showToast(context, 'Approved Joined Project Request SuccessFully..');
+        getAcceptedProject(context: context, isApproved: true, orgId:orgId);
       } else {
-        debugPrint("Not Delete Person Qualification--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again person qualification not delete..."),
-        ));
+        debugPrint("Approved Project joined Request Failed--------->${response.body}");
+        showToast(context, 'Approved Joined Project Request Failed try after some time..!');
       }
-    } catch (e) {
-      debugPrint("Exception------->$e");
+      return response.body;
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static deletePersonSkill(context, int? perSkillId) async {
-
-    try {
+  approveProjectManageUser(context, int? id, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
 
-      String url = '$baseUrl/api/PersonSkills/Delete?id=$perSkillId';
-      final response = await http.delete(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Delete Person Skill--------->${response.body}");
-        getPersonSkill(context);
-        Navigator.of(context).pop();
-      } else {
-        debugPrint("Not Delete Person Skill--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again person skill not delete..."),
-        ));
-      }
-    } catch (e) {
-      debugPrint("Exception------->$e");
-    }
-  }
-
-  static deletePersonHobby(context, personId, int? perHobbyId) async {
-
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-      String url = '$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId';
-      final response = await http.delete(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Delete Person Hobby--------->${response.body}");
-        ApiConfig.getPersonHobby(context);
-        Navigator.pop(context);
-      } else {
-        debugPrint("Not Delete Person Hobby--------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again person hobby not delete..."),
-        ));
-      }
-    } catch (e) {
-      debugPrint("Exception------->$e");
-    }
-  }
-
-  static addExperienceData({context, jobTitle, comName, indName, sDate, eDate}) async {
-
-    DateTime startDate = DateTime.parse(sDate);
-    DateTime endDate = DateTime.parse(eDate);
-    int result = monthsBetweenDates(startDate, endDate);
-
-    Map<String, dynamic> requestData = {
-      "Company_Name": comName,
-      "Industry_Field_Name": indName,
-      "Exp_months": result,
-      "Job_Title": jobTitle,
-      "Start_date": sDate,
-      "End_Date": eDate
-    };
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonExperiences/Create';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add Person Experience Data ------>${response.body}");
-      getPersonExperience(context);
-      Navigator.pop(context);
-    } else {
-      debugPrint("Person Add Experience Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person experience not added..."),
-      ));
-    }
-  }
-
-  static addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
-
-    Map<String, dynamic> requestData = {
-      "Cou_Name": courseName,
-      "Inst_Name": instituteName,
-      "City": city,
-      "YOP": yop,
-      "Grade": grade,
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonQualifications/Create';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add Person Qualification Data ------>${response.body}");
-      getPersonQualification(context);
-      Navigator.pop(context);
-    } else {
-      debugPrint("Add Person Qualification Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person qualification not added..."),
-      ));
-    }
-  }
-
-  static addHobbyData({context, hobbyName}) async {
-
-    Map<String, dynamic> requestData = {
-      "Hobby": {"name": hobbyName}
-    };
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonHobbies/PerHobCreate';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add Person Hobby Data ------>${response.body}");
-      ApiConfig.getPersonHobby(context);
-      Navigator.pop(context);
-    } else {
-      debugPrint("Add Person Hobby Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person hobby not added..."),
-      ));
-    }
-  }
-
-  static addSkillData({context, skill, month}) async {
-
-    Map<String, dynamic> requestData = {
-      "Experience": month,
-      "Skill_Name": skill
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonSkills/Create';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add Person Skill Data ------>${response.body}");
-      getPersonSkill(context);
-      Navigator.of(context).pop();
-    } else {
-      debugPrint("Add Person Skill Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person skill not added..."),
-      ));
-    }
-  }
-
-  static addOrgPersonData({context, orgId, aboutORG, city, country, email, mobileNo, orgName}) async {
-
-    Map<String, dynamic> requestData = {
-      "Org_Id": orgId,
-      "About_org": aboutORG,
-      "City": city,
-      "Country": country,
-      "Contact_email": email,
-      "Contact_number": mobileNo,
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/OrgInfo/Create';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add OrgPerson Data Success--------->${response.body}");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgId: orgId, orgName: orgName)));
-    } else {
-      debugPrint("Add OrgPerson Data failed--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again orgPerson data failed..."),
-      ));
-    }
-  }
-
-  static updateExperienceData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
-
-    DateTime startDate = DateTime.parse(sDate);
-    DateTime endDate = DateTime.parse(eDate);
-    int result = monthsBetweenDates(startDate, endDate);
-
-    Map<String, dynamic> requestData = {
-      "PerExp_Id": peronExperienceId,
-      "Company_Name": comName,
-      "Industry_Field_Name": indName,
-      "Exp_months": result,
-      "Job_Title": jobTitle,
-      "Start_date": sDate,
-      "End_Date": eDate
-    };
-
-    try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-      String url = '$baseUrl/api/PersonExperiences/Update';
+      Map<String, dynamic> requestData = {
+        "Id": id,
+        "Person_Id": personId,
+        "Project_Id": projectId,
+        "IsApproved": true
+      };
+      String url = '$baseUrl/api/ProjectUsers/Update';
       final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        debugPrint("Update Person Experience Data ------>${response.body}");
+        debugPrint("Approve Project Manage User--------->${response.body}");
+        showToast(context, 'Accepted Successfully..');
+        getProjectManageUserData(context, projectId);
+      } else {
+        debugPrint("Not Approve Project Manage User--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again Data not accept..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+
+
+  getProjectExperience(context, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectExperienceProvider>(context, listen: false);
+      provider.projectEx.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String url =
+            '$baseUrl/api/Project_Criteria/Get_Proj_ExpCriteria?projectId=$projectId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Experience Project Data ----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectEx.clear();
+          provider.setProjectEx(data);
+        } else {
+          debugPrint("Experience Project Data Not Found...");
+        }
+      } catch (e) {
+        debugPrint("experience------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectQualification(context, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectQualificationProvider>(context, listen: false);
+      provider.projectQua.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String url = '$baseUrl/api/Project_Criteria/GetQualifications?projectId=$projectId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Qualification Project Data ------->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectQua.clear();
+          provider.setProjectQua(data);
+        } else {
+          debugPrint("Qualification Project Data Not Found...");
+        }
+      } catch (e) {
+        debugPrint("qualification------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectSkill(context, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectSkillProvider>(context, listen: false);
+      provider.projectSkill.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String url = '$baseUrl/api/Project_Criteria/GetSkillsByProjectId?ProjectId=$projectId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Skill Project Data ----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectSkill.clear();
+          provider.setProjectSkill(data);
+        } else {
+          debugPrint("Skill Project Data Not Found...");
+        }
+      } catch (e) {
+        debugPrint("skill------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getProjectHobby(context, int? projectId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<ProjectHobbyProvider>(context, listen: false);
+      provider.projectHobby.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      try {
+        String url = '$baseUrl/api/Project_Criteria/Hobby/GetByProjectId?ProjectId=$projectId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Hobby Project Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.projectHobby.clear();
+          provider.setProjectHobby(data);
+        } else {
+          debugPrint("Hobby Project Data not found...");
+        }
+      } catch (e) {
+        debugPrint("hobby------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  /*---------------------------------------  Profile Details Screen  -------------------------------------------*/
+
+  getPersonExperience(context) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<PersonExperienceProvider>(context, listen: false);
+      provider.personEx.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String? personId = pref.getSharedPrefStringValue(key: CustomString.personId);
+
+      try {
+        String url = '$baseUrl/api/PersonExperiences/MyList?id=$personId';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Experience Profile Data----->${response.body}");
+          List<dynamic> data = jsonDecode(response.body);
+          provider.personEx.clear();
+          provider.setPersonEx(data);
+        } else {
+          debugPrint("Experience Profile Data not found...");
+        }
+      } catch (e) {
+        debugPrint("experience------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getPersonQualification(context) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<PersonQualificationProvider>(context, listen: false);
+      provider.personQl.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/GetUserPerQual';
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Qualification Profile Data----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.personQl.clear();
+        provider.setPersonQl(data);
+      } else {
+        debugPrint("Qualification Profile Data not found...");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getPersonSkill(context) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<PersonSkillProvider>(context, listen: false);
+      provider.personSkill.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonSkills/GetSkillsByUser';
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Skill Profile Data----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.personSkill.clear();
+        provider.setPersonSkill(data);
+      } else {
+        debugPrint("Skill Profile Data Not Found...");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getPersonHobby(context) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<PersonHobbyProvider>(context, listen: false);
+      provider.personHobby.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonHobbies/MyHobbies';
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Hobby Profile Data----->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.personHobby.clear();
+        provider.setPersonHobby(data);
+      } else {
+        debugPrint("Hobby Profile Data Not Found...");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getDepartment({context, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<DepartmentProvider>(context, listen: false);
+      provider.department.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/Departments/ByOrgId?Org_Id=$orgId';
+      final response = await http.get(Uri.parse(url), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Department Data ------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.department.clear();
+        provider.setDepartment(data);
+      } else {
+        debugPrint("Department Data Not Found--->${response.body}");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  deletePersonExperience(context, int? perExpId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+        String url = '$baseUrl/api/PersonExperiences/Delete?id=$perExpId';
+        final response = await http.delete(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Delete Person Experience--------->${response.body}");
+          getPersonExperience(context);
+          Navigator.pop(context);
+        } else {
+          debugPrint("Not Delete Person Experience--------->${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again person experience not delete..."),
+          ));
+        }
+        return response.body;
+      } catch (e) {
+        debugPrint("Exception------->$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  deletePersonQualification(context, int? perQLId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+        String url = "$baseUrl/api/PersonQualifications/Delete?id=$perQLId";
+        final response = await http.delete(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Delete Person Qualification--------->${response.body}");
+          getPersonQualification(context);
+          Navigator.pop(context);
+        } else {
+          debugPrint("Not Delete Person Qualification--------->${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again person qualification not delete..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Exception------->$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  deletePersonSkill(context, int? perSkillId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+        String url = '$baseUrl/api/PersonSkills/Delete?id=$perSkillId';
+        final response = await http.delete(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Delete Person Skill--------->${response.body}");
+          getPersonSkill(context);
+          Navigator.of(context).pop();
+        } else {
+          debugPrint("Not Delete Person Skill--------->${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again person skill not delete..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Exception------->$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  deletePersonHobby(context, personId, int? perHobbyId) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+        String url = '$baseUrl/api/PersonHobbies/Delete?personId=$personId&hobbyId=$perHobbyId';
+        final response = await http.delete(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Delete Person Hobby--------->${response.body}");
+          apiConfig.getPersonHobby(context);
+          Navigator.pop(context);
+        } else {
+          debugPrint("Not Delete Person Hobby--------->${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again person hobby not delete..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Exception------->$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  addExperienceData({context, jobTitle, comName, indName, sDate, eDate}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      DateTime startDate = DateTime.parse(sDate);
+      DateTime endDate = DateTime.parse(eDate);
+      int result = monthsBetweenDates(startDate, endDate);
+
+      Map<String, dynamic> requestData = {
+        "Company_Name": comName,
+        "Industry_Field_Name": indName,
+        "Exp_months": result,
+        "Job_Title": jobTitle,
+        "Start_date": sDate,
+        "End_Date": eDate
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonExperiences/Create';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add Person Experience Data ------>${response.body}");
         getPersonExperience(context);
         Navigator.pop(context);
       } else {
-        debugPrint("Update Person Experience Data Failed ------>${response.body}");
+        debugPrint("Person Add Experience Data Failed ------>${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again person experience not update..."),
+          content: Text("Try again person experience not added..."),
         ));
       }
-    } catch (e) {
-      debugPrint("Exception------->$e");
-    }
-  }
-
-  static updateQualificationData({context, courseName, instituteName, grade, city, yop, personQualificationID}) async {
-
-    Map<String, dynamic> requestData = {
-      "PQ_Id": personQualificationID,
-      "YOP": yop,
-      "Grade": grade,
-      "City": city,
-      "Cou_Name": courseName,
-      "Inst_Name": instituteName,
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonQualifications/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Update Person Qualification Data ------>${response.body}");
-      getPersonQualification(context);
-      Navigator.pop(context);
     } else {
-      debugPrint("Update Person Qualification Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person qualification not update ..."),
-      ));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static updateSkillData({context, skill, months, personSkillId}) async {
+  addQualificationData({context, courseName, instituteName, city, grade, yop}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Cou_Name": courseName,
+        "Inst_Name": instituteName,
+        "City": city,
+        "YOP": yop,
+        "Grade": grade,
+      };
 
-    Map<String, dynamic> requestData = {
-      "PerSk_Id": personSkillId,
-      "Experience": months,
-      "Skill_Name": skill,
-    };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/PersonSkills/Update';
-    final response =
-        await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Update Person Skill Data ------>${response.body}");
-      getPersonSkill(context);
-      Navigator.of(context).pop();
+      String url = '$baseUrl/api/PersonQualifications/Create';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add Person Qualification Data ------>${response.body}");
+        getPersonQualification(context);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Add Person Qualification Data Failed ------>${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person qualification not added..."),
+        ));
+      }
     } else {
-      debugPrint("Update Person Skill Data Failed ------>${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again person skill not update..."),
-      ));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static updateOrgAdminProfile({context, orgId, aboutOrg, city, country, number, email}) async {
+  addHobbyData({context, hobbyName}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Hobby": {"name": hobbyName}
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    final provider = Provider.of<CirculerIndicationProvider>(context, listen: false);
-
-    Map<String, dynamic> requestData = {
-      "Org_Id": orgId,
-      "About_org": aboutOrg,
-      "City": city,
-      "Country": country,
-      "Contact_email": email,
-      "Contact_number": number,
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/OrgInfo/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Update OrgAdminProfile Success--------->${response.body}");
-      provider.setLoading(true);
-      Navigator.pop(context);
+      String url = '$baseUrl/api/PersonHobbies/PerHobCreate';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add Person Hobby Data ------>${response.body}");
+        apiConfig.getPersonHobby(context);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Add Person Hobby Data Failed ------>${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person hobby not added..."),
+        ));
+      }
     } else {
-      debugPrint("Update OrgAdminProfile failed--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Try again orgAdmin profile not update..."),
-      ));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchCourse({context, courseString}) async {
+  addSkillData({context, skill, month}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Experience": month,
+        "Skill_Name": skill
+      };
 
-    final provider = Provider.of<SearchCourseProvider>(context, listen: false);
-    provider.courseList.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String url = '$baseUrl/api/PersonSkills/Create';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add Person Skill Data ------>${response.body}");
+        getPersonSkill(context);
+        Navigator.of(context).pop();
+      } else {
+        debugPrint("Add Person Skill Data Failed ------>${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person skill not added..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
 
-    String apiUrl = '$baseUrl/api/Courses/AutoCompleteCourse?search_str=$courseString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
+  addOrgPersonData({context, orgId, aboutORG, city, country, email, mobileNo, orgName}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Org_Id": orgId,
+        "About_org": aboutORG,
+        "City": city,
+        "Country": country,
+        "Contact_email": email,
+        "Contact_number": mobileNo,
+      };
 
-    if (response.statusCode == 200) {
-      debugPrint("Search Course Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/OrgInfo/Create';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add OrgPerson Data Success--------->${response.body}");
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UpdateAdminProfile(orgId: orgId, orgName: orgName)));
+      } else {
+        debugPrint("Add OrgPerson Data failed--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again orgPerson data failed..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  updateExperienceData({context, peronExperienceId, jobTitle, comName, indName, sDate, eDate}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      DateTime startDate = DateTime.parse(sDate);
+      DateTime endDate = DateTime.parse(eDate);
+      int result = monthsBetweenDates(startDate, endDate);
+
+      Map<String, dynamic> requestData = {
+        "PerExp_Id": peronExperienceId,
+        "Company_Name": comName,
+        "Industry_Field_Name": indName,
+        "Exp_months": result,
+        "Job_Title": jobTitle,
+        "Start_date": sDate,
+        "End_Date": eDate
+      };
+
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+        String url = '$baseUrl/api/PersonExperiences/Update';
+        final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Update Person Experience Data ------>${response.body}");
+          getPersonExperience(context);
+          Navigator.pop(context);
+        } else {
+          debugPrint("Update Person Experience Data Failed ------>${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again person experience not update..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Exception------->$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  updateQualificationData({context, courseName, instituteName, grade, city, yop, personQualificationID}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "PQ_Id": personQualificationID,
+        "YOP": yop,
+        "Grade": grade,
+        "City": city,
+        "Cou_Name": courseName,
+        "Inst_Name": instituteName,
+      };
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonQualifications/Update';
+      final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Update Person Qualification Data ------>${response.body}");
+        getPersonQualification(context);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Update Person Qualification Data Failed ------>${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person qualification not update ..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  updateSkillData({context, skill, months, personSkillId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "PerSk_Id": personSkillId,
+        "Experience": months,
+        "Skill_Name": skill,
+      };
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/PersonSkills/Update';
+      final response =
+      await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Update Person Skill Data ------>${response.body}");
+        getPersonSkill(context);
+        Navigator.of(context).pop();
+      } else {
+        debugPrint("Update Person Skill Data Failed ------>${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again person skill not update..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  updateOrgAdminProfile({context, orgId, aboutOrg, city, country, number, email}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<CirculerIndicationProvider>(context, listen: false);
+
+      Map<String, dynamic> requestData = {
+        "Org_Id": orgId,
+        "About_org": aboutOrg,
+        "City": city,
+        "Country": country,
+        "Contact_email": email,
+        "Contact_number": number,
+      };
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/OrgInfo/Update';
+      final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Update OrgAdminProfile Success--------->${response.body}");
+        provider.setLoading(true);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Update OrgAdminProfile failed--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Try again orgAdmin profile not update..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  searchCourse({context, courseString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchCourseProvider>(context, listen: false);
       provider.courseList.clear();
-      provider.setSearchedCourse(data);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Courses/AutoCompleteCourse?search_str=$courseString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Course Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.courseList.clear();
+        provider.setSearchedCourse(data);
+      } else {
+        debugPrint("Failed to Search Course Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Course Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchInstitute({context, instituteString}) async {
-
-    final provider = Provider.of<SearchInstituteProvider>(context, listen: false);
-    provider.instituteList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Institutes/AutoCompleteInstitute?search_str=$instituteString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Institute Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
+  searchInstitute({context, instituteString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchInstituteProvider>(context, listen: false);
       provider.instituteList.clear();
-      provider.setSearchedInstitute(data);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Institutes/AutoCompleteInstitute?search_str=$instituteString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Institute Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.instituteList.clear();
+        provider.setSearchedInstitute(data);
+      } else {
+        debugPrint("Failed to Search Institute Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Institute Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchSkill({context, skillString}) async {
-
-    final provider = Provider.of<SearchSkillProvider>(context, listen: false);
-    provider.skillList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Skills/AutoCompleteSkills?search_str=$skillString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Skill Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
+  searchSkill({context, skillString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchSkillProvider>(context, listen: false);
       provider.skillList.clear();
-      provider.setSearchedSkill(data);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Skills/AutoCompleteSkills?search_str=$skillString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Skill Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.skillList.clear();
+        provider.setSearchedSkill(data);
+      } else {
+        debugPrint("Failed to Search Skill Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Skill Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchHobby({context, hobbyString}) async {
+  searchHobby({context, hobbyString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchHobbyProvider>(context, listen: false);
+      provider.hobbyList.clear();
 
-    final provider = Provider.of<SearchHobbyProvider>(context, listen: false);
-    provider.hobbyList.clear();
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String apiUrl = '$baseUrl/api/Hobbies/AutoCompleteHobbies?search_str=$hobbyString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
-    String apiUrl = '$baseUrl/api/Hobbies/AutoCompleteHobbies?search_str=$hobbyString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Hobby Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.setSearchedHobby(data);
+      if (response.statusCode == 200) {
+        debugPrint("Search Hobby Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.setSearchedHobby(data);
+      } else {
+        debugPrint("Failed to Search Hobby Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Hobby Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchExperienceCompany({context, companyString}) async {
-
-    final provider = Provider.of<SearchExCompanyProvider>(context, listen: false);
-    provider.cmpList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Experience/AutoCompleteCompanyNames?search_str=$companyString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Experience company Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
+  searchExperienceCompany({context, companyString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchExCompanyProvider>(context, listen: false);
       provider.cmpList.clear();
-      provider.setSearchedCompany(data);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Experience/AutoCompleteCompanyNames?search_str=$companyString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Experience company Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.cmpList.clear();
+        provider.setSearchedCompany(data);
+      } else {
+        debugPrint("Failed to Search Experience company Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Experience company Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static searchExperienceIndustry({context, industryString}) async {
-
-    final provider = Provider.of<SearchExIndustryProvider>(context, listen: false);
-    provider.indList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Experience/AutoCompleteIndustryNames?search_str=$industryString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Experience Industry Data ------>${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
+  searchExperienceIndustry({context, industryString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchExIndustryProvider>(context, listen: false);
       provider.indList.clear();
-      provider.setSearchedIndustry(data);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Experience/AutoCompleteIndustryNames?search_str=$industryString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Experience Industry Data ------>${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.indList.clear();
+        provider.setSearchedIndustry(data);
+      } else {
+        debugPrint("Failed to Search Experience Industry Data ------>${response.body}");
+      }
     } else {
-      debugPrint("Failed to Search Experience Industry Data ------>${response.body}");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
   /*-----------------------------------------  Manage Organization Screen  -------------------------------------*/
 
-  static getDataSwitching({context}) async {
+  getDataSwitching({context}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SwitchProvider>(context, listen: false);
 
-    final provider = Provider.of<SwitchProvider>(context, listen: false);
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    try {
-      String url = '$baseUrl/api/Person/MySessionInfo';
-      final response = await http.post(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-      if (response.statusCode == 200) {
-        debugPrint("Switching OrgPersonAdmin Data------->${response.body}");
-        Map<String, dynamic> data = jsonDecode(response.body);
-        await provider.setSwitchData(SwitchDataModel.fromJson(data));
-        provider.notify();
-      } else {
-        debugPrint("Failed to Switching OrgPersonAdmin Data------->${response.body}");
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Try again switching failed..."),
-        ));
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      try {
+        String url = '$baseUrl/api/Person/MySessionInfo';
+        final response = await http.post(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          debugPrint("Switching OrgPersonAdmin Data------->${response.body}");
+          Map<String, dynamic> data = jsonDecode(response.body);
+          await provider.setSwitchData(SwitchDataModel.fromJson(data));
+          provider.notify();
+        } else {
+          debugPrint("Failed to Switching OrgPersonAdmin Data------->${response.body}");
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Try again switching failed..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Switching OrgPersonAdmin------>$e");
       }
-    } catch (e) {
-      debugPrint("Switching OrgPersonAdmin------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getManageOrgData({context, tabIndex}) async {
-    final requestProvider = Provider.of<RequestManageOrgProvider>(context, listen: false);
-    final approvedProvider = Provider.of<ApprovedManageOrgProvider>(context, listen: false);
-    requestProvider.requestOrgDataList.clear();
-    approvedProvider.approveOrgDataList.clear();
+  getManageOrgData({context, tabIndex}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final requestProvider = Provider.of<RequestManageOrgProvider>(context, listen: false);
+      final approvedProvider = Provider.of<ApprovedManageOrgProvider>(context, listen: false);
+      requestProvider.requestOrgDataList.clear();
+      approvedProvider.approveOrgDataList.clear();
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    try {
-      String url = '$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex';
-      final response = await http.get(Uri.parse(url), headers: {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      try {
+        String url = '$baseUrl/api/OrgPersons/ListByMe?Request_Status=$tabIndex';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          List<dynamic> data = await jsonDecode(response.body);
+          if(tabIndex == 0){
+            debugPrint("Get Requested data------->$data");
+            requestProvider.setRequestOrgData(data);
+          }else{
+            debugPrint("Get Approved data------->$data");
+            approvedProvider.setApproveOrgData(data);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Something went wrong..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("Exception:------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  getOrgMemberData({context, orgName, tabIndex}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final requestProvider = Provider.of<RequestMemberProvider>(context, listen: false);
+      final approvedProvider = Provider.of<ApprovedMemberProvider>(context, listen: false);
+      requestProvider.requestPendingOrgDataList.clear();
+      approvedProvider.approveOrgDataList.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      try {
+        String url = '$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex';
+        final response = await http.get(Uri.parse(url), headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (response.statusCode == 200) {
+          tabIndex == 0 ? debugPrint("Pending Requested Org Member Data ------->${response.body}") : debugPrint("Approved Org Member Data ------->${response.body}");
+          List<dynamic> data = await jsonDecode(response.body);
+          tabIndex == 0 ? requestProvider.setPendingRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Something data does not display..."),
+          ));
+        }
+      } catch (e) {
+        debugPrint("org member data------>$e");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  updateAssignOrgRequestStatus({context, orgID, personID, depID, orgName, reqStatus}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Org_Id": orgID,
+        "Perosn_Id": personID,
+        "Dept_Id": depID,
+        "Request_Status": reqStatus,
+        "Dept_Req": ""
+      };
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String url = '$baseUrl/api/OrgPersons/Request/Update';
+      final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        List<dynamic> data = await jsonDecode(response.body);
-        if(tabIndex == 0){
-          debugPrint("Get Requested data------->$data");
-          requestProvider.setRequestOrgData(data);
-        }else{
-          debugPrint("Get Approved data------->$data");
-          approvedProvider.setApproveOrgData(data);
+        apiConfig.getOrgMemberData(
+            context: context, orgName: orgName, tabIndex: 0);
+        debugPrint("Update Department Assign --------->${response.body}");
+      } else {
+        debugPrint("Update Department Assign failed--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Department Assign failed..."),
+        ));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  searchOrganization({context, orgString}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchOrgProvider>(context, listen: false);
+      provider.orgList.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Organization ------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.orgList.clear();
+        provider.setSearchedOrg(data);
+      } else {
+        debugPrint("Failed to Search Organization ------->${response.body}");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  searchDepartment({context, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      final provider = Provider.of<SearchDepartmentProvider>(context, listen: false);
+      provider.departmentList.clear();
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/Departments/ByOrgId?org_Id=$orgId';
+      final response = await http.get(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        debugPrint("Search Department ------->${response.body}");
+        List<dynamic> data = jsonDecode(response.body);
+        provider.departmentList.clear();
+        provider.setSearchedDepartment(data);
+      } else {
+        debugPrint("Failed to Search Department ------->${response.body}");
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  joinOrgRequest({context, orgID, dpID, dpName}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> parameter = {
+        "Org_Id": orgID,
+        "Dept_Id": dpID,
+        "Dept_Req": dpName
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      const String apiUrl = '$baseUrl/api/OrgPersons/Create';
+      final response = await http.post(Uri.parse(apiUrl), body: jsonEncode(parameter), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Join Organization Request--------->${response.body}");
+        apiConfig.getManageOrgData(context: context, tabIndex: 0);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Failed to Join Organization Request--------->${response.body}");
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  deleteOrgRequest({context, orgID, personID, screen}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+
+      String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID';
+      final response = await http.delete(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        if (screen == CustomString.approved) {
+          debugPrint("Leave Approved Organization --------->${response.body}");
+          getManageOrgData(context: context, tabIndex: 1);
+        } else if (screen == CustomString.requested) {
+          debugPrint("Cancel Organization Request--------->${response.body}");
+          getManageOrgData(context: context, tabIndex: 0);
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Something went wrong..."),
-        ));
+        debugPrint("Failed to Delete Organization Request--------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
       }
-    } catch (e) {
-      debugPrint("Exception:------>$e");
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static getOrgMemberData({context, orgName, tabIndex}) async {
+  deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    final requestProvider = Provider.of<RequestMemberProvider>(context, listen: false);
-    final approvedProvider = Provider.of<ApprovedMemberProvider>(context, listen: false);
-    requestProvider.requestPendingOrgDataList.clear();
-    approvedProvider.approveOrgDataList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-    try {
-      String url = '$baseUrl/api/OrgPersons/ListByOrg?org_Name=$orgName&Request_Status=$tabIndex';
-      final response = await http.get(Uri.parse(url), headers: {
+      String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID';
+      final response = await http.delete(Uri.parse(apiUrl), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        tabIndex == 0 ? debugPrint("Pending Requested Org Member Data ------->${response.body}") : debugPrint("Approved Org Member Data ------->${response.body}");
-        List<dynamic> data = await jsonDecode(response.body);
-        tabIndex == 0 ? requestProvider.setPendingRequestOrgData(data) : approvedProvider.setApproveOrgData(data);
+        debugPrint("Delete Organization From Admin Side --------->${response.body}");
+        if (screen == CustomString.approved) {
+          apiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 1);
+        } else if (screen == CustomString.pendingRequested) {
+          apiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 0);
+        }
+        Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Something data does not display..."),
-        ));
-      }
-    } catch (e) {
-      debugPrint("org member data------>$e");
-    }
-  }
-
-  static updateAssignOrgRequestStatus({context, orgID, personID, depID, orgName, reqStatus}) async {
-
-    Map<String, dynamic> requestData = {
-      "Org_Id": orgID,
-      "Perosn_Id": personID,
-      "Dept_Id": depID,
-      "Request_Status": reqStatus,
-      "Dept_Req": ""
-    };
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/OrgPersons/Request/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      ApiConfig.getOrgMemberData(
-          context: context, orgName: orgName, tabIndex: 0);
-      debugPrint("Update Department Assign --------->${response.body}");
-    } else {
-      debugPrint("Update Department Assign failed--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Department Assign failed..."),
-      ));
-    }
-  }
-
-  static searchOrganization({context, orgString}) async {
-
-    final provider = Provider.of<SearchOrgProvider>(context, listen: false);
-    provider.orgList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Orgs/AutoCompleteOrgs?search_str=$orgString';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Organization ------->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.orgList.clear();
-      provider.setSearchedOrg(data);
-    } else {
-      debugPrint("Failed to Search Organization ------->${response.body}");
-    }
-  }
-
-  static searchDepartment({context, orgId}) async {
-
-    final provider = Provider.of<SearchDepartmentProvider>(context, listen: false);
-    provider.departmentList.clear();
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Departments/ByOrgId?org_Id=$orgId';
-    final response = await http.get(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-
-    if (response.statusCode == 200) {
-      debugPrint("Search Department ------->${response.body}");
-      List<dynamic> data = jsonDecode(response.body);
-      provider.departmentList.clear();
-      provider.setSearchedDepartment(data);
-    } else {
-      debugPrint("Failed to Search Department ------->${response.body}");
-    }
-  }
-
-  static joinOrgRequest({context, orgID, dpID, dpName}) async {
-
-    Map<String, dynamic> parameter = {
-      "Org_Id": orgID,
-      "Dept_Id": dpID,
-      "Dept_Req": dpName
-    };
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    const String apiUrl = '$baseUrl/api/OrgPersons/Create';
-    final response = await http.post(Uri.parse(apiUrl), body: jsonEncode(parameter), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Join Organization Request--------->${response.body}");
-      ApiConfig.getManageOrgData(context: context, tabIndex: 0);
-      Navigator.pop(context);
-    } else {
-      debugPrint("Failed to Join Organization Request--------->${response.body}");
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
-    }
-  }
-
-  static deleteOrgRequest({context, orgID, personID, screen}) async {
-
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$orgID&person_Id=$personID';
-    final response = await http.delete(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      if (screen == CustomString.approved) {
-        debugPrint("Leave Approved Organization --------->${response.body}");
-        getManageOrgData(context: context, tabIndex: 1);
-      } else if (screen == CustomString.requested) {
-        debugPrint("Cancel Organization Request--------->${response.body}");
-        getManageOrgData(context: context, tabIndex: 0);
+        debugPrint("Failed to Delete Organization From Admin Side --------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
       }
     } else {
-      debugPrint("Failed to Delete Organization Request--------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static deleteOrgFromAdminSide({context, indexedOrgID, personID, orgName, orgID, screen}) async {
+  deleteDepartment({context, departmentID, orgId}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/OrgPersons/Delete?org_Id=$indexedOrgID&person_Id=$personID';
-    final response = await http.delete(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Delete Organization From Admin Side --------->${response.body}");
-      if (screen == CustomString.approved) {
-        ApiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 1);
-      } else if (screen == CustomString.pendingRequested) {
-        ApiConfig.getOrgMemberData(context: context, orgName: orgName, tabIndex: 0);
+      String apiUrl = '$baseUrl/api/Departments/Delete?dept_Id=$departmentID';
+      final response = await http.delete(Uri.parse(apiUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Delete Department --------->${response.body}");
+        await getDepartment(context: context, orgId: orgId);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Failed to Delete Department --------->${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Try again Department not delete...")));
       }
-      Navigator.of(context).pop();
     } else {
-      debugPrint("Failed to Delete Organization From Admin Side --------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${jsonDecode(response.body)["Message"]}")));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static deleteDepartment({context, departmentID, orgId}) async {
+  addNewDepartment({context, departmentName, depId, orgID}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Org_Id": orgID,
+        "Dept_Name": departmentName,
+        "Parent_dept_Id": depId
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String apiUrl = '$baseUrl/api/Departments/Delete?dept_Id=$departmentID';
-    final response = await http.delete(Uri.parse(apiUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Delete Department --------->${response.body}");
-      await getDepartment(context: context, orgId: orgId);
-      Navigator.pop(context);
+      String url = '$baseUrl/api/Departments/Create';
+      final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Add Department --------->${response.body}");
+        await getDepartment(context: context, orgId: orgID);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Failed to Add Department --------->${response.body}");
+        Image.asset(ImagePath.noData, fit: BoxFit.cover);
+      }
     } else {
-      debugPrint("Failed to Delete Department --------->${response.body}");
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Try again Department not delete...")));
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
-  static addNewDepartment({context, departmentName, depId, orgID}) async {
+  updateDepartment({context, departmentName, depId, parentDepId, orgID}) async {
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String, dynamic> requestData = {
+        "Org_Id": orgID,
+        "Dept_Id": depId,
+        "Dept_Name": departmentName,
+        "Parent_dept_Id": parentDepId
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
-    Map<String, dynamic> requestData = {
-      "Org_Id": orgID,
-      "Dept_Name": departmentName,
-      "Parent_dept_Id": depId
-    };
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/Departments/Create';
-    final response = await http.post(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Add Department --------->${response.body}");
-      await getDepartment(context: context, orgId: orgID);
-      Navigator.pop(context);
+      String url = '$baseUrl/api/Departments/Update';
+      final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("Update department --------->${response.body}");
+        await getDepartment(context: context, orgId: orgID);
+        Navigator.pop(context);
+      } else {
+        debugPrint("Failed to Update Department-------->${response.body}");
+        Image.asset(ImagePath.noData, fit: BoxFit.cover);
+      }
     } else {
-      debugPrint("Failed to Add Department --------->${response.body}");
-      Image.asset(ImagePath.noData, fit: BoxFit.cover);
-    }
-  }
-
-  static updateDepartment({context, departmentName, depId, parentDepId, orgID}) async {
-
-    Map<String, dynamic> requestData = {
-      "Org_Id": orgID,
-      "Dept_Id": depId,
-      "Dept_Name": departmentName,
-      "Parent_dept_Id": parentDepId
-    };
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String url = '$baseUrl/api/Departments/Update';
-    final response = await http.put(Uri.parse(url), body: jsonEncode(requestData), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("Update department --------->${response.body}");
-      await getDepartment(context: context, orgId: orgID);
-      Navigator.pop(context);
-    } else {
-      debugPrint("Failed to Update Department-------->${response.body}");
-      Image.asset(ImagePath.noData, fit: BoxFit.cover);
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 }

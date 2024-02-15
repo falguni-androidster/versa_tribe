@@ -16,7 +16,7 @@ class _ManageProjectScreenState extends State<ManageProjectScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectDataByOrgID(context, widget.orgId);
+      apiConfig.getProjectDataByOrgID(context, widget.orgId);
     } catch (err) {
       rethrow;
     }

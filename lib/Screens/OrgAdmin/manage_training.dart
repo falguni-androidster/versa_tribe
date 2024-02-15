@@ -15,7 +15,7 @@ class _ManageTrainingScreenState extends State<ManageTrainingScreen>{
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTakeTrainingData(context: context, orgId: widget.orgId);
+      apiConfig.getTakeTrainingData(context: context, orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }

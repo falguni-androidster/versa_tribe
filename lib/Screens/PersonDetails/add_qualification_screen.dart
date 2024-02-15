@@ -62,7 +62,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                       },
                       onChanged: (value) {
                         if (value != "" && value.isNotEmpty) {
-                          ApiConfig.searchCourse(
+                          apiConfig.searchCourse(
                               context: context, courseString: value);
                           provider.courseList.clear();
                           provider.setVisible(true);
@@ -126,7 +126,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchInstitute(
+                          apiConfig.searchInstitute(
                               context: context, instituteString: value);
                           providerInstitute.instituteList.clear();
                         }else{
@@ -256,7 +256,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.addQualificationData(
+                          apiConfig.addQualificationData(
                               context: context,
                               courseName: courseController.text,
                               instituteName: instituteController.text,
