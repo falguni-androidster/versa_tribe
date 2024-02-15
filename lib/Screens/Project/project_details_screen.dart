@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
-import '../../Providers/visiblity_join_training_btn_provider.dart';
 
 class ProjectDetailsScreen extends StatefulWidget {
   final ProjectListByOrgIDModel projectResponseModel;
@@ -15,10 +14,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId);
-      ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectExperience(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectQualification(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectSkill(context, widget.projectResponseModel.projectId);
+      apiConfig.getProjectHobby(context, widget.projectResponseModel.projectId);
     } catch (err) {
       rethrow;
     }
@@ -34,7 +33,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
           child: const Icon(Icons.arrow_back_ios,
               color: CustomColors.kBlackColor),
           onTap: () {
-            ApiConfig.getProjectDataByOrgID(context, widget.orgID);
+            apiConfig.getProjectDataByOrgID(context, widget.orgID);
             Navigator.pop(context);
           },
         ),
@@ -70,7 +69,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 
                     ///Project Criteria Experience
                     FutureBuilder(
-                        future: ApiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectExperience(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -112,7 +111,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 
                     ///Project Criteria Qualification
                     FutureBuilder(
-                        future: ApiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectQualification(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -147,7 +146,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 
                     ///Project Criteria Skill
                     FutureBuilder(
-                        future: ApiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectSkill(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -188,7 +187,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
 
                     ///Project Criteria Hobby
                     FutureBuilder(
-                        future: ApiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
+                        future: apiConfig.getProjectHobby(context, widget.projectResponseModel.projectId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(

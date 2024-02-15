@@ -157,7 +157,7 @@ class _AddNewDepartmentState extends State<AddNewDepartment> {
                         onPressed: () {
                          // if(_formKey.currentState!.validate()){
                             debugPrint("cheque---parent department Id------>$pDepId");
-                            ApiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
+                            apiConfig.addNewDepartment(context: context,departmentName: newDController.text, depId: pDepId, orgID: widget.orgId );
                           // }else{
                           //   return;
                           // }

@@ -25,11 +25,11 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectData(context);
-      ApiConfig.getPersonExperience(context);
-      ApiConfig.getPersonQualification(context);
-      ApiConfig.getPersonSkill(context);
-      ApiConfig.getPersonHobby(context);
+      apiConfig.getProjectData(context);
+      apiConfig.getPersonExperience(context);
+      apiConfig.getPersonQualification(context);
+      apiConfig.getPersonSkill(context);
+      apiConfig.getPersonHobby(context);
     } catch (err) {
       rethrow;
     }
@@ -120,7 +120,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ]),
 
                     FutureBuilder(
-                      future: ApiConfig.getPersonExperience(context),
+                      future: apiConfig.getPersonExperience(context),
                       builder: (context,snapshot) {
                          if(snapshot.connectionState == ConnectionState.waiting){
                           return SizedBox(
@@ -221,7 +221,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                     ),
 
                     FutureBuilder(
-                      future: ApiConfig.getPersonQualification(context),
+                      future: apiConfig.getPersonQualification(context),
                       builder: (context,snapshot) {
                         if(snapshot.connectionState==ConnectionState.waiting){
                           return SizedBox(
@@ -303,7 +303,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                       ),
                     ]),
                     FutureBuilder(
-                      future: ApiConfig.getPersonSkill(context),
+                      future: apiConfig.getPersonSkill(context),
                       builder: (context, snapshot) {
                         if(snapshot.connectionState==ConnectionState.waiting){
                           return SizedBox(
@@ -429,7 +429,7 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
                         ),
                       ]),
                       FutureBuilder(
-                        future: ApiConfig.getPersonHobby(context),
+                        future: apiConfig.getPersonHobby(context),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState==ConnectionState.waiting){
                             return SizedBox(
@@ -558,13 +558,13 @@ class _PersonDetailsScreenState extends State<PersonDetailsScreen> {
               onPressed: () async {
                 // Add your delete logic here
                 if (identityKey == "identityPED") {
-                  ApiConfig.deletePersonExperience(context, iD);
+                  apiConfig.deletePersonExperience(context, iD);
                 }
                 else if (identityKey == "identityPQD") {
-                  ApiConfig.deletePersonQualification(context, iD);
+                  apiConfig.deletePersonQualification(context, iD);
                 }
                 else if (identityKey == "identityPSD") {
-                  ApiConfig.deletePersonSkill(context, iD);
+                  apiConfig.deletePersonSkill(context, iD);
                 }
               },
               child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),

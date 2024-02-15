@@ -83,7 +83,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                       },
                       onChanged: (value) {
                         if (value != "") {
-                          ApiConfig.searchSkill(
+                          apiConfig.searchSkill(
                               context: context, skillString: value);
                           providerSkill.skillList.clear();
                           providerSkill.setVisible(true);
@@ -164,7 +164,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            ApiConfig.updateSkillData(
+                            apiConfig.updateSkillData(
                                 context: context,
                                 personSkillId: widget.perSkillId,
                                 skill: skillController.text,

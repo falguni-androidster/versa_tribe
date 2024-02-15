@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
-import '../../../Providers/visiblity_join_training_btn_provider.dart';
 
 class TakeTrainingDetailScreen extends StatefulWidget {
 
@@ -27,12 +26,12 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
+      apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
 
-      ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
-      ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId);
+      apiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId);
     } catch (err) {
       rethrow;
     }
@@ -49,7 +48,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
           child: const Icon(Icons.arrow_back_ios,
               color: CustomColors.kBlackColor),
           onTap: () {
-            ApiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
+            apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgID);
             Navigator.pop(context);
           },
         ),
@@ -93,7 +92,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingExperience(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -133,7 +132,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingQualification(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -167,7 +166,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingSkill(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -208,7 +207,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         style: TextStyle(color: CustomColors.kBlackColor, fontWeight: FontWeight.normal, fontSize: 14, fontFamily: 'Poppins')),
                     SizedBox(height: size.height * 0.01 / 2),
                     FutureBuilder(
-                        future: ApiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
+                        future: apiConfig.getTrainingHobby(context, widget.trainingResponse.trainingId),
                         builder: (context,snapshot) {
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return SizedBox(
@@ -242,7 +241,7 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                         width: double.infinity,
                         child: Consumer<VisibilityJoinTrainingBtnProvider>(
                             builder: (context,val,child) {
-                              print("isJoin====>${widget.trainingResponse.isJoin}");
+                              debugPrint("isJoin====>${widget.trainingResponse.isJoin}");
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [

@@ -18,7 +18,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false);
+      apiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false);
     } catch (err) {
       rethrow;
     }
@@ -31,7 +31,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-            future: ApiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false),
+            future: apiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false),
             builder: (context,snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
                 return SizedBox(
@@ -114,7 +114,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
+                        apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,
@@ -133,7 +133,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        ApiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin: trainingPendingRequestsModel.isJoin);
+                        apiConfig.approveRequestTraining(context: context,trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin: trainingPendingRequestsModel.isJoin);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kBlueColor,

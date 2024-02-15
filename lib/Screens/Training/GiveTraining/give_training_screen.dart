@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/extension.dart';
 
+import '../../../main.dart';
 import 'give_training_detail_screen.dart';
 
 class GiveTrainingScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _GiveTrainingScreenState extends State<GiveTrainingScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getGiveTrainingData(context,widget.orgId);
+      apiConfig.getGiveTrainingData(context,widget.orgId);
     } catch (err) {
       rethrow;
     }

@@ -184,7 +184,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                             },
                             onChanged: (value) {
                               if (value != "") {
-                                ApiConfig.searchOrganization(context: context, orgString: value);
+                                apiConfig.searchOrganization(context: context, orgString: value);
                                 orgProvider.orgList.clear();
                               }
                               orgProvider.orgList.clear();
@@ -242,7 +242,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                             onChanged: (value) {
                               requestNewDepartmentController.clear();
                               if (value != "") {
-                                ApiConfig.searchDepartment(context: context, orgId: orgID);
+                                apiConfig.searchDepartment(context: context, orgId: orgID);
                                 departmentProvider.departmentList.clear();
                               }
                               departmentProvider.departmentList.clear();
@@ -339,7 +339,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                               onPressed: () {
                                 String? dpName = requestNewDepartmentController.text;
                                 if (formKey.currentState!.validate()) {
-                                  ApiConfig.joinOrgRequest(context: context, orgID: orgID, dpID: dpID, dpName: dpName);
+                                  apiConfig.joinOrgRequest(context: context, orgID: orgID, dpID: dpID, dpName: dpName);
                                 }
                               },
                               style: ButtonStyle(
@@ -364,7 +364,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
   }
 
   arrowBackPressed(context) async {
-    await ApiConfig.getDataSwitching(context: context);
+    await apiConfig.getDataSwitching(context: context);
     Navigator.pushNamed(context, '/home');
     //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
   }

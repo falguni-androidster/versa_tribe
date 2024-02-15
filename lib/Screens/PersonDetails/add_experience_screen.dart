@@ -138,8 +138,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                             onChanged: (value) {
                               if(value != "" && value.isNotEmpty) {
                                 debugPrint("selected radio val------>${val.selectedValue}");
-                                val.selectedValue == "Company" ? ApiConfig.searchExperienceCompany(
-                                    context: context, companyString: value) : ApiConfig.searchExperienceIndustry(context: context, industryString: value);
+                                val.selectedValue == "Company" ? apiConfig.searchExperienceCompany(
+                                    context: context, companyString: value) : apiConfig.searchExperienceIndustry(context: context, industryString: value);
                                 providerCompany.cmpList.clear();
                                 providerIndustry.indList.clear();
                                 val.selectedValue == "Company" ?providerCompany.setVisible(true): providerIndustry.setVisible(true);
@@ -318,7 +318,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ApiConfig.addExperienceData(
+                          apiConfig.addExperienceData(
                               context: context,
                               jobTitle: jobTitleController.text,
                               comName: companyNController.text,

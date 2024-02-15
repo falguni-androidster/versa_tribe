@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
-import 'Providers/calling_providers.dart';
-import 'Providers/dropmenu_provider.dart';
-import 'Providers/visiblity_join_training_btn_provider.dart';
+import 'package:versa_tribe/extension.dart';
+import 'package:sip_ua/sip_ua.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
 import 'Screens/call_screen.dart';
 import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
-import 'package:versa_tribe/extension.dart';
-import 'package:sip_ua/sip_ua.dart';
+ApiConfig apiConfig = ApiConfig();
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

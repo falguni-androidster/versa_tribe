@@ -47,26 +47,32 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
   }
 
   getAdminProfileOldData({orgId}) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
-    String profileUrl = '${ApiConfig.baseUrl}/api/OrgInfo/ById?id=$orgId';
-    final response = await http.get(Uri.parse(profileUrl), headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
-    if (response.statusCode == 200) {
-      debugPrint("getOrgAdminData Response------->->  ${response.body}");
-      OrgAdminProfile orgAdminProfile = OrgAdminProfile.fromJson(jsonDecode(response.body));
-      orgAdminProfile.orgId==null?providerBtn.setVisibility(false):null;
-      orgNameController.text = widget.orgName;
-      aboutOrgController.text = orgAdminProfile.aboutOrg!;
-      cityController.text = orgAdminProfile.city!;
-      mobileController.text = orgAdminProfile.contactNumber!;
-      emailController.text = orgAdminProfile.contactEmail!;
-      countryController.text = orgAdminProfile.country!;
+    ApiConfig apiConfig =ApiConfig();
+    bool isValidToken = await apiConfig.isTokenValid();
+    if (isValidToken) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
+      String profileUrl = '${ApiConfig.baseUrl}/api/OrgInfo/ById?id=$orgId';
+      final response = await http.get(Uri.parse(profileUrl), headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      if (response.statusCode == 200) {
+        debugPrint("getOrgAdminData Response------->->  ${response.body}");
+        OrgAdminProfile orgAdminProfile = OrgAdminProfile.fromJson(jsonDecode(response.body));
+        orgAdminProfile.orgId==null?providerBtn.setVisibility(false):null;
+        orgNameController.text = widget.orgName;
+        aboutOrgController.text = orgAdminProfile.aboutOrg!;
+        cityController.text = orgAdminProfile.city!;
+        mobileController.text = orgAdminProfile.contactNumber!;
+        emailController.text = orgAdminProfile.contactEmail!;
+        countryController.text = orgAdminProfile.country!;
+      } else {
+        debugPrint("Have Error in getORG ADMIN DATA------------<");
+      }
     } else {
-      debugPrint("Have Error in getORG ADMIN DATA------------<");
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
     }
   }
 
@@ -249,8 +255,8 @@ class _UpdateAdminProfileState extends State<UpdateAdminProfile> {
                                     return ElevatedButton(
                                       onPressed:orgID!=null? (){
                                         val.updateBtnVisible==true?
-                                        ApiConfig.updateOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text):
-                                        ApiConfig.addOrgPersonData(context: context,orgId: orgID,aboutORG: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,mobileNo: mobileController.text, orgName: widget.orgName);
+                                        apiConfig.updateOrgAdminProfile(context: context,orgId: orgID,aboutOrg: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,number: mobileController.text):
+                                        apiConfig.addOrgPersonData(context: context,orgId: orgID,aboutORG: aboutOrgController.text,city: cityController.text,country: countryController.text,email: emailController.text,mobileNo: mobileController.text, orgName: widget.orgName);
                                       }:(){},
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: CustomColors.kBlueColor,

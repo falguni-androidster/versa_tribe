@@ -18,7 +18,7 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectData(context);
+      apiConfig.getProjectData(context);
     } catch (err) {
       rethrow;
     }

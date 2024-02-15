@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/OrgAdmin/ManageDepartment/add_new_department.dart';
-import 'package:versa_tribe/Screens/OrgAdmin/ManageDepartment/edit_department.dart';
 import 'package:versa_tribe/extension.dart';
 
 class ManageDepartment extends StatefulWidget {
@@ -16,7 +14,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getDepartment(context: context,orgId: widget.orgId);
+      apiConfig.getDepartment(context: context,orgId: widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -46,7 +44,7 @@ class _ManageDepartmentState extends State<ManageDepartment> {
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-          future:ApiConfig.getDepartment(context: context,orgId: widget.orgId),
+          future:apiConfig.getDepartment(context: context,orgId: widget.orgId),
           builder: (context,snapshot) {
             if(snapshot.connectionState==ConnectionState.waiting){
               return SizedBox(
@@ -144,31 +142,31 @@ class _ManageDepartmentState extends State<ManageDepartment> {
       ),
     );
   }
-  void _showDeleteConfirmation(context, int? deptId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
-          content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the confirmation dialog
-              },
-              child: const Text(CustomString.cancel, style: TextStyle(fontFamily: 'Poppins')),
-            ),
-            TextButton(
-              onPressed: () async {
-                ApiConfig.deleteDepartment(context: context,departmentID: deptId,orgId: widget.orgId);
-              },
-              child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showDeleteConfirmation(context, int? deptId) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text(CustomString.deleteTitle, style: TextStyle(fontFamily: 'Poppins')),
+  //         content: const Text(CustomString.deleteContent, style: TextStyle(fontFamily: 'Poppins')),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop(); // Close the confirmation dialog
+  //             },
+  //             child: const Text(CustomString.cancel, style: TextStyle(fontFamily: 'Poppins')),
+  //           ),
+  //           TextButton(
+  //             onPressed: () async {
+  //               ApiConfig.deleteDepartment(context: context,departmentID: deptId,orgId: widget.orgId);
+  //             },
+  //             child: const Text(CustomString.delete, style: TextStyle(fontFamily: 'Poppins')),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 

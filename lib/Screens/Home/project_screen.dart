@@ -5,12 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:versa_tribe/Screens/Project/accepted_project_screen.dart';
-import 'package:versa_tribe/Screens/Project/ongoing_project_screen.dart';
-import 'package:versa_tribe/Screens/Project/requested_project_screen.dart';
 import 'package:versa_tribe/extension.dart';
-
-import '../../Providers/dropmenu_provider.dart';
 import '../Project/project_details_screen.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -33,14 +28,14 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
   broadcastUpdate() async {
     FBroadcast.instance().register("Key_Message", (value, callback) {
       var orgID = value;
-      ApiConfig.getProjectDataByOrgID(context, orgID);
+      apiConfig.getProjectDataByOrgID(context, orgID);
     });
   }
 
   // Call this when the user pull down the screen
   Future<void> _loadData() async {
     try {
-      ApiConfig.getProjectDataByOrgID(context, widget.orgId);
+      apiConfig.getProjectDataByOrgID(context, widget.orgId);
     } catch (err) {
       rethrow;
     }
@@ -110,7 +105,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
               builder: (context,val,child) {
                 return val.tpMenuItems=="All"?
                 FutureBuilder(
-                  future: ApiConfig.getProjectDataByOrgID(context, widget.orgId),
+                  future: apiConfig.getProjectDataByOrgID(context, widget.orgId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
@@ -222,7 +217,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                 ):
                 val.tpMenuItems=="Requested"?
                 FutureBuilder(
-                  future: ApiConfig.getProjectDataByOrgID(context, widget.orgId),
+                  future: apiConfig.getProjectDataByOrgID(context, widget.orgId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
@@ -333,7 +328,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                 ):
                 val.tpMenuItems=="Joined"?
                 FutureBuilder(
-                  future: ApiConfig.getProjectDataByOrgID(context, widget.orgId),
+                  future: apiConfig.getProjectDataByOrgID(context, widget.orgId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
@@ -443,7 +438,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                   },
                 ):
                 FutureBuilder(
-                  future: ApiConfig.getProjectDataByOrgID(context, widget.orgId),
+                  future: apiConfig.getProjectDataByOrgID(context, widget.orgId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
