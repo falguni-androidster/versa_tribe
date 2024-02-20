@@ -85,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                   /// Email Address Field
                   SizedBox(
-                    height: size.height*0.06,
+                    height: size.height*0.09,
                     child: TextFormField(
                       controller: emailController,
                       validator: (value) {
@@ -116,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   /// Password Field
                   Consumer<SignInPwdProvider>(builder: (context, val, child) {
                     return SizedBox(
-                      height: size.height*0.06,
+                      height: size.height*0.09,
                       child: TextFormField(
                         controller: passwordController,
                         obscureText: val.visible,
