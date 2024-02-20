@@ -130,6 +130,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       case CallStateEnum.ENDED:
       case CallStateEnum.FAILED:
         _backToDialPad();
+        FlutterRingtonePlayer().stop();
         break;
       case CallStateEnum.UNMUTED:
       case CallStateEnum.MUTED:
@@ -141,6 +142,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       case CallStateEnum.UNHOLD:
       case CallStateEnum.NONE:
       case CallStateEnum.CALL_INITIATION:
+      FlutterRingtonePlayer().stop();//When Third Party Cut the call..
       case CallStateEnum.REFER:
         break;
     }
@@ -384,6 +386,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     final advanceActions = <Widget>[];
 
     switch (_state) {
+      case CallStateEnum.STREAM:
       case CallStateEnum.NONE:
       case CallStateEnum.CONNECTING:
         if (direction == 'INCOMING') {
@@ -474,6 +477,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
         break;
       case CallStateEnum.FAILED:
       case CallStateEnum.ENDED:
+      FlutterRingtonePlayer().stop();
       call!.hangup();
       _timer?.cancel();
       basicActions.add(hangupBtnInactive);
@@ -619,11 +623,10 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   @override
   void onNewMessage(SIPMessageRequest msg) {
-    // NO OP
   }
   @override
   void onNewNotify(Notify ntf) {
     print("Call-Screen--->$ntf");
-    // NO OP
   }
+
 }
