@@ -9,6 +9,7 @@ import '../Providers/calling_providers.dart';
 import '../Utils/action_button.dart';
 import '../Utils/custom_colors.dart';
 import '../Utils/image_path.dart';
+import '../Utils/notification_service.dart';
 
 class CallScreenWidget extends StatefulWidget {
   final SIPUAHelper? _helper;
@@ -129,7 +130,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
         break;
       case CallStateEnum.ENDED:
       case CallStateEnum.FAILED:
-        _backToDialPad();
+      _backToDialPad();
         FlutterRingtonePlayer().stop();
         break;
       case CallStateEnum.UNMUTED:

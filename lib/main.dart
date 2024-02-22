@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
+import 'package:versa_tribe/Utils/notification_service.dart';
 import 'package:versa_tribe/extension.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'Screens/PersonDetails/add_experience_screen.dart';
@@ -11,8 +12,9 @@ import 'Screens/person_details_screen.dart';
 import 'Screens/splash_screen.dart';
 ApiConfig apiConfig = ApiConfig();
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationServices().initNotification();
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
