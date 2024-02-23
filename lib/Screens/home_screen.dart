@@ -11,6 +11,7 @@ import 'package:versa_tribe/Model/CallCredentialModel.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
+import 'package:versa_tribe/Screens/call_screen.dart';
 import 'package:versa_tribe/Utils/notification_service.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
@@ -20,13 +21,13 @@ import 'package:versa_tribe/extension.dart';
 
 class HomeScreen extends StatefulWidget {
   final String? from;
-  final bool? popUp;
+  bool? popUp;
   final SIPUAHelper? helper;
-  const HomeScreen({super.key, this.from, this.popUp, this.helper});
+  HomeScreen({super.key, this.from, this.popUp, this.helper});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, SipUaHelperListener{
 
   List<OrgAdminPersonList> orgAdminPersonList = [];
   String? selectedValue;
@@ -35,6 +36,48 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
   late SharedPreferences pref;
 
   SIPUAHelper? get helper => widget.helper;
+
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+      // App is now in the foreground
+        print("----------)}>App is in the foreground");
+        // Call the relevant method from SipUaHelperListener
+        onAppResumed();
+        break;
+      case AppLifecycleState.inactive:
+      // App is in an inactive state
+        print("----------)}>App is in an inactive state");
+        break;
+      case AppLifecycleState.paused:
+      // App is now in the background
+        print("----------)}>App is in the background");
+        // Call the relevant method from SipUaHelperListener
+        onAppPaused();
+        break;
+      case AppLifecycleState.detached:
+      // App is detached
+        print("----------)}>App is detached");
+        break;
+      case AppLifecycleState.hidden:
+        print("----------)}>App is hidden");
+    }
+  }
+  @override
+  void onAppResumed() {
+    // Handle actions when the app is resumed
+    print("Handling actions when the app is resumed");
+  }
+  @override
+  void onAppPaused() {
+    // Handle actions when the app is paused
+    print("Handling actions when the app is paused");
+  }
+
   @override
   initState() {
     // print("----------registered-------init-state--->${helper!.registered}---------|");
@@ -43,12 +86,14 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     // print("----------runtimeType-------init-state--->${helper!.runtimeType}-------|");
     setInitialValue(context);
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     helper!.addSipUaHelperListener(this);
   }
 
   @override
   void dispose() {
     apiConfig.getCallCredential(orgID: orgId,action: "Remove");
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
   @override
@@ -435,7 +480,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
     else if(callState.state == CallStateEnum.ENDED || callState.state == CallStateEnum.FAILED){
       debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
       NotificationServices().removeNotification(0);
-
+      Navigator.of(context).pop();
       // Add any additional logic you want to perform when the call ends
     }
 

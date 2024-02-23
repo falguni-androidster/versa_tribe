@@ -95,7 +95,7 @@ class MyApp extends StatelessWidget {
 
   final SIPUAHelper _helper = SIPUAHelper();
   Map<String, PageContentBuilder> routes = {
-    '/home': ([SIPUAHelper? helper, Object? arguments]) => HomeScreen(helper: helper, popUp: false),
+    '/home': ([SIPUAHelper? helper, Object? arguments]) => HomeScreen(helper: helper, popUp: true),
     '/callscreen': ([SIPUAHelper? helper, Object? arguments]) => CallScreenWidget(helper, arguments as Call?),
     //'/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
   };
