@@ -11,7 +11,6 @@ import 'package:versa_tribe/Model/CallCredentialModel.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
-import 'package:versa_tribe/Screens/call_screen.dart';
 import 'package:versa_tribe/Utils/notification_service.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
