@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:versa_tribe/Model/CallCredentialModel.dart';
 import 'package:versa_tribe/extension.dart';
 
 import '../Screens/OrgAdmin/update_admin_profile.dart';
@@ -2421,6 +2422,36 @@ class ApiConfig {
       } else {
         debugPrint("Failed to Update Department-------->${response.body}");
         Image.asset(ImagePath.noData, fit: BoxFit.cover);
+      }
+    } else {
+      print("refresh----isValidToken-------false-----");
+      throw Exception('|-------------Cheque Refresh Token Function it has error---------|');
+    }
+  }
+
+  //_______________Calling Get Calling Credential's____________
+
+  Future<CallCredentialModel> getCallCredential({orgID,action}) async {
+    debugPrint("0rgID>in_calling->>>$orgID");
+    bool isValidToken = await isTokenValid();
+    if (isValidToken) {
+      Map<String,dynamic> bodyPara={
+        "Org_Id":orgID.toString(),
+        "Action": action
+      };
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String? token = pref.getString(CustomString.accessToken);
+      String profileUrl = '$baseUrl/api/Person/MySessionCallerInfo';
+      final response = await http.post(Uri.parse(profileUrl),body: (bodyPara),
+          headers: {'Authorization': 'Bearer $token',});
+      if (response.statusCode == 200) {
+        debugPrint('Get Calling Credential success-----------> ${response.body}');
+        Map<String, dynamic> jsonMap = json.decode(response.body);
+        CallCredentialModel yourModel = CallCredentialModel.fromJson(jsonMap);
+        return yourModel;
+      } else {
+        debugPrint('Get Calling Credential Failed-----------> ${response.body}');
+        throw Exception('-------->Failed Get calling Credentials');
       }
     } else {
       print("refresh----isValidToken-------false-----");

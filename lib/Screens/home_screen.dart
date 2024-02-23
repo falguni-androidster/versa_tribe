@@ -7,12 +7,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sip_ua/sip_ua.dart';
+import 'package:versa_tribe/Model/CallCredentialModel.dart';
 import 'package:versa_tribe/Screens/Home/dashboard_screen.dart';
 import 'package:versa_tribe/Screens/Home/project_screen.dart';
 import 'package:versa_tribe/Screens/Home/training_screen.dart';
+import 'package:versa_tribe/Utils/notification_service.dart';
 import '../Utils/svg_btn.dart';
 import 'Home/account_screen.dart';
-import 'Home/messenger_screen.dart';
 import 'org_admin_manage.dart';
 import 'manage_organization_screen.dart';
 import 'package:versa_tribe/extension.dart';
@@ -25,7 +26,6 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
   List<OrgAdminPersonList> orgAdminPersonList = [];
@@ -34,63 +34,52 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
   bool? orgAdmin;
   late SharedPreferences pref;
 
-  late RegistrationState registerState;
   SIPUAHelper? get helper => widget.helper;
-  bool _switchValue = false;
-
-
   @override
   initState() {
-    // print("----------registered-------initstate--->${helper!.registered}---------|");
-    // print("----------connecting-------initstate--->${helper!.connecting}---------|");
-    // print("----------registerState-------initstate--->${helper!.registerState.cause?.status_code}---|");
-    // print("----------connected-------initstate--->${helper!.connected}-----------|");
-    // print("----------runtimeType-------initstate--->${helper!.runtimeType}-------|");
+    // print("----------registered-------init-state--->${helper!.registered}---------|");
+    // print("----------connecting-------init-state--->${helper!.connecting}---------|");
+    // print("----------connected-------init-state--->${helper!.connected}-----------|");
+    // print("----------runtimeType-------init-state--->${helper!.runtimeType}-------|");
     setInitialValue(context);
     super.initState();
-    registerState = helper!.registerState;
     helper!.addSipUaHelperListener(this);
   }
 
   @override
+  void dispose() {
+    apiConfig.getCallCredential(orgID: orgId,action: "Remove");
+    super.dispose();
+  }
+  @override
   void deactivate() {
-    print("-----------------deactivate-------------");
+    debugPrint("-----------------deactivate-------------");
     super.deactivate();
     helper!.removeSipUaHelperListener(this);
+    apiConfig.getCallCredential(orgID: orgId,action: "Remove");
   }
 
-  @override
-  void registrationStateChanged(RegistrationState state) {
-    print("RegistrationState:------------)->${state.state.hashCode}");
-    print("RegistrationState:------------)->${state.cause?.status_code}");
-    setState(() {
-      registerState = state;
-    });
-  }
-
-  void _handleSave(BuildContext context) {
+  void _handleSave(BuildContext context, CallCredentialModel v) {
     UaSettings settings = UaSettings();
-
-    settings.webSocketUrl = 'wss://sip-140.gigonomy.in:4443/ws';
+    settings.webSocketUrl = 'wss://${v.serverDomain}:4443/ws';
     settings.webSocketSettings.allowBadCertificate = true;
     settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
 
-    settings.uri = '6666@sip-140.gigonomy.in';
-    settings.authorizationUser = '6666';
-    settings.password = '6666';
-    settings.displayName = 'Test Caller';
+    settings.uri = '${v.extensionSrvId}@${v.serverDomain}';
+    settings.authorizationUser = v.extensionSrvId;
+    settings.password = v.secret;
+    settings.displayName = v.userName;
     settings.userAgent = 'Dart SIP Client v1.0.0';
     settings.dtmfMode = DtmfMode.RFC2833;
 
     helper!.start(settings);
-    print("Home Screen -------helper-connected:--->${helper!.connected}");
-    print("Home Screen -------helper-registerState:--->${helper!.registerState.state?.index}");
-    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.status_code}");
-    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.cause}");
-    print("Home Screen -------helper-registerState:--->${helper!.registerState.cause?.reason_phrase}");
-    print("Home Screen -------helper-connecting:--->${helper!.connecting}");
-    print("Home Screen -------helper-registered:--->${helper!.registered}");
-    print("Home Screen -------helper-runtimeType:--->${helper!.runtimeType}");
+    debugPrint("Home Screen -------helper-connected:--->${helper!.connected}");
+    debugPrint("Home Screen -------helper-registerState index:--->${helper!.registerState.state?.index}");
+    debugPrint("Home Screen -------helper-registerState status-code:--->${helper!.registerState.cause?.status_code}");
+    //debugPrint("Home Screen -------helper-registerState :--->${helper!.registerState.cause?.cause}");
+    //debugPrint("Home Screen -------helper-registerState :--->${helper!.registerState.cause?.reason_phrase}");
+    debugPrint("Home Screen -------helper-is connecting?:--->${helper!.connecting}");
+    debugPrint("Home Screen -------helper-is registered?:--->${helper!.registered}");
   }
 
   setInitialValue(context) async {
@@ -107,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
       pref.getSharedPrefStringValue(key: CustomString.organizationName) == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: CustomString.organizationName) == null ?
       await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin) :
       await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: CustomString.organizationName), pref.getSharedPrefIntValue(key: CustomString.organizationId), pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin));
+      print("POPUP---<><><>-->${widget.popUp}");
       if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
         _showDialog();
       }
@@ -136,7 +126,8 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
 
     FBroadcast.instance().broadcast("Key_Message", value: orgId);
   }
-  // Function to show the dialog
+
+  /// Function to show the dialog
   void _showDialog() {
     showDialog(
       context: context,
@@ -286,23 +277,31 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                     : Container();
               }),
               SizedBox(width: size.width * 0.02),
-              CupertinoSwitch(
-                value: _switchValue,
-                onChanged: (value) async {
-                  print("--$value----");
-                  setState(() {});
-                  if(value==true){
-                    debugPrint("Switch-value-->$value");
-                    _switchValue = value;
-                    _handleSave(context);
-                    await Permission.microphone.request();
-                    await Permission.camera.request();}
-                  else{
-                    _switchValue = value;
-                    print("----Else Switch----$value");
-                    helper!.unregister(true);
-                  }
-                },
+              Consumer<CallSwitchProvider>(
+                builder: (context,val,child) {
+                  return CupertinoSwitch(
+                    value: val.Switch,
+                    onChanged: (value) async {
+                      val.callSwitch(value);
+                      if(val.Switch==true){
+                        //NotificationServices().showNotification(title: "Calling", body: "1471471470");//testing purpose
+                        apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
+                          _handleSave(context,value);
+                          await Permission.microphone.request();
+                          //await Permission.camera.request();
+                        });
+                        debugPrint("call-switch-value-->$value");
+                        // _handleSave(context);
+                      }
+                      else{
+                        //NotificationServices().removeNotification(0); //testing purpose
+                        debugPrint("call-switch-value-->$value");
+                        await apiConfig.getCallCredential(orgID: orgId,action: "Remove");
+                        helper!.unregister(true);
+                      }
+                    },
+                  );
+                }
               ),
             ],
           ),
@@ -310,7 +309,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
         ///Bottom navigation bar 1
         bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
           onDestinationSelected: (int index) {
-            print("----->SEleCTE Home Tab Index==>$index");
             screenIndexProvider.manageBottomTab(index);
           },
           elevation: 10,
@@ -333,10 +331,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                 selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
                 icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
                 label: CustomString.training),
-            NavigationDestination(
-                selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                label: CustomString.messenger),
             NavigationDestination(
                 selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
                 icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
@@ -374,10 +368,6 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
                   icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.training),
               NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
-                  label: CustomString.messenger),
-              NavigationDestination(
                   selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor, BlendMode.srcIn)),
                   icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor, BlendMode.srcIn)),
                   label: CustomString.account),
@@ -385,80 +375,8 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
           ),
         ),
 
-          ///Bottom navigation bar 2
-          /*bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
-            onDestinationSelected: (int index) {
-              screenIndexProvider.manageBottomTab(index);
-            },
-            elevation: 10,
-            height: size.height*0.07,
-            shadowColor: CustomColors.kLightGrayColor,
-            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-            backgroundColor: CustomColors.kWhiteColor,
-            indicatorColor: CustomColors.kPrimaryColor,
-            selectedIndex: currentScreenIndex,
-            destinations: <Widget>[
-              NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                  label: CustomString.dashboard),
-              NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                  label: CustomString.project),
-              NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                  label: CustomString.training),
-              NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                  label: CustomString.messenger),
-              NavigationDestination(
-                  selectedIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                  icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                  label: CustomString.account),
-            ],
-          ):
-          Card(
-            elevation: 3,
-            clipBehavior: Clip.hardEdge,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            margin: EdgeInsets.only(bottom: size.height*0.02,left: size.width*0.03,right: size.width*0.03),
-            child: BottomNavigationBar(
-              onTap: (int index){
-                screenIndexProvider.manageBottomTab(index);
-              },
-              elevation: 3,
-              currentIndex: currentScreenIndex,
-              selectedItemColor: CustomColors.kBlueColor,
-              backgroundColor: CustomColors.kWhiteColor,
-              items: [
-                BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                    icon: SvgPicture.asset(ImagePath.dashboard, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                    label: CustomString.dashboard),
-                BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                    icon: SvgPicture.asset(ImagePath.project, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                    label: CustomString.project),
-                BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                    icon: SvgPicture.asset(ImagePath.training, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                    label: CustomString.training),
-                BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                    icon: SvgPicture.asset(ImagePath.messenger, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                    label: CustomString.messenger),
-                BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kBlueColor,BlendMode.srcIn)),
-                    icon: SvgPicture.asset(ImagePath.account, colorFilter: const ColorFilter.mode(CustomColors.kLightGrayColor,BlendMode.srcIn)),
-                    label: CustomString.account),
-              ],
-            ),
-          ),*/
-
         body: <Widget>[
+          ///DashBoard(Home) TAB
           const DashboardScreen(),
           ///Project TAB
           Consumer<OrganizationProvider>(
@@ -472,38 +390,75 @@ class _HomeScreenState extends State<HomeScreen> implements SipUaHelperListener{
               return TrainingScreen(orgId: val.switchOrgId);
             }
           ),
-          const MessengersScreen(),
+          ///AccountScreen TAB
           const AccountScreen()
         ][currentScreenIndex]
       ),
     );
   }
 
-
+  @override
+  void registrationStateChanged(RegistrationState state) {
+    //print("RegistrationState:------------)->${state.state.hashCode}");
+    debugPrint("RegistrationState:->status-code-----------)->${state.cause?.status_code}");
+    debugPrint("RegistrationState:->cause-----------)->${state.cause}");
+  }
+  // @override
+  // void callStateChanged(Call call, CallState callState) {
+  //   debugPrint("---callAudioState--------------> ${callState.audio} <---");
+  //   if(callState.state == CallStateEnum.CALL_INITIATION){
+  //     debugPrint(">${callState.state}----Call-Incoming--------------->-->${CallStateEnum.CALL_INITIATION}");
+  //     Navigator.pushNamed(context, '/callscreen', arguments: call);
+  //     NotificationServices().showNotification(title: "Calling", body: call.remote_display_name);
+  //   }
+  //   else if(callState.state == CallStateEnum.ENDED){
+  //   debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
+  //   }
+  // }
 
   @override
   void callStateChanged(Call call, CallState callState) {
-    print("---callOudioState-------------->${callState.audio}------------------");
-    print("---callVideoState-------------->${callState.video}------------------");
+    debugPrint("---callAudioState--------------> ${callState.audio} <---");
+
+    // Check for incoming call initiation
     if(callState.state == CallStateEnum.CALL_INITIATION){
-      print("-----------------Call------------------${CallStateEnum.CALL_INITIATION}");
+      debugPrint(">${callState.state}----Call-Incoming--------------->-->${CallStateEnum.CALL_INITIATION}");
+
+      // Navigate to the call screen when an incoming call is detected
       Navigator.pushNamed(context, '/callscreen', arguments: call);
-    }else if(callState.state == CallStateEnum.ENDED){
-      print("-----------------Call Disconnected------------------${CallStateEnum.ENDED}");    }
+
+      // Show a notification for the incoming call
+      NotificationServices().showNotification(title: "Incoming Call", body: call.remote_display_name);
+    }
+
+    // Check for call ended
+    else if(callState.state == CallStateEnum.ENDED || callState.state == CallStateEnum.FAILED){
+      debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
+      NotificationServices().removeNotification(0);
+
+      // Add any additional logic you want to perform when the call ends
+    }
+
+    // Add other conditions as needed for different call states
+
+    // Optionally, you can handle other call states here with additional 'else if' conditions
+
+    // For debugging, you can print the call state
+    debugPrint(">>----Call State------------->-->${callState.state}");
   }
+
+
   @override
   void transportStateChanged(TransportState state) {
-    print("TransportStateChanged-name----)->${state.state.name}");
-    print("TransportStateChanged-----)->${state.state}");
+    debugPrint("TransportStateChanged->name----)->${state.state.name}");
+    debugPrint("TransportStateChanged->state----)->${state.state}");
   }
   @override
   void onNewMessage(SIPMessageRequest msg) {
-    print("SIPMessageRequest-----)->${msg}");
-    // NO OP
+    debugPrint("SIPMessage-----)->$msg");
   }
   @override
   void onNewNotify(Notify notify) {
-    print("onNewNotify-----)->${notify.request!.call_id}");
-    // NO OP
+    debugPrint("onNewNotify-->call_id----)->${notify.request!.call_id}");
   }
 }
