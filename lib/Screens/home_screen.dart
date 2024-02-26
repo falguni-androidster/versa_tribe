@@ -170,7 +170,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
 
     FBroadcast.instance().broadcast("Key_Message", value: orgId);
   }
-
   /// Function to show the dialog
   void _showDialog() {
     showDialog(
@@ -232,7 +231,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -332,6 +330,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
                         apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
                           _handleSave(context,value);
                           await Permission.microphone.request();
+                          await Permission.notification.request();
                           //await Permission.camera.request();
                         });
                         debugPrint("call-switch-value-->$value");
@@ -447,51 +446,26 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
     debugPrint("RegistrationState:->status-code-----------)->${state.cause?.status_code}");
     debugPrint("RegistrationState:->cause-----------)->${state.cause}");
   }
-  // @override
-  // void callStateChanged(Call call, CallState callState) {
-  //   debugPrint("---callAudioState--------------> ${callState.audio} <---");
-  //   if(callState.state == CallStateEnum.CALL_INITIATION){
-  //     debugPrint(">${callState.state}----Call-Incoming--------------->-->${CallStateEnum.CALL_INITIATION}");
-  //     Navigator.pushNamed(context, '/callscreen', arguments: call);
-  //     NotificationServices().showNotification(title: "Calling", body: call.remote_display_name);
-  //   }
-  //   else if(callState.state == CallStateEnum.ENDED){
-  //   debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
-  //   }
-  // }
-
   @override
   void callStateChanged(Call call, CallState callState) {
     debugPrint("---callAudioState--------------> ${callState.audio} <---");
-
     // Check for incoming call initiation
     if(callState.state == CallStateEnum.CALL_INITIATION){
       debugPrint(">${callState.state}----Call-Incoming--------------->-->${CallStateEnum.CALL_INITIATION}");
-
       // Navigate to the call screen when an incoming call is detected
       Navigator.pushNamed(context, '/callscreen', arguments: call);
-
       // Show a notification for the incoming call
       NotificationServices().showNotification(title: "Incoming Call", body: call.remote_display_name);
     }
-
     // Check for call ended
     else if(callState.state == CallStateEnum.ENDED || callState.state == CallStateEnum.FAILED){
+      /// Add any additional logic you want to perform when the call ends
       debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
       NotificationServices().removeNotification(0);
       Navigator.of(context).pop();
-      // Add any additional logic you want to perform when the call ends
     }
-
-    // Add other conditions as needed for different call states
-
-    // Optionally, you can handle other call states here with additional 'else if' conditions
-
-    // For debugging, you can print the call state
     debugPrint(">>----Call State------------->-->${callState.state}");
   }
-
-
   @override
   void transportStateChanged(TransportState state) {
     debugPrint("TransportStateChanged->name----)->${state.state.name}");

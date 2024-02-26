@@ -365,7 +365,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
 
   arrowBackPressed(context) async {
     await apiConfig.getDataSwitching(context: context);
-    Navigator.pushNamed(context, '/home');
-    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const HomeScreen()));
+    //Navigator.pushNamed(context, '/home');
+    Navigator.of(context).pop();
   }
 }

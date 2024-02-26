@@ -129,7 +129,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
         break;
       case CallStateEnum.ENDED:
       case CallStateEnum.FAILED:
-      _backToDialPad();
+      //_backToDialPad();
         FlutterRingtonePlayer().stop();
         break;
       case CallStateEnum.UNMUTED:

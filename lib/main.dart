@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:versa_tribe/Screens/home_screen.dart';
 import 'package:versa_tribe/Utils/notification_service.dart';
 import 'package:versa_tribe/extension.dart';
@@ -92,10 +93,9 @@ typedef PageContentBuilder = Widget Function(
 
 //ignore: must_be_immutable
 class MyApp extends StatelessWidget {
-
   final SIPUAHelper _helper = SIPUAHelper();
   Map<String, PageContentBuilder> routes = {
-    '/home': ([SIPUAHelper? helper, Object? arguments]) => HomeScreen(helper: helper, popUp: true),
+    '/home': ([SIPUAHelper? helper, Object? arguments]) => HomeScreen(helper: helper, popUp: false),
     '/callscreen': ([SIPUAHelper? helper, Object? arguments]) => CallScreenWidget(helper, arguments as Call?),
     //'/': ([SIPUAHelper? helper, Object? arguments]) => const SplashScreen()
   };
