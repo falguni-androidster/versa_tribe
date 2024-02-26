@@ -140,8 +140,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
       pref.getSharedPrefStringValue(key: CustomString.organizationName) == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: CustomString.organizationName) == null ?
       await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin) :
       await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: CustomString.organizationName), pref.getSharedPrefIntValue(key: CustomString.organizationId), pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin));
-      print("POPUP---<><><>-->${widget.popUp}");
-      if(widget.popUp == true &&  selectedOrgProvider.switchOrganization != null){
+      print("POPUP---<><><>-->${pref.getBool("pop")}");
+      if(pref.getBool("pop") == true &&  selectedOrgProvider.switchOrganization != null){
         _showDialog();
       }
     }
