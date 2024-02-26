@@ -50,7 +50,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
               children: [
                 /// Course name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: courseController,
                       validator: (value) {
@@ -114,7 +114,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
                 /// Institute name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: instituteController,
                       validator: (value) {
@@ -179,7 +179,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
                 /// Grade
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: gradeController,
                       validator: (value) {
@@ -200,7 +200,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
                 /// City name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: cityController,
                       validator: (value) {
@@ -221,7 +221,7 @@ class _AddQualificationScreenState extends State<AddQualificationScreen> {
 
                 /// Year Of Passing
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   width: size.width/2.1,
                   child: TextFormField(
                     validator: (value) {

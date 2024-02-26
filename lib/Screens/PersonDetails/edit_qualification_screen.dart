@@ -98,7 +98,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
                     selector: (_, val) => val.personQl,
                     builder: (context, personQl, child) {
                       return SizedBox(
-                        height: size.height*0.06,
+                        height: size.height*0.09,
                         child: TextFormField(
                             controller: courseController,
                             validator: (value) {
@@ -162,7 +162,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
 
                 /// Institute name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: instituteController,
                       validator: (value) {
@@ -225,7 +225,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
 
                 /// Grade
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: gradeController,
                       validator: (value) {
@@ -246,7 +246,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
 
                 /// City
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: cityController,
                       validator: (value) {
@@ -267,7 +267,7 @@ class _EditQualificationScreenState extends State<EditQualificationScreen> {
 
                 /// Year Of Passing
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   width: size.width / 2.1,
                   child: TextFormField(
                     validator: (value) {

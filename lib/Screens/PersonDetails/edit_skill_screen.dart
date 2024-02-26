@@ -70,7 +70,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
               children: [
                 /// Skill name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                     readOnly: true,
                       controller: skillController,
@@ -137,7 +137,7 @@ class _EditSkillScreenState extends State<EditSkillScreen> {
 
                 /// Experience(months)
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: monthController,
                       validator: (value) {

@@ -40,7 +40,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
 
                 /// Skill name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: skillController,
                       validator: (value) {
@@ -106,7 +106,7 @@ class _AddSkillScreenState extends State<AddSkillScreen> {
 
                 /// Experience(months)
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       keyboardType: TextInputType.number,
                       controller: monthController,

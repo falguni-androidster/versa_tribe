@@ -172,7 +172,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                             top: mHeight * 0.02,
                             bottom: mHeight * 0.01),
                         child: SizedBox(
-                          height: mHeight*0.06,
+                          height: mHeight*0.09,
                           child: TextFormField(
                             controller: organizationNameController,
                             validator: (value) {
@@ -191,9 +191,10 @@ class _ManageOrganizationState extends State<ManageOrganization>
                               orgProvider.setVisible(true);
                             },
                             decoration: const InputDecoration(
+                              fillColor: CustomColors.kWhiteColor,
+                              labelText: CustomString.organizationName,
+                              labelStyle: TextStyle(fontSize: 12, fontFamily: 'Poppins'),
                               suffixIcon: Icon(Icons.search),
-                              hintText: CustomString.organizationName,
-                              hintStyle: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins'),
                             ),
                             style: const TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'),
                           ),
@@ -236,7 +237,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                             top: mHeight * 0.01,
                             bottom: mHeight * 0.01),
                         child: SizedBox(
-                          height: mHeight*0.06,
+                          height: mHeight*0.09,
                           child: TextFormField(
                             controller: departmentNameController,
                             onChanged: (value) {
@@ -309,7 +310,7 @@ class _ManageOrganizationState extends State<ManageOrganization>
                             top: mHeight * 0.01,
                             bottom: mHeight * 0.01),
                         child: SizedBox(
-                          height: mHeight*0.06,
+                          height: mHeight*0.08,
                           child: TextFormField(
                             controller: requestNewDepartmentController,
                             onTap: () {

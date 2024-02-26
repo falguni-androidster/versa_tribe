@@ -101,7 +101,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
                   return SizedBox(
-                    height: size.height*0.06,
+                    height: size.height*0.09,
                     child: TextFormField(
                         controller: jobTitleController,
                         validator: (value) {
@@ -155,7 +155,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     builder: (context, val, child) {
                       debugPrint("radio btn value--------->${val.selectedValue}");
                       return SizedBox(
-                        height: size.height*0.06,
+                        height: size.height*0.09,
                         child: TextFormField(
                             controller: val.selectedValue!=""?val.selectedValue=="Company"?companyNController:industryNController:widget.industry!=""
                                 ? industryNController
@@ -285,7 +285,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
                     children: [
                       ///Start dateTime
                       SizedBox(
-                        height: size.height*0.06,
+                        height: size.height*0.09,
                         width: size.width*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
@@ -320,7 +320,7 @@ class _EditExperienceScreenState extends State<EditExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
-                        height: size.height*0.06,
+                        height: size.height*0.09,
                         width: size.width*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {

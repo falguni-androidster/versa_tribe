@@ -51,7 +51,7 @@ class _AddHobbyScreenState extends State<AddHobbyScreen> {
               children: [
                 /// Hobby name
                 SizedBox(
-                  height: size.height*0.06,
+                  height: size.height*0.09,
                   child: TextFormField(
                       controller: hobbyController,
                       validator: (value) {

@@ -67,7 +67,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 Consumer<PersonExperienceProvider>(
                     builder: (context, val, child) {
                       return SizedBox(
-                        height: mHeight*0.06,
+                        height: mHeight*0.09,
                         child: TextFormField(
                             controller: jobTitleController,
                             validator: (value) {
@@ -121,7 +121,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                 Consumer<AddRadioComIndProvider>(
                     builder: (context, val, child) {
                       return SizedBox(
-                        height: mHeight*0.06,
+                        height: mHeight*0.09,
                         child: TextFormField(
                             controller: val.selectedValue == "Company"
                                 ? companyNController
@@ -237,7 +237,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                     children: [
                       ///Start dateTime
                       SizedBox(
-                        height: mHeight*0.06,
+                        height: mHeight*0.09,
                         width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
@@ -270,7 +270,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
                       ///End dateTime
                       SizedBox(
-                        height: mHeight*0.06,
+                        height: mHeight*0.09,
                         width: mWidth*0.44,
                         child: Consumer<DateProvider>(
                             builder: (context, val, child) {
