@@ -61,7 +61,7 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
           builder: (context,val,child) {
             return val.tpMenuItems=="All"?
             FutureBuilder(
-              future:apiConfig.getTakeTrainingData(context: context ,orgId: widget.orgId),
+              future:loadData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
