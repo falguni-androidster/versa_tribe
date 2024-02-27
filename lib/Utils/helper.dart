@@ -14,6 +14,7 @@ Future<void> clearSharedPref() async {
   prefs.clearSharedPreferencesKey(key: CustomString.organizationId);
   prefs.clearSharedPreferencesKey(key: CustomString.organizationName);
   prefs.clearSharedPreferencesKey(key: CustomString.organizationAdmin);
+  prefs.clearSharedPreferencesKey(key: "selectedIndex");
 }
 
 ///check internet connectivity in our app

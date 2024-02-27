@@ -30,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
 
   List<OrgAdminPersonList> orgAdminPersonList = [];
   String? selectedValue;
+  int? selectedIndex;
   int? orgId;
   bool? orgAdmin;
   late SharedPreferences pref;
@@ -134,12 +135,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
     List<OrgAdminPersonList> adminPersonList = switchProvider.switchData.orgAdminPersonList!;
     if(adminPersonList.isNotEmpty) {
       selectedValue = adminPersonList[0].orgName!;
+      selectedIndex = switchProvider.selectedInd;
       orgId = adminPersonList[0].orgId!;
       orgAdmin = adminPersonList[0].isAdmin!;
       orgAdminPersonList = adminPersonList;
       pref.getSharedPrefStringValue(key: CustomString.organizationName) == adminPersonList[0].orgName! || pref.getSharedPrefStringValue(key: CustomString.organizationName) == null ?
       await selectedOrgProvider.setSwitchOrganization(selectedValue, orgId, orgAdmin) :
       await selectedOrgProvider.setSwitchOrganization(pref.getSharedPrefStringValue(key: CustomString.organizationName), pref.getSharedPrefIntValue(key: CustomString.organizationId), pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin));
+       pref.getInt("selectedIndex")== null?
+         await switchProvider.updateIndex(0):
+         await switchProvider.updateIndex(pref.getInt("selectedIndex"));
       print("POPUP---<><><>-->${pref.getBool("pop")}");
       if(pref.getBool("pop") == true &&  selectedOrgProvider.switchOrganization != null){
         _showDialog();
@@ -158,16 +163,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
     }
     return adminPersonList;
   }
-  manageOrganization({context, val, finalPersonAdminList}) async{
+  manageOrganization({context, val, finalPersonAdminList,sIndex}) async{
+    final sp = Provider.of<SwitchProvider>(context,listen: false);
     await pref.setSharedPrefStringValue(key: CustomString.organizationName, finalPersonAdminList.orgName!);
     await pref.setSharedPrefBoolValue(key: CustomString.organizationAdmin, finalPersonAdminList.isAdmin!);
     await pref.setSharedPrefIntValue(key: CustomString.organizationId, finalPersonAdminList.orgId!);
+
+    await pref.setSharedPrefIntValue(key: "selectedIndex", sIndex);
+    selectedIndex = pref.getInt("selectedIndex");
+    sp.updateIndex(selectedIndex);
+
     selectedValue = pref.getSharedPrefStringValue(key: CustomString.organizationName);
     orgAdmin = pref.getSharedPrefBoolValue(key: CustomString.organizationAdmin);
     orgId = pref.getSharedPrefIntValue(key: CustomString.organizationId);
     val.setSwitchOrganization(selectedValue, orgId, orgAdmin);
     Navigator.of(context).pop();
-
     FBroadcast.instance().broadcast("Key_Message", value: orgId);
   }
   /// Function to show the dialog
@@ -219,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
                                   )
                               )
                           ),
-                        onTap: () => manageOrganization(context: context, val: val, finalPersonAdminList: orgAdminPersonList[index])
+                        onTap: () => manageOrganization(context: context, val: val, finalPersonAdminList: orgAdminPersonList[index],sIndex:index)
                       );
                     },
                   ),
@@ -319,30 +329,39 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
                     : Container();
               }),
               SizedBox(width: size.width * 0.02),
-              Consumer<CallSwitchProvider>(
-                builder: (context,val,child) {
-                  return CupertinoSwitch(
-                    value: val.Switch,
-                    onChanged: (value) async {
-                      val.callSwitch(value);
-                      if(val.Switch==true){
-                        //NotificationServices().showNotification(title: "Calling", body: "1471471470");//testing purpose
-                        apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
-                          _handleSave(context,value);
-                          await Permission.microphone.request();
-                          await Permission.notification.request();
-                          //await Permission.camera.request();
-                        });
-                        debugPrint("call-switch-value-->$value");
-                        // _handleSave(context);
-                      }
-                      else{
-                        //NotificationServices().removeNotification(0); //testing purpose
-                        debugPrint("call-switch-value-->$value");
-                        await apiConfig.getCallCredential(orgID: orgId,action: "Remove");
-                        helper!.unregister(true);
-                      }
-                    },
+
+
+              Consumer<SwitchProvider>(
+                builder: (context,data,child) {
+                  return Consumer<CallSwitchProvider>(
+                    builder: (context,val,child) {
+                      final p = Provider.of<SwitchProvider>(context,listen: false);
+                      print("------->${p.selectedInd}");
+                      print("Test--SwitchData--->${data.switchData.orgPerson?[p.selectedInd!].isCaller}");
+                      return data.switchData.orgPerson?[p.selectedInd!].isCaller==true? CupertinoSwitch(
+                        value: val.Switch,
+                        onChanged: (value) async {
+                          val.callSwitch(value);
+                          if(val.Switch==true){
+                            //NotificationServices().showNotification(title: "Calling", body: "1471471470");//testing purpose
+                            apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
+                              _handleSave(context,value);
+                              await Permission.microphone.request();
+                              await Permission.notification.request();
+                              //await Permission.camera.request();
+                            });
+                            debugPrint("call-switch-value-->$value");
+                            // _handleSave(context);
+                          }
+                          else{
+                            //NotificationServices().removeNotification(0); //testing purpose
+                            debugPrint("call-switch-value-->$value");
+                            await apiConfig.getCallCredential(orgID: orgId,action: "Remove");
+                            helper!.unregister(true);
+                          }
+                        },
+                      ):Container();
+                    }
                   );
                 }
               ),
