@@ -487,7 +487,7 @@ class ApiConfig {
     }
   }
 
-   joinTraining({context, trainingId, isJoin, trainingResponse}) async {
+   joinTraining({context, orgId, trainingId, isJoin, trainingResponse}) async {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
@@ -509,6 +509,10 @@ class ApiConfig {
         debugPrint('Training Joined----------------->>>> ${response.body}');
         showToast(context, "Training joined successfully...");
         pro.setTrainingBtnVisibility(true);
+
+        ///when we click cancel/leave btn then move back and refresh backScreen
+        apiConfig.getTakeTrainingData(context: context ,orgId:orgId);
+        Navigator.pop(context);
       } else {
         debugPrint('Training Joined----------------->>>> ${response.body} & ${response.statusCode}');
         showToast(context, '${jsonDecode(response.body)["Message"]}');
@@ -519,7 +523,7 @@ class ApiConfig {
     }
   }
 
-   deleteJoinedTraining({context, int? trainingId}) async {
+   deleteJoinedTraining({context, orgId, int? trainingId}) async {
      bool isValidToken = await isTokenValid();
      if (isValidToken) {
        final pro = Provider.of<VisibilityJoinTrainingBtnProvider>(context,listen: false);
@@ -537,6 +541,10 @@ class ApiConfig {
          debugPrint("Delete joined training--------->${response.body}");
          showToast(context, "Training cancel successfully...");
          pro.setTrainingBtnVisibility(false);
+
+         ///when we click cancel/leave btn then move back and refresh backScreen
+         apiConfig.getTakeTrainingData(context: context ,orgId:orgId);
+         Navigator.pop(context);
        } else {
          debugPrint("Not Delete training--------->${response.body}");
          showToast(context, "Try again Data not delete...");
