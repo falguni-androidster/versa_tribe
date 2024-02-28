@@ -837,24 +837,27 @@ class ApiConfig {
 
   /*------------------------------------------   Project Screen   ---------------------------------------------*/
 
-  deleteJoinedProject({context, int? projectId}) async {
+  deleteJoinedProject({context,  orgId, deleteID, int? projectId}) async {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
       int id = pref.getInt("joinedID")!;
-      String url = '$baseUrl/api/ProjectUsers/Delete?Id=$id &Project_Id=$projectId';
+      String url = '$baseUrl/api/ProjectUsers/Delete?Id=$deleteID &Project_Id=$projectId';
 
       final response = await http.delete(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 200) {
-        pref.remove("joinedID");//after (delete request of project) or (leave project) the joinedId is clean.
         debugPrint("Delete joined project--------->${response.body}");
         showToast(context, "Project cancel successfully...");
         pro.setProjectBtnVisibility(join: true,cancel: false);
+
+        ///this is for when joined click then move on back screen and refresh it.
+        apiConfig.getProjectDataByOrgID(context, orgId);
+        Navigator.pop(context);
       } else {
         debugPrint("Not Delete project--------->${response.body}");
         showToast(context, "Try again record not delete...");
@@ -866,7 +869,7 @@ class ApiConfig {
     }
   }
 
-  joinProject({context, projectID}) async {
+  joinProject({context,orgId, projectID}) async {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
@@ -888,6 +891,10 @@ class ApiConfig {
         pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
         showToast(context, "project joined successfully...");
         pro.setProjectBtnVisibility(join: false,cancel: true);
+
+        ///this is for when joined click then move on back screen and refresh it.
+        apiConfig.getProjectDataByOrgID(context, orgId);
+        Navigator.pop(context);
       } else {
         debugPrint('Project Joined----------------->>>> ${response.body} & ${response.statusCode}');
         showToast(context, 'Try After some time.....');

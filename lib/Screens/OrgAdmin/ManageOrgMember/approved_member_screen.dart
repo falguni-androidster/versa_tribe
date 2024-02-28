@@ -33,11 +33,12 @@ class _ApprovedMemberScreenState extends State<ApprovedMemberScreen> {
             }else if(snapshot.connectionState==ConnectionState.done){
               return Consumer<ApprovedMemberProvider>(
                   builder: (context, val, child) {
-                    return val.approveOrgDataList.isNotEmpty ? ListView.builder(
+                    return val.approveOrgDataList.isNotEmpty ?
+                    ListView.builder(
                         shrinkWrap: true,
                         itemCount: val.approveOrgDataList.length,
                         itemBuilder: (context, index) {
-                          return Container(
+                          /*return Container(
                             //height: size.height * 0.1,
                             decoration: const BoxDecoration(
                                 border: BorderDirectional(bottom: BorderSide(width: 0.3,color: CustomColors.kLightGrayColor))
@@ -94,8 +95,63 @@ class _ApprovedMemberScreenState extends State<ApprovedMemberScreen> {
                                     ]),
                               ],
                             ),
+                          );*/
+
+                          return Card(
+                            elevation: 3,
+                            color: CustomColors.kWhiteColor,
+                            margin: EdgeInsets.symmetric(horizontal: size.width*0.03,vertical: size.height*0.005),
+                            child: Padding(
+                              padding:EdgeInsets.symmetric(horizontal: size.width*0.04,vertical: size.height*0.01),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: size.width * 0.6,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: size.height * 0.004),
+                                            Flexible(
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                      text: "${val.approveOrgDataList[index].firstName} ${val.approveOrgDataList[index].lastName} ${CustomString.approvedToJoinAdmin} ",style: DefaultTextStyle.of(context).style,
+                                                      children: [
+                                                        TextSpan(text: val.approveOrgDataList[index].deptName??"",style: const TextStyle(color: CustomColors.kBlueColor, fontFamily: 'Poppins')),
+                                                      ]
+                                                  ),)
+                                            ),
+                                            SizedBox(height: size.height * 0.004),
+                                            Text(timeAgo(val.approveOrgDataList[index].tStamp.toString()),
+                                                style: const TextStyle(fontSize: 10, color: CustomColors.kLightGrayColor, fontFamily: 'Poppins')),
+                                            SizedBox(height: size.height * 0.004),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: CustomColors.kGrayColor,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+                                        onPressed: () async {
+                                          showRemoveConfirmation(context:context, indexedOrgId:val.approveOrgDataList[index].orgId, personId:val.approveOrgDataList[index].personId, orgName: widget.orgNAME, orgId: widget.orgID, screen: CustomString.approved);
+                                        },
+                                        child: const Text(CustomString.remove, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
-                        }) :
+                        })
+                    :
                     Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
