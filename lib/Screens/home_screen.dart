@@ -479,9 +479,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
     // Check for call ended
     else if(callState.state == CallStateEnum.ENDED || callState.state == CallStateEnum.FAILED){
       /// Add any additional logic you want to perform when the call ends
-      debugPrint(">>----Call Disconnected------------->-->${CallStateEnum.ENDED}");
+      debugPrint("HomePageEVENT----Call Disconnected------------->-->${CallStateEnum.ENDED}");
+      pref.setBool("pop",false);
       NotificationServices().removeNotification(0);
-      Navigator.of(context).pop();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(helper: widget.helper, from: widget.from,)));
     }
     debugPrint(">>----Call State------------->-->${callState.state}");
   }

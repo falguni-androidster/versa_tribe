@@ -123,12 +123,19 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
       _state = callState.state;
     }
 
+    if (callState.state == CallStateEnum.ENDED && callState.state == CallStateEnum.FAILED) {
+      print("CallSCREEN--------------->>>Test-Cheque--1<---->CALL END EVENT");
+      //Navigator.of(context).pop();
+    }
+
     switch (callState.state) {
       case CallStateEnum.STREAM:
         _handelStreams(callState);
         break;
       case CallStateEnum.ENDED:
       case CallStateEnum.FAILED:
+      print("CallSCREEN--------------->>>Test-Cheque2--2--2<---->CALL END EVENT");
+      //Navigator.of(context).pop();
       //_backToDialPad();
         FlutterRingtonePlayer().stop();
         break;
@@ -149,7 +156,8 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   }
 
   @override
-  void transportStateChanged(TransportState state) {}
+  void transportStateChanged(TransportState state) {
+  }
 
   @override
   void registrationStateChanged(RegistrationState state) {}
@@ -477,11 +485,15 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
         break;
       case CallStateEnum.FAILED:
       case CallStateEnum.ENDED:
+
       FlutterRingtonePlayer().stop();
       call!.hangup();
       _timer?.cancel();
       basicActions.add(hangupBtnInactive);
-        break;
+       print("CallSCREEN--------------->>>Test-Cheque<--3--3--3-->CALL END EVENT");
+       //Navigator.of(context).pop();
+
+      break;
       case CallStateEnum.PROGRESS:
         basicActions.add(hangupBtn);
         break;
@@ -623,10 +635,11 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
   @override
   void onNewMessage(SIPMessageRequest msg) {
+    print("=====onNewMessage======");
   }
   @override
   void onNewNotify(Notify ntf) {
-    print("Call-Screen--->$ntf");
+    print("========+++++++++++++++++++++_ntf_++++++++++++++>>>Call-Screen--->$ntf");
   }
 
 }
