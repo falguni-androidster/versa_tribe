@@ -245,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
   @override
   Widget build(BuildContext context) {
     final size= MediaQuery.of(context).size;
+    final dropMenuPro = Provider.of<DropMenuProvider>(context,listen: false);
     final screenIndexProvider = Provider.of<ManageBottomTabProvider>(context);
     int currentScreenIndex = screenIndexProvider.currentTab;
     return WillPopScope(
@@ -371,6 +372,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
         ///Bottom navigation bar 1
         bottomNavigationBar: defaultTargetPlatform == TargetPlatform.iOS? NavigationBar(
           onDestinationSelected: (int index) {
+            dropMenuPro.setDropMenuVisibility(0);
             screenIndexProvider.manageBottomTab(index);
           },
           elevation: 10,
@@ -406,6 +408,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
           margin: EdgeInsets.only(bottom: size.height * 0.02, left: size.width * 0.03, right: size.width * 0.03),
           child: NavigationBar(
             onDestinationSelected: (int index) {
+              dropMenuPro.setDropMenuVisibility(0);
               screenIndexProvider.manageBottomTab(index);
             },
             animationDuration: const Duration(seconds: 1),

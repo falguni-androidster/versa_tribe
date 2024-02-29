@@ -31,7 +31,7 @@ class _TrainingPendingRequestScreenState extends State<TrainingPendingRequestScr
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: FutureBuilder(
-            future: apiConfig.getTrainingPendingRequests(context, widget.trainingResponse.trainingId, false),
+            future: _loadData(),
             builder: (context,snapshot) {
               if(snapshot.connectionState == ConnectionState.waiting){
                 return SizedBox(

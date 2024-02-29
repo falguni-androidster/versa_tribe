@@ -364,10 +364,8 @@ class ApiConfig {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final provider = Provider.of<GiveTrainingListProvider>(context, listen: false);
-      provider.getGiveTrainingList.clear();
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-
       try {
         String trainingUrl = '$baseUrl/api/Training/User/GetList?Org_Id=$orgId';
         final response = await http.get(Uri.parse(trainingUrl), headers: {
@@ -375,9 +373,9 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
         if (response.statusCode == 200) {
+          provider.getGiveTrainingList.clear();
           debugPrint('get Give Training data-----------> ${response.body}');
           List<dynamic> data = jsonDecode(response.body);
-          provider.getGiveTrainingList.clear();
           provider.setGiveListTraining(data);
         } else {
           showToast(context, "please visit after some time..!");
@@ -396,7 +394,6 @@ class ApiConfig {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final provider = Provider.of<TakeTrainingListProvider>(context, listen: false);
-      provider.getTakeTrainingList.clear();
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -407,6 +404,7 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
         if (response.statusCode == 200) {
+          provider.getTakeTrainingList.clear();
           debugPrint('Take Training data-----------> ${response.body}');
           List<dynamic> data = jsonDecode(response.body);
           provider.setTakeTrainingList(data);
@@ -437,9 +435,9 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
         if (response.statusCode == 200) {
+          provider.getRequestedTrainingList.clear();
           debugPrint('Get Request training success-----------> ${response.body}');
           List<dynamic> data = jsonDecode(response.body);
-          provider.getRequestedTrainingList.clear();
           provider.setRequestedTrainingList(data);
         } else {
           showToast(context, CustomString.noDataFound);
@@ -720,7 +718,6 @@ class ApiConfig {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final provider = Provider.of<TrainingJoinedMembersProvider>(context, listen: false);
-      provider.trainingJoinedMembers.clear();
 
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
@@ -732,9 +729,9 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
         if (response.statusCode == 200) {
+          provider.trainingJoinedMembers.clear();
           debugPrint("Get Training Joined Member Data----->${response.body}");
           List<dynamic> data = await jsonDecode(response.body);
-          provider.trainingJoinedMembers.clear();
           provider.setTrainingJoinedMembers(data);
         } else {
           debugPrint("Get Training Joined Member Data not found...");
@@ -749,11 +746,9 @@ class ApiConfig {
   }
 
    getTrainingPendingRequests(context, trainingId, isJoin) async {
-    bool isValidToken = await isTokenValid();
+     final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
+     bool isValidToken = await isTokenValid();
     if (isValidToken) {
-      final provider = Provider.of<TrainingPendingRequestProvider>(context, listen: false);
-      provider.trainingPendingRequests.clear();
-
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
       try {
@@ -764,6 +759,7 @@ class ApiConfig {
           'Authorization': 'Bearer $token',
         });
         if (response.statusCode == 200) {
+          provider.trainingPendingRequests.clear();
           debugPrint("Get Training Pending Requests Data----->${response.body}");
           List<dynamic> data = await jsonDecode(response.body);
           provider.setTrainingPendingRequests(data);
@@ -950,8 +946,6 @@ class ApiConfig {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final provider = Provider.of<ProjectListByOrgIdProvider>(context, listen: false);
-      provider.getProjectListByOrgId.clear();
-
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -961,11 +955,10 @@ class ApiConfig {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         });
-        debugPrint('data -----------> ${response.body}');
         if (response.statusCode == 200) {
+          provider.getProjectListByOrgId.clear();
           debugPrint('Project Data By orgID-----------> ${response.body}');
           List<dynamic> data = jsonDecode(response.body);
-          provider.getProjectListByOrgId.clear();
           provider.setListProjectByOrgId(data);
         } else {
           debugPrint("Project Data By OrgID Not Found...");
@@ -983,8 +976,6 @@ class ApiConfig {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
       final provider = Provider.of<ProjectListManageUserProvider>(context, listen: false);
-      provider.getProjectListManageUser.clear();
-
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -995,11 +986,10 @@ class ApiConfig {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         });
-        debugPrint('data -----------> ${response.body}');
         if (response.statusCode == 200) {
+          provider.getProjectListManageUser.clear();
           debugPrint('Project Manage User Data -----------> ${response.body}');
           List<dynamic> data = jsonDecode(response.body);
-          provider.getProjectListManageUser.clear();
           provider.setListProjectManageUser(data);
         } else {
           showToast(context, CustomString.noDataFound);
