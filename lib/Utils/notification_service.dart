@@ -5,18 +5,20 @@ class NotificationServices{
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   ///Initialize Notification in main screen
   Future<void> initNotification()async {
+    ///Setting for Android
     AndroidInitializationSettings androidInitializationSettings = const AndroidInitializationSettings("@mipmap/ic_launcher");
-    var initializationSettingsIOS = DarwinInitializationSettings(
+
+    ///Setting for iOS
+    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
       onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload)async{});
 
-    var initializationSettings = InitializationSettings(android: androidInitializationSettings, iOS: initializationSettingsIOS);
+    var initializationSettings = InitializationSettings(android: androidInitializationSettings, iOS: initializationSettingsDarwin);
     await flutterLocalNotificationsPlugin.initialize(
         initializationSettings,
-        onDidReceiveNotificationResponse: (NotificationResponse notificationResponse)async{
-        });
+        onDidReceiveNotificationResponse: (NotificationResponse notificationResponse)async{});
   }
 
 
