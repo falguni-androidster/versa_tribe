@@ -305,7 +305,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectListByOrgId[index],orgID: widget.orgId!,)));
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: filteredList[index],orgID: widget.orgId!,)));
                                   },
                                 );
                               },
@@ -416,7 +416,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectListByOrgId[index],orgID: widget.orgId!,)));
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: filteredList[index],orgID: widget.orgId!,)));
                                   },
                                 );
                               },
@@ -526,7 +526,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: val.getProjectListByOrgId[index],orgID: widget.orgId!,)));
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjectDetailsScreen(projectResponseModel: filteredList[index],orgID: widget.orgId!,)));
                                   },
                                 );
                               },
