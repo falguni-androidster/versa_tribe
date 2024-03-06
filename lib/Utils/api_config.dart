@@ -844,10 +844,9 @@ class ApiConfig {
   deleteJoinedProject({context,  orgId, deleteID, int? projectId}) async {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
-      final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
+      final pro = Provider.of<VisibilityProvider>(context,listen: false);
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
-      int id = pref.getInt("joinedID")!;
       String url = '$baseUrl/api/ProjectUsers/Delete?Id=$deleteID &Project_Id=$projectId';
 
       final response = await http.delete(Uri.parse(url), headers: {
@@ -876,7 +875,7 @@ class ApiConfig {
   joinProject({context,orgId, projectID}) async {
     bool isValidToken = await isTokenValid();
     if (isValidToken) {
-      final pro = Provider.of<VisibilityJoinProjectBtnProvider>(context,listen: false);
+      //final pro = Provider.of<VisibilityProvider>(context,listen: false);
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? token = pref.getSharedPrefStringValue(key: CustomString.accessToken);
 
@@ -891,11 +890,9 @@ class ApiConfig {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         debugPrint('Project Joined----------------->>>> ${response.body}');
-        print("get id for remove joined project---->${data["Id"]}");
-        pref.setInt("joinedID", jsonDecode(response.body)["Id"]);
+        print("this id use for remove joined project------->id : ${data["Id"]}========>IsApproved : ${data["IsApproved"]}");
         showToast(context, "project joined successfully...");
-        pro.setProjectBtnVisibility(join: false,cancel: true);
-
+        //pro.updateIsApproved(data["Id"], data["IsApproved"]);
         ///this is for when joined click then move on back screen and refresh it.
         apiConfig.getProjectDataByOrgID(context, orgId);
         Navigator.pop(context);

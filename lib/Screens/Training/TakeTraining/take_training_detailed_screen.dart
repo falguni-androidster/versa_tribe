@@ -237,97 +237,25 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                     SizedBox(height: size.height * 0.01),
 
                     ///Join Training Button
-                    // SizedBox(
-                    //     width: double.infinity,
-                    //     child: Consumer<VisibilityJoinTrainingBtnProvider>(
-                    //         builder: (context,val,child) {
-                    //           debugPrint("isJoin====>${widget.trainingResponse.isJoin}");
-                    //           return Row(
-                    //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //             children: [
-                    //               ElevatedButton(
-                    //                 onPressed: () {
-                    //                   ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
-                    //                 },
-                    //                 style: ElevatedButton.styleFrom(
-                    //                   backgroundColor: CustomColors.kBlueColor,
-                    //                   shape: RoundedRectangleBorder(
-                    //                     borderRadius: BorderRadius.circular(5),
-                    //                   ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                    //                 ),
-                    //                 child: const Text(
-                    //                   "Leave",
-                    //                   style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                    //                 ),
-                    //               ),
-                    //               ElevatedButton(
-                    //               onPressed: () {
-                    //           ApiConfig().joinTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
-                    //           },
-                    //           style: ElevatedButton.styleFrom(
-                    //           backgroundColor: CustomColors.kBlueColor,
-                    //           shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(5),
-                    //           ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                    //           ),
-                    //           child: const Text(CustomString.joinTraining, style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
-                    //           ),
-                    //             ],
-                    //           );
-                    //         }
-                    //     )
-                    // ),
-
                     SizedBox(
                       width: double.infinity,
                       child: Consumer<VisibilityJoinTrainingBtnProvider>(
                           builder: (context,val,child) {
-                            print("isJoin====>${widget.trainingResponse.isJoin}");
-                            //return widget.trainingResponse.isJoin==true || widget.trainingResponse.isJoin==false?
+                            debugPrint("isJoin====>${widget.trainingResponse.isJoin}");
                             return widget.trainingResponse.isJoin==true?
                             ///LEAVE
-                            ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                              ),
-                              child: const Text(
-                                "Leave",
-                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                              ),
-                            ):
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
+                              ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
+                            }, text: "Leave", width: size.width, height: size.height) :
                             widget.trainingResponse.isJoin==false?
                             ///Cancel
-                            ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                              ),
-                              child: const Text("Cancel", style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
-                            ):
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
+                              ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
+                            }, text: "Cancel", width: size.width, height: size.height) :
                             ///JOIN BTN
-                            ElevatedButton(
-                            onPressed: () {
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
                               ApiConfig().joinTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                                                  ),
-                            child: const Text(CustomString.joinTraining, style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),),
-                            );
+                            }, text: CustomString.joinTraining, width: size.width, height: size.height);
                           }
                         )
                     ),

@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'Utils/custom_colors.dart';
+
 export 'main.dart';
 export 'Utils/api_config.dart';
 export 'Utils/custom_colors.dart';
@@ -46,11 +49,9 @@ export 'Model/project_response.dart';
 export 'Model/project_list_by_org_id.dart';
 export 'Model/project_manage_user.dart';
 
-
-
 export 'Providers/calling_providers.dart';
 export 'Providers/dropmenu_provider.dart';
-export 'Providers/visiblity_join_training_btn_provider.dart';
+export 'Providers/visibility_join_training_btn_provider.dart';
 export 'Providers/bottom_tab_provider.dart';
 export 'Providers/password_provider.dart';
 export 'Providers/date_provider.dart';
@@ -64,3 +65,61 @@ export 'Providers/switch_provider.dart';
 export 'Providers/training_provider.dart';
 export 'Providers/check_connection_provider.dart';
 export 'Providers/project_provider.dart';
+
+///SizedBox
+//Way->1----->access: SizedBoxExtension.spacing(context,h:01,w:01).
+extension SizedBoxExtension on SizedBox {
+  static SizedBox spacing(BuildContext context, {h, w}) {
+    final size = MediaQuery.of(context).size;
+    return SizedBox(height: size.height * h,width: size.width * w,);
+  }
+}
+//Way->2----->access: spacing(context,h:01,w:01)
+SizedBox spacing(BuildContext context,{h, w}) {
+  final size = MediaQuery.of(context).size;
+  return SizedBox(height: size.height * h, width: size.width * w,);
+}
+//Way->3----->access: 01.0.h
+extension SizeFactors on double {
+  SizedBox get h {
+    return SizedBox(height: this);
+  }
+
+  SizedBox get w {
+    return SizedBox(width: this);
+  }
+}
+
+///ElevatedButton for detailed project adn training.
+extension ElevatedButtonExtension on ElevatedButton {
+  static ElevatedButton elevatedButton({
+    required BuildContext context,
+    required Function onPressed,
+    required String text,
+    required double width,
+    required double height,
+  }) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: CustomColors.kBlueColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: width * 0.02,
+          vertical: height * 0.015,
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.white,
+          fontWeight: FontWeight.normal,
+          fontFamily: 'Poppins',
+        ),
+      ),
+    );
+  }
+}

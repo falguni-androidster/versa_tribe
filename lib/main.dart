@@ -80,7 +80,7 @@ Future<void> main() async {
       ChangeNotifierProvider<ProjectRequestProvider>(create: (_) => ProjectRequestProvider()),
       ChangeNotifierProvider<ProjectAcceptedProvider>(create: (_) => ProjectAcceptedProvider()),
       ChangeNotifierProvider<VisibilityJoinTrainingBtnProvider>(create: (_) => VisibilityJoinTrainingBtnProvider()),
-      ChangeNotifierProvider<VisibilityJoinProjectBtnProvider>(create: (_) => VisibilityJoinProjectBtnProvider()),
+      ChangeNotifierProvider<VisibilityProvider>(create: (_) => VisibilityProvider()),
       ChangeNotifierProvider<DropMenuProvider>(create: (_) => DropMenuProvider()),
       ChangeNotifierProvider<CallTimerProvider>(create: (_) => CallTimerProvider()),
     ],

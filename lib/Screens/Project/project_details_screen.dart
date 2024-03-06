@@ -220,103 +220,27 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                     SizedBox(height: size.height * 0.01),
 
                     ///Join Project/Leave Button
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //   children: [
-                    //     ElevatedButton(
-                    //       onPressed: () {
-                    //         ApiConfig().deleteJoinedProject(context: context,deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId);
-                    //       },
-                    //       style: ElevatedButton.styleFrom(
-                    //         backgroundColor: CustomColors.kBlueColor,
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(5),
-                    //         ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                    //       ),
-                    //       child: const Text(
-                    //         "Leave",
-                    //         style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                    //       ),
-                    //     ),
-                    //
-                    //     ElevatedButton(
-                    //       onPressed: () {
-                    //         ApiConfig().joinProject(context: context, projectID: widget.projectResponseModel.projectId);
-                    //       },
-                    //       style: ElevatedButton.styleFrom(
-                    //         backgroundColor: CustomColors.kBlueColor,
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(5),
-                    //         ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                    //       ),
-                    //       child: const Text(
-                    //         CustomString.joinTraining,
-                    //         style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-
                     SizedBox(
                         width: double.infinity,
-                        child: Consumer<VisibilityJoinProjectBtnProvider>(
+                        child: Consumer<VisibilityProvider>(
                             builder: (context,val,child) {
-                              debugPrint("is-approved--->${widget.projectResponseModel.isApproved}");
-                              debugPrint("is---->${val.projectJoinBtnVisibility}");
+                            debugPrint("is-approved--->${widget.projectResponseModel.isApproved}");
                             return widget.projectResponseModel.isApproved==true?
-                           // return val.projectJoinBtnVisibility==true && val.projectCancelBtnVisibility==false?//have some issue...
-                              ///Leave
-                              ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().deleteJoinedProject(context: context,orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId,);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                              ),
-                              child: const Text(
-                                "Leave",
-                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                              ),
-                            ):
+                            ///Leave
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
+                              ApiConfig().deleteJoinedProject(context: context,orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId,);
+                            }, text: "Leave", width: size.width, height: size.height):
                             widget.projectResponseModel.isApproved==false?
-                           ///Cancel
-                            ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().deleteJoinedProject(context: context, orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                              ),
-                              child: const Text(
-                                "Cancel",
-                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                              ),
-                            ):
+                            ///Cancel
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
+                              ApiConfig().deleteJoinedProject(context: context, orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId);
+                            }, text: "Cancel", width: size.width, height: size.height):
                             ///join
-                            ElevatedButton(
-                              onPressed: () {
-                                ApiConfig().joinProject(context: context, orgId:widget.orgID, projectID: widget.projectResponseModel.projectId);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: CustomColors.kBlueColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ), padding: EdgeInsets.symmetric(horizontal: size.width*0.02,vertical: size.height*0.015),
-                              ),
-                              child: const Text(
-                                CustomString.joinTraining,
-                                style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.normal, fontFamily: 'Poppins'),
-                              ),
-                            );
-
+                            ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
+                              ApiConfig().joinProject(context: context, orgId:widget.orgID, projectID: widget.projectResponseModel.projectId);
+                            }, text: CustomString.joinTraining, width: size.width, height: size.height);
                             }
-                        )
+                        ),
                     ),
                     // SizedBox(height: size.height*0.01,),
                     // Consumer<VisibilityJoinProjectBtnProvider>(
