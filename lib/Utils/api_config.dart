@@ -19,7 +19,7 @@ class ApiConfig {
 
   /*------------------------------------------- Authentication Application -------------------------*/
   Future<bool> refreshToken() async {
-    bool isTokenRefresh =false;
+    bool isTokenRefresh;
     try {
       final SharedPreferences pref = await SharedPreferences.getInstance();
       String refreshTokenKey = pref.getString("RefreshTokenKey")!;
@@ -43,8 +43,9 @@ class ApiConfig {
         return isTokenRefresh = true;
       } else {
         print("Refresh Token Response Error:----> ${response.statusCode}, ${response.body}");
+        isTokenRefresh = false;
       }
-     return isTokenRefresh = false;
+     return isTokenRefresh;
     } catch (e) {
       debugPrint("Error: refreshToken() --------->>- $e");
       isTokenRefresh = false;

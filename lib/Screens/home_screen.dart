@@ -105,6 +105,22 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
   }
 
   void _handleSave(BuildContext context, CallCredentialModel v) {
+    // 1002 --->//extention
+    // voip-198.gigonomy.in --->//domain
+    // 4198 --->//port
+
+    // UaSettings settings = UaSettings();
+    // settings.webSocketUrl = 'wss://voip-198.gigonomy.in:4198/ws';
+    // settings.webSocketSettings.allowBadCertificate = true;
+    // settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
+    //
+    // settings.uri = '1002@voip-198.gigonomy.in';
+    // settings.authorizationUser = '1002';
+    // settings.password = '1002';
+    // settings.displayName = '1002';
+    // settings.userAgent = 'Dart SIP Client v1.0.0';
+    // settings.dtmfMode = DtmfMode.RFC2833;
+
     UaSettings settings = UaSettings();
     settings.webSocketUrl = 'wss://${v.serverDomain}:4443/ws';
     settings.webSocketSettings.allowBadCertificate = true;
