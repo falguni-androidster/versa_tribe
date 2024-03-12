@@ -254,7 +254,7 @@ class _ProjectScreenState extends State<ProjectScreen> with SingleTickerProvider
                                               style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                           SizedBox(height: size.height * 0.01 / 2),*/
                                           filteredList[index].startDate != null && filteredList[index].endDate != null ?
-                                          Text('Duration : ${DateUtil().formattedDate(DateTime.parse(filteredList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(val.getProjectListByOrgId[index].endDate!).toLocal())}',
+                                          Text('Duration : ${DateUtil().formattedDate(DateTime.parse(filteredList[index].startDate!).toLocal())} - ${DateUtil().formattedDate(DateTime.parse(filteredList[index].endDate!).toLocal())}',
                                               style: const TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')) :
                                           const Text('Duration : 00/00/0000 - 00/00/0000', style: TextStyle(color: CustomColors.kLightGrayColor, fontSize: 12, fontFamily: 'Poppins')),
                                           //SizedBox(height: size.height * 0.005),
