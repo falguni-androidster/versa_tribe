@@ -127,6 +127,8 @@ class CustomString {
   static const String training = 'Training';
   static const String messenger = 'Messenger';
   static const String account = 'Account';
+  static const String adminText = 'Admin';
+  static const String callSwitch = 'Call Register';
 
   static const String joinOrg = 'Join Organization';
 
@@ -293,4 +295,24 @@ class CustomString {
   static const String newDP = '* Enter new department....';
   static const String newDpLabel= "New Department Name";
   static const String parentDpLabel= "Parent department";
+
+/*---------------------Project-------------------*/
+  static const String cancelRequest = 'Cancel Conformation';
+  static const String cancelRequestDesc = 'Are you sure you want to cancel this request?';
+  static const String leaveRequest = 'Leave Conformation';
+  static const String leaveRequestDesc = 'Are you sure you want to leave this project?';
+  static const String removeRequest = 'Remove Conformation';
+  static const String removeRequestDesc = 'Are you sure you want to remove this request?';
+  static const String rejectRequest = 'Reject Conformation';
+  static const String rejectRequestDesc = 'Are you sure you want to reject this request?';
+
+/*---------------------Training-------------------*/
+  static const String cancelTRequest = 'Cancel Conformation';
+  static const String cancelTRequestDesc = 'Are you sure you want to cancel this request?';
+  static const String leaveTRequest = 'Leave Conformation';
+  static const String leaveTRequestDesc = 'Are you sure you want to leave this Training?';
+  static const String removeTRequest = 'Remove Conformation';
+  static const String removeTRequestDesc = 'Are you sure you want to remove this request?';
+  static const String rejectTRequest = 'Reject Conformation';
+  static const String rejectTRequestDesc = 'Are you sure you want to reject this request?';
 }

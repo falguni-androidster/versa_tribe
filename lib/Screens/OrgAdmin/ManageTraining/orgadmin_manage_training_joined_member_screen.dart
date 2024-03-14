@@ -100,8 +100,8 @@ class _ManageTrainingJoinedMemberScreenState extends State<ManageTrainingJoinedM
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId );
-                },
+                  showDeleteConfirmation(context: context, idString: "training_remove_by_organization", trainingId: trainingJoinedMembersModel.trainingId, personId:trainingJoinedMembersModel.personId,dialogTitle: CustomString.removeTRequest,dialogDisc: CustomString.removeTRequestDesc);
+                  },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: CustomColors.kGrayColor,
                     shape: RoundedRectangleBorder(

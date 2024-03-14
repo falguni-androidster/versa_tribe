@@ -228,12 +228,12 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                             return widget.projectResponseModel.isApproved==true?
                             ///Leave
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
-                              ApiConfig().deleteJoinedProject(context: context,orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId,);
-                            }, text: "Leave", width: size.width, height: size.height):
+                              showDeleteConfirmation(context: context, idString: "project_leave",orgId:widget.orgID,deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId,dialogTitle: CustomString.leaveRequest,dialogDisc: CustomString.leaveRequestDesc);
+                              }, text: "Leave", width: size.width, height: size.height):
                             widget.projectResponseModel.isApproved==false?
                             ///Cancel
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
-                              ApiConfig().deleteJoinedProject(context: context, orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId);
+                              showDeleteConfirmation(context: context, idString: "project_cancel",orgId:widget.orgID, deleteID: widget.projectResponseModel.id, projectId: widget.projectResponseModel.projectId,dialogTitle: CustomString.cancelRequest,dialogDisc: CustomString.cancelRequestDesc);
                             }, text: "Cancel", width: size.width, height: size.height):
                             ///join
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){

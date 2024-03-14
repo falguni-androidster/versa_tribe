@@ -245,13 +245,13 @@ class _TakeTrainingDetailScreenState extends State<TakeTrainingDetailScreen> {
                             return widget.trainingResponse.isJoin==true?
                             ///LEAVE
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
-                              ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
+                              showDeleteConfirmation(context: context, idString: "training_leave",orgId:widget.orgID, trainingId: widget.trainingResponse.trainingId,dialogTitle: CustomString.leaveTRequest,dialogDisc: CustomString.leaveTRequestDesc);
                             }, text: "Leave", width: size.width, height: size.height) :
                             widget.trainingResponse.isJoin==false?
                             ///Cancel
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
-                              ApiConfig().deleteJoinedTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId);
-                            }, text: "Cancel", width: size.width, height: size.height) :
+                              showDeleteConfirmation(context: context, idString: "training_cancel",orgId:widget.orgID, trainingId: widget.trainingResponse.trainingId,dialogTitle: CustomString.cancelTRequest,dialogDisc: CustomString.cancelTRequestDesc);
+                              }, text: "Cancel", width: size.width, height: size.height) :
                             ///JOIN BTN
                             ElevatedButtonExtension.elevatedButton(context: context, onPressed: (){
                               ApiConfig().joinTraining(context: context,orgId: widget.orgID, trainingId: widget.trainingResponse.trainingId,isJoin: false, trainingResponse: widget.trainingResponse);

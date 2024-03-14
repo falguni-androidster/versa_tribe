@@ -77,7 +77,7 @@ class DateUtil {
   }
 }
 
-showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}) {
+showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen,}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -105,3 +105,52 @@ showRemoveConfirmation({context, indexedOrgId, personId, orgName, orgId, screen}
   );
 }
 
+showDeleteConfirmation({context, idString, orgId, deleteID, personId, projectId, trainingId, isJoin, dialogTitle,dialogDisc}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: CustomColors.kWhiteColor,
+        title: Text(dialogTitle, style: const TextStyle(fontFamily: 'Poppins')),
+        content:  Text(dialogDisc, style: const TextStyle(fontFamily: 'Poppins')),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the confirmation dialog
+            },
+            child: const Text(CustomString.no, style: TextStyle(fontFamily: 'Poppins')),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(); // Close the confirmation dialog
+              if(idString=="project_cancel"){
+                ApiConfig().deleteJoinedProject(context: context, orgId:orgId, deleteID: deleteID, projectId: projectId);
+              }else if(idString=="project_leave"){
+                ApiConfig().deleteJoinedProject(context: context,orgId:orgId, deleteID: deleteID, projectId: projectId);
+              }else if(idString=="project_reject"){
+                apiConfig.cancelProjectJoinedRequest(context: context, id: deleteID, projectId: projectId);
+              }else if(idString=="project_remove"){
+                apiConfig.cancelProjectJoinedRequest(context: context, id: deleteID, projectId: projectId);
+              }
+
+              else if(idString=="training_leave"){
+                ApiConfig().deleteJoinedTraining(context: context,orgId: orgId, trainingId: trainingId);
+              } else if(idString=="training_cancel"){
+                ApiConfig().deleteJoinedTraining(context: context,orgId: orgId, trainingId: trainingId);
+              }else if(idString=="training_reject"){
+                apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingId,personId:personId, isJoin:isJoin);
+              }else if(idString=="training_remove"){
+                apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingId, personId:personId);
+              }else if(idString=="training_reject_by_organization"){
+                apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingId,personId:personId, isJoin:isJoin);
+              }else if(idString=="training_remove_by_organization"){
+                apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingId, personId:personId );
+              }
+            },
+            child: const Text(CustomString.yes, style: TextStyle(fontFamily: 'Poppins')),
+          ),
+        ],
+      );
+    },
+  );
+}

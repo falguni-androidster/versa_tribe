@@ -109,8 +109,8 @@ class _ManageTrainingPendingRequestScreenState extends State<ManageTrainingPendi
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        apiConfig.deletePendingTrainingRequest(context: context, trainingId: trainingPendingRequestsModel.trainingId,personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin);
-                      },
+                        showDeleteConfirmation(context: context, idString: "training_reject_by_organization", trainingId: trainingPendingRequestsModel.trainingId, personId:trainingPendingRequestsModel.personId, isJoin:trainingPendingRequestsModel.isJoin,dialogTitle: CustomString.rejectTRequest,dialogDisc: CustomString.rejectTRequestDesc);
+                        },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: CustomColors.kGrayColor,
                           shape: RoundedRectangleBorder(

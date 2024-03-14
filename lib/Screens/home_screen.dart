@@ -338,11 +338,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
               const Spacer(),
               Consumer<OrganizationProvider>(builder: (context, val, child) {
                 return val.isAdmin==true || orgAdmin== true
-                    ? SVGIconButton(svgPath: ImagePath.switchIcon, size: 24.0, color: CustomColors.kBlueColor,
-                        // Replace with the path to your SVG asset
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ManageAdminScreen(orgNAME: val.switchOrganization ?? selectedValue!, orgID: val.switchOrgId ?? orgId!)));
-                        })
+                    ? Column(
+                      children: [
+                        SizedBox(height: 8,),
+                        SVGIconButton(svgPath: ImagePath.admin, size: 25.0, color: CustomColors.kBlueColor,
+                            // Replace with the path to your SVG asset
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ManageAdminScreen(orgNAME: val.switchOrganization ?? selectedValue!, orgID: val.switchOrgId ?? orgId!)));
+                            }),
+                        SizedBox(height: 5,),
+                        const Text(CustomString.adminText,style: TextStyle(fontSize: 8,color: CustomColors.kBlueColor),)
+                      ],
+                    )
                     : Container();
               }),
               SizedBox(width: size.width * 0.02),
@@ -355,28 +362,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver, Si
                       final p = Provider.of<SwitchProvider>(context,listen: false);
                       print("------->${p.selectedInd}");
                       print("Test--SwitchData--->${data.switchData.orgPerson?[p.selectedInd!].isCaller}");
-                      return data.switchData.orgPerson?[p.selectedInd!].isCaller==true? CupertinoSwitch(
-                        value: val.Switch,
-                        onChanged: (value) async {
-                          val.callSwitch(value);
-                          if(val.Switch==true){
-                            //NotificationServices().showNotification(title: "Calling", body: "1471471470");//testing purpose
-                            apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
-                              _handleSave(context,value);
-                              await Permission.microphone.request();
-                              await Permission.notification.request();
-                              //await Permission.camera.request();
-                            });
-                            debugPrint("call-switch-value-->$value");
-                            // _handleSave(context);
-                          }
-                          else{
-                            //NotificationServices().removeNotification(0); //testing purpose
-                            debugPrint("call-switch-value-->$value");
-                            await apiConfig.getCallCredential(orgID: orgId,action: "Remove");
-                            helper!.unregister(true);
-                          }
-                        },
+                      return data.switchData.orgPerson?[p.selectedInd!].isCaller==true?
+                      Column(
+                        children: [
+                          CupertinoSwitch(
+                            value: val.Switch,
+                            onChanged: (value) async {
+                              val.callSwitch(value);
+                              if(val.Switch==true){
+                                //NotificationServices().showNotification(title: "Calling", body: "1471471470");//testing purpose
+                                apiConfig.getCallCredential(orgID: orgId,action: "").then((value) async {
+                                  _handleSave(context,value);
+                                  await Permission.microphone.request();
+                                  await Permission.notification.request();
+                                  //await Permission.camera.request();
+                                });
+                                debugPrint("call-switch-value-->$value");
+                                // _handleSave(context);
+                              } else{
+                                //NotificationServices().removeNotification(0); //testing purpose
+                                debugPrint("call-switch-value-->$value");
+                                await apiConfig.getCallCredential(orgID: orgId,action: "Remove");
+                                helper!.unregister(true);
+                              }
+                            },
+                          ),
+                          const Text(CustomString.callSwitch,style: TextStyle(fontSize: 8,color: CustomColors.kBlueColor),)
+                        ],
                       ):Container();
                     }
                   );

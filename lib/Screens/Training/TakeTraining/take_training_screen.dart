@@ -517,7 +517,6 @@ class _TakeTrainingScreenState extends State<TakeTrainingScreen> {
             );
           }
         ),
-
       ),
     );
   }

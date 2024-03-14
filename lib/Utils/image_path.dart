@@ -10,7 +10,7 @@ class ImagePath {
   static const String noData = 'assets/gif/noData.gif';
 
   static const String dropdownIcon = 'assets/svg/Down.svg';
-  static const String switchIcon = 'assets/svg/Refresh.svg';
+  static const String admin = 'assets/svg/admin.svg';
   static const String rightShiftIcon = 'assets/svg/Right.svg';
   static const String logoutIcon = 'assets/svg/Logout.svg';
   static const String moreIcon = 'assets/svg/Menu Meatballs.svg';

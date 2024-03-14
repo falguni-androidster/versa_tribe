@@ -86,8 +86,8 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                                   backgroundColor: CustomColors.kGrayColor,
                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                               onPressed: () async {
-                                                apiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
-                                              },
+                                                   showDeleteConfirmation(context: context, idString: "project_reject",deleteID: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId,dialogTitle: CustomString.rejectRequest,dialogDisc: CustomString.rejectRequestDesc);
+                                                },
                                               child: const Text(CustomString.reject, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                         ),
                                         SizedBox(width: size.width * 0.02),
@@ -293,8 +293,8 @@ class _ManageUserProjectScreenState extends State<ManageUserProjectScreen> {
                                               backgroundColor: CustomColors.kGrayColor,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
                                           onPressed: () async {
-                                            apiConfig.cancelProjectJoinedRequest(context: context, id: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId);
-                                          },
+                                            showDeleteConfirmation(context: context, idString: "project_remove", deleteID: val.getProjectListManageUser[index].id, projectId: widget.projectResponseModel.projectId,dialogTitle: CustomString.removeRequest,dialogDisc: CustomString.removeRequestDesc);
+                                            },
                                           child: const Text(CustomString.remove, style: TextStyle(color: CustomColors.kBlackColor, fontFamily: 'Poppins'))),
                                     ),
                                   ],
